@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://6ldongld3m35"]
+
+[ext_resource type="Texture2D" uid="uid://c68jm6c7gov80" path="res://Player/player.png" id="1_2e6f0"]
+[ext_resource type="Script" path="res://Player/Player.cs" id="1_yacgi"]
+
+[node name="Player" type="Area2D"]
+script = ExtResource("1_yacgi")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_2e6f0")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(0, -28, -28, 28, 28, 28)
