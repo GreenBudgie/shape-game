@@ -5,7 +5,7 @@ using ShapeGame.Player.Bullet;
 
 namespace ShapeGame.Player;
 
-public partial class Player : ShapeCastArea2D
+public partial class Player : MovingArea2D
 {
 
     private PackedScene _bulletScene;
@@ -57,12 +57,4 @@ public partial class Player : ShapeCastArea2D
         _primaryFireTimer = PrimaryFireDelay;
     }
 
-    protected override Shape2D GetShape()
-    {
-        var collisionPolygon = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
-        var shape = new ConvexPolygonShape2D();
-        shape.Points = collisionPolygon.Polygon;
-        return shape;
-    }
-    
 }

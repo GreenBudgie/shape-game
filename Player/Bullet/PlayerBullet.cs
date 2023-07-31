@@ -4,7 +4,7 @@ using ShapeGame.Common;
 
 namespace ShapeGame.Player.Bullet;
 
-public partial class PlayerBullet : ShapeCastArea2D
+public partial class PlayerBullet : MovingArea2D
 {
     
     private const int Speed = 1000;
@@ -20,12 +20,4 @@ public partial class PlayerBullet : ShapeCastArea2D
         }
     }
 
-    protected override Shape2D GetShape()
-    {
-        var collisionPolygon = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
-        var shape = new ConvexPolygonShape2D();
-        shape.Points = collisionPolygon.Polygon;
-        return shape;
-    }
-    
 }
