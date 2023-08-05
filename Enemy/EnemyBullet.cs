@@ -1,5 +1,5 @@
 ﻿namespace ShapeGame.Enemy;
 
-public interface IEnemy
+public interface IEnemyBullet
 {
 }

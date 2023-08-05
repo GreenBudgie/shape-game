@@ -1,9 +1,10 @@
 ﻿using Godot;
+using ShapeGame.Common;
 using ShapeGame.Enemy.Square.Bullet;
 
 namespace ShapeGame.Enemy.Square;
 
-public partial class EnemySquare : Enemy
+public partial class EnemySquare : MovingArea2D, IEnemy
 {
 
     private PackedScene _bulletScene;

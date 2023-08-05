@@ -1,6 +1,6 @@
-using System;
 using Godot;
 using ShapeGame.Common;
+using ShapeGame.Enemy;
 using ShapeGame.Player.Bullet;
 
 namespace ShapeGame.Player;
@@ -12,10 +12,11 @@ public partial class Player : MovingArea2D
 
     private const float PrimaryFireDelay = 0.4f;
     private const float MaxTiltDegrees = 22;
-    private const float TiltIncreaseFactor = 15f;
-    private const float TiltDecreaseFactor = 150f;
+    private const float TiltIncreaseFactor = 0.15f;
+    private const float TiltDecreaseFactor = 0.0055f;
+    private const float RotationDegreesEpsilon = 0.3f;
 
-    private float _primaryFireTimer = 0;
+    private float _primaryFireTimer;
 
     public override void _Ready()
     {
@@ -24,12 +25,24 @@ public partial class Player : MovingArea2D
         _bulletScene = GD.Load<PackedScene>("res://Player/Bullet/player_bullet.tscn");
     }
 
+    protected override void OnCollide(CollisionObject2D collider)
+    {
+        if (collider is IEnemy)
+        {
+            collider.QueueFree();
+        }
+    }
+
     public override void _Process(double delta)
     {
         var moveVector = GetGlobalMousePosition() - Position;
-        var tiltDegrees = moveVector.X * TiltIncreaseFactor * delta;
-        RotationDegrees *= (float) (TiltDecreaseFactor * delta);
-        RotationDegrees = (float) Mathf.Clamp(RotationDegrees + tiltDegrees, -MaxTiltDegrees, MaxTiltDegrees);
+        var tiltDegrees = moveVector.X * TiltIncreaseFactor;
+        RotationDegrees *= (float) (TiltDecreaseFactor / delta);
+        RotationDegrees = Mathf.Clamp(RotationDegrees + tiltDegrees, -MaxTiltDegrees, MaxTiltDegrees);
+        if (Mathf.Abs(RotationDegrees) <= RotationDegreesEpsilon)
+        {
+            RotationDegrees = 0;
+        }
 
         MoveAndCollide(moveVector);
         

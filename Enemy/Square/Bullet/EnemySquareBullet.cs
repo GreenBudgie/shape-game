@@ -3,7 +3,7 @@ using ShapeGame.Common;
 
 namespace ShapeGame.Enemy.Square.Bullet;
 
-public partial class EnemySquareBullet : MovingArea2D
+public partial class EnemySquareBullet : MovingArea2D, IEnemyBullet
 {
 
     private Sprite2D _sprite;
@@ -27,6 +27,14 @@ public partial class EnemySquareBullet : MovingArea2D
         
         _sprite.Rotation += (float) (RotationSpeed * delta);
         if (Position.Y > GetViewportRect().Size.Y + 10)
+        {
+            QueueFree();
+        }
+    }
+
+    protected override void OnCollide(CollisionObject2D collider)
+    {
+        if (collider is Player.Player)
         {
             QueueFree();
         }
