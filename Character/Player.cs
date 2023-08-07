@@ -1,13 +1,13 @@
-using Godot;
 using ShapeGame.Common;
 using ShapeGame.Enemy;
-using ShapeGame.Player.Bullet;
+using ShapeGame.Character.Bullet;
 
-namespace ShapeGame.Player;
+namespace ShapeGame.Character;
 
 public partial class Player : MovingArea2D
 {
 
+    [Scene("Character/Bullet/player_bullet")]
     private PackedScene _bulletScene;
 
     private const float PrimaryFireDelay = 0.4f;
@@ -20,9 +20,8 @@ public partial class Player : MovingArea2D
 
     public override void _Ready()
     {
+        this.InitAttributes();
         base._Ready();
-        
-        _bulletScene = GD.Load<PackedScene>("res://Player/Bullet/player_bullet.tscn");
     }
 
     protected override void OnCollide(CollisionObject2D collider)
@@ -38,8 +37,8 @@ public partial class Player : MovingArea2D
         var moveVector = GetGlobalMousePosition() - Position;
         var tiltDegrees = moveVector.X * TiltIncreaseFactor;
         RotationDegrees *= (float) (TiltDecreaseFactor / delta);
-        RotationDegrees = Mathf.Clamp(RotationDegrees + tiltDegrees, -MaxTiltDegrees, MaxTiltDegrees);
-        if (Mathf.Abs(RotationDegrees) <= RotationDegreesEpsilon)
+        RotationDegrees = Clamp(RotationDegrees + tiltDegrees, -MaxTiltDegrees, MaxTiltDegrees);
+        if (Abs(RotationDegrees) <= RotationDegreesEpsilon)
         {
             RotationDegrees = 0;
         }
@@ -58,7 +57,7 @@ public partial class Player : MovingArea2D
 
     private Vector2 GetNosePosition()
     {
-        return Position - new Vector2(0, 28).Rotated(Mathf.DegToRad(RotationDegrees));
+        return Position - new Vector2(0, 28).Rotated(DegToRad(RotationDegrees));
     }
 
     private void PrimaryFire()

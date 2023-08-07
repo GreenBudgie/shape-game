@@ -1,8 +1,7 @@
-using Godot;
 using ShapeGame.Common;
 using ShapeGame.Enemy;
 
-namespace ShapeGame.Player.Bullet;
+namespace ShapeGame.Character.Bullet;
 
 public partial class PlayerBullet : MovingArea2D
 {

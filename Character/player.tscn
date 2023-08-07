@@ -1,14 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://bw1n7eocfhsbo"]
 
-[ext_resource type="Texture2D" uid="uid://c68jm6c7gov80" path="res://Player/player.png" id="1_2e6f0"]
-[ext_resource type="Script" path="res://Player/Player.cs" id="1_yacgi"]
+[ext_resource type="Script" path="res://Character/Player.cs" id="1_i2vgf"]
+[ext_resource type="Texture2D" uid="uid://c68jm6c7gov80" path="res://Character/player.png" id="2_0pvwl"]
 
 [node name="Player" type="Area2D"]
 collision_mask = 12
-script = ExtResource("1_yacgi")
+script = ExtResource("1_i2vgf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_2e6f0")
+texture = ExtResource("2_0pvwl")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(0, -28, -28, 28, 28, 28)

@@ -5,7 +5,10 @@ using Godot;
 namespace ShapeGame.Common;
 
 /// <summary>
-/// A shape that can move and detect collisions based on its shape
+/// A shape that can move and detect collisions using ShapeCast2D.
+/// This approach guarantees that the node will detect collision at any move speed.
+/// Useful for extremely fast moving objects or at low fps. 
+/// Can collide with any CollisionObject2D.
 /// </summary>
 public abstract partial class MovingArea2D : Area2D
 {
@@ -49,7 +52,8 @@ public abstract partial class MovingArea2D : Area2D
 
     /// <summary>
     /// Called when some moving area collides with CollisionObject2D.
-    /// Note that if two MovingArea2Ds collide, this method might be called twice (but it is not guaranteed).
+    /// Note that if two MovingArea2Ds collide, this method might be called twice if
+    /// each shape registered collision with one another.
     /// </summary>
     /// <param name="collider">An object with which the area collided</param>
     protected virtual void OnCollide(CollisionObject2D collider)
@@ -61,7 +65,7 @@ public abstract partial class MovingArea2D : Area2D
     /// Moves this node by the specified vector and checks whether there is a collision with another CollisionObject2D.
     /// Emits OnCollide when collision has happened.
     /// </summary>
-    /// <returns>A list of registered colliders</returns>
+    /// <returns>A list of registered collisions</returns>
     public List<CollisionObject2D> MoveAndCollide(Vector2 moveVector)
     {
         _shapeCast.TargetPosition = moveVector.Rotated(-Rotation);

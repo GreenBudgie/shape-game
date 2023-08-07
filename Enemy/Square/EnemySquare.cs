@@ -1,5 +1,4 @@
-﻿using Godot;
-using ShapeGame.Common;
+﻿using ShapeGame.Common;
 using ShapeGame.Enemy.Square.Bullet;
 
 namespace ShapeGame.Enemy.Square;
@@ -7,6 +6,7 @@ namespace ShapeGame.Enemy.Square;
 public partial class EnemySquare : MovingArea2D, IEnemy
 {
 
+    [Scene("Enemy/Square/Bullet/enemy_square_bullet")]
     private PackedScene _bulletScene;
     
     private const double FireDelay = 1;
@@ -15,9 +15,8 @@ public partial class EnemySquare : MovingArea2D, IEnemy
 
     public override void _Ready()
     {
+        this.InitAttributes();
         base._Ready();
-        
-        _bulletScene = GD.Load<PackedScene>("res://Enemy/Square/Bullet/enemy_square_bullet.tscn");
     }
 
     public override void _Process(double delta)

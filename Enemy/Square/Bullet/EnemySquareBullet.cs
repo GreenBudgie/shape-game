@@ -1,5 +1,6 @@
 ﻿using Godot;
 using ShapeGame.Common;
+using ShapeGame.Character;
 
 namespace ShapeGame.Enemy.Square.Bullet;
 
@@ -34,7 +35,7 @@ public partial class EnemySquareBullet : MovingArea2D, IEnemyBullet
 
     protected override void OnCollide(CollisionObject2D collider)
     {
-        if (collider is Player.Player)
+        if (collider is Player)
         {
             QueueFree();
         }
