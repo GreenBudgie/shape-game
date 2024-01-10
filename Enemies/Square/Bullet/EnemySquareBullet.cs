@@ -2,11 +2,12 @@
 using ShapeGame.Common;
 using ShapeGame.Character;
 
-namespace ShapeGame.Enemy.Square.Bullet;
+namespace ShapeGame.Enemies.Square.Bullet;
 
-public partial class EnemySquareBullet : MovingArea2D, IEnemyBullet
+public partial class EnemySquareBullet : EnemyBullet
 {
 
+    [Node("Sprite2D")]
     private Sprite2D _sprite;
 
     private const int Speed = 800;
@@ -14,9 +15,8 @@ public partial class EnemySquareBullet : MovingArea2D, IEnemyBullet
 
     public override void _Ready()
     {
+        this.InitAttributes();
         base._Ready();
-        
-        _sprite = GetNode<Sprite2D>("Sprite2D");
     }
 
     public override void _Process(double delta)
@@ -33,11 +33,4 @@ public partial class EnemySquareBullet : MovingArea2D, IEnemyBullet
         }
     }
 
-    protected override void OnCollide(CollisionObject2D collider)
-    {
-        if (collider is Player)
-        {
-            QueueFree();
-        }
-    }
 }

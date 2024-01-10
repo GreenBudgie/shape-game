@@ -1,17 +1,19 @@
 ﻿using ShapeGame.Common;
-using ShapeGame.Enemy.Square.Bullet;
+using ShapeGame.Enemies.Square.Bullet;
 
-namespace ShapeGame.Enemy.Square;
+namespace ShapeGame.Enemies.Square;
 
-public partial class EnemySquare : MovingArea2D, IEnemy
+public partial class EnemySquare : Enemy
 {
 
-    [Scene("Enemy/Square/Bullet/enemy_square_bullet")]
+    [Scene("Enemies/Square/Bullet/enemy_square_bullet")]
     private PackedScene _bulletScene;
     
     private const double FireDelay = 1;
 
     private double _fireTimer = FireDelay;
+
+    public override float GetMaxHealth() => 10;
 
     public override void _Ready()
     {

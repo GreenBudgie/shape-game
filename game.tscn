@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://snfu2b1ifqye"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_feucx"]
-[ext_resource type="PackedScene" uid="uid://csm3f5807x7i8" path="res://Enemy/Square/enemy_square.tscn" id="2_aj0bp"]
+[ext_resource type="PackedScene" uid="uid://csm3f5807x7i8" path="res://Enemies/Square/enemy_square.tscn" id="2_aj0bp"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://Character/player.tscn" id="2_nha2u"]
 
 [node name="Game" type="Node2D"]

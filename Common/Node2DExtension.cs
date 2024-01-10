@@ -13,6 +13,7 @@ public static class Node2DExtension
         foreach (var field in node.GetType().GetFields(Flags))
         {
             InitSceneAttribute(node, field);
+            InitNodeAttribute(node, field);
         }
     }
 

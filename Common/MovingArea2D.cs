@@ -52,8 +52,6 @@ public abstract partial class MovingArea2D : Area2D
 
     /// <summary>
     /// Called when some moving area collides with CollisionObject2D.
-    /// Note that if two MovingArea2Ds collide, this method might be called twice if
-    /// each shape registered collision with one another.
     /// </summary>
     /// <param name="collider">An object with which the area collided</param>
     protected virtual void OnCollide(CollisionObject2D collider)
@@ -80,16 +78,23 @@ public abstract partial class MovingArea2D : Area2D
                 {
                     continue;
                 }
-                OnCollide(collisionObject);
+                Collide(collisionObject);
                 if (collisionObject is MovingArea2D movingArea)
                 {
-                    movingArea.OnCollide(this);
+                    movingArea.Collide(this);
                 }
                 collisions.Add(collisionObject);
             }
         }
         Position += moveVector;
         return collisions;
+    }
+
+    private void Collide(CollisionObject2D collider)
+    {
+        //TODO Remove double collisions
+        OnCollide(collider);
+        
     }
 
 }

@@ -1,5 +1,6 @@
+using System;
 using ShapeGame.Common;
-using ShapeGame.Enemy;
+using ShapeGame.Enemies;
 using ShapeGame.Character.Bullet;
 
 namespace ShapeGame.Character;
@@ -26,7 +27,7 @@ public partial class Player : MovingArea2D
 
     protected override void OnCollide(CollisionObject2D collider)
     {
-        if (collider is IEnemy)
+        if (collider is Enemy)
         {
             collider.QueueFree();
         }
