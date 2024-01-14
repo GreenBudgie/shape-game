@@ -4,14 +4,12 @@ using ShapeGame.Common;
 
 namespace ShapeGame.Enemies;
 
-public abstract partial class EnemyBullet : MovingArea2D
+public abstract partial class EnemyBullet : ShapeCastCharacterBody2D
 {
     protected override void OnCollide(CollisionObject2D collider)
     {
-        if (collider is PlayerBullet)
-        {
-            Console.WriteLine("enemy bullet collide with player bullet");
-            QueueFree();
-        }
+        if (collider is not PlayerBullet) return;
+        Console.WriteLine("enemy bullet collide with player bullet");
+        QueueFree();
     }
 }

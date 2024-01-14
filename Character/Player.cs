@@ -5,7 +5,7 @@ using ShapeGame.Character.Bullet;
 
 namespace ShapeGame.Character;
 
-public partial class Player : MovingArea2D
+public partial class Player : ShapeCastCharacterBody2D
 {
 
     [Scene("Character/Bullet/player_bullet")]
@@ -17,25 +17,27 @@ public partial class Player : MovingArea2D
     private const float TiltDecreaseFactor = 0.0055f;
     private const float RotationDegreesEpsilon = 0.3f;
 
+    private const int CornerDistance = 28;
+    private const int HorizontalTiltReserve = 10;
+
+    private float _minX, _maxX, _minY, _maxY;
+
     private float _primaryFireTimer;
 
     public override void _Ready()
     {
         this.InitAttributes();
+        _minX = CornerDistance - HorizontalTiltReserve;
+        _maxX = GetViewportRect().Size.X - CornerDistance + HorizontalTiltReserve;
+        _minY = CornerDistance;
+        _maxY = GetViewportRect().Size.Y - CornerDistance;
         base._Ready();
-    }
-
-    protected override void OnCollide(CollisionObject2D collider)
-    {
-        if (collider is Enemy)
-        {
-            collider.QueueFree();
-        }
     }
 
     public override void _Process(double delta)
     {
-        var moveVector = GetGlobalMousePosition() - Position;
+        var mousePosition = GetViewport().GetMousePosition();
+        var moveVector = mousePosition - Position;
         var tiltDegrees = moveVector.X * TiltIncreaseFactor;
         RotationDegrees *= (float) (TiltDecreaseFactor / delta);
         RotationDegrees = Clamp(RotationDegrees + tiltDegrees, -MaxTiltDegrees, MaxTiltDegrees);
@@ -44,8 +46,9 @@ public partial class Player : MovingArea2D
             RotationDegrees = 0;
         }
 
-        MoveAndCollide(moveVector);
-        
+        Position += moveVector;
+        Position = Position.Clamp(new Vector2(_minX, _minY), new Vector2(_maxX, _maxY));
+
         if ((int) Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
         {
             PrimaryFire();
@@ -58,14 +61,15 @@ public partial class Player : MovingArea2D
 
     private Vector2 GetNosePosition()
     {
-        return Position - new Vector2(0, 28).Rotated(DegToRad(RotationDegrees));
+        return Position - new Vector2(0, CornerDistance).Rotated(Rotation);
     }
 
     private void PrimaryFire()
     {
         var bullet = _bulletScene.Instantiate<PlayerBullet>();
         bullet.Position = GetNosePosition();
-        bullet.Rotation = Rotation * 2;
+        var moveVector = new Vector2(0, -1500).Rotated(Rotation);
+        bullet.ApplyCentralImpulse(moveVector);
         GetParent().AddChild(bullet);
         _primaryFireTimer = PrimaryFireDelay;
     }

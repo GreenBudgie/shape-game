@@ -24,7 +24,7 @@ public partial class EnemySquareBullet : EnemyBullet
         var actualSpeed = (float) (Speed * delta);
         var moveVector = new Vector2(0, actualSpeed).Rotated(Rotation);
 
-        MoveAndCollide(moveVector);
+        GetCollisions(moveVector);
         
         _sprite.Rotation += (float) (RotationSpeed * delta);
         if (Position.Y > GetViewportRect().Size.Y + 10)

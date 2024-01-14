@@ -5,12 +5,12 @@ using Godot;
 namespace ShapeGame.Common;
 
 /// <summary>
-/// A shape that can move and detect collisions using ShapeCast2D.
+/// A character that can move and detect collisions using ShapeCast2D.
 /// This approach guarantees that the node will detect collision at any move speed.
 /// Useful for extremely fast moving objects or at low fps. 
 /// Can collide with any CollisionObject2D.
 /// </summary>
-public abstract partial class MovingArea2D : Area2D
+public abstract partial class ShapeCastCharacterBody2D : CharacterBody2D
 {
 
     private ShapeCast2D _shapeCast;
@@ -21,9 +21,19 @@ public abstract partial class MovingArea2D : Area2D
         _shapeCast.Shape = GetShape();
         _shapeCast.Enabled = false;
         _shapeCast.CollideWithAreas = true;
-        _shapeCast.CollisionMask = CollisionMask;
+        _shapeCast.CollisionMask = GetCustomCollisionMask();
         _shapeCast.TargetPosition = Vector2.Zero;
         AddChild(_shapeCast);
+    }
+
+    /// <summary>
+    /// Override this method to provide custom collision mask for the shape cast.
+    /// Will use the same collision mask if not overriden.
+    /// </summary>
+    /// <returns>A collision mask</returns>
+    protected virtual uint GetCustomCollisionMask()
+    {
+        return CollisionMask;
     }
 
     /// <summary>
@@ -60,33 +70,27 @@ public abstract partial class MovingArea2D : Area2D
     }
 
     /// <summary>
-    /// Moves this node by the specified vector and checks whether there is a collision with another CollisionObject2D.
-    /// Emits OnCollide when collision has happened.
+    /// Returns all collisions with another CollisionObject2Ds if this character is to be moved by specified vector.
     /// </summary>
-    /// <returns>A list of registered collisions</returns>
-    public List<CollisionObject2D> MoveAndCollide(Vector2 moveVector)
+    /// <returns>A list of collisions</returns>
+    public List<CollisionObject2D> GetCollisions(Vector2 moveVector)
     {
         _shapeCast.TargetPosition = moveVector.Rotated(-Rotation);
         _shapeCast.ForceShapecastUpdate();
         var collisions = new List<CollisionObject2D>();
-        if (_shapeCast.IsColliding())
+        if (!_shapeCast.IsColliding()) 
         {
-            for (var i = 0; i < _shapeCast.GetCollisionCount(); i++)
-            {
-                var collider = _shapeCast.GetCollider(i);
-                if (collider is not CollisionObject2D collisionObject)
-                {
-                    continue;
-                }
-                Collide(collisionObject);
-                if (collisionObject is MovingArea2D movingArea)
-                {
-                    movingArea.Collide(this);
-                }
-                collisions.Add(collisionObject);
-            }
+            return collisions;
         }
-        Position += moveVector;
+        for (var i = 0; i < _shapeCast.GetCollisionCount(); i++)
+        {
+            var collider = _shapeCast.GetCollider(i);
+            if (collider is not CollisionObject2D collisionObject)
+            {
+                continue;
+            }
+            collisions.Add(collisionObject);
+        }
         return collisions;
     }
 
