@@ -4,7 +4,7 @@ using ShapeGame.Common;
 
 namespace ShapeGame.Enemies;
 
-public abstract partial class Enemy : RigidBody2D
+public abstract partial class Enemy : ShapeCastCharacterBody2D
 {
 
     public float Health { get; set; }

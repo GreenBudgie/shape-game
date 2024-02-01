@@ -3,9 +3,10 @@
 [ext_resource type="Script" path="res://Enemies/Square/Bullet/EnemySquareBullet.cs" id="1_rnsup"]
 [ext_resource type="Texture2D" uid="uid://d3g1d85jyhbnj" path="res://Enemies/Square/Bullet/enemy_square_bullet.png" id="1_rtrwx"]
 
-[node name="EnemySquareBullet" type="Area2D"]
+[node name="EnemySquareBullet" type="RigidBody2D"]
 collision_layer = 8
-collision_mask = 3
+collision_mask = 59
+continuous_cd = 2
 script = ExtResource("1_rnsup")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

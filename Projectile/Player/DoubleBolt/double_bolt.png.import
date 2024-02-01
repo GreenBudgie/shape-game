@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bc0kdrr5spjd2"
-path="res://.godot/imported/player_bullet.png-7a23105e2ea6df6059f9692e25262c34.ctex"
+uid="uid://dt4a1myybfena"
+path="res://.godot/imported/double_bolt.png-4d29bad4df2b799afddd587451bf55b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Character/Bullet/player_bullet.png"
-dest_files=["res://.godot/imported/player_bullet.png-7a23105e2ea6df6059f9692e25262c34.ctex"]
+source_file="res://Projectile/Player/DoubleBolt/double_bolt.png"
+dest_files=["res://.godot/imported/double_bolt.png-4d29bad4df2b799afddd587451bf55b5.ctex"]
 
 [params]
 

@@ -1,15 +1,14 @@
-using System;
+using System.Collections.Generic;
 using ShapeGame.Common;
-using ShapeGame.Enemies;
-using ShapeGame.Character.Bullet;
+using ShapeGame.Projectile.Player.DoubleBolt;
 
 namespace ShapeGame.Character;
 
 public partial class Player : ShapeCastCharacterBody2D
 {
 
-    [Scene("Character/Bullet/player_bullet")]
-    private PackedScene _bulletScene;
+    [Scene("Projectile/Player/DoubleBolt/double_bolt")]
+    private PackedScene _doubleBoltProjectileScene;
 
     private const float PrimaryFireDelay = 0.4f;
     private const float MaxTiltDegrees = 22;
@@ -63,15 +62,32 @@ public partial class Player : ShapeCastCharacterBody2D
     {
         return Position - new Vector2(0, CornerDistance).Rotated(Rotation);
     }
+    
+    private Vector2 GetLeftCornerPosition()
+    {
+        return Position + new Vector2(-CornerDistance, CornerDistance).Rotated(Rotation);
+    }
+    
+    private Vector2 GetRightCornerPosition()
+    {
+        return Position + new Vector2(CornerDistance, CornerDistance).Rotated(Rotation);
+    }
 
     private void PrimaryFire()
     {
-        var bullet = _bulletScene.Instantiate<PlayerBullet>();
-        bullet.Position = GetNosePosition();
-        var moveVector = new Vector2(0, -1500).Rotated(Rotation);
-        bullet.ApplyCentralImpulse(moveVector);
-        GetParent().AddChild(bullet);
-        _primaryFireTimer = PrimaryFireDelay;
+        var leftBolt = _doubleBoltProjectileScene.Instantiate<DoubleBoltProjectile>();
+        var rightBolt = _doubleBoltProjectileScene.Instantiate<DoubleBoltProjectile>();
+        leftBolt.Position = GetLeftCornerPosition();
+        rightBolt.Position = GetRightCornerPosition();
+        var bolts = new List<DoubleBoltProjectile> { leftBolt, rightBolt };
+        foreach (var bolt in bolts)
+        {
+            bolt.Rotation = Rotation;
+            var moveVector = new Vector2(0, -3000).Rotated(Rotation);
+            bolt.ApplyCentralImpulse(moveVector);
+            GetParent().AddChild(bolt);
+            _primaryFireTimer = PrimaryFireDelay;
+        }
     }
 
 }

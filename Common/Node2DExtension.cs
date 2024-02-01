@@ -35,15 +35,8 @@ public static class Node2DExtension
         {
             return;
         }
-        string nodeName;
-        if (nodeAttribute.NodeName != null)
-        {
-            nodeName = nodeAttribute.NodeName;
-        }
-        else
-        {
-            nodeName = GetCorrectedNodeName(field.Name);
-        }
+
+        var nodeName = nodeAttribute.NodeName ?? GetCorrectedNodeName(field.Name);
 
         var childNode = node.GetNode(nodeName);
         field.SetValue(node, childNode);

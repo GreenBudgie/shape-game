@@ -25,7 +25,7 @@ position = Vector2(549, 82)
 [node name="WorldBoundaryWall" parent="." instance=ExtResource("4_5rrdr")]
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
-collision_layer = 33
+collision_layer = 16
 collision_mask = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
