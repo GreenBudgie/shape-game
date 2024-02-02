@@ -7,8 +7,8 @@ namespace ShapeGame.Character;
 public partial class Player : ShapeCastCharacterBody2D
 {
 
-    [Scene("Projectile/Player/DoubleBolt/double_bolt")]
-    private PackedScene _doubleBoltProjectileScene;
+    private static readonly PackedScene DoubleBoltProjectileScene = 
+        GD.Load<PackedScene>("res://Projectile/Player/DoubleBolt/double_bolt.tscn");
 
     private const float PrimaryFireDelay = 0.4f;
     private const float MaxTiltDegrees = 22;
@@ -75,8 +75,8 @@ public partial class Player : ShapeCastCharacterBody2D
 
     private void PrimaryFire()
     {
-        var leftBolt = _doubleBoltProjectileScene.Instantiate<DoubleBoltProjectile>();
-        var rightBolt = _doubleBoltProjectileScene.Instantiate<DoubleBoltProjectile>();
+        var leftBolt = DoubleBoltProjectileScene.Instantiate<DoubleBoltProjectile>();
+        var rightBolt = DoubleBoltProjectileScene.Instantiate<DoubleBoltProjectile>();
         leftBolt.Position = GetLeftCornerPosition();
         rightBolt.Position = GetRightCornerPosition();
         var bolts = new List<DoubleBoltProjectile> { leftBolt, rightBolt };

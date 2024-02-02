@@ -12,22 +12,10 @@ public static class Node2DExtension
     {
         foreach (var field in node.GetType().GetFields(Flags))
         {
-            InitSceneAttribute(node, field);
             InitNodeAttribute(node, field);
         }
     }
-
-    private static void InitSceneAttribute(Node node, FieldInfo field)
-    {
-        var attribute = Attribute.GetCustomAttribute(field, typeof(SceneAttribute));
-        if (attribute is not SceneAttribute sceneAttribute)
-        {
-            return;
-        }
-        var scene = GD.Load<PackedScene>(sceneAttribute.ScenePath);
-        field.SetValue(node, scene);
-    }
-
+    
     private static void InitNodeAttribute(Node node, FieldInfo field)
     {
         var attribute = Attribute.GetCustomAttribute(field, typeof(NodeAttribute));

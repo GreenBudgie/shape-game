@@ -6,8 +6,8 @@ namespace ShapeGame.Enemies.Square;
 public partial class EnemySquare : Enemy
 {
 
-    [Scene("Enemies/Square/Bullet/enemy_square_bullet")]
-    private PackedScene _bulletScene;
+    private static readonly PackedScene BulletScene = 
+        GD.Load<PackedScene>("res://Enemies/Square/Bullet/enemy_square_bullet.tscn");
     
     private const double FireDelay = 1;
 
@@ -36,7 +36,7 @@ public partial class EnemySquare : Enemy
 
     private void Fire()
     {
-        var bullet = _bulletScene.Instantiate<EnemySquareBullet>();
+        var bullet = BulletScene.Instantiate<EnemySquareBullet>();
         bullet.Position = Position;
         GetParent().AddChild(bullet);
     }
