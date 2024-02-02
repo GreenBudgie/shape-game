@@ -6,8 +6,7 @@ namespace ShapeGame.Character;
 
 public partial class Player : ShapeCastCharacterBody2D
 {
-
-    private static readonly PackedScene DoubleBoltProjectileScene = 
+    private static readonly PackedScene DoubleBoltProjectileScene =
         GD.Load<PackedScene>("res://Projectile/Player/DoubleBolt/double_bolt.tscn");
 
     private const float PrimaryFireDelay = 0.4f;
@@ -35,26 +34,33 @@ public partial class Player : ShapeCastCharacterBody2D
 
     public override void _Process(double delta)
     {
+        var windowCenter = new Vector2(
+            GetViewport().GetWindow().Size.X / 2.0f,
+            GetViewport().GetWindow().Size.Y / 2.0f
+        );
         var mousePosition = GetViewport().GetMousePosition();
-        var moveVector = mousePosition - Position;
-        var tiltDegrees = moveVector.X * TiltIncreaseFactor;
-        RotationDegrees *= (float) (TiltDecreaseFactor / delta);
+        var mouseDelta = mousePosition - windowCenter;
+        GetViewport().WarpMouse(windowCenter);
+        var tiltDegrees = mouseDelta.X * TiltIncreaseFactor;
+        RotationDegrees *= (float)(TiltDecreaseFactor / delta);
         RotationDegrees = Clamp(RotationDegrees + tiltDegrees, -MaxTiltDegrees, MaxTiltDegrees);
         if (Abs(RotationDegrees) <= RotationDegreesEpsilon)
         {
             RotationDegrees = 0;
         }
 
-        Position += moveVector;
-        Position = Position.Clamp(new Vector2(_minX, _minY), new Vector2(_maxX, _maxY));
+        Velocity = mouseDelta * 100;
+        MoveAndSlide();
+        //Position = Position.Clamp(new Vector2(_minX, _minY), new Vector2(_maxX, _maxY));
 
-        if ((int) Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
+        if ((int)Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
         {
             PrimaryFire();
         }
+
         if (_primaryFireTimer > 0)
         {
-            _primaryFireTimer -= (float) delta;
+            _primaryFireTimer -= (float)delta;
         }
     }
 
@@ -62,12 +68,12 @@ public partial class Player : ShapeCastCharacterBody2D
     {
         return Position - new Vector2(0, CornerDistance).Rotated(Rotation);
     }
-    
+
     private Vector2 GetLeftCornerPosition()
     {
         return Position + new Vector2(-CornerDistance, CornerDistance).Rotated(Rotation);
     }
-    
+
     private Vector2 GetRightCornerPosition()
     {
         return Position + new Vector2(CornerDistance, CornerDistance).Rotated(Rotation);
@@ -89,5 +95,4 @@ public partial class Player : ShapeCastCharacterBody2D
             _primaryFireTimer = PrimaryFireDelay;
         }
     }
-
 }
