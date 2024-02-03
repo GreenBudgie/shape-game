@@ -8,7 +8,7 @@ public partial class Game : Node2D
     public override void _Ready()
     {
         // Input.MouseMode = Input.MouseModeEnum.Hidden;
-        // Engine.MaxFps = 5;
-    }
+        // Engine.MaxFps = 30; 
+    }                       
     
 }

@@ -9,26 +9,39 @@ public partial class Player : ShapeCastCharacterBody2D
     private static readonly PackedScene DoubleBoltProjectileScene =
         GD.Load<PackedScene>("res://Projectile/Player/DoubleBolt/double_bolt.tscn");
 
-    private const float PrimaryFireDelay = 0.4f;
-    private const float MaxTiltDegrees = 22;
-    private const float TiltIncreaseFactor = 0.15f;
-    private const float TiltDecreaseFactor = 0.0055f;
-    private const float RotationDegreesEpsilon = 0.3f;
-
     private const int CornerDistance = 28;
-    private const int HorizontalTiltReserve = 10;
 
-    private float _minX, _maxX, _minY, _maxY;
+    private const float PrimaryFireDelay = 0.4f;
+
+    /**
+     * The player's tilt will never go above this value.
+     */
+    [ExportGroup("Tilt")] [Export(PropertyHint.Range, "0,40,1,or_greater")]
+    private double _maxTiltDegrees = 22;
+
+    /**
+     * How rapidly the player will tilt when it is moved horizontally. Higher = faster.
+     */
+    [Export(PropertyHint.Range, "0,1,0.01,or_greater")]
+    private double _tiltIncreaseFactor = 0.1;
+
+    /**
+     * How fast the player's tilt will decrease over time (arbitrary number). Higher = faster.
+     */
+    [Export(PropertyHint.Range, "1,20,0.1,or_greater")]
+    private double _tiltDecreaseFactor = 7;
+
+    /**
+     * The lowest threshold of player's tilt in degrees. When this value is reached, the tilt is instantly set to 0.
+     */
+    [Export(PropertyHint.Range, "0.1,2,0.1,or_greater")]
+    private double _rotationDegreesEpsilon = 0.3;
 
     private float _primaryFireTimer;
 
     public override void _Ready()
     {
         this.InitAttributes();
-        _minX = CornerDistance - HorizontalTiltReserve;
-        _maxX = GetViewportRect().Size.X - CornerDistance + HorizontalTiltReserve;
-        _minY = CornerDistance;
-        _maxY = GetViewportRect().Size.Y - CornerDistance;
         base._Ready();
     }
 
@@ -41,17 +54,19 @@ public partial class Player : ShapeCastCharacterBody2D
         var mousePosition = GetViewport().GetMousePosition();
         var mouseDelta = mousePosition - windowCenter;
         GetViewport().WarpMouse(windowCenter);
-        var tiltDegrees = mouseDelta.X * TiltIncreaseFactor;
-        RotationDegrees *= (float)(TiltDecreaseFactor / delta);
-        RotationDegrees = Clamp(RotationDegrees + tiltDegrees, -MaxTiltDegrees, MaxTiltDegrees);
-        if (Abs(RotationDegrees) <= RotationDegreesEpsilon)
+
+        var prevPosition = Position;
+        Velocity = mouseDelta * (float)(1 / delta);
+        MoveAndSlide();
+
+        var positionDelta = Position - prevPosition;
+        var tiltDegrees = positionDelta.X * _tiltIncreaseFactor;
+        RotationDegrees *= Clamp(1 - (float)(delta * _tiltDecreaseFactor), 0, 1);
+        RotationDegrees = (float)Clamp(RotationDegrees + tiltDegrees, -_maxTiltDegrees, _maxTiltDegrees);
+        if (Abs(RotationDegrees) <= _rotationDegreesEpsilon)
         {
             RotationDegrees = 0;
         }
-
-        Velocity = mouseDelta * 100;
-        MoveAndSlide();
-        //Position = Position.Clamp(new Vector2(_minX, _minY), new Vector2(_maxX, _maxY));
 
         if ((int)Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
         {
