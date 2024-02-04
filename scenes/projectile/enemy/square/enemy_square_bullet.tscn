@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhj8dgeytmpxx"]
+
+[ext_resource type="Script" path="res://scripts/projectile/enemy/square/EnemySquareBullet.cs" id="1_rnsup"]
+[ext_resource type="Texture2D" uid="uid://d3g1d85jyhbnj" path="res://assets/projectile/enemy/square/enemy_square_bullet.png" id="1_rtrwx"]
+
+[node name="EnemySquareBullet" type="RigidBody2D"]
+collision_layer = 8
+collision_mask = 59
+continuous_cd = 2
+script = ExtResource("1_rnsup")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_rtrwx")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(0, -17, 17, 0, 0, 17, -17, 0)
