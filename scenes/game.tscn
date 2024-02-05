@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://snfu2b1ifqye"]
+[gd_scene load_steps=6 format=3 uid="uid://snfu2b1ifqye"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_l1nem"]
+[ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://scenes/ui/pause/pause_menu.tscn" id="2_3hbuu"]
 [ext_resource type="PackedScene" uid="uid://csm3f5807x7i8" path="res://scenes/enemy/square/enemy_square.tscn" id="2_aj0bp"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://scenes/player/player.tscn" id="2_nha2u"]
 [ext_resource type="PackedScene" uid="uid://3ygibl8hqg6g" path="res://scenes/static/world_boundary_wall.tscn" id="4_5rrdr"]
@@ -15,3 +16,6 @@ position = Vector2(1001, 914)
 position = Vector2(549, 82)
 
 [node name="WorldBoundaryWall" parent="." instance=ExtResource("4_5rrdr")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("2_3hbuu")]
+visible = false

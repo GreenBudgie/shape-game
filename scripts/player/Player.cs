@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Autoload;
 using Common;
 using Projectile.Player.DoubleBolt;
 
@@ -42,18 +43,12 @@ public partial class Player : CharacterBody2D
     public override void _Ready()
     {
         this.InitAttributes();
-        base._Ready();
+        PauseManager.Instance.GameUnpause += () => MoveMouseToWindowCenter();
     }
 
     public override void _Process(double delta)
     {
-        var windowCenter = new Vector2(
-            GetViewport().GetWindow().Size.X / 2.0f,
-            GetViewport().GetWindow().Size.Y / 2.0f
-        );
-        var mousePosition = GetViewport().GetMousePosition();
-        var mouseDelta = mousePosition - windowCenter;
-        GetViewport().WarpMouse(windowCenter);
+        var mouseDelta = MoveMouseToWindowCenter();
 
         var prevPosition = Position;
         Velocity = mouseDelta * (float)(1 / delta);
@@ -77,6 +72,22 @@ public partial class Player : CharacterBody2D
         {
             _primaryFireTimer -= (float)delta;
         }
+    }
+
+    private Vector2 GetWindowCenter()
+    {
+        return new Vector2(
+            GetViewportRect().Size.X / 2.0f,
+            GetViewportRect().Size.Y / 2.0f
+        );
+    }
+
+    private Vector2 MoveMouseToWindowCenter()
+    {
+        var windowCenter = GetWindowCenter();
+        var mousePosition = GetViewport().GetMousePosition();
+        GetViewport().WarpMouse(windowCenter);
+        return mousePosition - windowCenter;
     }
 
     private Vector2 GetNosePosition()
