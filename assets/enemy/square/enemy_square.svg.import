@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dt4a1myybfena"
-path="res://.godot/imported/double_bolt.png-60ed806c2f1ce6df8aadd89e5e9b6841.ctex"
+uid="uid://rkn8gog3yc5r"
+path="res://.godot/imported/enemy_square.svg-c3846c58ca7988ab0617a60ddcc60f5d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/projectile/player/double_bolt/double_bolt.png"
-dest_files=["res://.godot/imported/double_bolt.png-60ed806c2f1ce6df8aadd89e5e9b6841.ctex"]
+source_file="res://assets/enemy/square/enemy_square.svg"
+dest_files=["res://.godot/imported/enemy_square.svg-c3846c58ca7988ab0617a60ddcc60f5d.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

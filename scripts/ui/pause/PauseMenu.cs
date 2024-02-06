@@ -1,5 +1,7 @@
 using Autoload;
 
+namespace Ui.Pause;
+
 public partial class PauseMenu : Control
 {
     public override void _Ready()

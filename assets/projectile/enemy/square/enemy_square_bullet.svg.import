@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bv3r1vldbwr33"
-path="res://.godot/imported/enemy_square.png-3c9f6f5d41912b7690bced0f08e3ff47.ctex"
+uid="uid://d24gswro4lsan"
+path="res://.godot/imported/enemy_square_bullet.svg-2b95cfc7781f3960d653d2d602e770c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/enemy/square/enemy_square.png"
-dest_files=["res://.godot/imported/enemy_square.png-3c9f6f5d41912b7690bced0f08e3ff47.ctex"]
+source_file="res://assets/projectile/enemy/square/enemy_square_bullet.svg"
+dest_files=["res://.godot/imported/enemy_square_bullet.svg-2b95cfc7781f3960d653d2d602e770c1.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

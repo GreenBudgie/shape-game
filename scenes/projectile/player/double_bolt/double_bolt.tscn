@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bnh56fabyfl1o"]
 
 [ext_resource type="Script" path="res://scripts/projectile/player/double_bolt/DoubleBoltProjectile.cs" id="1_kyato"]
-[ext_resource type="Texture2D" uid="uid://dt4a1myybfena" path="res://assets/projectile/player/double_bolt/double_bolt.png" id="2_2ou01"]
+[ext_resource type="Texture2D" uid="uid://cwhmsgug12ak5" path="res://assets/projectile/player/double_bolt/double_bolt.svg" id="2_ovetf"]
 
 [node name="DoubleBolt" type="RigidBody2D"]
 collision_layer = 2
@@ -9,8 +9,8 @@ collision_mask = 62
 continuous_cd = 2
 script = ExtResource("1_kyato")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_2ou01")
+[node name="DoubleBoltSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_ovetf")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+[node name="DoubleBoltCollisionShape" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-10, 10, 0, -10, 10, 10)
