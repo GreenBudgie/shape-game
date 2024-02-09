@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://rkn8gog3yc5r"
-path="res://.godot/imported/enemy_square.svg-c3846c58ca7988ab0617a60ddcc60f5d.ctex"
+path="res://.godot/imported/enemy_square.svg-25ae6ab413b6fd018fea3d8c40098105.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/enemy/square/enemy_square.svg"
-dest_files=["res://.godot/imported/enemy_square.svg-c3846c58ca7988ab0617a60ddcc60f5d.ctex"]
+source_file="res://assets/enemies/square/enemy_square.svg"
+dest_files=["res://.godot/imported/enemy_square.svg-25ae6ab413b6fd018fea3d8c40098105.ctex"]
 
 [params]
 

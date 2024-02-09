@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://csitvuhpytc2q"]
+
+[ext_resource type="Script" path="res://scripts/inventory/InventoryManager.cs" id="1_bclat"]
+[ext_resource type="PackedScene" uid="uid://dilsv34jaqcrd" path="res://scenes/inventory/inventory_slot.tscn" id="1_qat6u"]
+[ext_resource type="Script" path="res://scripts/inventory/PlayerInventory.cs" id="2_sgwov"]
+[ext_resource type="PackedScene" uid="uid://dx0hqavkmt1bm" path="res://scenes/module/projectile/double_bolt_module.tscn" id="3_o6175"]
+
+[node name="InventoryManager" type="CanvasLayer"]
+script = ExtResource("1_bclat")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.196078)
+
+[node name="PlayerInventory" type="Control" parent="." node_paths=PackedStringArray("_slots")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_sgwov")
+_slots = []
+
+[node name="CenterContainer" type="CenterContainer" parent="PlayerInventory"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 32.0
+offset_bottom = 132.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayerInventory/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="InventorySlot1" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[node name="InventorySlot2" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[node name="DoubleBoltModule" parent="PlayerInventory/CenterContainer/HBoxContainer/InventorySlot2" instance=ExtResource("3_o6175")]
+layout_mode = 1
+
+[node name="InventorySlot3" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2

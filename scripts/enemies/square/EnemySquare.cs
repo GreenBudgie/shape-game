@@ -1,7 +1,7 @@
 ﻿using Common;
 using Projectile.Enemy.Square;
 
-namespace Enemy.Square;
+namespace Enemies.Square;
 
 public partial class EnemySquare : Enemy
 {

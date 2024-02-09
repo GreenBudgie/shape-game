@@ -3,7 +3,7 @@ using Autoload;
 using Common;
 using Projectile.Player.DoubleBolt;
 
-namespace Player;
+namespace Character;
 
 public partial class Player : CharacterBody2D
 {
@@ -13,6 +13,8 @@ public partial class Player : CharacterBody2D
     private const int CornerDistance = 28;
 
     private const float PrimaryFireDelay = 0.4f;
+
+    [Export] private InventoryManager _inventoryManager;
 
     /**
      * The player's tilt will never go above this value.
@@ -44,12 +46,17 @@ public partial class Player : CharacterBody2D
     {
         this.InitAttributes();
         PauseManager.Instance.GameUnpause += () => MoveMouseToWindowCenter();
+        _inventoryManager.InventoryClose += () => MoveMouseToWindowCenter();
     }
 
     public override void _Process(double delta)
     {
-        var mouseDelta = MoveMouseToWindowCenter();
-
+        var mouseDelta = Vector2.Zero;
+        if (!_inventoryManager.IsOpen())
+        {
+            mouseDelta = MoveMouseToWindowCenter();
+        }
+        
         var prevPosition = Position;
         Velocity = mouseDelta * (float)(1 / delta);
         MoveAndSlide();
@@ -63,7 +70,7 @@ public partial class Player : CharacterBody2D
             RotationDegrees = 0;
         }
 
-        if ((int)Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
+        if (!_inventoryManager.IsOpen() && (int)Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
         {
             PrimaryFire();
         }

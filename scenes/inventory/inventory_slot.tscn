@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dilsv34jaqcrd"]
+
+[ext_resource type="Texture2D" uid="uid://cf4c6eyv58ap2" path="res://assets/inventory/inventory_slot.svg" id="1_rxh7c"]
+[ext_resource type="Script" path="res://scripts/inventory/InventorySlot.cs" id="2_jj110"]
+
+[node name="InventorySlot" type="TextureRect"]
+texture = ExtResource("1_rxh7c")
+script = ExtResource("2_jj110")

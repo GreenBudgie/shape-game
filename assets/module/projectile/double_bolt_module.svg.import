@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfvjj4hp7274g"
-path="res://.godot/imported/player.svg-133be938949531406c9c3b8ef401778b.ctex"
+uid="uid://c270vg3jtsw5m"
+path="res://.godot/imported/double_bolt_module.svg-32f741dba598d65fb65525f09ebf37ea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/player/player.svg"
-dest_files=["res://.godot/imported/player.svg-133be938949531406c9c3b8ef401778b.ctex"]
+source_file="res://assets/module/projectile/double_bolt_module.svg"
+dest_files=["res://.godot/imported/double_bolt_module.svg-32f741dba598d65fb65525f09ebf37ea.ctex"]
 
 [params]
 
