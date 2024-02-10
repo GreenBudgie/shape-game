@@ -8,7 +8,7 @@
 [node name="InventoryManager" type="CanvasLayer"]
 script = ExtResource("1_bclat")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Overlay" type="ColorRect" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -24,7 +24,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_sgwov")
-_slots = []
+_slots = [NodePath("CenterContainer/HBoxContainer/InventorySlot1"), NodePath("CenterContainer/HBoxContainer/InventorySlot2"), NodePath("CenterContainer/HBoxContainer/InventorySlot3"), NodePath("CenterContainer/HBoxContainer/InventorySlot4"), NodePath("CenterContainer/HBoxContainer/InventorySlot5"), NodePath("CenterContainer/HBoxContainer/InventorySlot6"), NodePath("CenterContainer/HBoxContainer/InventorySlot7"), NodePath("CenterContainer/HBoxContainer/InventorySlot8"), NodePath("CenterContainer/HBoxContainer/InventorySlot9"), NodePath("CenterContainer/HBoxContainer/InventorySlot10")]
 
 [node name="CenterContainer" type="CenterContainer" parent="PlayerInventory"]
 layout_mode = 1
@@ -50,3 +50,26 @@ layout_mode = 1
 
 [node name="InventorySlot3" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+
+[node name="InventorySlot4" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[node name="InventorySlot5" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[node name="InventorySlot6" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[node name="InventorySlot7" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[node name="InventorySlot8" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[node name="InventorySlot9" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[node name="InventorySlot10" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
+layout_mode = 2
+
+[connection signal="InventorySlotInteraction" from="PlayerInventory" to="." method="_OnInventorySlotInteraction"]

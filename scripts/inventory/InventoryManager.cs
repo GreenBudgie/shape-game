@@ -8,13 +8,12 @@ namespace Inventory;
 
 public partial class InventoryManager : CanvasLayer
 {
-
     [Signal]
     public delegate void InventoryOpenEventHandler();
-    
+
     [Signal]
     public delegate void InventoryCloseEventHandler();
-    
+
     [Node] private PlayerInventory _playerInventory;
 
     private Module _moduleOnCursor;
@@ -51,25 +50,39 @@ public partial class InventoryManager : CanvasLayer
         {
             return;
         }
+
         Visible = true;
         foreach (var child in GetChildren())
         {
             child.SetProcess(true);
         }
+
         EmitSignal(SignalName.InventoryOpen);
     }
-    
+
     private void Close()
     {
         if (!IsOpen())
         {
             return;
         }
+
         Visible = false;
         foreach (var child in GetChildren())
         {
             child.SetProcess(false);
         }
+
         EmitSignal(SignalName.InventoryClose);
     }
+
+    public void _OnInventorySlotInteraction(
+        ModuleInventory inventory,
+        InventorySlot slot,
+        InputEventMouseButton inputEvent
+    )
+    {
+        GD.Print();
+    }
+    
 }
