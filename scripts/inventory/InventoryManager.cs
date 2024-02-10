@@ -2,6 +2,9 @@ using Godot;
 using System;
 using Common;
 using Inventory;
+using Modules;
+
+namespace Inventory;
 
 public partial class InventoryManager : CanvasLayer
 {
@@ -13,6 +16,8 @@ public partial class InventoryManager : CanvasLayer
     public delegate void InventoryCloseEventHandler();
     
     [Node] private PlayerInventory _playerInventory;
+
+    private Module _moduleOnCursor;
 
     public override void _Ready()
     {
@@ -42,6 +47,10 @@ public partial class InventoryManager : CanvasLayer
 
     private void Open()
     {
+        if (IsOpen())
+        {
+            return;
+        }
         Visible = true;
         foreach (var child in GetChildren())
         {
@@ -52,6 +61,10 @@ public partial class InventoryManager : CanvasLayer
     
     private void Close()
     {
+        if (!IsOpen())
+        {
+            return;
+        }
         Visible = false;
         foreach (var child in GetChildren())
         {

@@ -1,0 +1,16 @@
+[remap]
+
+importer="bitmap"
+type="BitMap"
+uid="uid://m56eiw6p8whm"
+path="res://.godot/imported/inventory_slot_mask.png-d040f40bcad7fbf8fb14b4f53fa803c5.res"
+
+[deps]
+
+source_file="res://assets/inventory/inventory_slot_mask.png"
+dest_files=["res://.godot/imported/inventory_slot_mask.png-d040f40bcad7fbf8fb14b4f53fa803c5.res"]
+
+[params]
+
+create_from=0
+threshold=0.5

@@ -1,9 +1,17 @@
-using Godot;
-using System;
 using Modules;
 
-public partial class InventorySlot : TextureRect
+namespace Inventory;
+
+public partial class InventorySlot : TextureButton
 {
+    
+    public override void _Process(double delta)
+    {
+        if (this.ButtonPressed)
+        {
+            return;
+        }
+    }
 
     public Module ReplaceModule(Module module)
     {

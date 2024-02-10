@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Autoload;
 using Common;
+using Inventory;
 using Projectile.Player.DoubleBolt;
 
 namespace Character;
