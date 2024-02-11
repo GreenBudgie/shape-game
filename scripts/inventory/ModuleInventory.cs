@@ -22,4 +22,9 @@ public partial class ModuleInventory : Control
         }
     }
 
+    public Array<InventorySlot> GetSlots()
+    {
+        return _slots;
+    }
+
 }

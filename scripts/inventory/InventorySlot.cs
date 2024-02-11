@@ -7,17 +7,13 @@ public partial class InventorySlot : TextureButton
 
     [Signal]
     public delegate void SlotInteractionEventHandler(InventorySlot slot, InputEventMouseButton inputEvent);
-    
-    public override void _Process(double delta)
-    {
-        if (this.ButtonPressed)
-        {
-            return;
-        }
-    }
 
-    public Module ReplaceModule(Module module)
+    public Module InsertModule(Module module)
     {
+        if (module == null)
+        {
+            RemoveModule();
+        } 
         var previousModule = RemoveModule();
         AddChild(module);
         return previousModule;
