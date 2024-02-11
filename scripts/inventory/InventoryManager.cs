@@ -1,10 +1,6 @@
-using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common;
-using Inventory;
-using Modules;
 
 namespace Inventory;
 
@@ -19,7 +15,7 @@ public partial class InventoryManager : CanvasLayer
     [Node] private PlayerInventory _playerInventory;
 
     private InventorySlot _dragAndDropFrom;
-    private List<InventorySlot> _slots = new();
+    private readonly List<InventorySlot> _slots = new();
 
     public override void _Ready()
     {

@@ -5,9 +5,6 @@ namespace Inventory;
 public partial class InventorySlot : TextureButton
 {
 
-    [Signal]
-    public delegate void SlotInteractionEventHandler(InventorySlot slot, InputEventMouseButton inputEvent);
-
     public Module InsertModule(Module module)
     {
         if (module == null)
@@ -40,13 +37,4 @@ public partial class InventorySlot : TextureButton
         return GetModule() != null;
     }
 
-    public override void _GuiInput(InputEvent inputEvent)
-    {
-        if (inputEvent is not InputEventMouseButton mouseButtonEvent)
-        {
-            return;
-        }
-
-        EmitSignal(SignalName.SlotInteraction, this, mouseButtonEvent);
-    }
 }
