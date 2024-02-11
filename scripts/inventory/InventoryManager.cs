@@ -13,17 +13,23 @@ public partial class InventoryManager : CanvasLayer
     public delegate void InventoryCloseEventHandler();
 
     [Node] private PlayerInventory _playerInventory;
+    [Node] private BlasterInventory _leftBlasterInventory;
+    [Node] private BlasterInventory _rightBlasterInventory;
 
     private InventorySlot _dragAndDropFrom;
-    private readonly List<InventorySlot> _slots = new();
+    private List<InventorySlot> _slots;
+    private List<ModuleInventory> _inventories;
 
     public override void _Ready()
     {
         this.InitAttributes();
-        foreach (var inventorySlot in _playerInventory.GetSlots())
+        _inventories = new List<ModuleInventory>
         {
-            _slots.Add(inventorySlot);
-        }
+            _playerInventory,
+            _leftBlasterInventory,
+            _rightBlasterInventory
+        };
+        _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 
         Close();
     }

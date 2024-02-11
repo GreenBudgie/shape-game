@@ -17,15 +17,12 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.196078)
 
-[node name="PlayerInventory" type="Control" parent="." node_paths=PackedStringArray("_slots")]
+[node name="PlayerInventory" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 15
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
 grow_horizontal = 2
-grow_vertical = 2
 script = ExtResource("2_sgwov")
-_slots = [NodePath("CenterContainer/HBoxContainer/InventorySlot1"), NodePath("CenterContainer/HBoxContainer/InventorySlot2"), NodePath("CenterContainer/HBoxContainer/InventorySlot3"), NodePath("CenterContainer/HBoxContainer/InventorySlot4"), NodePath("CenterContainer/HBoxContainer/InventorySlot5"), NodePath("CenterContainer/HBoxContainer/InventorySlot6"), NodePath("CenterContainer/HBoxContainer/InventorySlot7"), NodePath("CenterContainer/HBoxContainer/InventorySlot8"), NodePath("CenterContainer/HBoxContainer/InventorySlot9"), NodePath("CenterContainer/HBoxContainer/InventorySlot10")]
 
 [node name="CenterContainer" type="CenterContainer" parent="PlayerInventory"]
 layout_mode = 1
@@ -73,102 +70,101 @@ layout_mode = 2
 [node name="InventorySlot10" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
 
-[node name="LeftBlasterInventory" type="Control" parent="." node_paths=PackedStringArray("_slots")]
+[node name="LeftBlasterInventory" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
 grow_vertical = 2
 script = ExtResource("5_a1ldh")
-_slots = []
 
 [node name="InventorySlot1" parent="LeftBlasterInventory" instance=ExtResource("1_qat6u")]
-layout_mode = 0
+layout_mode = 2
 offset_left = 610.0
-offset_top = 261.0
+offset_top = -255.0
 offset_right = 698.0
-offset_bottom = 361.0
+offset_bottom = -155.0
 
 [node name="InventorySlot2" parent="LeftBlasterInventory" instance=ExtResource("1_qat6u")]
-layout_mode = 0
+layout_mode = 2
 offset_left = 661.0
-offset_top = 346.0
+offset_top = -170.0
 offset_right = 749.0
-offset_bottom = 446.0
+offset_bottom = -70.0
 
 [node name="InventorySlot3" parent="LeftBlasterInventory" instance=ExtResource("1_qat6u")]
-layout_mode = 0
+layout_mode = 2
 offset_left = 610.0
-offset_top = 431.0
+offset_top = -85.0
 offset_right = 698.0
-offset_bottom = 531.0
+offset_bottom = 15.0
 
 [node name="InventorySlot4" parent="LeftBlasterInventory" instance=ExtResource("1_qat6u")]
-layout_mode = 0
+layout_mode = 2
 offset_left = 661.0
-offset_top = 516.0
 offset_right = 749.0
-offset_bottom = 616.0
+offset_bottom = 100.0
 
 [node name="InventorySlot5" parent="LeftBlasterInventory" instance=ExtResource("1_qat6u")]
+layout_mode = 2
 offset_left = 610.0
-offset_top = 601.0
+offset_top = 85.0
 offset_right = 698.0
-offset_bottom = 701.0
+offset_bottom = 185.0
 
 [node name="InventorySlot6" parent="LeftBlasterInventory" instance=ExtResource("1_qat6u")]
+layout_mode = 2
 offset_left = 661.0
-offset_top = 686.0
+offset_top = 170.0
 offset_right = 749.0
-offset_bottom = 786.0
+offset_bottom = 270.0
 
-[node name="RightBlasterInventory" type="Control" parent="." node_paths=PackedStringArray("_slots")]
+[node name="RightBlasterInventory" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 15
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
+anchor_bottom = 0.5
+grow_horizontal = 0
 grow_vertical = 2
 script = ExtResource("5_a1ldh")
-_slots = []
 
 [node name="InventorySlot1" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
 layout_mode = 0
-offset_left = 1222.0
-offset_top = 261.0
-offset_right = 1310.0
-offset_bottom = 361.0
+offset_left = -723.0
+offset_top = -255.0
+offset_right = -635.0
+offset_bottom = -155.0
 
 [node name="InventorySlot2" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
 layout_mode = 0
-offset_left = 1171.0
-offset_top = 346.0
-offset_right = 1259.0
-offset_bottom = 446.0
+offset_left = -774.0
+offset_top = -170.0
+offset_right = -686.0
+offset_bottom = -70.0
 
 [node name="InventorySlot3" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
 layout_mode = 0
-offset_left = 1222.0
-offset_top = 431.0
-offset_right = 1310.0
-offset_bottom = 531.0
+offset_left = -723.0
+offset_top = -85.0
+offset_right = -635.0
+offset_bottom = 15.0
 
 [node name="InventorySlot4" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
 layout_mode = 0
-offset_left = 1171.0
-offset_top = 516.0
-offset_right = 1259.0
-offset_bottom = 616.0
+offset_left = -774.0
+offset_right = -686.0
+offset_bottom = 100.0
 
 [node name="InventorySlot5" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
-offset_left = 1222.0
-offset_top = 601.0
-offset_right = 1310.0
-offset_bottom = 701.0
+offset_left = -723.0
+offset_top = 85.0
+offset_right = -635.0
+offset_bottom = 185.0
 
 [node name="InventorySlot6" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
-offset_left = 1171.0
-offset_top = 686.0
-offset_right = 1259.0
-offset_bottom = 786.0
+offset_left = -774.0
+offset_top = 170.0
+offset_right = -686.0
+offset_bottom = 270.0
