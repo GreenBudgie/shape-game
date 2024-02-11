@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using Inventory;
 using Modules;
@@ -17,7 +18,7 @@ public partial class InventoryManager : CanvasLayer
 
     [Node] private PlayerInventory _playerInventory;
 
-    private DragAndDropState? _dragAndDropState;
+    private InventorySlot _dragAndDropFrom;
     private List<InventorySlot> _slots = new();
 
     public override void _Ready()
@@ -33,6 +34,17 @@ public partial class InventoryManager : CanvasLayer
 
     public override void _Process(double delta)
     {
+        HandleInventoryOpenAndClose();
+        HandleDragAndDrop();
+    }
+
+    public bool IsOpen()
+    {
+        return Visible;
+    }
+
+    private void HandleInventoryOpenAndClose()
+    {
         if (Input.IsActionJustPressed("inventory"))
         {
             if (IsOpen())
@@ -44,62 +56,64 @@ public partial class InventoryManager : CanvasLayer
                 Open();
             }
         }
+    }
 
+    private bool IsDragAndDropActive()
+    {
+        return _dragAndDropFrom != null;
+    }
+
+    private void HandleDragAndDrop()
+    {
         var leftPressed = Input.IsActionJustPressed("inventory_left_click");
         var leftReleased = Input.IsActionJustReleased("inventory_left_click");
         var leftReleaseHandled = false;
-        foreach (var inventorySlot in _slots)
+        var hoveredSlots = _slots.Where(slot => slot.IsHovered());
+        foreach (var slot in hoveredSlots)
         {
-            if (!inventorySlot.IsHovered())
-            {
-                continue;
-            }
-
             if (leftPressed)
             {
-                var module = inventorySlot.GetModule();
-                if (module == null)
-                {
-                    break;
-                }
-                _dragAndDropState = new DragAndDropState(
-                    GetViewport().GetMousePosition(),
-                    module,
-                    inventorySlot
-                );
-                module.StartFollowingCursor();
+                StartDragAndDropFromSlot(slot);
                 break;
             }
 
-            if (leftReleased && _dragAndDropState.HasValue)
+            if (leftReleased && IsDragAndDropActive())
             {
                 leftReleaseHandled = true;
-                var dragAndDrop = _dragAndDropState.Value;
-                _dragAndDropState = null;
-                dragAndDrop.ModuleOnCursor.StopFollowingCursor();
-                if (dragAndDrop.DragFrom == inventorySlot)
-                {
-                    break;
-                }
-
-                var draggedModule = dragAndDrop.DragFrom.RemoveModule();
-                inventorySlot.InsertModule(draggedModule);
+                StopDragAndDropSwappingModulesWithSlot(slot);
             }
-
-            break;
         }
 
-        if (leftReleased && _dragAndDropState.HasValue && !leftReleaseHandled)
+        if (leftReleased && IsDragAndDropActive() && !leftReleaseHandled)
         {
-            var dragAndDrop = _dragAndDropState.Value;
-            dragAndDrop.ModuleOnCursor.StopFollowingCursor();
-            _dragAndDropState = null;
+            _dragAndDropFrom.GetModule().StopFollowingCursor();
+            _dragAndDropFrom = null;
         }
     }
 
-    public bool IsOpen()
+    private void StartDragAndDropFromSlot(InventorySlot slot)
     {
-        return Visible;
+        var module = slot.GetModule();
+        if (module == null)
+        {
+            return;
+        }
+
+        _dragAndDropFrom = slot;
+        module.StartFollowingCursor();
+    }
+
+    private void StopDragAndDropSwappingModulesWithSlot(InventorySlot slot)
+    {
+        _dragAndDropFrom.GetModule().StopFollowingCursor();
+        if (_dragAndDropFrom == slot)
+        {
+            return;
+        }
+
+        var draggedModule = _dragAndDropFrom.RemoveModule();
+        slot.InsertModule(draggedModule);
+        _dragAndDropFrom = null;
     }
 
     private void Open()
