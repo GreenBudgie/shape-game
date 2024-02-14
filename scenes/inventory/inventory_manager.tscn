@@ -158,12 +158,14 @@ offset_right = -686.0
 offset_bottom = 100.0
 
 [node name="InventorySlot5" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
+layout_mode = 0
 offset_left = -723.0
 offset_top = 85.0
 offset_right = -635.0
 offset_bottom = 185.0
 
 [node name="InventorySlot6" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
+layout_mode = 0
 offset_left = -774.0
 offset_top = 170.0
 offset_right = -686.0
