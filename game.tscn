@@ -1,0 +1,26 @@
+[gd_scene load_steps=7 format=3 uid="uid://snfu2b1ifqye"]
+
+[ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://Game.cs" id="1_ryrav"]
+[ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
+[ext_resource type="PackedScene" uid="uid://csm3f5807x7i8" path="res://enemies/square/enemy_square.tscn" id="3_j5wjh"]
+[ext_resource type="PackedScene" uid="uid://3ygibl8hqg6g" path="res://environment/wall/world_boundary_wall.tscn" id="4_vef74"]
+[ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
+[ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_ryrav")
+
+[node name="Player" parent="." node_paths=PackedStringArray("_inventoryManager") instance=ExtResource("2_eow3j")]
+position = Vector2(1001, 914)
+_inventoryManager = NodePath("../InventoryManager")
+
+[node name="EnemySquare" parent="." instance=ExtResource("3_j5wjh")]
+position = Vector2(549, 82)
+
+[node name="WorldBoundaryWall" parent="." instance=ExtResource("4_vef74")]
+
+[node name="InventoryManager" parent="." instance=ExtResource("5_hve3p")]
+visible = false
+
+[node name="PauseMenu" parent="." instance=ExtResource("6_mfdv2")]
+visible = false

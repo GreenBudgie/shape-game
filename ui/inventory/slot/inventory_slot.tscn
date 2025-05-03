@@ -1,0 +1,15 @@
+[gd_scene load_steps=6 format=3 uid="uid://dilsv34jaqcrd"]
+
+[ext_resource type="Texture2D" uid="uid://cf4c6eyv58ap2" path="res://ui/inventory/slot/inventory_slot.svg" id="1_rxh7c"]
+[ext_resource type="Texture2D" uid="uid://bcutsw518ntfs" path="res://ui/inventory/slot/inventory_slot_pressed.svg" id="2_4cmyr"]
+[ext_resource type="Script" uid="uid://cd0jwii5a4nej" path="res://ui/inventory/slot/InventorySlot.cs" id="2_jj110"]
+[ext_resource type="Texture2D" uid="uid://c8l3267h4t8fr" path="res://ui/inventory/slot/inventory_slot_hovered.svg" id="2_tkkp1"]
+[ext_resource type="BitMap" uid="uid://m56eiw6p8whm" path="res://ui/inventory/slot/inventory_slot_mask.png" id="3_wh3me"]
+
+[node name="InventorySlot" type="TextureButton"]
+keep_pressed_outside = true
+texture_normal = ExtResource("1_rxh7c")
+texture_pressed = ExtResource("2_4cmyr")
+texture_hover = ExtResource("2_tkkp1")
+texture_click_mask = ExtResource("3_wh3me")
+script = ExtResource("2_jj110")

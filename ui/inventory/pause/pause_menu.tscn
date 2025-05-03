@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://b063yya1e0eik"]
+
+[ext_resource type="Script" uid="uid://2r7mf4adiy1f" path="res://ui/inventory/pause/PauseMenu.cs" id="1_42uaq"]
+
+[node name="PauseMenu" type="Control"]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_42uaq")
+
+[node name="ResumeButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 609.0
+offset_top = 128.0
+offset_right = 1316.0
+offset_bottom = 373.0
+text = "Resume"
+
+[node name="QuitButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 593.0
+offset_top = 563.0
+offset_right = 1335.0
+offset_bottom = 807.0
+text = "Quit"
+
+[connection signal="pressed" from="ResumeButton" to="." method="OnResume"]
+[connection signal="pressed" from="QuitButton" to="." method="OnQuit"]

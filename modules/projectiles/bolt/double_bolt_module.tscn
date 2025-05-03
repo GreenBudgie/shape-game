@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://dx0hqavkmt1bm"]
+
+[ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://modules/Module.cs" id="1_66m1q"]
+[ext_resource type="Texture2D" uid="uid://c586ib15dg5ax" path="res://modules/projectiles/bolt/projectile_module_frame.svg" id="1_yoc70"]
+[ext_resource type="Texture2D" uid="uid://c270vg3jtsw5m" path="res://modules/projectiles/bolt/double_bolt_module.svg" id="3_yr6dg"]
+
+[node name="DoubleBoltModule" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_66m1q")
+
+[node name="ModuleFrame" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_yoc70")
+stretch_mode = 3
+
+[node name="ModuleTexture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_yr6dg")
+stretch_mode = 3
