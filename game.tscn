@@ -1,11 +1,23 @@
-[gd_scene load_steps=7 format=3 uid="uid://snfu2b1ifqye"]
+[gd_scene load_steps=11 format=3 uid="uid://snfu2b1ifqye"]
 
-[ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://Game.cs" id="1_ryrav"]
+[ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
 [ext_resource type="PackedScene" uid="uid://csm3f5807x7i8" path="res://enemies/square/enemy_square.tscn" id="3_j5wjh"]
-[ext_resource type="PackedScene" uid="uid://3ygibl8hqg6g" path="res://environment/wall/world_boundary_wall.tscn" id="4_vef74"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
+[ext_resource type="PackedScene" uid="uid://bkdy1r0hmunja" path="res://ui/stats/stats_panel.tscn" id="6_eow3j"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
+size = Vector2(256, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0lhi4"]
+size = Vector2(256, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k07pp"]
+size = Vector2(2176, 256)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jkk55"]
+size = Vector2(2176, 264)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_ryrav")
@@ -17,10 +29,30 @@ _inventoryManager = NodePath("../InventoryManager")
 [node name="EnemySquare" parent="." instance=ExtResource("3_j5wjh")]
 position = Vector2(549, 82)
 
-[node name="WorldBoundaryWall" parent="." instance=ExtResource("4_vef74")]
-
 [node name="InventoryManager" parent="." instance=ExtResource("5_hve3p")]
 visible = false
+
+[node name="WorldBoundaryWall" type="StaticBody2D" parent="."]
+collision_layer = 32
+collision_mask = 0
+
+[node name="LeftWall" type="CollisionShape2D" parent="WorldBoundaryWall"]
+position = Vector2(128, 540)
+shape = SubResource("RectangleShape2D_87y3e")
+
+[node name="RightWall" type="CollisionShape2D" parent="WorldBoundaryWall"]
+position = Vector2(2048, 540)
+shape = SubResource("RectangleShape2D_0lhi4")
+
+[node name="TopWall" type="CollisionShape2D" parent="WorldBoundaryWall"]
+position = Vector2(1088, -128)
+shape = SubResource("RectangleShape2D_k07pp")
+
+[node name="BottomWall" type="CollisionShape2D" parent="WorldBoundaryWall"]
+position = Vector2(1088, 1212)
+shape = SubResource("RectangleShape2D_jkk55")
+
+[node name="StatsPanel" parent="." instance=ExtResource("6_eow3j")]
 
 [node name="PauseMenu" parent="." instance=ExtResource("6_mfdv2")]
 visible = false

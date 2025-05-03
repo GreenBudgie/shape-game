@@ -1,4 +1,4 @@
-﻿public abstract partial class Enemy : CharacterBody2D
+﻿public abstract partial class Enemy : RigidBody2D
 {
 
 
