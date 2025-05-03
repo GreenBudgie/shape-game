@@ -1,6 +1,4 @@
-﻿namespace Autoload;
-
-public partial class PauseManager : Node
+﻿public partial class PauseManager : Node
 {
     
     [Signal]

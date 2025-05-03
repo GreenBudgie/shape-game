@@ -1,6 +1,4 @@
-﻿namespace Inventory;
-
-public partial class PlayerInventory : ModuleInventory
+﻿public partial class PlayerInventory : ModuleInventory
 {
     
     

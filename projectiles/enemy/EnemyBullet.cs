@@ -1,6 +1,4 @@
-﻿namespace Projectile.Enemy;
-
-public abstract partial class EnemyBullet : Projectile
+﻿public abstract partial class EnemyBullet : Projectile
 {
     
 }

@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Common;
-
-namespace Inventory;
 
 public partial class InventoryManager : CanvasLayer
 {

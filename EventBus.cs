@@ -1,6 +1,4 @@
-﻿namespace Autoload;
-
-public partial class EventBus : Node
+﻿public partial class EventBus : Node
 {
 
     public static EventBus Instance { get; private set; }

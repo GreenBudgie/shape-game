@@ -1,5 +1,3 @@
-namespace Projectile.Player.DoubleBolt;
-
 public partial class DoubleBoltProjectile : Projectile
 {
     

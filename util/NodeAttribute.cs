@@ -1,7 +1,5 @@
 ﻿using System;
 
-namespace Common;
-
 /// <summary>
 /// Allows to get the specified child node without calling <see cref="Node.GetChild"/>.
 /// Providing node name in constructor is not required if it can be inferred from the field name.

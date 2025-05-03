@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Common;
-
 public static class Node2DExtension
 {
 

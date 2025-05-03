@@ -1,14 +1,8 @@
-﻿using Common;
-using Projectile.Enemy.Square;
-
-namespace Enemies.Square;
-
-public partial class EnemySquare : Enemy
+﻿public partial class EnemySquare : Enemy
 {
 
-    private static readonly PackedScene BulletScene = 
-        GD.Load<PackedScene>("res://scenes/projectile/enemy/square/enemy_square_bullet.tscn");
-    
+    private static readonly PackedScene BulletScene = GD.Load<PackedScene>("uid://bhj8dgeytmpxx");
+
     private const double FireDelay = 1;
 
     private double _fireTimer = FireDelay;

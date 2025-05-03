@@ -1,7 +1,5 @@
 using Modules;
 
-namespace Inventory;
-
 public partial class InventorySlot : TextureButton
 {
 

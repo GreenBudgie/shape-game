@@ -1,7 +1,5 @@
 ﻿using Godot.Collections;
 
-namespace Inventory;
-
 public partial class ModuleInventory : Control
 {
     private Array<InventorySlot> _slots;

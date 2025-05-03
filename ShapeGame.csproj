@@ -4,6 +4,8 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="scripts\ui\pause\" />
+    <None Include="**/*.tscn" />
+    <None Include="**/*.tres" />
+    <None Include="**/*.uid" />
   </ItemGroup>
 </Project>

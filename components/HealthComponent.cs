@@ -1,7 +1,5 @@
 ﻿using System;
 
-namespace Component;
-
 public partial class HealthComponent : Node
 {
 

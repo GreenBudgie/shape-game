@@ -1,6 +1,4 @@
-﻿namespace Inventory;
-
-public partial class BlasterInventory : ModuleInventory
+﻿public partial class BlasterInventory : ModuleInventory
 {
     
     

@@ -1,15 +1,8 @@
 using System.Collections.Generic;
-using Autoload;
-using Common;
-using Inventory;
-using Projectile.Player.DoubleBolt;
-
-namespace Character;
 
 public partial class Player : CharacterBody2D
 {
-    private static readonly PackedScene DoubleBoltProjectileScene =
-        GD.Load<PackedScene>("res://scenes/projectile/player/double_bolt/double_bolt.tscn");
+    private static readonly PackedScene DoubleBoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
 
     private const int CornerDistance = 28;
 
