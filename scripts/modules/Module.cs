@@ -4,7 +4,7 @@ public partial class Module : Control
 {
 
     private Vector2 _initialCursorPosition;
-    private bool _isFollowingCursor = false;
+    private bool _isFollowingCursor;
 
     public override void _Process(double delta)
     {

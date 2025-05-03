@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://snfu2b1ifqye"]
 
-[ext_resource type="Script" path="res://scripts/Game.cs" id="1_l1nem"]
+[ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://scripts/Game.cs" id="1_l1nem"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://scenes/ui/pause/pause_menu.tscn" id="2_3hbuu"]
 [ext_resource type="PackedScene" uid="uid://csm3f5807x7i8" path="res://scenes/enemies/square/enemy_square.tscn" id="2_aj0bp"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://scenes/character/player.tscn" id="2_nha2u"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bnh56fabyfl1o"]
 
-[ext_resource type="Script" path="res://scripts/projectile/player/double_bolt/DoubleBoltProjectile.cs" id="1_kyato"]
+[ext_resource type="Script" uid="uid://ccp5pyqi3g16e" path="res://scripts/projectile/player/double_bolt/DoubleBoltProjectile.cs" id="1_kyato"]
 [ext_resource type="Texture2D" uid="uid://cwhmsgug12ak5" path="res://assets/projectile/player/double_bolt/double_bolt.svg" id="2_ovetf"]
 
 [node name="DoubleBolt" type="RigidBody2D"]

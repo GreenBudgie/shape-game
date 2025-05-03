@@ -13,8 +13,6 @@ public partial class EnemySquare : Enemy
 
     private double _fireTimer = FireDelay;
 
-    public override float GetMaxHealth() => 10;
-
     public override void _Ready()
     {
         this.InitAttributes();

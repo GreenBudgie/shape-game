@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://csitvuhpytc2q"]
 
-[ext_resource type="Script" path="res://scripts/inventory/InventoryManager.cs" id="1_bclat"]
+[ext_resource type="Script" uid="uid://b63f61tf6hqig" path="res://scripts/inventory/InventoryManager.cs" id="1_bclat"]
 [ext_resource type="PackedScene" uid="uid://dilsv34jaqcrd" path="res://scenes/inventory/inventory_slot.tscn" id="1_qat6u"]
-[ext_resource type="Script" path="res://scripts/inventory/PlayerInventory.cs" id="2_sgwov"]
+[ext_resource type="Script" uid="uid://uk0cdv5oks15" path="res://scripts/inventory/PlayerInventory.cs" id="2_sgwov"]
 [ext_resource type="PackedScene" uid="uid://dx0hqavkmt1bm" path="res://scenes/module/projectile/double_bolt_module.tscn" id="3_o6175"]
-[ext_resource type="Script" path="res://scripts/inventory/BlasterInventory.cs" id="5_a1ldh"]
+[ext_resource type="Script" uid="uid://ccs8ycrls12u5" path="res://scripts/inventory/BlasterInventory.cs" id="5_a1ldh"]
 
 [node name="InventoryManager" type="CanvasLayer"]
 script = ExtResource("1_bclat")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bhj8dgeytmpxx"]
 
-[ext_resource type="Script" path="res://scripts/projectile/enemy/square/EnemySquareBullet.cs" id="1_rnsup"]
+[ext_resource type="Script" uid="uid://r5s6weechulc" path="res://scripts/projectile/enemy/square/EnemySquareBullet.cs" id="1_rnsup"]
 [ext_resource type="Texture2D" uid="uid://d24gswro4lsan" path="res://assets/projectile/enemy/square/enemy_square_bullet.svg" id="2_fc4st"]
 
 [node name="EnemySquareBullet" type="RigidBody2D"]
