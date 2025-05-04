@@ -8,6 +8,8 @@ public partial class Player : CharacterBody2D
 
     private const float PrimaryFireDelay = 0.4f;
 
+    public static Player Instance { get; private set; } = null!; 
+
     [Export] private InventoryManager _inventoryManager;
 
     /**
@@ -35,6 +37,11 @@ public partial class Player : CharacterBody2D
     private double _rotationDegreesEpsilon = 0.3;
 
     private float _primaryFireTimer;
+
+    public override void _EnterTree()
+    {
+        Instance = this;
+    }
 
     public override void _Ready()
     {

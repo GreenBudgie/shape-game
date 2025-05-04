@@ -5,20 +5,18 @@
 
 [sub_resource type="Curve2D" id="Curve2D_uovvh"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 216, 200, 0, 0, 0, 0, 455, 8, 0, 0, 0, 0, 661, 208, 0, 0, 0, 0, 911, 24, 0, 0, 0, 0, 1183, 230, 0, 0, 0, 0, 1467, 24)
+"points": PackedVector2Array(0, 0, 100, 0, 0, 0, -100, 0, 100, 0, 200, 200, -100, 0, 100, 0, 400, 0, -100, 0, 100, 0, 600, 200, -100, 0, 100, 0, 800, 0, -100, 0, 100, 0, 1000, 200, -100, 0, 100, 0, 1200, 0, -100, 0, 0, 0, 1400, 200)
 }
-point_count = 7
+point_count = 8
 
 [node name="EnemySquarePath" type="Path2D"]
-position = Vector2(356, 132)
 curve = SubResource("Curve2D_uovvh")
 script = ExtResource("1_2oug8")
 
 [node name="PathPoint" type="PathFollow2D" parent="."]
-position = Vector2(0, -2)
-rotation = 0.751918
 
 [node name="Sprite2D" type="Sprite2D" parent="PathPoint"]
+visible = false
 position = Vector2(0.683041, 0.730381)
 scale = Vector2(0.133725, 0.133725)
 texture = ExtResource("2_4vw0a")

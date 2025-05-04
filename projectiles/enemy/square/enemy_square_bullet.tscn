@@ -7,6 +7,8 @@
 collision_layer = 8
 collision_mask = 59
 continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 1
 script = ExtResource("1_rnsup")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

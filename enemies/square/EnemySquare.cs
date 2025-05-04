@@ -15,13 +15,12 @@
         _path = PathScene.Instantiate<EnemySquarePath>();
         ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, _path);
     }
-
+    
     public override void _Process(double delta)
     {
         var direction = GlobalPosition.DirectionTo(_path.PathPoint.GlobalPosition);
         var distance = GlobalPosition.DistanceTo(_path.PathPoint.GlobalPosition);
-        var followSpeed = distance * 10;
-        ApplyCentralForce(direction * followSpeed);
+        ApplyCentralForce(direction * distance * 20);
         
         if (_fireTimer <= 0)
         {
