@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://b1ehfaspqd28s"]
+[gd_scene load_steps=3 format=3 uid="uid://b1ehfaspqd28s"]
 
 [ext_resource type="Script" uid="uid://bkayfvj4brytk" path="res://enemies/square/EnemySquarePath.cs" id="1_2oug8"]
-[ext_resource type="Texture2D" uid="uid://bgjjpekhwu1c5" path="res://icon.svg" id="2_4vw0a"]
 
 [sub_resource type="Curve2D" id="Curve2D_uovvh"]
 _data = {
@@ -14,9 +13,3 @@ curve = SubResource("Curve2D_uovvh")
 script = ExtResource("1_2oug8")
 
 [node name="PathPoint" type="PathFollow2D" parent="."]
-
-[node name="Sprite2D" type="Sprite2D" parent="PathPoint"]
-visible = false
-position = Vector2(0.683041, 0.730381)
-scale = Vector2(0.133725, 0.133725)
-texture = ExtResource("2_4vw0a")

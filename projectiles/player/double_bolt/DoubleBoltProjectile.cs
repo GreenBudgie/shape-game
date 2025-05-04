@@ -13,6 +13,11 @@ public partial class DoubleBoltProjectile : Projectile
 
     private void HandleBodyEntered(Node body)
     {
+        if (body is not Enemy enemy)
+        {
+            return;
+        }
+        
         QueueFree();
     }
     
