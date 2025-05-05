@@ -2,13 +2,13 @@ using System.Collections.Generic;
 
 public partial class Player : CharacterBody2D
 {
-    private static readonly PackedScene DoubleBoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
+    private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
 
     private const int CornerDistance = 28;
 
     private const float PrimaryFireDelay = 0.4f;
 
-    public static Player Instance { get; private set; } = null!; 
+    public static Player Instance { get; private set; } = null!;
 
     [Export] private InventoryManager _inventoryManager;
 
@@ -57,7 +57,7 @@ public partial class Player : CharacterBody2D
         {
             mouseDelta = MoveMouseToWindowCenter();
         }
-        
+
         var prevPosition = Position;
         Velocity = mouseDelta * (float)(1 / delta);
         MoveAndSlide();
@@ -115,18 +115,11 @@ public partial class Player : CharacterBody2D
 
     private void PrimaryFire()
     {
-        var leftBolt = DoubleBoltProjectileScene.Instantiate<DoubleBoltProjectile>();
-        var rightBolt = DoubleBoltProjectileScene.Instantiate<DoubleBoltProjectile>();
-        leftBolt.Position = GetLeftCornerPosition();
-        rightBolt.Position = GetRightCornerPosition();
-        var bolts = new List<DoubleBoltProjectile> { leftBolt, rightBolt };
-        foreach (var bolt in bolts)
-        {
-            bolt.Rotation = Rotation;
-            var moveVector = new Vector2(0, -3000).Rotated(Rotation);
-            bolt.ApplyCentralImpulse(moveVector);
-            GetParent().AddChild(bolt);
-            _primaryFireTimer = PrimaryFireDelay;
-        }
+        var bolt = BoltProjectileScene.Instantiate<BoltProjectile>();
+        bolt.Position = GetNosePosition();
+        var moveVector = new Vector2(0, -200).Rotated(Rotation);
+        bolt.ApplyCentralImpulse(moveVector);
+        GetParent().AddChild(bolt);
+        _primaryFireTimer = PrimaryFireDelay;
     }
 }

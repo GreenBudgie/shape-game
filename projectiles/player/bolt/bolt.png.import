@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwhmsgug12ak5"
-path="res://.godot/imported/double_bolt.svg-5cd9fbcbfee5c473c944a10cf87c3127.ctex"
+uid="uid://gyt2vkpslpp3"
+path="res://.godot/imported/bolt.png-d9f563f3f18298e0a9e8e3fc8103cf00.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://projectiles/player/double_bolt/double_bolt.svg"
-dest_files=["res://.godot/imported/double_bolt.svg-5cd9fbcbfee5c473c944a10cf87c3127.ctex"]
+source_file="res://projectiles/player/bolt/bolt.png"
+dest_files=["res://.godot/imported/bolt.png-d9f563f3f18298e0a9e8e3fc8103cf00.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
