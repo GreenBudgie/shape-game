@@ -35,8 +35,17 @@
 
     private void Fire()
     {
-        var bullet = BulletScene.Instantiate<EnemySquareBullet>();
-        bullet.Position = Position;
-        GetParent().AddChild(bullet);
+        var bullet = BulletScene.Instantiate<EnemySquareProjectile>();
+        ShapeGame.Instance.AddChild(bullet);
+        bullet.GlobalPosition = GlobalPosition;
+        var randomStrength = (float)GD.RandRange(2f, 3f);
+        var velocityLength = LinearVelocity.Length();
+        var impulse = Vector2.Down * velocityLength * 0.5f - LinearVelocity * randomStrength;
+        bullet.ApplyCentralImpulse(impulse);
+        bullet.ApplyTorqueImpulse(velocityLength * 0.005f);
+        
+        var randomOffset = new Vector2((float)GD.RandRange(-3f, 3f), (float)GD.RandRange(-3f, 3f));
+
+        ApplyImpulse(-impulse * 0.3f, randomOffset);
     }
 }

@@ -12,7 +12,7 @@ public static class CollisionObjectUtils
 
         foreach (var rect in collisionObject.GetCollisionRects())
         {
-            if (rect.Position.Y < playableAreaTop)
+            if (rect.End.Y >= playableAreaTop)
             {
                 return false;
             }
@@ -31,7 +31,7 @@ public static class CollisionObjectUtils
 
         foreach (var rect in collisionObject.GetCollisionRects())
         {
-            if (rect.End.Y <= playableAreaBottom)
+            if (rect.Position.Y <= playableAreaBottom)
             {
                 return false;
             }

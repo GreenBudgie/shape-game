@@ -1,6 +1,6 @@
-﻿public abstract partial class EnemyBullet : RigidBody2D
+﻿public partial class EnemySquareProjectile : RigidBody2D
 {
-    
+
     public override void _Ready()
     {
         BodyEntered += HandleBodyEntered;
@@ -8,7 +8,7 @@
 
     public override void _Process(double delta)
     {
-        if (this.IsOutsidePlayableArea())
+        if (this.IsBelowPlayableArea())
         {
             QueueFree();
         }
@@ -16,7 +16,13 @@
     
     private void HandleBodyEntered(Node body)
     {
+        if (body is not Player)
+        {
+            return;
+        }
+        
         QueueFree();
     }
+    
     
 }
