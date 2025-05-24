@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://csm3f5807x7i8"]
 
 [ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://enemies/square/EnemySquare.cs" id="1_qo6cg"]
-[ext_resource type="Texture2D" uid="uid://bquwep2dxu31x" path="res://enemies/square/Enemy Square.png" id="2_o15yj"]
+[ext_resource type="Texture2D" uid="uid://c4cmgqua8pu70" path="res://enemies/square/enemy_square.png" id="3_7g7p5"]
 
 [node name="EnemySquare" type="RigidBody2D"]
 collision_layer = 4
@@ -11,7 +11,8 @@ linear_damp = 2.0
 script = ExtResource("1_qo6cg")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_o15yj")
+texture = ExtResource("3_7g7p5")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+visible = false
 polygon = PackedVector2Array(45, -34, 45, 34, 41, 41, 34, 45, -34, 45, -41, 41, -45, 34, -45, -34, -41, -41, -34, -45, 34, -45, 41, -41)

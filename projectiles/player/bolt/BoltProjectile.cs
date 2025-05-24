@@ -28,6 +28,7 @@ public partial class BoltProjectile : RigidBody2D
             return;
         }
         
+        enemy.Damage();
         QueueFree();
     }
     
