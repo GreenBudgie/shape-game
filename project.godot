@@ -38,6 +38,10 @@ project/assembly_name="ShapeGame"
 naming/default_signal_callback_name="On{node_name}{signal_name}"
 naming/default_signal_callback_to_self_name="On{signal_name}"
 
+[global_group]
+
+level_walls=""
+
 [input]
 
 primary_fire={

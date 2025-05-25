@@ -39,7 +39,7 @@ position = Vector2(549, 82)
 [node name="InventoryManager" parent="." instance=ExtResource("5_hve3p")]
 visible = false
 
-[node name="LevelWalls" type="StaticBody2D" parent="."]
+[node name="LevelWalls" type="StaticBody2D" parent="." groups=["level_walls"]]
 collision_layer = 32
 collision_mask = 0
 
