@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 PauseManager="*res://PauseManager.cs"
 EventBus="*res://EventBus.cs"
+SoundManager="*res://util/sound/SoundManager.cs"
 
 [display]
 

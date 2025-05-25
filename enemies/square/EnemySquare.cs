@@ -4,6 +4,8 @@
     private static readonly PackedScene BulletScene = GD.Load<PackedScene>("uid://bhj8dgeytmpxx");
     private static readonly PackedScene PathScene = GD.Load<PackedScene>("uid://b1ehfaspqd28s");
 
+    [Export] private AudioStream _shotSound = null!;
+
     private const double FireDelay = 1;
 
     private double _fireTimer = FireDelay;
@@ -58,8 +60,6 @@
         // Invert percent so lower HP = stronger effect
         var dangerLevel = 1f - hpPercent;
 
-        // Example tunable parameters
-
         _glow
             .SetRadius(20f * dangerLevel)
             .SetStrength(2f * dangerLevel)
@@ -82,5 +82,8 @@
         var randomOffset = new Vector2((float)GD.RandRange(-3f, 3f), (float)GD.RandRange(-3f, 3f));
 
         ApplyImpulse(-impulse * 0.3f, randomOffset);
+        
+        var sound = SoundManager.Instance.PlayPositionalSound(this, _shotSound);
+        sound.PitchScale = Clamp(impulse.Length() / 2000f + 0.75f, 0.7f, 1.3f);
     }
 }

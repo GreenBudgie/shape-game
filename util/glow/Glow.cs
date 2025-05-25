@@ -12,8 +12,8 @@ public partial class Glow : Sprite2D
     private ShaderMaterial _shaderMaterial = null!;
 
     private bool _isPulsing;
-    private float _pulseStrengthDelta = 0.0f;
     private float _pulseRadiusDelta = 0.0f;
+    private float _pulseStrengthDelta = 0.0f;
     private float _pulsesPerSecond = 1.0f;
 
     private float _baseStrength;

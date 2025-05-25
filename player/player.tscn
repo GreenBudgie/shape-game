@@ -14,3 +14,6 @@ offset = Vector2(0, -4)
 
 [node name="PlayerCollisionShape" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(0, -27, -5, -24, -26, 18, -26, 23, -22, 26, 22, 26, 26, 23, 26, 18, 5, -24)
+
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+current = true
