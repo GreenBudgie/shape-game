@@ -27,10 +27,8 @@
             }
 
             var pitch = speed / 1000f + 0.75f;
-            var volume = 1.5f - speed / 1000f;
             var sound = SoundManager.Instance.PlayPositionalSound(this, _hitWallSound);
             sound.PitchScale = Clamp(pitch, 0.75f, 1.25f);
-            sound.VolumeLinear = Clamp(volume, 0.2f, 1);
             return;
         }
         

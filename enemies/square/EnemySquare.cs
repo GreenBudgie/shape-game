@@ -5,6 +5,7 @@
     private static readonly PackedScene PathScene = GD.Load<PackedScene>("uid://b1ehfaspqd28s");
 
     [Export] private AudioStream _shotSound = null!;
+    [Export] private AudioStream _damageSound = null!;
 
     private const double FireDelay = 1;
 
@@ -54,6 +55,8 @@
         {
             QueueFree();
         }
+
+        SoundManager.Instance.PlayPositionalSound(this, _damageSound).RandomizePitch(0.75f, 1.25f);
 
         var hpPercent = Clamp(_health / 10f, 0f, 1f);
 
