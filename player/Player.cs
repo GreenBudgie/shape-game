@@ -117,7 +117,7 @@ public partial class Player : CharacterBody2D
     {
         var bolt = BoltProjectileScene.Instantiate<BoltProjectile>();
         bolt.Position = GetNosePosition();
-        var moveVector = new Vector2(0, -200).Rotated(Rotation);
+        var moveVector = new Vector2(0, -400).Rotated(Rotation);
         bolt.ApplyCentralImpulse(moveVector);
         GetParent().AddChild(bolt);
         _primaryFireTimer = PrimaryFireDelay;

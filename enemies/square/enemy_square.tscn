@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://enemies/square/EnemySquare.cs" id="1_qo6cg"]
 [ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/square/projectile/enemy_square_shot.wav" id="2_7g7p5"]
-[ext_resource type="Texture2D" uid="uid://c4cmgqua8pu70" path="res://enemies/square/enemy_square.png" id="3_7g7p5"]
+[ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://enemies/square/enemy_square.png" id="3_7g7p5"]
 [ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/square/enemy_square_hurt.wav" id="3_63vq7"]
 
 [node name="EnemySquare" type="RigidBody2D"]
 collision_layer = 4
-collision_mask = 3
+collision_mask = 291
 gravity_scale = 0.0
 linear_damp = 2.0
 script = ExtResource("1_qo6cg")
@@ -18,5 +18,4 @@ _damageSound = ExtResource("3_63vq7")
 texture = ExtResource("3_7g7p5")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-visible = false
-polygon = PackedVector2Array(45, -34, 45, 34, 41, 41, 34, 45, -34, 45, -41, 41, -45, 34, -45, -34, -41, -41, -34, -45, 34, -45, 41, -41)
+polygon = PackedVector2Array(90, -68, 90, 68, 82, 82, 68, 90, -68, 90, -82, 82, -90, 68, -90, -68, -82, -82, -68, -90, 68, -90, 82, -82)

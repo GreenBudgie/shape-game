@@ -34,7 +34,7 @@
     {
         var direction = GlobalPosition.DirectionTo(_path.PathPoint.GlobalPosition);
         var distance = GlobalPosition.DistanceTo(_path.PathPoint.GlobalPosition);
-        ApplyCentralForce(direction * distance * 20);
+        ApplyCentralForce(direction * distance * 5);
 
         if (_fireTimer <= 0)
         {
@@ -87,6 +87,6 @@
         ApplyImpulse(-impulse * 0.3f, randomOffset);
         
         var sound = SoundManager.Instance.PlayPositionalSound(this, _shotSound);
-        sound.PitchScale = Clamp(impulse.Length() / 2000f + 0.75f, 0.7f, 1.3f);
+        sound.PitchScale = Clamp(impulse.Length() / 4000f + 0.75f, 0.7f, 1.3f);
     }
 }

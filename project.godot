@@ -23,8 +23,8 @@ SoundManager="*res://util/sound/SoundManager.cs"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=3840
+window/size/viewport_height=2160
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
@@ -41,6 +41,12 @@ naming/default_signal_callback_to_self_name="On{signal_name}"
 [global_group]
 
 level_walls=""
+
+[importer_defaults]
+
+texture={
+&"mipmaps/generate": true
+}
 
 [input]
 
@@ -91,6 +97,7 @@ inventory_transfer={
 
 common/physics_ticks_per_second=240
 common/max_physics_steps_per_frame=32
+2d/default_gravity=1960.0
 2d/default_linear_damp=0.0
 
 [rendering]

@@ -6,49 +6,53 @@
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
 [ext_resource type="PackedScene" uid="uid://bkdy1r0hmunja" path="res://ui/stats/stats_panel.tscn" id="6_eow3j"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
-[ext_resource type="Texture2D" uid="uid://jlmpswlm33s4" path="res://environment/wall/right_wall.png" id="7_eow3j"]
+[ext_resource type="Texture2D" uid="uid://ptdgrqellnu8" path="res://environment/wall/right_wall.png" id="7_eow3j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
-size = Vector2(256, 2104)
+size = Vector2(512, 4208)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0lhi4"]
-size = Vector2(256, 2104)
+size = Vector2(512, 4208)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k07pp"]
-size = Vector2(1632, 512)
+size = Vector2(3264, 1024)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkk55"]
-size = Vector2(1632, 512)
+size = Vector2(3264, 1024)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j5wjh"]
-size = Vector2(2144, 256)
+size = Vector2(4288, 512)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vef74"]
-size = Vector2(2144, 264)
+size = Vector2(4288, 528)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_ryrav")
 
 [node name="Player" parent="." node_paths=PackedStringArray("_inventoryManager") instance=ExtResource("2_eow3j")]
-position = Vector2(1001, 914)
+position = Vector2(2174, 1930)
 _inventoryManager = NodePath("../InventoryManager")
 
 [node name="EnemySquare" parent="." instance=ExtResource("3_j5wjh")]
-position = Vector2(549, 82)
+position = Vector2(1560, -221)
 
 [node name="InventoryManager" parent="." instance=ExtResource("5_hve3p")]
 visible = false
+
+[node name="RightWall" type="Sprite2D" parent="."]
+position = Vector2(3808, 1080)
+texture = ExtResource("7_eow3j")
 
 [node name="LevelWalls" type="StaticBody2D" parent="." groups=["level_walls"]]
 collision_layer = 32
 collision_mask = 0
 
 [node name="LeftWall" type="CollisionShape2D" parent="LevelWalls"]
-position = Vector2(128, 540)
+position = Vector2(256, 1080)
 shape = SubResource("RectangleShape2D_87y3e")
 
 [node name="RightWall" type="CollisionShape2D" parent="LevelWalls"]
-position = Vector2(2016, 540)
+position = Vector2(4032, 1080)
 shape = SubResource("RectangleShape2D_0lhi4")
 
 [node name="LevelCeiling" type="StaticBody2D" parent="."]
@@ -56,7 +60,7 @@ collision_layer = 64
 collision_mask = 0
 
 [node name="TopWall" type="CollisionShape2D" parent="LevelCeiling"]
-position = Vector2(1072, -256)
+position = Vector2(2144, -512)
 shape = SubResource("RectangleShape2D_k07pp")
 
 [node name="LevelFloor" type="StaticBody2D" parent="."]
@@ -64,7 +68,7 @@ collision_layer = 128
 collision_mask = 0
 
 [node name="BottomWall" type="CollisionShape2D" parent="LevelFloor"]
-position = Vector2(1072, 1336)
+position = Vector2(2144, 2672)
 shape = SubResource("RectangleShape2D_jkk55")
 
 [node name="LevelOutsideBoundary" type="StaticBody2D" parent="."]
@@ -72,12 +76,12 @@ collision_layer = 256
 collision_mask = 0
 
 [node name="TopWall" type="CollisionShape2D" parent="LevelOutsideBoundary"]
-position = Vector2(1072, -640)
+position = Vector2(2144, -1280)
 shape = SubResource("RectangleShape2D_j5wjh")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
 [node name="BottomWall" type="CollisionShape2D" parent="LevelOutsideBoundary"]
-position = Vector2(1072, 1724)
+position = Vector2(2144, 3448)
 shape = SubResource("RectangleShape2D_vef74")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
@@ -85,7 +89,3 @@ debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
 [node name="PauseMenu" parent="." instance=ExtResource("6_mfdv2")]
 visible = false
-
-[node name="RightWall" type="Sprite2D" parent="."]
-position = Vector2(1904, 540)
-texture = ExtResource("7_eow3j")

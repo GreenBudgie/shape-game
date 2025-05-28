@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bhj8dgeytmpxx"]
 
 [ext_resource type="Script" uid="uid://r5s6weechulc" path="res://enemies/square/projectile/EnemySquareProjectile.cs" id="1_jyvyp"]
-[ext_resource type="Texture2D" uid="uid://bl7f37uw8uqf8" path="res://enemies/square/projectile/enemy_square_projectile.png" id="2_eu8a1"]
+[ext_resource type="Texture2D" uid="uid://b512c0n1380pp" path="res://enemies/square/projectile/enemy_square_projectile.png" id="2_eu8a1"]
 [ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://enemies/square/projectile/enemy_square_projectile_hit_wall.wav" id="2_y3uyh"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jyvyp"]
@@ -24,4 +24,4 @@ _hitWallSound = ExtResource("2_y3uyh")
 texture = ExtResource("2_eu8a1")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(0, -16, 16, 0, 0, 16, -16, 0)
+polygon = PackedVector2Array(0, -30, 30, 0, 0, 30, -30, 0)

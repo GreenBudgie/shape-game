@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bnh56fabyfl1o"]
 
 [ext_resource type="Script" uid="uid://ccp5pyqi3g16e" path="res://projectiles/player/bolt/BoltProjectile.cs" id="1_guu8r"]
-[ext_resource type="Texture2D" uid="uid://gyt2vkpslpp3" path="res://projectiles/player/bolt/bolt.png" id="2_esskk"]
+[ext_resource type="Texture2D" uid="uid://dbsmx1goi2kpp" path="res://projectiles/player/bolt/bolt.png" id="2_esskk"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
 friction = 0.0

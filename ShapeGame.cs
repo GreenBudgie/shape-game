@@ -4,7 +4,7 @@ global using static Godot.Mathf;
 public partial class ShapeGame : Node2D
 {
     
-    public static readonly Rect2I PlayableArea = new(256, 0, 1664, 1080);
+    public static readonly Rect2I PlayableArea = new(512, 0, 3264, 2160);
     
     public static ShapeGame Instance { get; private set; } = null!;
 

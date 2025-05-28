@@ -1,8 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://bkdy1r0hmunja"]
 
-[ext_resource type="Texture2D" uid="uid://dm053pu4jifxv" path="res://ui/stats/stats_panel.png" id="1_p1yf4"]
+[ext_resource type="Texture2D" uid="uid://d4gk336lqiaed" path="res://ui/stats/stats_panel.png" id="1_p1yf4"]
 
 [node name="StatsPanel" type="Control"]
+z_index = -1
 layout_mode = 3
 anchors_preset = 0
 
