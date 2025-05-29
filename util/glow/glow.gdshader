@@ -1,11 +1,12 @@
 shader_type canvas_item;
 
+uniform sampler2D viewport_texture : hint_default_transparent;
 uniform vec4 glow_color : source_color = vec4(0.937, 0.357, 0.357, 1.0);
 uniform float glow_radius = 12.0;
 uniform float glow_strength = 2.0;
 
 void fragment() {
-    vec2 tex_size = vec2(textureSize(TEXTURE, 0));
+    vec2 tex_size = vec2(textureSize(viewport_texture, 0));
     vec2 px = 1.0 / tex_size;
 
     float sigma = glow_radius * 0.6;

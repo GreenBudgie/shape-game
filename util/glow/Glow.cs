@@ -1,7 +1,7 @@
 /// <summary>
 /// A component for adding a glow effect to a Sprite2D using a shader.
 /// </summary>
-public partial class Glow : Sprite2D
+public partial class Glow : SubViewportContainer
 {
     private static readonly StringName GlowColor = "glow_color";
     private static readonly StringName GlowRadius = "glow_radius";
@@ -193,10 +193,18 @@ public partial class Glow : Sprite2D
     public static Glow AddGlow(Sprite2D sprite)
     {
         var glow = GlowScene.Instantiate<Glow>();
-        glow.Texture = sprite.Texture;
-        glow.ZIndex = sprite.ZIndex - 1;
-
+        var subViewport = glow.GetNode<SubViewport>("SubViewport");
+        var glowSprite = glow.GetNode<Sprite2D>("SubViewport/Sprite");
+        
         sprite.AddChild(glow);
+        
+        var texture = sprite.Texture;
+        subViewport.Size = (Vector2I)(texture.GetSize() * 2);
+        glowSprite.Texture = texture;
+        glowSprite.Position = subViewport.Size / 2;
+        glow.ZIndex = sprite.ZIndex - 1;
+        glow.Size = subViewport.Size;
+        glow.Position = -subViewport.Size / 2;
 
         return glow;
     }

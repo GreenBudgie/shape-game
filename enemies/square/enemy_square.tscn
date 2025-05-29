@@ -18,4 +18,5 @@ _damageSound = ExtResource("3_63vq7")
 texture = ExtResource("3_7g7p5")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+visible = false
 polygon = PackedVector2Array(90, -68, 90, 68, 82, 82, 68, 90, -68, 90, -82, 82, -90, 68, -90, -68, -82, -82, -68, -90, 68, -90, 82, -82)
