@@ -17,8 +17,12 @@
 
     private Glow _glow = null!;
 
+    private AnimationPlayer _damageAnimation = null!;
+
     public override void _Ready()
     {
+        _damageAnimation = GetNode<AnimationPlayer>("DamageAnimation");
+        
         _path = PathScene.Instantiate<EnemySquarePath>();
         ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, _path);
 
@@ -69,6 +73,8 @@
             .SetPulseRadiusDelta(20f * dangerLevel)
             .SetPulseStrengthDelta(dangerLevel)
             .SetPulsesPerSecond(1f + dangerLevel * (3f - 1f));
+        
+        _damageAnimation.Play("damage");
     }
 
     private void Fire()

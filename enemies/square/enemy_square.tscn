@@ -1,9 +1,74 @@
-[gd_scene load_steps=5 format=3 uid="uid://csm3f5807x7i8"]
+[gd_scene load_steps=7 format=3 uid="uid://csm3f5807x7i8"]
 
 [ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://enemies/square/EnemySquare.cs" id="1_qo6cg"]
 [ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/square/projectile/enemy_square_shot.wav" id="2_7g7p5"]
 [ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://enemies/square/enemy_square.png" id="3_7g7p5"]
 [ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/square/enemy_square_hurt.wav" id="3_63vq7"]
+
+[sub_resource type="Animation" id="Animation_63vq7"]
+resource_name = "damage"
+length = 0.25
+step = 0.05
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 0.498056, 1, -0.166667, 0.00409198, 0.15, 0),
+"times": PackedFloat32Array(0, 0.25)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 0.498056, 1, -0.166667, 0.00846326, 0.15, 0),
+"times": PackedFloat32Array(0, 0.25)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:modulate:r")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 9.02785, 1, -0.166667, 0.00409305, 0.15, 0),
+"times": PackedFloat32Array(0, 0.25)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:modulate:g")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 8.99226, 1, -0.166667, 0.0245421, 0.15, 0),
+"times": PackedFloat32Array(0, 0.25)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:modulate:b")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 8.99226, 1, -0.166667, 0.00987351, 0.15, 0),
+"times": PackedFloat32Array(0, 0.25)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ylhy4"]
+_data = {
+&"damage": SubResource("Animation_63vq7")
+}
 
 [node name="EnemySquare" type="RigidBody2D"]
 collision_layer = 4
@@ -20,3 +85,9 @@ texture = ExtResource("3_7g7p5")
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 visible = false
 polygon = PackedVector2Array(90, -68, 90, 68, 82, 82, 68, 90, -68, 90, -82, 82, -90, 68, -90, -68, -82, -82, -68, -90, 68, -90, 82, -82)
+
+[node name="DamageAnimation" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+&"": SubResource("AnimationLibrary_ylhy4")
+}
