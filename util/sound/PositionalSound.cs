@@ -2,6 +2,7 @@ public partial class PositionalSound : AudioStreamPlayer2D
 {
     public override void _Ready()
     {
+        MaxDistance = 4000;
         Finished += QueueFree;
     }
 

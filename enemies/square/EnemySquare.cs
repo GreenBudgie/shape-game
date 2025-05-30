@@ -34,7 +34,7 @@
     {
         var direction = GlobalPosition.DirectionTo(_path.PathPoint.GlobalPosition);
         var distance = GlobalPosition.DistanceTo(_path.PathPoint.GlobalPosition);
-        ApplyCentralForce(direction * distance * 5);
+        ApplyCentralForce(direction * distance * 10f);
 
         if (_fireTimer <= 0)
         {
@@ -64,10 +64,10 @@
         var dangerLevel = 1f - hpPercent;
 
         _glow
-            .SetRadius(20f * dangerLevel)
+            .SetRadius(40f * dangerLevel)
             .SetStrength(2f * dangerLevel)
-            .SetPulseRadiusDelta(10f * dangerLevel)
-            .SetPulseStrengthDelta(0.5f * dangerLevel)
+            .SetPulseRadiusDelta(20f * dangerLevel)
+            .SetPulseStrengthDelta(dangerLevel)
             .SetPulsesPerSecond(1f + dangerLevel * (3f - 1f));
     }
 
@@ -76,7 +76,7 @@
         var bullet = BulletScene.Instantiate<EnemySquareProjectile>();
         ShapeGame.Instance.AddChild(bullet);
         bullet.GlobalPosition = GlobalPosition;
-        var randomStrength = (float)GD.RandRange(2f, 3f);
+        var randomStrength = (float)GD.RandRange(1f, 2f);
         var velocityLength = LinearVelocity.Length();
         var impulse = Vector2.Down * velocityLength * 0.5f - LinearVelocity * randomStrength;
         bullet.ApplyCentralImpulse(impulse);
@@ -85,7 +85,7 @@
         var randomOffset = new Vector2((float)GD.RandRange(-3f, 3f), (float)GD.RandRange(-3f, 3f));
 
         ApplyImpulse(-impulse * 0.3f, randomOffset);
-        
+
         var sound = SoundManager.Instance.PlayPositionalSound(this, _shotSound);
         sound.PitchScale = Clamp(impulse.Length() / 4000f + 0.75f, 0.7f, 1.3f);
     }
