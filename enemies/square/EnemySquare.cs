@@ -17,11 +17,11 @@
 
     private Glow _glow = null!;
 
-    private AnimationPlayer _damageAnimation = null!;
+    private AnimationPlayer _animationPlayer = null!;
 
     public override void _Ready()
     {
-        _damageAnimation = GetNode<AnimationPlayer>("DamageAnimation");
+        _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         
         _path = PathScene.Instantiate<EnemySquarePath>();
         ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, _path);
@@ -57,7 +57,8 @@
 
         if (_health <= 0)
         {
-            QueueFree();
+            Destroy();
+            return;
         }
 
         SoundManager.Instance.PlayPositionalSound(this, _damageSound).RandomizePitch(0.75f, 1.25f);
@@ -74,7 +75,7 @@
             .SetPulseStrengthDelta(dangerLevel)
             .SetPulsesPerSecond(1f + dangerLevel * (3f - 1f));
         
-        _damageAnimation.Play("damage");
+        _animationPlayer.Play("damage");
     }
 
     private void Fire()
@@ -94,5 +95,21 @@
 
         var sound = SoundManager.Instance.PlayPositionalSound(this, _shotSound);
         sound.PitchScale = Clamp(impulse.Length() / 4000f + 0.75f, 0.7f, 1.3f);
+    }
+
+    private void Destroy()
+    {
+        CollisionLayer = 0;
+        CollisionMask = 0;
+
+        _glow.DisablePulsing();
+        var fadeOutTween = _glow.CreateTween();
+        var setColorAction = _glow.SetColor;
+        var finalGlowColor = _glow.GetColor();
+        finalGlowColor.A = 0;
+        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.2);
+        
+        _animationPlayer.Play("destroy");
+        _animationPlayer.AnimationFinished += _ => QueueFree();
     }
 }

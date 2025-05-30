@@ -1,9 +1,27 @@
-[gd_scene load_steps=7 format=3 uid="uid://csm3f5807x7i8"]
+[gd_scene load_steps=13 format=3 uid="uid://csm3f5807x7i8"]
 
 [ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://enemies/square/EnemySquare.cs" id="1_qo6cg"]
 [ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/square/projectile/enemy_square_shot.wav" id="2_7g7p5"]
 [ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://enemies/square/enemy_square.png" id="3_7g7p5"]
 [ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/square/enemy_square_hurt.wav" id="3_63vq7"]
+[ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve.gdshader" id="4_o8fru"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_o8fru"]
+fractal_type = 2
+fractal_gain = 0.0
+domain_warp_amplitude = 31.955
+domain_warp_frequency = 1.32
+domain_warp_fractal_lacunarity = 6.78
+domain_warp_fractal_gain = 0.815
+metadata/_preview_in_3d_space_ = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ylhy4"]
+noise = SubResource("FastNoiseLite_o8fru")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_63vq7"]
+shader = ExtResource("4_o8fru")
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_ylhy4")
+shader_parameter/dissolve_value = 1.0
 
 [sub_resource type="Animation" id="Animation_63vq7"]
 resource_name = "damage"
@@ -65,9 +83,173 @@ tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.25)
 }
 
+[sub_resource type="Animation" id="Animation_ylhy4"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material:shader_parameter/dissolve_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.2, 0, 0.2, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate:r")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 9.02785),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:modulate:g")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 8.99226),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:modulate:b")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 8.99226),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/5/type = "bezier"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:scale:y")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.05, 0.243579),
+"times": PackedFloat32Array(0)
+}
+tracks/6/type = "bezier"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath(".:scale:x")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.05, 0.243579),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_o8fru"]
+resource_name = "death"
+length = 0.5
+step = 0.05
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.1, 0.774844, 0.5, -0.05, 0.0076198, 0.15, 0),
+"times": PackedFloat32Array(0, 0.5)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.1, 0.774844, 0.5, -0.05, 0.0076198, 0.15, 0),
+"times": PackedFloat32Array(0, 0.5)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:modulate:r")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 9.02785, 1, -0.166667, 0.00409305, 0.15, 0, 1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.4, 0.400442)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:modulate:g")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 8.99226, 1, -0.166667, 0.0245421, 0.15, 0, 1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.4, 0.400442)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:modulate:b")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, 8.99226, 1, -0.166667, 0.00987351, 0.15, 0, 1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.4, 0.400442)
+}
+tracks/5/type = "bezier"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.5, -0.0136511, 0, 0, 1.00747, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5)
+}
+tracks/6/type = "bezier"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath(".:material:shader_parameter/dissolve_value")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.2, 0, 0.5, -0.0190102, 0, -0.2, 0, 0.2, 0),
+"times": PackedFloat32Array(0, 0.5)
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ylhy4"]
 _data = {
-&"damage": SubResource("Animation_63vq7")
+&"RESET": SubResource("Animation_ylhy4"),
+&"damage": SubResource("Animation_63vq7"),
+&"destroy": SubResource("Animation_o8fru")
 }
 
 [node name="EnemySquare" type="RigidBody2D"]
@@ -80,13 +262,14 @@ _shotSound = ExtResource("2_7g7p5")
 _damageSound = ExtResource("3_63vq7")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_63vq7")
 texture = ExtResource("3_7g7p5")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 visible = false
 polygon = PackedVector2Array(90, -68, 90, 68, 82, 82, 68, 90, -68, 90, -82, 82, -90, 68, -90, -68, -82, -82, -68, -90, 68, -90, 82, -82)
 
-[node name="DamageAnimation" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 root_node = NodePath("../Sprite2D")
 libraries = {
 &"": SubResource("AnimationLibrary_ylhy4")

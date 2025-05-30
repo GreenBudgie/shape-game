@@ -21,11 +21,11 @@ void fragment() {
             vec2 offset = vec2(float(x), float(y));
             float weight = exp(-(offset.x * offset.x + offset.y * offset.y) / twoSigmaSq);
             vec2 sample_uv = UV + offset * px;
-            alpha_sum += texture(TEXTURE, sample_uv).a * weight;
+            alpha_sum += texture(viewport_texture, sample_uv).a * weight;
             total_weight += weight;
         }
     }
 
     float final_alpha = (alpha_sum / total_weight) * glow_strength;
-    COLOR = vec4(glow_color.rgb, final_alpha);
+    COLOR = vec4(glow_color.rgb, final_alpha * glow_color.a);
 }
