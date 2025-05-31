@@ -18,6 +18,8 @@
     private Glow _glow = null!;
 
     private AnimationPlayer _animationPlayer = null!;
+    
+    private bool _isDestroyed = false;
 
     public override void _Ready()
     {
@@ -36,6 +38,11 @@
 
     public override void _Process(double delta)
     {
+        if (_isDestroyed)
+        {
+            return;
+        }
+        
         var direction = GlobalPosition.DirectionTo(_path.PathPoint.GlobalPosition);
         var distance = GlobalPosition.DistanceTo(_path.PathPoint.GlobalPosition);
         ApplyCentralForce(direction * distance * 10f);
@@ -53,20 +60,22 @@
 
     public override void Damage()
     {
+        if (_isDestroyed)
+        {
+            return;
+        }
+        
         _health -= 1;
+        var hpPercent = Clamp(_health / 10f, 0f, 1f);
+        var dangerLevel = 1f - hpPercent;
+        var sound = SoundManager.Instance.PlayPositionalSound(this, _damageSound);
+        sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
 
         if (_health <= 0)
         {
             Destroy();
             return;
         }
-
-        SoundManager.Instance.PlayPositionalSound(this, _damageSound).RandomizePitch(0.75f, 1.25f);
-
-        var hpPercent = Clamp(_health / 10f, 0f, 1f);
-
-        // Invert percent so lower HP = stronger effect
-        var dangerLevel = 1f - hpPercent;
 
         _glow
             .SetRadius(40f * dangerLevel)
@@ -99,6 +108,7 @@
 
     private void Destroy()
     {
+        _isDestroyed = true;
         CollisionLayer = 0;
         CollisionMask = 0;
 
@@ -107,7 +117,7 @@
         var setColorAction = _glow.SetColor;
         var finalGlowColor = _glow.GetColor();
         finalGlowColor.A = 0;
-        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.2);
+        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.25);
         
         _animationPlayer.Play("destroy");
         _animationPlayer.AnimationFinished += _ => QueueFree();
