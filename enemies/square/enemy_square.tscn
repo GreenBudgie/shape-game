@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://csm3f5807x7i8"]
+[gd_scene load_steps=14 format=3 uid="uid://csm3f5807x7i8"]
 
 [ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://enemies/square/EnemySquare.cs" id="1_qo6cg"]
 [ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/square/projectile/enemy_square_shot.wav" id="2_7g7p5"]
 [ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://enemies/square/enemy_square.png" id="3_7g7p5"]
 [ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/square/enemy_square_hurt.wav" id="3_63vq7"]
 [ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve.gdshader" id="4_o8fru"]
+[ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://enemies/square/enemy_square_destroy.wav" id="4_ylhy4"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ylhy4"]
 noise_type = 4
@@ -255,6 +256,7 @@ linear_damp = 2.0
 script = ExtResource("1_qo6cg")
 _shotSound = ExtResource("2_7g7p5")
 _damageSound = ExtResource("3_63vq7")
+_destroySound = ExtResource("4_ylhy4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_700y2")

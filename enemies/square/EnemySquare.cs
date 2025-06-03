@@ -6,6 +6,7 @@
 
     [Export] private AudioStream _shotSound = null!;
     [Export] private AudioStream _damageSound = null!;
+    [Export] private AudioStream _destroySound = null!;
 
     private const double FireDelay = 1;
 
@@ -68,14 +69,15 @@
         _health -= 1;
         var hpPercent = Clamp(_health / 10f, 0f, 1f);
         var dangerLevel = 1f - hpPercent;
-        var sound = SoundManager.Instance.PlayPositionalSound(this, _damageSound);
-        sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
 
         if (_health <= 0)
         {
             Destroy();
             return;
         }
+        
+        var sound = SoundManager.Instance.PlayPositionalSound(this, _damageSound);
+        sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
 
         _glow
             .SetRadius(40f * dangerLevel)
@@ -112,6 +114,8 @@
         CollisionLayer = 0;
         CollisionMask = 0;
 
+        var sound = SoundManager.Instance.PlayPositionalSound(this, _destroySound);
+        
         _glow.DisablePulsing();
         var fadeOutTween = _glow.CreateTween();
         var setColorAction = _glow.SetColor;
