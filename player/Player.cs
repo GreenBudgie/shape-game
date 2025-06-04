@@ -8,7 +8,7 @@ public partial class Player : CharacterBody2D
 
     private const float PrimaryFireDelay = 0.4f;
 
-    public static Player Instance { get; private set; } = null!;
+    private static Player? _instance;
 
     [Export] private InventoryManager _inventoryManager;
 
@@ -38,9 +38,14 @@ public partial class Player : CharacterBody2D
 
     private float _primaryFireTimer;
 
+    public static Player? FindPlayer()
+    {
+        return _instance;
+    }
+    
     public override void _EnterTree()
     {
-        Instance = this;
+        _instance = this;
     }
 
     public override void _Ready()

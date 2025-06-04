@@ -9,12 +9,13 @@
     [Export] private AudioStream _destroySound = null!;
 
     private const double FireDelay = 1;
+    private const float MaxHealth = 10;
 
     private double _fireTimer = FireDelay;
 
     private EnemySquarePath _path = null!;
 
-    private float _health = 10;
+    private float _health = MaxHealth;
 
     private Glow _glow = null!;
 
@@ -67,7 +68,7 @@
         }
         
         _health -= 1;
-        var hpPercent = Clamp(_health / 10f, 0f, 1f);
+        var hpPercent = Clamp(_health / MaxHealth, 0f, 1f);
         var dangerLevel = 1f - hpPercent;
 
         if (_health <= 0)
@@ -115,8 +116,28 @@
         CollisionMask = 0;
 
         var sound = SoundManager.Instance.PlayPositionalSound(this, _destroySound);
+
+        for (int i = 0; i < 2; i++)
+        {
+            var crystal = FallingCrystal.CreateFallingCrystal();
+            ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, crystal);
+            
+            var randomXOffset = (float)GD.RandRange(-80, 80);
+            var randomYOffset = (float)GD.RandRange(-80, 80);
+            var randomOffset = new Vector2(randomXOffset, randomYOffset);
+            crystal.GlobalPosition = GlobalPosition + randomOffset;
+            var randomStrength = (float)GD.RandRange(750f, 1500f);
+            var randomAngle = GD.RandRange(5 * Pi / 4, 7 * Pi / 4);
+            var randomDirection = Vector2.FromAngle((float)randomAngle);
+            var impulse = randomDirection * randomStrength;
+            crystal.ApplyCentralImpulse(impulse);
+            
+            var randomTorque = (float)GD.RandRange(-1, 1);
+            crystal.ApplyTorqueImpulse(randomTorque);
+        }
         
         _glow.DisablePulsing();
+        _glow.SetCullOccluded(false);
         var fadeOutTween = _glow.CreateTween();
         var setColorAction = _glow.SetColor;
         var finalGlowColor = _glow.GetColor();

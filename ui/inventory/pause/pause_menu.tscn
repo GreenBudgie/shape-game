@@ -13,19 +13,35 @@ grow_vertical = 2
 script = ExtResource("1_42uaq")
 
 [node name="ResumeButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 609.0
-offset_top = 128.0
-offset_right = 1316.0
-offset_bottom = 373.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1091.0
+offset_top = -748.0
+offset_right = 1091.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 128
 text = "Resume"
 
 [node name="QuitButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 593.0
-offset_top = 563.0
-offset_right = 1335.0
-offset_bottom = 807.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1101.0
+offset_top = 128.0
+offset_right = 1101.0
+offset_bottom = 852.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 128
 text = "Quit"
 
 [connection signal="pressed" from="ResumeButton" to="." method="OnResume"]

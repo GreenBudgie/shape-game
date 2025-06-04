@@ -72,6 +72,11 @@ public static class CollisionObjectUtils
         return allAbove || allBelow;
     }
 
+    public static bool GetCollisionLayerValue(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    {
+        return collisionObject.GetCollisionLayerValue((int)collisionLayer);
+    }
+
     private static IEnumerable<Rect2> GetCollisionRects(this CollisionObject2D collisionObject)
     {
         foreach (var shapeOwnerId in collisionObject.GetShapeOwners())

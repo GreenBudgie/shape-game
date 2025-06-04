@@ -6,6 +6,7 @@ public partial class Glow : SubViewportContainer
     private static readonly StringName GlowColor = "glow_color";
     private static readonly StringName GlowRadius = "glow_radius";
     private static readonly StringName GlowStrength = "glow_strength";
+    private static readonly StringName CullOccluded = "cull_occluded";
 
     private static readonly PackedScene GlowScene = GD.Load<PackedScene>("uid://c3qvnso7dnntg");
 
@@ -89,6 +90,12 @@ public partial class Glow : SubViewportContainer
         _shaderMaterial.SetShaderParameter(GlowStrength, strength);
     }
 
+    public Glow SetCullOccluded(bool cullOccluded)
+    {
+        _shaderMaterial.SetShaderParameter(CullOccluded, cullOccluded);
+        return this;
+    }
+
     /// <summary>
     /// Gets the current color used for the glow.
     /// </summary>
@@ -114,6 +121,11 @@ public partial class Glow : SubViewportContainer
     public float GetStrength()
     {
         return (float)_shaderMaterial.GetShaderParameter(GlowStrength);
+    }
+
+    public bool IsCullOccluded()
+    {
+        return (bool)_shaderMaterial.GetShaderParameter(CullOccluded);
     }
 
     /// <summary>
