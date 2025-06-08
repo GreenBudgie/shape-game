@@ -57,7 +57,7 @@
     private const double MaxAttackStartDelaySeconds = 3;
     private const double MinAttackDurationSeconds = 3;
     private const double MaxAttackDurationSeconds = 5;
-    private const float AttackTorqueAcceleration = 50000;
+    private const float AttackTorqueAcceleration = 25000;
     private const float StartAttackTorqueAcceleration = 100000;
     private const double StartDelayPerShotSeconds = 0.6f;
     private const double MinDelayPerShotSeconds = 0.2f;
@@ -112,9 +112,10 @@
 
         if (_timeToFire <= 0)
         {
-            FireProjectiles();
             _timeToFire = Max(_prevTimeToFire - DelayPerShotDecreaseSeconds, MinDelayPerShotSeconds);
             _prevTimeToFire = _timeToFire;
+            
+            FireProjectiles();
         }
 
         ApplyTorque(-_direction * (StartAttackTorqueAcceleration + _attackTorque));
@@ -128,9 +129,13 @@
     {
         FireProjectile(_leftProjectileSpawnPosition.GlobalPosition);
         FireProjectile(_rightProjectileSpawnPosition.GlobalPosition);
+        
+        var delayPercent = (_timeToFire - MinDelayPerShotSeconds) / (StartDelayPerShotSeconds - MinDelayPerShotSeconds);
+        var sound = SoundManager.Instance.PlayPositionalSound(this, _shotSound);
+        sound.PitchScale = Lerp(0.8f, 1.2f, 1f - (float)delayPercent);
     }
 
-    private EnemyRhombusProjectile FireProjectile(Vector2 globalPosition)
+    private void FireProjectile(Vector2 globalPosition)
     {
         var projectile = ProjectileScene.Instantiate<EnemyRhombusProjectile>();
         ShapeGame.Instance.AddChild(projectile);
@@ -138,10 +143,6 @@
 
         var projectileDirection = GlobalPosition.DirectionTo(globalPosition);
         projectile.ApplyCentralImpulse(projectileDirection * 1500f);
-        
-        var sound = SoundManager.Instance.PlayPositionalSound(globalPosition, _shotSound);
-
-        return projectile;
     }
 
 }
