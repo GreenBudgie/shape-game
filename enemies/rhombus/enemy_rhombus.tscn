@@ -1,0 +1,37 @@
+[gd_scene load_steps=9 format=3 uid="uid://cea48ak5y5rsk"]
+
+[ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://enemies/square/EnemySquare.cs" id="1_a2e1o"]
+[ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/square/projectile/enemy_square_shot.wav" id="2_m8fef"]
+[ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve.gdshader" id="5_irpmm"]
+[ext_resource type="Texture2D" uid="uid://cngnn50r7k8a" path="res://enemies/rhombus/rhombus.png" id="6_8h5ga"]
+[ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://enemies/enemy_animations.tscn" id="7_yi2lj"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ylhy4"]
+noise_type = 4
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_igh3h"]
+noise = SubResource("FastNoiseLite_ylhy4")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_700y2"]
+shader = ExtResource("5_irpmm")
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_igh3h")
+shader_parameter/dissolve_value = 1.0
+
+[node name="EnemyRhombus" type="RigidBody2D"]
+collision_layer = 4
+collision_mask = 291
+gravity_scale = 0.0
+linear_damp = 2.0
+script = ExtResource("1_a2e1o")
+_shotSound = ExtResource("2_m8fef")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_700y2")
+texture = ExtResource("6_8h5ga")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(168, 16, 0, 100, -168, 16, -176, 0, -168, -16, 0, -100, 168, -16, 176, 0)
+
+[node name="EnemyAnimations" parent="." instance=ExtResource("7_yi2lj")]
+root_node = NodePath("../Sprite")

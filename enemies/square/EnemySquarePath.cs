@@ -1,8 +1,8 @@
 public partial class EnemySquarePath : Path2D
 {
 
-    private static readonly float MinYOffset = 200;
-    private static readonly float MaxYOffset = 800;
+    private const float MinYOffset = 300;
+    private const float MaxYOffset = 600;
 
     public PathFollow2D PathPoint { get; private set; } = null!;
 

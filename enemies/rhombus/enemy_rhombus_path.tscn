@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://dofw2c36kh88s"]
+
+[ext_resource type="Script" uid="uid://bkayfvj4brytk" path="res://enemies/square/EnemySquarePath.cs" id="1_b2rc3"]
+
+[sub_resource type="Curve2D" id="Curve2D_uovvh"]
+_data = {
+"points": PackedVector2Array(-5.41739, -8.55582, 0, 0, 0, 200, -1400, 0, 1400, 0, 1400, 400, 0, 0, 0, 0, 2800, 200, 1400, 0, -1400, 0, 1400, 0, 0, 0, 0, 0, 0, 200)
+}
+point_count = 5
+
+[node name="EnemySquarePath" type="Path2D"]
+curve = SubResource("Curve2D_uovvh")
+script = ExtResource("1_b2rc3")
+
+[node name="PathPoint" type="PathFollow2D" parent="."]
+position = Vector2(0, 200)
+rotation = 0.141897
