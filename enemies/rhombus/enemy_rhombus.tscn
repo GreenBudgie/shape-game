@@ -1,7 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://cea48ak5y5rsk"]
+[gd_scene load_steps=12 format=3 uid="uid://cea48ak5y5rsk"]
 
-[ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://enemies/square/EnemySquare.cs" id="1_a2e1o"]
+[ext_resource type="Script" uid="uid://g81fbebdevf3" path="res://enemies/rhombus/EnemyRhombus.cs" id="1_hl3kr"]
 [ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/square/projectile/enemy_square_shot.wav" id="2_m8fef"]
+[ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/enemy_damage.wav" id="3_8h5ga"]
+[ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://enemies/enemy_destroy.wav" id="4_yi2lj"]
 [ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve.gdshader" id="5_irpmm"]
 [ext_resource type="Texture2D" uid="uid://cngnn50r7k8a" path="res://enemies/rhombus/rhombus.png" id="6_8h5ga"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://enemies/enemy_animations.tscn" id="7_yi2lj"]
@@ -18,20 +20,41 @@ shader = ExtResource("5_irpmm")
 shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_igh3h")
 shader_parameter/dissolve_value = 1.0
 
-[node name="EnemyRhombus" type="RigidBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o8lsv"]
+size = Vector2(180, 105)
+
+[node name="EnemyRhombus" type="RigidBody2D" node_paths=PackedStringArray("_leftProjectileSpawnPosition", "_rightProjectileSpawnPosition", "CrystalSpawnArea")]
 collision_layer = 4
 collision_mask = 291
 gravity_scale = 0.0
 linear_damp = 2.0
-script = ExtResource("1_a2e1o")
+script = ExtResource("1_hl3kr")
 _shotSound = ExtResource("2_m8fef")
+_leftProjectileSpawnPosition = NodePath("LeftProjectileSpawnPosition")
+_rightProjectileSpawnPosition = NodePath("RightProjectileSpawnPosition")
+EnemyColor = Color(0.180392, 0.407843, 0.898039, 1)
+Crystals = 3
+CrystalSpawnArea = NodePath("CrystalSpawnArea")
+DamageSound = ExtResource("3_8h5ga")
+DestroySound = ExtResource("4_yi2lj")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_700y2")
 texture = ExtResource("6_8h5ga")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+visible = false
 polygon = PackedVector2Array(168, 16, 0, 100, -168, 16, -176, 0, -168, -16, 0, -100, 168, -16, 176, 0)
 
 [node name="EnemyAnimations" parent="." instance=ExtResource("7_yi2lj")]
 root_node = NodePath("../Sprite")
+
+[node name="CrystalSpawnArea" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_o8lsv")
+disabled = true
+
+[node name="LeftProjectileSpawnPosition" type="Marker2D" parent="."]
+position = Vector2(-109, 0)
+
+[node name="RightProjectileSpawnPosition" type="Marker2D" parent="."]
+position = Vector2(109, 0)

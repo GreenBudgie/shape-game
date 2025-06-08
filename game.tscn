@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
-[ext_resource type="PackedScene" uid="uid://csm3f5807x7i8" path="res://enemies/square/enemy_square.tscn" id="3_j5wjh"]
+[ext_resource type="PackedScene" uid="uid://cea48ak5y5rsk" path="res://enemies/rhombus/enemy_rhombus.tscn" id="3_eow3j"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
 [ext_resource type="PackedScene" uid="uid://bkdy1r0hmunja" path="res://ui/stats/stats_panel.tscn" id="6_eow3j"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
@@ -33,8 +33,8 @@ script = ExtResource("1_ryrav")
 position = Vector2(2174, 1930)
 _inventoryManager = NodePath("../InventoryManager")
 
-[node name="EnemySquare" parent="." instance=ExtResource("3_j5wjh")]
-position = Vector2(1560, -221)
+[node name="EnemyRhombus" parent="." instance=ExtResource("3_eow3j")]
+position = Vector2(1029, -155)
 
 [node name="InventoryManager" parent="." instance=ExtResource("5_hve3p")]
 visible = false

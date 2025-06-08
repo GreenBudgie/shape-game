@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dofw2c36kh88s"]
 
-[ext_resource type="Script" uid="uid://bkayfvj4brytk" path="res://enemies/square/EnemySquarePath.cs" id="1_b2rc3"]
+[ext_resource type="Script" uid="uid://bk0i8k8job4tw" path="res://enemies/rhombus/EnemyRhombusPath.cs" id="1_b2rc3"]
 
 [sub_resource type="Curve2D" id="Curve2D_uovvh"]
 _data = {
@@ -8,7 +8,7 @@ _data = {
 }
 point_count = 5
 
-[node name="EnemySquarePath" type="Path2D"]
+[node name="EnemyRhombusPath" type="Path2D"]
 curve = SubResource("Curve2D_uovvh")
 script = ExtResource("1_b2rc3")
 

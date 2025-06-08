@@ -29,6 +29,7 @@
             return;
         }
         
+        // TODO move to physics process
         var direction = GlobalPosition.DirectionTo(_path.PathPoint.GlobalPosition);
         var distance = GlobalPosition.DistanceTo(_path.PathPoint.GlobalPosition);
         ApplyCentralForce(direction * distance * 10f);

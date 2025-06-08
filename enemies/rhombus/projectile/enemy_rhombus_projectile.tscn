@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://c0kcy42pxfucm"]
+
+[ext_resource type="Script" uid="uid://l5sysrhvvw3x" path="res://enemies/rhombus/projectile/EnemyRhombusProjectile.cs" id="1_whqtb"]
+[ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://enemies/square/projectile/enemy_square_projectile_hit_wall.wav" id="2_p8r22"]
+[ext_resource type="Texture2D" uid="uid://bbrbitna6fejv" path="res://enemies/rhombus/projectile/enemy_rhombus_projectile.png" id="3_tsytn"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jyvyp"]
+friction = 0.0
+bounce = 1.0
+
+[node name="EnemyRhombusProjectile" type="RigidBody2D"]
+z_index = 1
+collision_layer = 8
+collision_mask = 305
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_jyvyp")
+gravity_scale = 0.0
+inertia = 0.1
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 2
+linear_damp_mode = 1
+script = ExtResource("1_whqtb")
+_hitWallSound = ExtResource("2_p8r22")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_tsytn")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(26, -20, 22, -25, 16, -26, -24, -6, -26, 0, -24, 6, 16, 26, 22, 25, 26, 20)
