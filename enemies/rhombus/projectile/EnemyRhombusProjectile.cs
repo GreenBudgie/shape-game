@@ -1,7 +1,10 @@
 public partial class EnemyRhombusProjectile : RigidBody2D
 {
+    private const double MaxLifetimeSeconds = 6;
     
     [Export] private AudioStream _hitWallSound = null!;
+
+    private double _lifetimeSeconds = MaxLifetimeSeconds; 
     
     public override void _Ready()
     {
@@ -10,10 +13,12 @@ public partial class EnemyRhombusProjectile : RigidBody2D
 
     public override void _Process(double delta)
     {
-        if (this.IsOutsidePlayableArea())
+        if (this.IsOutsidePlayableArea() || _lifetimeSeconds <= 0)
         {
             QueueFree();
         }
+
+        _lifetimeSeconds -= delta;
     }
     
     public override void _PhysicsProcess(double delta)

@@ -1,15 +1,36 @@
-[gd_scene load_steps=6 format=3 uid="uid://c0kcy42pxfucm"]
+[gd_scene load_steps=10 format=3 uid="uid://c0kcy42pxfucm"]
 
 [ext_resource type="Script" uid="uid://l5sysrhvvw3x" path="res://enemies/rhombus/projectile/EnemyRhombusProjectile.cs" id="1_whqtb"]
 [ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://enemies/square/projectile/enemy_square_projectile_hit_wall.wav" id="2_p8r22"]
 [ext_resource type="Texture2D" uid="uid://bbrbitna6fejv" path="res://enemies/rhombus/projectile/enemy_rhombus_projectile.png" id="3_tsytn"]
+[ext_resource type="Texture2D" uid="uid://mhl34iu2fsui" path="res://enemies/rhombus/projectile/projectile_particle.png" id="4_ve5eh"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jyvyp"]
 friction = 0.0
 bounce = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tsytn"]
-radius = 20.025
+radius = 20.0
+
+[sub_resource type="Gradient" id="Gradient_ve5eh"]
+colors = PackedColorArray(1, 1, 1, 0.784314, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lscts"]
+gradient = SubResource("Gradient_ve5eh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lscts"]
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 0, 0)
+angular_velocity_min = -500.0
+angular_velocity_max = 500.0
+gravity = Vector3(0, 0, 0)
+scale_max = 1.5
+color_ramp = SubResource("GradientTexture1D_lscts")
 
 [node name="EnemyRhombusProjectile" type="RigidBody2D"]
 z_index = 1
@@ -28,11 +49,14 @@ _hitWallSound = ExtResource("2_p8r22")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("3_tsytn")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-visible = false
-polygon = PackedVector2Array(26, -20, 22, -25, 16, -26, -24, -6, -26, 0, -24, 6, 16, 26, 22, 25, 26, 20)
-disabled = true
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(6, 0)
 shape = SubResource("CircleShape2D_tsytn")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+z_index = -1
+position = Vector2(6, 0)
+amount = 6
+texture = ExtResource("4_ve5eh")
+lifetime = 0.3
+process_material = SubResource("ParticleProcessMaterial_lscts")
