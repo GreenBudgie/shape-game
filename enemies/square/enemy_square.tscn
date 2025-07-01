@@ -16,6 +16,7 @@ fractal_weighted_strength = 1.0
 noise = SubResource("FastNoiseLite_ylhy4")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_700y2"]
+resource_local_to_scene = true
 shader = ExtResource("4_o8fru")
 shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_igh3h")
 shader_parameter/dissolve_value = 1.0

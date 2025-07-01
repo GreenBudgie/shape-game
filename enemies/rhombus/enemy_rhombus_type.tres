@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemyType" load_steps=3 format=3 uid="uid://bwjka3mi3c2eu"]
+
+[ext_resource type="PackedScene" uid="uid://cea48ak5y5rsk" path="res://enemies/rhombus/enemy_rhombus.tscn" id="1_qqjnu"]
+[ext_resource type="Script" uid="uid://bdn3thmkqhurl" path="res://enemies/EnemyType.cs" id="2_iavnn"]
+
+[resource]
+script = ExtResource("2_iavnn")
+Scene = ExtResource("1_qqjnu")
+metadata/_custom_type_script = "uid://bdn3thmkqhurl"

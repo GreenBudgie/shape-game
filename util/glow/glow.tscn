@@ -14,6 +14,7 @@ shader_parameter/viewport_texture = SubResource("ViewportTexture_5plxl")
 shader_parameter/glow_color = Color(0.937, 0.357, 0.357, 1)
 shader_parameter/glow_radius = 12.0
 shader_parameter/glow_strength = 2.0
+shader_parameter/cull_occluded = true
 
 [node name="Glow" type="SubViewportContainer"]
 material = SubResource("ShaderMaterial_e1768")

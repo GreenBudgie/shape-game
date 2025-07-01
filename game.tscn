@@ -1,12 +1,13 @@
-[gd_scene load_steps=14 format=3 uid="uid://snfu2b1ifqye"]
+[gd_scene load_steps=15 format=3 uid="uid://snfu2b1ifqye"]
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
-[ext_resource type="PackedScene" uid="uid://cea48ak5y5rsk" path="res://enemies/rhombus/enemy_rhombus.tscn" id="3_eow3j"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
 [ext_resource type="PackedScene" uid="uid://bkdy1r0hmunja" path="res://ui/stats/stats_panel.tscn" id="6_eow3j"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
 [ext_resource type="Texture2D" uid="uid://ptdgrqellnu8" path="res://environment/wall/right_wall.png" id="7_eow3j"]
+[ext_resource type="Script" uid="uid://fxme35ooeqpu" path="res://level/LevelManager.cs" id="8_j5wjh"]
+[ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://enemies/EnemyManager.cs" id="8_vef74"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
 size = Vector2(512, 4208)
@@ -32,9 +33,6 @@ script = ExtResource("1_ryrav")
 [node name="Player" parent="." node_paths=PackedStringArray("_inventoryManager") instance=ExtResource("2_eow3j")]
 position = Vector2(2174, 1930)
 _inventoryManager = NodePath("../InventoryManager")
-
-[node name="EnemyRhombus" parent="." instance=ExtResource("3_eow3j")]
-position = Vector2(1029, -155)
 
 [node name="InventoryManager" parent="." instance=ExtResource("5_hve3p")]
 visible = false
@@ -91,3 +89,9 @@ debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
 [node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("6_mfdv2")]
 visible = false
+
+[node name="EnemyManager" type="Node" parent="."]
+script = ExtResource("8_vef74")
+
+[node name="LevelManager" type="Node" parent="."]
+script = ExtResource("8_j5wjh")
