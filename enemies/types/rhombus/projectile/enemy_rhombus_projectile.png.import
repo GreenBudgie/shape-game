@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cd3tf8mpauaks"
-path="res://.godot/imported/enemy_square.png-51d26f567605181f0f7e957605c7dcad.ctex"
+uid="uid://bbrbitna6fejv"
+path="res://.godot/imported/enemy_rhombus_projectile.png-aabcf30f596c8edda191ba3a6defa54b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://enemies/square/enemy_square.png"
-dest_files=["res://.godot/imported/enemy_square.png-51d26f567605181f0f7e957605c7dcad.ctex"]
+source_file="res://enemies/types/rhombus/projectile/enemy_rhombus_projectile.png"
+dest_files=["res://.godot/imported/enemy_rhombus_projectile.png-aabcf30f596c8edda191ba3a6defa54b.ctex"]
 
 [params]
 

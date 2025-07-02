@@ -1,14 +1,14 @@
-public partial class EnemySquarePath : Path2D
+public partial class EnemySquarePath : EnemyPath
 {
 
     private const float MinYOffset = 300;
     private const float MaxYOffset = 600;
 
-    public PathFollow2D PathPoint { get; private set; } = null!;
-
     public override void _Ready()
     {
-        PathPoint = GetNode<PathFollow2D>("PathPoint");
+        base._Ready();
+        
+        PathPoint.ProgressRatio = (float)GD.RandRange(0f, 1f);
 
         var pointCount = Curve.PointCount;
         var leftmostPoint = Curve.GetPointPosition(0);

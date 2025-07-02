@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://dc18dklo4du01"
-path="res://.godot/imported/enemy_square_shot.wav-c321347650ee0d41f75a5c5c5bf6a321.sample"
+path="res://.godot/imported/enemy_square_shot.wav-9133404b448f715ef0de3665b6b5f8be.sample"
 
 [deps]
 
-source_file="res://enemies/square/projectile/enemy_square_shot.wav"
-dest_files=["res://.godot/imported/enemy_square_shot.wav-c321347650ee0d41f75a5c5c5bf6a321.sample"]
+source_file="res://enemies/types/square/projectile/enemy_square_shot.wav"
+dest_files=["res://.godot/imported/enemy_square_shot.wav-9133404b448f715ef0de3665b6b5f8be.sample"]
 
 [params]
 

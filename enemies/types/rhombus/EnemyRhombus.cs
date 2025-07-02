@@ -7,16 +7,17 @@
     [Export] private Marker2D _leftProjectileSpawnPosition = null!;
     [Export] private Marker2D _rightProjectileSpawnPosition = null!;
 
-    private EnemyRhombusPath _path = null!;
     private int _direction; // 1 = clockwise, -1 = counterclockwise
+    private EnemyPathFollowController _pathFollowController = null!;
     
     public override void _Ready()
     {
         base._Ready();
         
         _direction = GD.Randf() > 0.5f ? -1 : 1;
-        _path = EnemyRhombusPath.CreatePath(_direction);
-        ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, _path);
+        var path = EnemyRhombusPath.CreatePath(_direction);
+        ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, path);
+        _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, path);
         
         ResetAttack();
     }
@@ -24,15 +25,7 @@
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-        
-        if (IsDestroyed || !_path.IsInsideTree())
-        {
-            return;
-        }
-        
-        var direction = GlobalPosition.DirectionTo(_path.PathPoint.GlobalPosition);
-        var distance = GlobalPosition.DistanceTo(_path.PathPoint.GlobalPosition);
-        ApplyCentralForce(direction * distance * 10f);
+ 
         ApplyTorque(-_direction * 10000f);
     }
 

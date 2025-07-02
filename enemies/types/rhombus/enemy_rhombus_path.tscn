@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dofw2c36kh88s"]
 
-[ext_resource type="Script" uid="uid://bk0i8k8job4tw" path="res://enemies/rhombus/EnemyRhombusPath.cs" id="1_b2rc3"]
+[ext_resource type="Script" uid="uid://bk0i8k8job4tw" path="res://enemies/types/rhombus/EnemyRhombusPath.cs" id="1_b2rc3"]
 
 [sub_resource type="Curve2D" id="Curve2D_uovvh"]
 _data = {

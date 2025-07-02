@@ -1,11 +1,11 @@
 [gd_scene load_steps=12 format=3 uid="uid://cea48ak5y5rsk"]
 
-[ext_resource type="Script" uid="uid://g81fbebdevf3" path="res://enemies/rhombus/EnemyRhombus.cs" id="1_hl3kr"]
-[ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/square/projectile/enemy_square_shot.wav" id="2_m8fef"]
+[ext_resource type="Script" uid="uid://g81fbebdevf3" path="res://enemies/types/rhombus/EnemyRhombus.cs" id="1_hl3kr"]
+[ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/types/square/projectile/enemy_square_shot.wav" id="2_m8fef"]
 [ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/enemy_damage.wav" id="3_8h5ga"]
 [ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://enemies/enemy_destroy.wav" id="4_yi2lj"]
 [ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve.gdshader" id="5_irpmm"]
-[ext_resource type="Texture2D" uid="uid://cngnn50r7k8a" path="res://enemies/rhombus/rhombus.png" id="6_8h5ga"]
+[ext_resource type="Texture2D" uid="uid://cngnn50r7k8a" path="res://enemies/types/rhombus/rhombus.png" id="6_8h5ga"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://enemies/enemy_animations.tscn" id="7_yi2lj"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ylhy4"]

@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow.gdshader" id="1_5plxl"]
 [ext_resource type="Script" uid="uid://dijyl0ejrv8c2" path="res://util/glow/Glow.cs" id="1_v14u5"]
-[ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://enemies/square/enemy_square.png" id="3_e1768"]
+[ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://enemies/types/square/enemy_square.png" id="3_e1768"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_5plxl"]
 viewport_path = NodePath("SubViewport")

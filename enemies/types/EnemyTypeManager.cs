@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public partial class EnemyManager : Node
+public partial class EnemyTypeManager : Node
 {
 
     private static readonly Rect2I EnemySpawnArea = new(
@@ -10,10 +10,10 @@ public partial class EnemyManager : Node
         0
     );
 
-    private static readonly List<EnemyType> _enemyTypes =
-        ResourceSearcher.FindInnerResources<EnemyType>("res://enemies");
+    private static readonly List<EnemyType> EnemyTypes =
+        ResourceSearcher.FindInnerResources<EnemyType>("res://enemies/types");
 
-    public static EnemyManager Instance { get; private set; } = null!;
+    public static EnemyTypeManager Instance { get; private set; } = null!;
 
     public override void _EnterTree()
     {
@@ -22,7 +22,7 @@ public partial class EnemyManager : Node
 
     public EnemyType GetRandomEnemyType()
     {
-        return _enemyTypes[GD.RandRange(0, _enemyTypes.Count - 1)];
+        return EnemyTypes[GD.RandRange(0, EnemyTypes.Count - 1)];
     }
 
     public Enemy SpawnEnemy(EnemyType type)

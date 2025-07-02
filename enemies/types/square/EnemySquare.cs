@@ -3,36 +3,36 @@
 
     private static readonly PackedScene ProjectileScene = GD.Load<PackedScene>("uid://bhj8dgeytmpxx");
     private static readonly PackedScene PathScene = GD.Load<PackedScene>("uid://b1ehfaspqd28s");
-    
+
     [Export] private AudioStream _shotSound = null!;
 
     private const double FireDelay = 1;
 
     private double _fireTimer = FireDelay;
-
-    private EnemySquarePath _path = null!;
+    private EnemyPathFollowController _pathFollowController = null!;
 
     public override void _Ready()
     {
         base._Ready();
-        
-        _path = PathScene.Instantiate<EnemySquarePath>();
-        ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, _path);
+
+        var path = PathScene.Instantiate<EnemySquarePath>();
+        ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, path);
+        _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, path);
     }
 
     public override void _Process(double delta)
     {
         base._Process(delta);
-        
+
         if (IsDestroyed)
         {
             return;
         }
-        
-        // TODO move to physics process
-        var direction = GlobalPosition.DirectionTo(_path.PathPoint.GlobalPosition);
-        var distance = GlobalPosition.DistanceTo(_path.PathPoint.GlobalPosition);
-        ApplyCentralForce(direction * distance * 10f);
+
+        if (!_pathFollowController.IsPathReached)
+        {
+            return;
+        }
 
         if (_fireTimer <= 0)
         {

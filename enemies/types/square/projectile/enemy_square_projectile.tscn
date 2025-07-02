@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://bhj8dgeytmpxx"]
 
-[ext_resource type="Script" uid="uid://r5s6weechulc" path="res://enemies/square/projectile/EnemySquareProjectile.cs" id="1_jyvyp"]
-[ext_resource type="Texture2D" uid="uid://b512c0n1380pp" path="res://enemies/square/projectile/enemy_square_projectile.png" id="2_eu8a1"]
-[ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://enemies/square/projectile/enemy_square_projectile_hit_wall.wav" id="2_y3uyh"]
+[ext_resource type="Script" uid="uid://r5s6weechulc" path="res://enemies/types/square/projectile/EnemySquareProjectile.cs" id="1_jyvyp"]
+[ext_resource type="Texture2D" uid="uid://b512c0n1380pp" path="res://enemies/types/square/projectile/enemy_square_projectile.png" id="2_eu8a1"]
+[ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://enemies/types/square/projectile/enemy_square_projectile_hit_wall.wav" id="2_y3uyh"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jyvyp"]
 friction = 0.5
