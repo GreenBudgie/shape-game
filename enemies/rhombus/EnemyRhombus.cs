@@ -50,7 +50,7 @@
 
     public override float GetMaxHealth()
     {
-        return 12;
+        return 5;
     }
     
     private const double MinAttackStartDelaySeconds = 2;

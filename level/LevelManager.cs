@@ -19,7 +19,8 @@ public partial class LevelManager : Node
     public void StartLevel(int level)
     {
         _level = level;
-        
+
+        CallDeferred(MethodName.SpawnEnemy);
         var tween = GetTree().CreateTween().SetLoops();
         tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(5.0f);
     }

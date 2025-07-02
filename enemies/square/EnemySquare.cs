@@ -47,7 +47,7 @@
 
     public override float GetMaxHealth()
     {
-        return 10;
+        return 3;
     }
 
     private void Fire()
