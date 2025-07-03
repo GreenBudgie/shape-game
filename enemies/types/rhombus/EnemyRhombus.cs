@@ -43,9 +43,14 @@
 
     public override float GetMaxHealth()
     {
-        return 5;
+        return 1;
     }
-    
+
+    public override float GetCrystalsToDrop()
+    {
+        return 10;
+    }
+
     private const double MinAttackStartDelaySeconds = 2;
     private const double MaxAttackStartDelaySeconds = 3;
     private const double MinAttackDurationSeconds = 3;

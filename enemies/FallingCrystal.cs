@@ -8,12 +8,17 @@ public partial class FallingCrystal : RigidBody2D
     private const float MaxGlowStrength = 2f;
     private const float MinGlowRadius = 20f;
     private const float MaxGlowRadius = 40f;
+    private const float MaxLinearDamp = 4;
+    private const float CollectedDamp = 10;
+    private const float CollectedMagnetForce = 1500;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bu4bb10k0x66d");
 
     [Export] private Color _glowColor;
 
+    private bool _isCollected;
     private Glow _glow = null!;
+    private AnimationPlayer _crystalAnimations = null!;
 
     public static FallingCrystal CreateFallingCrystal()
     {
@@ -25,6 +30,8 @@ public partial class FallingCrystal : RigidBody2D
         var sprite = GetNode<Sprite2D>("Sprite2D");
         _glow = Glow.AddGlow(sprite).SetColor(_glowColor);
         ResetGlowToMin();
+
+        _crystalAnimations = GetNode<AnimationPlayer>("CrystalAnimations");
 
         BodyEntered += HandleCollision;
     }
@@ -39,6 +46,7 @@ public partial class FallingCrystal : RigidBody2D
         var player = Player.FindPlayer();
         if (player == null)
         {
+            LinearDamp = 0;
             SetGravityScale(1);
             ResetGlowToMin();
             return;
@@ -47,17 +55,27 @@ public partial class FallingCrystal : RigidBody2D
         var distanceToPlayerSq = GlobalPosition.DistanceSquaredTo(player.GlobalPosition);
         if (distanceToPlayerSq > MaxMagnetDistanceSq)
         {
+            LinearDamp = 0;
             SetGravityScale(1);
             ResetGlowToMin();
             return;
         }
+        
+        var direction = GlobalPosition.DirectionTo(player.GlobalPosition);
 
+        if (_isCollected)
+        {
+            LinearDamp = CollectedDamp;
+            SetGravityScale(0);
+            ApplyCentralForce(direction * CollectedMagnetForce);
+        }
+        
         var distanceToPlayer = Sqrt(distanceToPlayerSq);
         var distancePercent = 1 - distanceToPlayer / MaxMagnetDistance;
         var forceStrength = Ease(distancePercent, 0.25f) * MaxMagnetForce;
-        var direction = GlobalPosition.DirectionTo(player.GlobalPosition);
         var forceVector = direction * forceStrength;
 
+        LinearDamp = Lerp(0, MaxLinearDamp, distancePercent);
         SetGravityScale(distancePercent);
         ApplyCentralForce(forceVector);
         
@@ -91,7 +109,21 @@ public partial class FallingCrystal : RigidBody2D
 
     private void Collect()
     {
-        QueueFree();
+        _isCollected = true;
+        CollisionLayer = 0;
+        CollisionMask = 0;
+        
+        _glow.SetCullOccluded(false);
+        var fadeOutTween = _glow.CreateTween();
+        var setColorAction = _glow.SetColor;
+        var finalGlowColor = _glow.GetColor();
+        finalGlowColor.A = 0;
+        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.15);
+
+        _crystalAnimations.Play("collect");
+        _crystalAnimations.AnimationFinished += _ => QueueFree();
+        
+        CrystalManager.Instance.CollectCrystal();
     }
 
 }

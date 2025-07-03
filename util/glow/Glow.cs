@@ -1,5 +1,5 @@
 /// <summary>
-/// A component for adding a glow effect to a Sprite2D using a shader.
+/// A component for adding a glow effect to a Sprite2D or TextureRect using a shader.
 /// </summary>
 public partial class Glow : SubViewportContainer
 {
@@ -39,7 +39,7 @@ public partial class Glow : SubViewportContainer
             return;
         }
 
-        var t = Time.GetTicksMsec() / 1000f;
+        var t = Time.GetTicksMsec() / 1000f; // TODO fps
         var pulse = 0.5f + 0.5f * Sin(t * Tau * _pulsesPerSecond);
         UpdateRadius(_baseRadius + _pulseRadiusDelta * pulse);
         UpdateStrength(_baseStrength + _pulseStrengthDelta * pulse);
@@ -204,19 +204,35 @@ public partial class Glow : SubViewportContainer
     /// <returns>The instantiated Glow node.</returns>
     public static Glow AddGlow(Sprite2D sprite)
     {
+        return AttachGlow(sprite, sprite.Texture, Vector2.Zero);
+    }
+    
+    /// <summary>
+    /// Adds a Glow instance as a child to the given TextureRect, with the same texture.
+    ///
+    /// Image in this TextureRect should be centered.
+    /// </summary>
+    /// <param name="textureRect">The texture rect to attach the glow to.</param>
+    /// <returns>The instantiated Glow node.</returns>
+    public static Glow AddGlow(TextureRect textureRect)
+    {
+        return AttachGlow(textureRect, textureRect.Texture, textureRect.Size / 2);
+    }
+
+    private static Glow AttachGlow(CanvasItem node, Texture2D texture, Vector2 centerShift)
+    {
         var glow = GlowScene.Instantiate<Glow>();
         var subViewport = glow.GetNode<SubViewport>("SubViewport");
         var glowSprite = glow.GetNode<Sprite2D>("SubViewport/Sprite");
         
-        sprite.AddChild(glow);
-        
-        var texture = sprite.Texture;
+        node.AddChild(glow);
+
         subViewport.Size = (Vector2I)(texture.GetSize() * 2);
         glowSprite.Texture = texture;
         glowSprite.Position = subViewport.Size / 2;
-        glow.ZIndex = sprite.ZIndex - 1;
+        glow.ZIndex = node.ZIndex - 1;
         glow.Size = subViewport.Size;
-        glow.Position = -subViewport.Size / 2;
+        glow.Position = -subViewport.Size / 2 + centerShift;
 
         return glow;
     }

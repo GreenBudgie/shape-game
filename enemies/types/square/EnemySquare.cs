@@ -47,7 +47,12 @@
 
     public override float GetMaxHealth()
     {
-        return 3;
+        return 1;
+    }
+    
+    public override float GetCrystalsToDrop()
+    {
+        return 10;
     }
 
     private void Fire()

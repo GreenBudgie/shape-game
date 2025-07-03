@@ -4,7 +4,7 @@ public abstract partial class Enemy : RigidBody2D
 {
 
     [Export] protected Color EnemyColor { get; private set; }
-    [Export] protected int Crystals { get; private set; }
+
     [Export] protected CollisionShape2D CrystalSpawnArea = null!;
 
     [Export] protected AudioStream DamageSound = null!;
@@ -42,6 +42,8 @@ public abstract partial class Enemy : RigidBody2D
     }
 
     public abstract float GetMaxHealth();
+    
+    public abstract float GetCrystalsToDrop();
 
     public void Damage()
     {
@@ -89,7 +91,7 @@ public abstract partial class Enemy : RigidBody2D
         var maxCrystalSpawnX = areaX + halfShapeSize.X;
         var minCrystalSpawnY = areaY + halfShapeSize.Y;
         var maxCrystalSpawnY = areaY + halfShapeSize.Y;
-        for (var i = 0; i < Crystals; i++)
+        for (var i = 0; i < GetCrystalsToDrop(); i++)
         {
             var crystal = FallingCrystal.CreateFallingCrystal();
             ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, crystal);

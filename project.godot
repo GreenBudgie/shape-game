@@ -43,10 +43,18 @@ naming/default_signal_callback_to_self_name="On{signal_name}"
 
 level_walls=""
 
+[gui]
+
+theme/custom="uid://ciwqpwd0x241b"
+
 [importer_defaults]
 
 texture={
 &"mipmaps/generate": true
+}
+font_data_dynamic={
+&"generate_mipmaps": true,
+&"multichannel_signed_distance_field": true
 }
 
 [input]
@@ -113,4 +121,6 @@ common/max_physics_steps_per_frame=32
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=2
+anti_aliasing/quality/msaa_2d=2
 environment/defaults/default_clear_color=Color(0.145098, 0.145098, 0.129412, 1)
