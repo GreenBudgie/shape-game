@@ -122,7 +122,7 @@ public partial class FallingCrystal : RigidBody2D
 
         _crystalAnimations.Play("collect");
         _crystalAnimations.AnimationFinished += _ => QueueFree();
-        
+
         CrystalManager.Instance.CollectCrystal();
     }
 

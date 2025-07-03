@@ -7,6 +7,15 @@
     {
         Instance = this;
     }
+    
+    public AudioStreamPlayer PlaySound(AudioStream sound)
+    {
+        var soundNode = new AudioStreamPlayer();
+        GetTree().Root.AddChild(soundNode);
+        soundNode.Stream = sound;
+        soundNode.Play();
+        return soundNode;
+    }
 
     public PositionalSound PlayPositionalSound(Node2D node, AudioStream sound)
     {

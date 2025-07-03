@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8gd2gve05upa"]
+
+[ext_resource type="Script" uid="uid://bojvdefspd3sx" path="res://systems/CrystalManager.cs" id="1_sma8j"]
+[ext_resource type="AudioStream" uid="uid://baj5r00ukm6pb" path="res://systems/crystal_collect.wav" id="2_v64tr"]
+
+[node name="CrystalManager" type="Node"]
+script = ExtResource("1_sma8j")
+_collectSound = ExtResource("2_v64tr")

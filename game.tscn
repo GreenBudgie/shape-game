@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ptdgrqellnu8" path="res://environment/wall/right_wall.png" id="7_eow3j"]
 [ext_resource type="Script" uid="uid://fxme35ooeqpu" path="res://level/LevelManager.cs" id="8_j5wjh"]
 [ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://enemies/types/EnemyTypeManager.cs" id="8_vef74"]
-[ext_resource type="Script" uid="uid://bojvdefspd3sx" path="res://systems/CrystalManager.cs" id="9_vef74"]
+[ext_resource type="PackedScene" uid="uid://b8gd2gve05upa" path="res://systems/CrystalManager.tscn" id="9_vef74"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
 size = Vector2(512, 4208)
@@ -97,5 +97,4 @@ script = ExtResource("8_vef74")
 [node name="LevelManager" type="Node" parent="."]
 script = ExtResource("8_j5wjh")
 
-[node name="CrystalManager" type="Node" parent="."]
-script = ExtResource("9_vef74")
+[node name="CrystalManager" parent="." instance=ExtResource("9_vef74")]
