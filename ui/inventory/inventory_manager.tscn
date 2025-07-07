@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://csitvuhpytc2q"]
+[gd_scene load_steps=5 format=3 uid="uid://csitvuhpytc2q"]
 
 [ext_resource type="Script" uid="uid://b63f61tf6hqig" path="res://ui/inventory/InventoryManager.cs" id="1_bclat"]
 [ext_resource type="PackedScene" uid="uid://dilsv34jaqcrd" path="res://ui/inventory/slot/inventory_slot.tscn" id="1_qat6u"]
 [ext_resource type="Script" uid="uid://uk0cdv5oks15" path="res://ui/inventory/PlayerInventory.cs" id="2_sgwov"]
-[ext_resource type="PackedScene" uid="uid://dx0hqavkmt1bm" path="res://modules/projectiles/bolt/double_bolt_module.tscn" id="3_o6175"]
 [ext_resource type="Script" uid="uid://ccs8ycrls12u5" path="res://ui/inventory/BlasterInventory.cs" id="5_a1ldh"]
 
 [node name="InventoryManager" type="CanvasLayer"]
@@ -28,8 +27,9 @@ script = ExtResource("2_sgwov")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
+offset_left = 647.0
 offset_top = 32.0
-offset_bottom = 132.0
+offset_bottom = 232.0
 grow_horizontal = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PlayerInventory/CenterContainer"]
@@ -43,9 +43,6 @@ layout_mode = 2
 [node name="InventorySlot2" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
 
-[node name="DoubleBoltModule" parent="PlayerInventory/CenterContainer/HBoxContainer/InventorySlot2" instance=ExtResource("3_o6175")]
-layout_mode = 1
-
 [node name="InventorySlot3" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
 
@@ -56,18 +53,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="InventorySlot6" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
-layout_mode = 2
-
-[node name="InventorySlot7" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
-layout_mode = 2
-
-[node name="InventorySlot8" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
-layout_mode = 2
-
-[node name="InventorySlot9" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
-layout_mode = 2
-
-[node name="InventorySlot10" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
 
 [node name="LeftBlasterInventory" type="Control" parent="."]
@@ -103,7 +88,6 @@ offset_bottom = 15.0
 layout_mode = 2
 offset_left = 661.0
 offset_right = 749.0
-offset_bottom = 100.0
 
 [node name="InventorySlot5" parent="LeftBlasterInventory" instance=ExtResource("1_qat6u")]
 layout_mode = 2
@@ -154,8 +138,8 @@ offset_bottom = 15.0
 [node name="InventorySlot4" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
 layout_mode = 0
 offset_left = -774.0
+offset_top = 0.0
 offset_right = -686.0
-offset_bottom = 100.0
 
 [node name="InventorySlot5" parent="RightBlasterInventory" instance=ExtResource("1_qat6u")]
 layout_mode = 0

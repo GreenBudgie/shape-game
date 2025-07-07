@@ -3,10 +3,10 @@
 /// </summary>
 public partial class Glow : SubViewportContainer
 {
-    private static readonly StringName GlowColor = "glow_color";
-    private static readonly StringName GlowRadius = "glow_radius";
-    private static readonly StringName GlowStrength = "glow_strength";
-    private static readonly StringName CullOccluded = "cull_occluded";
+    private static readonly StringName GlowColorName = "glow_color";
+    private static readonly StringName GlowRadiusName = "glow_radius";
+    private static readonly StringName GlowStrengthName = "glow_strength";
+    private static readonly StringName CullOccludedName = "cull_occluded";
 
     private static readonly PackedScene GlowScene = GD.Load<PackedScene>("uid://c3qvnso7dnntg");
 
@@ -19,6 +19,30 @@ public partial class Glow : SubViewportContainer
 
     private float _baseStrength;
     private float _baseRadius;
+
+    public Color Color
+    {
+        get => GetColor();
+        set => SetColor(value);
+    }
+
+    public float Radius
+    {
+        get => GetRadius();
+        set => SetRadius(value);
+    }
+    
+    public float Strength
+    {
+        get => GetStrength();
+        set => SetStrength(value);
+    }
+    
+    public bool CullOccluded
+    {
+        get => IsCullOccluded();
+        set => SetCullOccluded(value);
+    }
 
     public override void _Ready()
     {
@@ -52,7 +76,7 @@ public partial class Glow : SubViewportContainer
     /// <returns>The current Glow instance for chaining.</returns>
     public Glow SetColor(Color color)
     {
-        _shaderMaterial.SetShaderParameter(GlowColor, color);
+        _shaderMaterial.SetShaderParameter(GlowColorName, color);
         return this;
     }
 
@@ -70,7 +94,7 @@ public partial class Glow : SubViewportContainer
     
     private void UpdateRadius(float radius)
     {
-        _shaderMaterial.SetShaderParameter(GlowRadius, radius);
+        _shaderMaterial.SetShaderParameter(GlowRadiusName, radius);
     }
     
     /// <summary>
@@ -87,12 +111,23 @@ public partial class Glow : SubViewportContainer
     
     private void UpdateStrength(float strength)
     {
-        _shaderMaterial.SetShaderParameter(GlowStrength, strength);
+        _shaderMaterial.SetShaderParameter(GlowStrengthName, strength);
     }
 
     public Glow SetCullOccluded(bool cullOccluded)
     {
-        _shaderMaterial.SetShaderParameter(CullOccluded, cullOccluded);
+        _shaderMaterial.SetShaderParameter(CullOccludedName, cullOccluded);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the strength and radius of the glow to zero, turning it "off".
+    /// </summary>
+    /// <returns>The current Glow instance for chaining.</returns>
+    public Glow TurnOff()
+    {
+        SetRadius(0);
+        SetStrength(0);
         return this;
     }
 
@@ -102,7 +137,7 @@ public partial class Glow : SubViewportContainer
     /// <returns>The glow color.</returns>
     public Color GetColor()
     {
-        return (Color)_shaderMaterial.GetShaderParameter(GlowColor);
+        return (Color)_shaderMaterial.GetShaderParameter(GlowColorName);
     }
 
     /// <summary>
@@ -111,7 +146,7 @@ public partial class Glow : SubViewportContainer
     /// <returns>The blur radius in pixels.</returns>
     public float GetRadius()
     {
-        return (float)_shaderMaterial.GetShaderParameter(GlowRadius);
+        return (float)_shaderMaterial.GetShaderParameter(GlowRadiusName);
     }
 
     /// <summary>
@@ -120,12 +155,12 @@ public partial class Glow : SubViewportContainer
     /// <returns>The glow strength.</returns>
     public float GetStrength()
     {
-        return (float)_shaderMaterial.GetShaderParameter(GlowStrength);
+        return (float)_shaderMaterial.GetShaderParameter(GlowStrengthName);
     }
 
     public bool IsCullOccluded()
     {
-        return (bool)_shaderMaterial.GetShaderParameter(CullOccluded);
+        return (bool)_shaderMaterial.GetShaderParameter(CullOccludedName);
     }
 
     /// <summary>
@@ -217,6 +252,18 @@ public partial class Glow : SubViewportContainer
     public static Glow AddGlow(TextureRect textureRect)
     {
         return AttachGlow(textureRect, textureRect.Texture, textureRect.Size / 2);
+    }
+    
+    /// <summary>
+    /// Adds a Glow instance as a child to the given TextureButton, with the texture of normal button state.
+    ///
+    /// Image in this TextureButton should be centered.
+    /// </summary>
+    /// <param name="textureButton">The texture button to attach the glow to.</param>
+    /// <returns>The instantiated Glow node.</returns>
+    public static Glow AddGlow(TextureButton textureButton)
+    {
+        return AttachGlow(textureButton, textureButton.TextureNormal, textureButton.Size / 2);
     }
 
     private static Glow AttachGlow(CanvasItem node, Texture2D texture, Vector2 centerShift)
