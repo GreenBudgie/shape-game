@@ -7,7 +7,6 @@
   <ItemGroup>
     <None Include="**/*.tscn" />
     <None Include="**/*.tres" />
-    <None Include="**/*.uid" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="enemies\types\" />

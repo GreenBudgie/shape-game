@@ -8,24 +8,25 @@ public partial class InventoryManager : CanvasLayer
 
     [Signal]
     public delegate void InventoryCloseEventHandler();
+    
+    
 
-    [Node] private PlayerInventory _playerInventory;
-    [Node] private BlasterInventory _leftBlasterInventory;
-    [Node] private BlasterInventory _rightBlasterInventory;
+    [Export] private PlayerInventory _playerInventory = null!;
+    [Export] private BlasterInventory _leftBlasterInventory = null!;
+    [Export] private BlasterInventory _rightBlasterInventory = null!;
 
-    private InventorySlot _dragAndDropFrom;
-    private List<InventorySlot> _slots;
-    private List<ModuleInventory> _inventories;
+    private InventorySlot _dragAndDropFrom = null!;
+    private List<InventorySlot> _slots = null!;
+    private List<ModuleInventory> _inventories = null!;
 
     public override void _Ready()
     {
-        this.InitAttributes();
-        _inventories = new List<ModuleInventory>
-        {
+        _inventories =
+        [
             _playerInventory,
             _leftBlasterInventory,
             _rightBlasterInventory
-        };
+        ];
         _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 
         Close();

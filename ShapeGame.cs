@@ -15,7 +15,7 @@ public partial class ShapeGame : Node2D
 
     public override void _Ready()
     {
-        Input.MouseMode = Input.MouseModeEnum.Hidden;
+        // Input.MouseMode = Input.MouseModeEnum.Hidden;
         // Engine.MaxFps = 30; 
     }
 

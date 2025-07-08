@@ -33,10 +33,7 @@ script = ExtResource("1_ryrav")
 
 [node name="Player" parent="." node_paths=PackedStringArray("_inventoryManager") instance=ExtResource("2_eow3j")]
 position = Vector2(2174, 1930)
-_inventoryManager = NodePath("../InventoryManager")
-
-[node name="InventoryManager" parent="." instance=ExtResource("5_hve3p")]
-visible = false
+_inventoryManager = NodePath("../UI/InventoryManager")
 
 [node name="RightWall" type="Sprite2D" parent="."]
 position = Vector2(3808, 1080)
@@ -84,11 +81,15 @@ position = Vector2(2144, 3448)
 shape = SubResource("RectangleShape2D_vef74")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="."]
 
-[node name="StatsPanel" parent="CanvasLayer" instance=ExtResource("6_eow3j")]
+[node name="InventoryManager" parent="UI" instance=ExtResource("5_hve3p")]
+offset_left = 512.0
+offset_right = 512.0
 
-[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("6_mfdv2")]
+[node name="StatsPanel" parent="UI" instance=ExtResource("6_eow3j")]
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("6_mfdv2")]
 visible = false
 
 [node name="EnemyManager" type="Node" parent="."]

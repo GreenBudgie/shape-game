@@ -50,7 +50,6 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
-        this.InitAttributes();
         PauseManager.Instance.GameUnpause += () => MoveMouseToWindowCenter();
         _inventoryManager.InventoryClose += () => MoveMouseToWindowCenter();
     }
