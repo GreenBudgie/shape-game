@@ -6,8 +6,8 @@
     
     [Signal]
     public delegate void GameUnpauseEventHandler();
-    
-    public static PauseManager Instance { get; private set; }
+
+    public static PauseManager Instance { get; private set; } = null!;
 
     public override void _Ready()
     {

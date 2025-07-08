@@ -3,7 +3,7 @@ using System.Collections.Generic;
 public partial class EnemyTypeManager : Node
 {
 
-    private static readonly Rect2I EnemySpawnArea = new(
+    private static readonly Rect2 EnemySpawnArea = new(
         ShapeGame.PlayableArea.Position.X + 128,
         ShapeGame.PlayableArea.Position.Y - 256,
         ShapeGame.PlayableArea.Size.X - 128,
@@ -33,12 +33,12 @@ public partial class EnemyTypeManager : Node
         return enemy;
     }
 
-    private static Vector2I GetRandomEnemySpawnLocation()
+    private static Vector2 GetRandomEnemySpawnLocation()
     {
         var x = GD.RandRange(EnemySpawnArea.Position.X, EnemySpawnArea.End.X);
         var y = GD.RandRange(EnemySpawnArea.Position.Y, EnemySpawnArea.End.Y);
 
-        return new Vector2I(x, y);
+        return new Vector2((float)x, (float)y);
     }
 
 }

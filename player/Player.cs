@@ -33,12 +33,13 @@ public partial class Player : CharacterBody2D
     private double _rotationDegreesEpsilon = 0.3;
 
     private float _primaryFireTimer;
+    private Vector2 _windowCenter;
 
     public static Player? FindPlayer()
     {
         return _instance;
     }
-    
+
     public override void _EnterTree()
     {
         _instance = this;
@@ -46,16 +47,23 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
-        PauseManager.Instance.GameUnpause += () => MoveMouseToWindowCenter();
-        InventoryManager.Instance.InventoryClose += () => MoveMouseToWindowCenter();
+        _windowCenter = new Vector2(
+            GetViewportRect().Size.X / 2.0f,
+            GetViewportRect().Size.Y / 2.0f
+        );
+
+        PauseManager.Instance.GameUnpause += () => MoveMouseToWindowCenter(_windowCenter);
+        PauseManager.Instance.GamePause += () => MoveMouseToWindowCenter(ShapeGame.PlayableArea.GetCenter());
+        InventoryManager.Instance.InventoryClosed += () => MoveMouseToWindowCenter(_windowCenter);
+        InventoryManager.Instance.InventoryOpened += () => MoveMouseToWindowCenter(ShapeGame.PlayableArea.GetCenter());
     }
 
     public override void _Process(double delta)
     {
         var mouseDelta = Vector2.Zero;
-        if (!InventoryManager.Instance.IsOpen())
+        if (!InventoryManager.Instance.IsOpen)
         {
-            mouseDelta = MoveMouseToWindowCenter();
+            mouseDelta = MoveMouseToWindowCenter(_windowCenter);
         }
 
         var prevPosition = Position;
@@ -71,7 +79,8 @@ public partial class Player : CharacterBody2D
             RotationDegrees = 0;
         }
 
-        if (!InventoryManager.Instance.IsOpen() && (int)Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
+        if (!InventoryManager.Instance.IsOpen && (int)Input.GetActionStrength("primary_fire") == 1 &&
+            _primaryFireTimer <= 0)
         {
             PrimaryFire();
         }
@@ -82,20 +91,11 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    private Vector2 GetWindowCenter()
+    private Vector2 MoveMouseToWindowCenter(Vector2 windowCenterToUse)
     {
-        return new Vector2(
-            GetViewportRect().Size.X / 2.0f,
-            GetViewportRect().Size.Y / 2.0f
-        );
-    }
-
-    private Vector2 MoveMouseToWindowCenter()
-    {
-        var windowCenter = GetWindowCenter();
         var mousePosition = GetViewport().GetMousePosition();
-        GetViewport().WarpMouse(windowCenter);
-        return mousePosition - windowCenter;
+        GetViewport().WarpMouse(windowCenterToUse);
+        return mousePosition - windowCenterToUse;
     }
 
     private Vector2 GetNosePosition()

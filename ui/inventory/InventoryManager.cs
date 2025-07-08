@@ -3,13 +3,18 @@ using System.Linq;
 
 public partial class InventoryManager : Control
 {
-    [Signal]
-    public delegate void InventoryOpenEventHandler();
+
+    private const float FadeDuration = 0.1f;
 
     [Signal]
-    public delegate void InventoryCloseEventHandler();
+    public delegate void InventoryOpenedEventHandler();
+
+    [Signal]
+    public delegate void InventoryClosedEventHandler();
 
     public static InventoryManager Instance { get; private set; } = null!;
+
+    public bool IsOpen { get; private set; } = true;
 
     [Export] private PlayerInventory _playerInventory = null!;
     [Export] private BlasterInventory _leftBlasterInventory = null!;
@@ -18,6 +23,8 @@ public partial class InventoryManager : Control
     private InventorySlot? _dragAndDropFrom;
     private List<InventorySlot> _slots = null!;
     private List<ModuleInventory> _inventories = null!;
+
+    private Tween? _alphaTween;
 
     public override void _EnterTree()
     {
@@ -34,6 +41,7 @@ public partial class InventoryManager : Control
         ];
         _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 
+        Visible = false;
         Close();
     }
 
@@ -43,11 +51,6 @@ public partial class InventoryManager : Control
         HandleDragAndDrop();
     }
 
-    public bool IsOpen()
-    {
-        return Visible;
-    }
-
     private void HandleInventoryOpenAndClose()
     {
         if (!Input.IsActionJustPressed("inventory"))
@@ -55,7 +58,7 @@ public partial class InventoryManager : Control
             return;
         }
 
-        if (IsOpen())
+        if (IsOpen)
         {
             Close();
         }
@@ -125,34 +128,63 @@ public partial class InventoryManager : Control
 
     private void Open()
     {
-        if (IsOpen())
+        if (IsOpen)
         {
             return;
         }
 
+        Input.MouseMode = Input.MouseModeEnum.Visible;
         Visible = true;
+        IsOpen = true;
         foreach (var child in GetChildren())
         {
             child.SetProcess(true);
         }
 
-        EmitSignal(SignalName.InventoryOpen);
+        _alphaTween?.Kill();
+        _alphaTween = CreateTween();
+        _alphaTween.TweenProperty(
+            @object: this,
+            property: CanvasItem.PropertyName.Modulate.ToString(),
+            finalVal: Colors.White,
+            duration: FadeDuration
+        );
+
+        EmitSignalInventoryOpened();
     }
 
     private void Close()
     {
-        if (!IsOpen())
+        if (!IsOpen)
         {
             return;
         }
 
-        Visible = false;
+        Input.MouseMode = Input.MouseModeEnum.Hidden;
+        IsOpen = false;
         foreach (var child in GetChildren())
         {
             child.SetProcess(false);
         }
 
-        EmitSignal(SignalName.InventoryClose);
+        if (Visible)
+        {
+            _alphaTween?.Kill();
+            _alphaTween = CreateTween();
+            _alphaTween.TweenProperty(
+                @object: this,
+                property: CanvasItem.PropertyName.Modulate.ToString(),
+                finalVal: Colors.Transparent,
+                duration: FadeDuration
+            );
+            _alphaTween.Finished += FullyHide;
+        }
+        else
+        {
+            Modulate = Colors.Transparent;
+        }
+
+        EmitSignalInventoryClosed();
     }
 
     public void _OnInventorySlotInteraction(
@@ -162,4 +194,10 @@ public partial class InventoryManager : Control
     )
     {
     }
+
+    private void FullyHide()
+    {
+        Visible = false;
+    }
+
 }

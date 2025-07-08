@@ -6,14 +6,15 @@ public partial class InventorySlot : TextureButton
     private const float GlowStartDistance = 600f;
     private const float GlowStopDistance = 100f;
     private const float GlowStartDistanceSq = GlowStartDistance * GlowStartDistance;
-    private const float GlowMinStrength = 0.8f;
-    private const float GlowMaxStrength = 1.2f;
-    private const float GlowMaxRadius = 60f;
+    private const float GlowMinStrength = 0.6f;
+    private const float GlowMaxStrength = 1f;
+    private const float GlowMaxRadius = 50f;
 
     private const float GlowHoverStrength = 1.5f;
     private const float GlowHoverRadius = 80f;
-    private const float GlowHoverTweenDuration = 0.25f;
-    private const float GlowUnhoverTweenDuration = 0.5f;
+    private const float GlowHoverTweenDuration = 0.1f;
+    private const float GlowUnhoverTweenDuration = 0.4f;
+    private const float HoverSize = 1.15f;
 
     [Export] private Color _glowColor;
 
@@ -30,6 +31,8 @@ public partial class InventorySlot : TextureButton
 
         MouseEntered += OnMouseEnter;
         MouseExited += OnMouseExit;
+        
+        
     }
 
     public override void _Process(double delta)
@@ -104,7 +107,7 @@ public partial class InventorySlot : TextureButton
         _transformTween.TweenProperty(
             @object: this,
             property: Node2D.PropertyName.Scale.ToString(),
-            finalVal: new Vector2(1.1f, 1.1f),
+            finalVal: new Vector2(HoverSize, HoverSize),
             duration: GlowHoverTweenDuration
         );
         
