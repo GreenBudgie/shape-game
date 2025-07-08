@@ -5,13 +5,16 @@
 [ext_resource type="Script" uid="uid://uk0cdv5oks15" path="res://ui/inventory/PlayerInventory.cs" id="2_sgwov"]
 [ext_resource type="Script" uid="uid://ccs8ycrls12u5" path="res://ui/inventory/BlasterInventory.cs" id="5_a1ldh"]
 
-[node name="InventoryManager" type="Control"]
+[node name="InventoryManager" type="Control" node_paths=PackedStringArray("_playerInventory", "_leftBlasterInventory", "_rightBlasterInventory")]
 layout_mode = 3
 anchor_right = 0.85
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_bclat")
+_playerInventory = NodePath("PlayerInventory")
+_leftBlasterInventory = NodePath("LeftBlasterInventory")
+_rightBlasterInventory = NodePath("RightBlasterInventory")
 metadata/_edit_use_anchors_ = true
 
 [node name="Overlay" type="ColorRect" parent="."]
@@ -76,6 +79,7 @@ offset_left = -600.0
 offset_top = 646.0
 offset_right = -400.0
 offset_bottom = 1526.0
+mouse_filter = 2
 theme_override_constants/separation = 140
 metadata/_edit_group_ = true
 
@@ -94,6 +98,7 @@ offset_left = -500.0
 offset_top = 817.0
 offset_right = -300.0
 offset_bottom = 1697.0
+mouse_filter = 2
 theme_override_constants/separation = 140
 metadata/_edit_group_ = true
 
@@ -122,6 +127,7 @@ offset_left = 400.0
 offset_top = 646.0
 offset_right = 600.0
 offset_bottom = 1526.0
+mouse_filter = 2
 theme_override_constants/separation = 140
 metadata/_edit_group_ = true
 
@@ -140,6 +146,7 @@ offset_left = 300.0
 offset_top = 817.0
 offset_right = 500.0
 offset_bottom = 1697.0
+mouse_filter = 2
 theme_override_constants/separation = 140
 metadata/_edit_group_ = true
 

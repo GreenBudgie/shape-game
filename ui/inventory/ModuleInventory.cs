@@ -2,7 +2,7 @@
 
 public partial class ModuleInventory : Control
 {
-    private Array<InventorySlot> _slots;
+    private Array<InventorySlot> _slots = null!;
 
     public override void _Ready()
     {
@@ -18,7 +18,7 @@ public partial class ModuleInventory : Control
     {
         if (children.Count == 0)
         {
-            return new Array<InventorySlot>();
+            return [];
         }
 
         var foundSlots = new Array<InventorySlot>();

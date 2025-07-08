@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 public partial class Player : CharacterBody2D
 {
     private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
@@ -9,8 +7,6 @@ public partial class Player : CharacterBody2D
     private const float PrimaryFireDelay = 0.4f;
 
     private static Player? _instance;
-
-    [Export] private InventoryManager _inventoryManager;
 
     /**
      * The player's tilt will never go above this value.
@@ -51,13 +47,13 @@ public partial class Player : CharacterBody2D
     public override void _Ready()
     {
         PauseManager.Instance.GameUnpause += () => MoveMouseToWindowCenter();
-        _inventoryManager.InventoryClose += () => MoveMouseToWindowCenter();
+        InventoryManager.Instance.InventoryClose += () => MoveMouseToWindowCenter();
     }
 
     public override void _Process(double delta)
     {
         var mouseDelta = Vector2.Zero;
-        if (!_inventoryManager.IsOpen())
+        if (!InventoryManager.Instance.IsOpen())
         {
             mouseDelta = MoveMouseToWindowCenter();
         }
@@ -75,7 +71,7 @@ public partial class Player : CharacterBody2D
             RotationDegrees = 0;
         }
 
-        if (!_inventoryManager.IsOpen() && (int)Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
+        if (!InventoryManager.Instance.IsOpen() && (int)Input.GetActionStrength("primary_fire") == 1 && _primaryFireTimer <= 0)
         {
             PrimaryFire();
         }

@@ -1,4 +1,3 @@
-using System;
 using Modules;
 
 public partial class InventorySlot : TextureButton
@@ -143,7 +142,7 @@ public partial class InventorySlot : TextureButton
         
     }
 
-    public Module InsertModule(Module module)
+    public Module? InsertModule(Module? module)
     {
         if (module == null)
         {
@@ -155,12 +154,12 @@ public partial class InventorySlot : TextureButton
         return previousModule;
     }
 
-    public Module GetModule()
+    public Module? GetModule()
     {
         return GetChildOrNull<Module>(0);
     }
 
-    public Module RemoveModule()
+    public Module? RemoveModule()
     {
         var module = GetModule();
         if (module == null)

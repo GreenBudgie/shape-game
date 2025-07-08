@@ -1,23 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class InventoryManager : CanvasLayer
+public partial class InventoryManager : Control
 {
     [Signal]
     public delegate void InventoryOpenEventHandler();
 
     [Signal]
     public delegate void InventoryCloseEventHandler();
-    
-    
+
+    public static InventoryManager Instance { get; private set; } = null!;
 
     [Export] private PlayerInventory _playerInventory = null!;
     [Export] private BlasterInventory _leftBlasterInventory = null!;
     [Export] private BlasterInventory _rightBlasterInventory = null!;
 
-    private InventorySlot _dragAndDropFrom = null!;
+    private InventorySlot? _dragAndDropFrom;
     private List<InventorySlot> _slots = null!;
     private List<ModuleInventory> _inventories = null!;
+
+    public override void _EnterTree()
+    {
+        Instance = this;
+    }
 
     public override void _Ready()
     {
@@ -45,16 +50,18 @@ public partial class InventoryManager : CanvasLayer
 
     private void HandleInventoryOpenAndClose()
     {
-        if (Input.IsActionJustPressed("inventory"))
+        if (!Input.IsActionJustPressed("inventory"))
         {
-            if (IsOpen())
-            {
-                Close();
-            }
-            else
-            {
-                Open();
-            }
+            return;
+        }
+
+        if (IsOpen())
+        {
+            Close();
+        }
+        else
+        {
+            Open();
         }
     }
 
@@ -86,7 +93,7 @@ public partial class InventoryManager : CanvasLayer
 
         if (leftReleased && IsDragAndDropActive() && !leftReleaseHandled)
         {
-            _dragAndDropFrom.GetModule().StopFollowingCursor();
+            _dragAndDropFrom?.GetModule()?.StopFollowingCursor();
             _dragAndDropFrom = null;
         }
     }
@@ -105,13 +112,13 @@ public partial class InventoryManager : CanvasLayer
 
     private void StopDragAndDropSwappingModulesWithSlot(InventorySlot slot)
     {
-        _dragAndDropFrom.GetModule().StopFollowingCursor();
+        _dragAndDropFrom?.GetModule()?.StopFollowingCursor();
         if (_dragAndDropFrom == slot)
         {
             return;
         }
 
-        var draggedModule = _dragAndDropFrom.RemoveModule();
+        var draggedModule = _dragAndDropFrom?.RemoveModule();
         slot.InsertModule(draggedModule);
         _dragAndDropFrom = null;
     }
