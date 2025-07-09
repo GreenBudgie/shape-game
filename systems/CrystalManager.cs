@@ -45,10 +45,7 @@ public partial class CrystalManager : Node
     public void CollectCrystal()
     {
         var sound = SoundManager.Instance.PlaySound(_collectSound);
-        sound.PitchScale = (float)GD.RandRange(
-            _currentPitch - PitchRandomizationDelta,
-            _currentPitch + PitchRandomizationDelta
-        );
+        sound.RandomizePitchOffset(PitchRandomizationDelta);
         _currentPitch = Min(_currentPitch + PitchIncreaseDelta, MaxPitch);
         _timeToDecreasePitch = TimeToDecreasePitch;
 

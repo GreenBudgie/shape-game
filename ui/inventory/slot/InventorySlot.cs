@@ -17,6 +17,8 @@ public partial class InventorySlot : TextureButton
     private const float HoverSize = 1.15f;
 
     [Export] private Color _glowColor;
+    [Export] private AudioStream _hoverSound = null!;
+    [Export] private AudioStream _clickSound = null!;
 
     private Glow _glow = null!;
     private Tween? _glowTween;
@@ -31,8 +33,6 @@ public partial class InventorySlot : TextureButton
 
         MouseEntered += OnMouseEnter;
         MouseExited += OnMouseExit;
-        
-        
     }
 
     public override void _Process(double delta)
@@ -73,7 +73,7 @@ public partial class InventorySlot : TextureButton
             _glow.Strength = glowStrength;
             _glowTween?.Kill();
         }
-        
+
         if (glowRadius >= _glow.Radius)
         {
             _glow.Radius = glowRadius;
@@ -84,6 +84,9 @@ public partial class InventorySlot : TextureButton
     private void OnMouseEnter()
     {
         _hovered = true;
+
+        var sound = SoundManager.Instance.PlaySound(_hoverSound);
+        //sound.RandomizePitchOffset(0.1f);
 
         _glowTween?.Kill();
         _glowTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
@@ -100,17 +103,16 @@ public partial class InventorySlot : TextureButton
             finalVal: GlowHoverRadius,
             duration: GlowHoverTweenDuration
         );
-        
+
         _transformTween?.Kill();
         _transformTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-        
+
         _transformTween.TweenProperty(
             @object: this,
             property: Node2D.PropertyName.Scale.ToString(),
             finalVal: new Vector2(HoverSize, HoverSize),
             duration: GlowHoverTweenDuration
         );
-        
     }
 
     private void OnMouseExit()
@@ -119,7 +121,7 @@ public partial class InventorySlot : TextureButton
 
         _glowTween?.Kill();
         _glowTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-        
+
         _glowTween.TweenProperty(
             @object: _glow,
             property: Glow.PropertyName.Strength.ToString(),
@@ -132,17 +134,16 @@ public partial class InventorySlot : TextureButton
             finalVal: 0,
             duration: GlowUnhoverTweenDuration
         );
-        
+
         _transformTween?.Kill();
         _transformTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-        
+
         _transformTween.TweenProperty(
             @object: this,
             property: Node2D.PropertyName.Scale.ToString(),
             finalVal: Vector2.One,
             duration: GlowHoverTweenDuration
         );
-        
     }
 
     public Module? InsertModule(Module? module)

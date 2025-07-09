@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dilsv34jaqcrd"]
+[gd_scene load_steps=6 format=3 uid="uid://dilsv34jaqcrd"]
 
 [ext_resource type="Texture2D" uid="uid://dp4d3xvv8pb65" path="res://ui/inventory/slot/inventory_slot.png" id="1_omldl"]
 [ext_resource type="Script" uid="uid://cd0jwii5a4nej" path="res://ui/inventory/slot/InventorySlot.cs" id="2_jj110"]
 [ext_resource type="BitMap" uid="uid://bwb8gooj7d860" path="res://ui/inventory/slot/inventory_slot_bitmask.png" id="2_omldl"]
+[ext_resource type="AudioStream" uid="uid://c57m5xjixijpt" path="res://ui/inventory/slot/slot_hover.wav" id="4_lioxm"]
+[ext_resource type="AudioStream" uid="uid://0wyv0efvpagb" path="res://ui/inventory/slot/slot_click.wav" id="5_65l80"]
 
 [node name="InventorySlot" type="TextureButton"]
 offset_left = -100.0
@@ -15,3 +17,5 @@ texture_normal = ExtResource("1_omldl")
 texture_click_mask = ExtResource("2_omldl")
 script = ExtResource("2_jj110")
 _glowColor = Color(0.223529, 0.627451, 0.929412, 1)
+_hoverSound = ExtResource("4_lioxm")
+_clickSound = ExtResource("5_65l80")
