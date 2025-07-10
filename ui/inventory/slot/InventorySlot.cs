@@ -14,16 +14,20 @@ public partial class InventorySlot : TextureButton
     private const float GlowHoverRadius = 80f;
     private const float GlowHoverTweenDuration = 0.1f;
     private const float GlowUnhoverTweenDuration = 0.4f;
+    private const float ButtonDownTweenDuration = 0.1f;
+    private const float ButtonUpTweenDuration = 0.1f;
+    private const float ButtonDownGlowStrength = 1.5f;
+    private const float ButtonDownSize = 0.9f;
     private const float HoverSize = 1.15f;
 
     [Export] private Color _glowColor;
     [Export] private AudioStream _hoverSound = null!;
     [Export] private AudioStream _clickSound = null!;
+    [Export] private AudioStream _buttonUpSound = null!;
 
     private Glow _glow = null!;
     private Tween? _glowTween;
     private Tween? _transformTween;
-    private bool _hovered;
 
     public override void _Ready()
     {
@@ -33,11 +37,70 @@ public partial class InventorySlot : TextureButton
 
         MouseEntered += OnMouseEnter;
         MouseExited += OnMouseExit;
+        ButtonDown += OnButtonDown;
+        ButtonUp += OnButtonUp;
+    }
+
+    private void OnButtonDown()
+    {
+        _transformTween?.Kill();
+        _transformTween = CreateTween().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+
+        _transformTween.TweenProperty(
+            @object: this,
+            property: Node2D.PropertyName.Scale.ToString(),
+            finalVal: new Vector2(ButtonDownSize, ButtonDownSize),
+            duration: ButtonDownTweenDuration
+        );
+        
+        _glowTween?.Kill();
+        _glowTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+
+        _glowTween.TweenProperty(
+            @object: _glow,
+            property: Glow.PropertyName.Strength.ToString(),
+            finalVal: ButtonDownGlowStrength,
+            duration: ButtonDownTweenDuration
+        );
+        
+        var sound = SoundManager.Instance.PlaySound(_clickSound);
+        sound.RandomizePitchOffset(0.2f);
+    }
+    
+    private void OnButtonUp()
+    {
+        _transformTween?.Kill();
+        _transformTween = CreateTween().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+
+        _transformTween.TweenProperty(
+            @object: this,
+            property: Node2D.PropertyName.Scale.ToString(),
+            finalVal: new Vector2(HoverSize, HoverSize),
+            duration: ButtonUpTweenDuration
+        );
+        
+        _glowTween?.Kill();
+        _glowTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+
+        _glowTween.TweenProperty(
+            @object: _glow,
+            property: Glow.PropertyName.Strength.ToString(),
+            finalVal: GlowHoverStrength,
+            duration: ButtonUpTweenDuration
+        );
+        
+        var sound = SoundManager.Instance.PlaySound(_buttonUpSound);
+        sound.RandomizePitchOffset(0.2f);
+
+        if (!IsHovered())
+        {
+            OnMouseExit();
+        }
     }
 
     public override void _Process(double delta)
     {
-        if (_hovered)
+        if (IsHovered() || IsPressed())
         {
             return;
         }
@@ -83,10 +146,13 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseEnter()
     {
-        _hovered = true;
+        if (IsPressed())
+        {
+            return;
+        }
 
         var sound = SoundManager.Instance.PlaySound(_hoverSound);
-        //sound.RandomizePitchOffset(0.1f);
+        sound.RandomizePitchOffset(0.2f);
 
         _glowTween?.Kill();
         _glowTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
@@ -117,7 +183,10 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseExit()
     {
-        _hovered = false;
+        if (IsPressed())
+        {
+            return;
+        }
 
         _glowTween?.Kill();
         _glowTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
