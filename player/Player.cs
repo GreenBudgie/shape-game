@@ -93,17 +93,17 @@ public partial class Player : CharacterBody2D
 
     public Vector2 GetGlobalNosePosition()
     {
-        return ToGlobal(Position - new Vector2(0, CornerDistance).Rotated(Rotation));
+        return GlobalPosition - new Vector2(0, CornerDistance).Rotated(Rotation);
     }
 
     public Vector2 GetGlobalLeftCornerPosition()
     {
-        return ToGlobal(Position + new Vector2(-CornerDistance, CornerDistance).Rotated(Rotation));
+        return GlobalPosition + new Vector2(-CornerDistance, CornerDistance).Rotated(Rotation);
     }
 
     public Vector2 GetGlobalRightCornerPosition()
     {
-        return ToGlobal(Position + new Vector2(CornerDistance, CornerDistance).Rotated(Rotation));
+        return GlobalPosition + new Vector2(CornerDistance, CornerDistance).Rotated(Rotation);
     }
 
     private void PrimaryFire()

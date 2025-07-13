@@ -69,6 +69,7 @@ public partial class Blaster : Node
         }
 
         var spawnPosition = Player.FindPlayer()?.GetGlobalNosePosition() ?? ShapeGame.Center;
+        ShapeGame.Instance.AddChild(projectile);
         projectile.GlobalPosition = spawnPosition;
 
         Delay = 1f;
