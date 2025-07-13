@@ -5,7 +5,7 @@ public partial class Blaster : Node
 
     private BlasterInventory _inventory = null!;
     private int _lastSlot;
-    
+
     public float Delay { get; private set; }
 
     public override void _Ready()
@@ -31,28 +31,27 @@ public partial class Blaster : Node
 
         var slots = _inventory.GetSlots();
         var startSlot = _lastSlot;
-        var modifiers = new List<ModuleData>();
-        
-        for (var i = startSlot; NextSlot() == startSlot; i = NextSlot())
+        var modifiers = new List<ModifierModule>();
+        for (var i = startSlot; NextSlot() != startSlot; i = NextSlot())
         {
+            _lastSlot = i;
             var slot = slots[i];
-            var module = slot.GetModule()?.ModuleData;
+            var module = slot.GetModule()?.Module;
 
             if (module == null)
             {
                 continue;
             }
 
-            if (module.IsModifier())
+            if (module is ModifierModule modifierModule)
             {
-                modifiers.Add(module);
+                modifiers.Add(modifierModule);
                 continue;
             }
-            
-            if (module.IsProjectile())
+
+            if (module is ProjectileModule projectileModule)
             {
-                ShootProjectile(modifiers, module);
-                _lastSlot = i;
+                ShootProjectile(modifiers, projectileModule);
                 return true;
             }
         }
@@ -60,15 +59,13 @@ public partial class Blaster : Node
         return false;
     }
 
-    private void ShootProjectile(List<ModuleData> modifiers, ModuleData projectileModule)
+    private void ShootProjectile(List<ModifierModule> modifiers, ProjectileModule projectileModule)
     {
-        var projectileBehavior = (ProjectileModuleBehavior)projectileModule.Behavior;
-        var projectile = projectileBehavior.CreateProjectile().Projectile.ToNode();
+        var projectile = projectileModule.CreateProjectile().ToNode();
 
         foreach (var modifier in modifiers)
         {
-            var modifierBehavior = (ModifierModuleBehavior)modifier.Behavior;
-            modifierBehavior.Apply(projectile);
+            modifier.Apply(projectile);
         }
 
         var spawnPosition = Player.FindPlayer()?.GetGlobalNosePosition() ?? ShapeGame.Center;

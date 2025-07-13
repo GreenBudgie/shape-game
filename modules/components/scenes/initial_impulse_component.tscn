@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bi35dwsglibl3"]
+
+[ext_resource type="Script" uid="uid://dt8sjmpxvlpp3" path="res://modules/components/scripts/InitialImpulseComponent.cs" id="1_f2at8"]
+
+[node name="InitialImpulseComponent" type="Node"]
+script = ExtResource("1_f2at8")

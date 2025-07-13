@@ -41,6 +41,10 @@ public partial class InventoryManager : Control
         ];
         _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 
+        LeftBlasterInventory.GetSlot(5).InsertModule(
+            UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
+        );
+
         Visible = false;
         Close();
     }
@@ -48,7 +52,7 @@ public partial class InventoryManager : Control
     public override void _Process(double delta)
     {
         HandleInventoryOpenAndClose();
-        HandleDragAndDrop();
+        // HandleDragAndDrop();
     }
 
     private void HandleInventoryOpenAndClose()

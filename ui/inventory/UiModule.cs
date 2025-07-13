@@ -6,19 +6,19 @@
     private Vector2 _initialCursorPosition;
     private bool _isFollowingCursor;
 
-    public ModuleData ModuleData { get; private set; } = null!;
+    public Module Module { get; private set; } = null!;
     
-    public static UiModule Create(ModuleData data)
+    public static UiModule Create(Module module)
     {
-        var module = Scene.Instantiate<UiModule>();
-        module.ModuleData = data;
-        return module;
+        var uiModule = Scene.Instantiate<UiModule>();
+        uiModule.Module = module;
+        return uiModule;
     }
 
     public override void _Ready()
     {
         var textureRect = GetNode<TextureRect>("Texture");
-        textureRect.Texture = ModuleData.Texture;
+        textureRect.Texture = Module.Texture;
     }
 
     public override void _Process(double delta)

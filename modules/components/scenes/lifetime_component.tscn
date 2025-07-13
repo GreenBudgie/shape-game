@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://6dllnllpl3my"]
+
+[ext_resource type="Script" uid="uid://b1ok8rip7hnds" path="res://modules/components/scripts/LifetimeComponent.cs" id="1_q7gub"]
+
+[node name="LifetimeComponent" type="Node"]
+script = ExtResource("1_q7gub")

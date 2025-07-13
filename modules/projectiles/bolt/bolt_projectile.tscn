@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://bnh56fabyfl1o"]
+
+[ext_resource type="Script" uid="uid://ccp5pyqi3g16e" path="res://modules/projectiles/bolt/BoltProjectile.cs" id="1_uyfjk"]
+[ext_resource type="Texture2D" uid="uid://dbsmx1goi2kpp" path="res://modules/projectiles/bolt/bolt.png" id="2_1nglk"]
+[ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="3_1nglk"]
+[ext_resource type="PackedScene" uid="uid://k5oagak4w5qw" path="res://modules/components/scenes/damage_component.tscn" id="4_tr1ym"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_guu8r"]
+radius = 15.0333
+
+[node name="BoltProjectile" type="RigidBody2D"]
+collision_layer = 2
+collision_mask = 308
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_guu8r")
+gravity_scale = 0.0
+lock_rotation = true
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 5
+angular_damp = 5.0
+script = ExtResource("1_uyfjk")
+
+[node name="BoltSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_1nglk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
+shape = SubResource("CircleShape2D_guu8r")
+
+[node name="InitialImpulseComponent" parent="." node_paths=PackedStringArray("Projectile") instance=ExtResource("3_1nglk")]
+Projectile = NodePath("..")
+BaseImpulse = Vector2(0, -400)
+
+[node name="DamageComponent" parent="." instance=ExtResource("4_tr1ym")]
+BaseDamage = 1.0

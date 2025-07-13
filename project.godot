@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 PauseManager="*res://PauseManager.cs"
-EventBus="*res://EventBus.cs"
 SoundManager="*res://util/sound/SoundManager.cs"
 ParticleCache="*res://cache/ParticleCache.cs"
 

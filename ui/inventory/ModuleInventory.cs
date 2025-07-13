@@ -10,15 +10,15 @@ public partial class ModuleInventory : Control
     {
         _slots = FindSlots(GetChildren());
     }
+    
+    public InventorySlot GetSlot(int slotIndex)
+    {
+        return _slots[slotIndex];
+    }
 
     public List<InventorySlot> GetSlots()
     {
         return _slots;
-    }
-
-    public List<ModuleData> GetModules()
-    {
-        return _slots.Select(slot => slot.GetModule()?.ModuleData).OfType<ModuleData>().ToList();
     }
 
     private List<InventorySlot> FindSlots(Array<Node> children)

@@ -4,6 +4,9 @@ global using static Godot.Mathf;
 public partial class ShapeGame : Node2D
 {
     
+    [Signal]
+    public delegate void PostSetupEventHandler();
+    
     public static readonly Rect2 PlayableArea = new(512, 0, 3264, 2160);
     public static readonly Vector2 Center = PlayableArea.GetCenter();
     
@@ -18,6 +21,8 @@ public partial class ShapeGame : Node2D
     {
         Input.MouseMode = Input.MouseModeEnum.Hidden;
         // Engine.MaxFps = 30; 
+        
+        EmitSignalPostSetup();
     }
 
     public override void _Process(double delta)

@@ -1,6 +1,5 @@
 public partial class Player : CharacterBody2D
 {
-    private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
 
     private const int CornerDistance = 28;
 
@@ -46,6 +45,7 @@ public partial class Player : CharacterBody2D
     public override void _Ready()
     {
         _leftBlaster = new Blaster();
+        AddChild(_leftBlaster);
         _windowCenter = new Vector2(
             GetViewportRect().Size.X / 2.0f,
             GetViewportRect().Size.Y / 2.0f
