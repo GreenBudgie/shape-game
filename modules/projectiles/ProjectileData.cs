@@ -1,0 +1,1 @@
+public record ProjectileData(IProjectile Projectile);

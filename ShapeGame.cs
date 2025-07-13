@@ -5,6 +5,7 @@ public partial class ShapeGame : Node2D
 {
     
     public static readonly Rect2 PlayableArea = new(512, 0, 3264, 2160);
+    public static readonly Vector2 Center = PlayableArea.GetCenter();
     
     public static ShapeGame Instance { get; private set; } = null!;
 

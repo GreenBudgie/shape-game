@@ -1,5 +1,12 @@
-public partial class BoltProjectile : RigidBody2D
+public partial class BoltProjectile : RigidBody2D, IProjectile
 {
+
+    private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
+
+    public static BoltProjectile Create()
+    {
+        return BoltProjectileScene.Instantiate<BoltProjectile>();
+    }
 
     public override void _Ready()
     {

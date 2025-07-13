@@ -1,5 +1,3 @@
-using Modules;
-
 public partial class InventorySlot : TextureButton
 {
 
@@ -24,6 +22,8 @@ public partial class InventorySlot : TextureButton
     [Export] private AudioStream _hoverSound = null!;
     [Export] private AudioStream _clickSound = null!;
     [Export] private AudioStream _buttonUpSound = null!;
+    
+    [Export] public int Number { get; private set; }
 
     private Glow _glow = null!;
     private Tween? _glowTween;
@@ -39,6 +39,86 @@ public partial class InventorySlot : TextureButton
         MouseExited += OnMouseExit;
         ButtonDown += OnButtonDown;
         ButtonUp += OnButtonUp;
+    }
+    
+    public override void _Process(double delta)
+    {
+        if (IsHovered() || IsPressed())
+        {
+            return;
+        }
+
+        var isTweenRunning = _glowTween?.IsValid() == true && _glowTween?.IsRunning() == true;
+
+        var centeredPosition = GlobalPosition + PivotOffset;
+        var distanceToMouseSq = GetGlobalMousePosition().DistanceSquaredTo(centeredPosition);
+        if (distanceToMouseSq > GlowStartDistanceSq)
+        {
+            if (!isTweenRunning)
+            {
+                _glow.TurnOff();
+            }
+
+            return;
+        }
+
+        var distanceToMouse = Sqrt(distanceToMouseSq);
+        var distanceRatio = 1 - (distanceToMouse - GlowStopDistance) / (GlowStartDistance - GlowStopDistance);
+        var glowStrength = Min(Lerp(distanceRatio, GlowMinStrength, GlowMaxStrength), GlowMaxStrength);
+        var glowRadius = Min(distanceRatio * GlowMaxRadius, GlowMaxRadius);
+
+        if (!isTweenRunning)
+        {
+            _glow.Strength = glowStrength;
+            _glow.Radius = glowRadius;
+            return;
+        }
+
+        if (glowStrength >= _glow.Strength)
+        {
+            _glow.Strength = glowStrength;
+            _glowTween?.Kill();
+        }
+
+        if (glowRadius >= _glow.Radius)
+        {
+            _glow.Radius = glowRadius;
+            _glowTween?.Kill();
+        }
+    }
+    
+    public UiModule? InsertModule(UiModule? module)
+    {
+        if (module == null)
+        {
+            return RemoveModule();
+        }
+
+        var previousModule = RemoveModule();
+        AddChild(module);
+        return previousModule;
+    }
+
+    public UiModule? GetModule()
+    {
+        return GetChildOrNull<UiModule>(0);
+    }
+
+    public UiModule? RemoveModule()
+    {
+        var module = GetModule();
+        if (module == null)
+        {
+            return null;
+        }
+
+        RemoveChild(module);
+        return module;
+    }
+
+    public bool HasModule()
+    {
+        return GetModule() != null;
     }
 
     private void OnButtonDown()
@@ -95,52 +175,6 @@ public partial class InventorySlot : TextureButton
         if (!IsHovered())
         {
             OnMouseExit();
-        }
-    }
-
-    public override void _Process(double delta)
-    {
-        if (IsHovered() || IsPressed())
-        {
-            return;
-        }
-
-        var isTweenRunning = _glowTween?.IsValid() == true && _glowTween?.IsRunning() == true;
-
-        var centeredPosition = GlobalPosition + PivotOffset;
-        var distanceToMouseSq = GetGlobalMousePosition().DistanceSquaredTo(centeredPosition);
-        if (distanceToMouseSq > GlowStartDistanceSq)
-        {
-            if (!isTweenRunning)
-            {
-                _glow.TurnOff();
-            }
-
-            return;
-        }
-
-        var distanceToMouse = Sqrt(distanceToMouseSq);
-        var distanceRatio = 1 - (distanceToMouse - GlowStopDistance) / (GlowStartDistance - GlowStopDistance);
-        var glowStrength = Min(Lerp(distanceRatio, GlowMinStrength, GlowMaxStrength), GlowMaxStrength);
-        var glowRadius = Min(distanceRatio * GlowMaxRadius, GlowMaxRadius);
-
-        if (!isTweenRunning)
-        {
-            _glow.Strength = glowStrength;
-            _glow.Radius = glowRadius;
-            return;
-        }
-
-        if (glowStrength >= _glow.Strength)
-        {
-            _glow.Strength = glowStrength;
-            _glowTween?.Kill();
-        }
-
-        if (glowRadius >= _glow.Radius)
-        {
-            _glow.Radius = glowRadius;
-            _glowTween?.Kill();
         }
     }
 
@@ -213,40 +247,6 @@ public partial class InventorySlot : TextureButton
             finalVal: Vector2.One,
             duration: GlowHoverTweenDuration
         );
-    }
-
-    public Module? InsertModule(Module? module)
-    {
-        if (module == null)
-        {
-            RemoveModule();
-        }
-
-        var previousModule = RemoveModule();
-        AddChild(module);
-        return previousModule;
-    }
-
-    public Module? GetModule()
-    {
-        return GetChildOrNull<Module>(0);
-    }
-
-    public Module? RemoveModule()
-    {
-        var module = GetModule();
-        if (module == null)
-        {
-            return null;
-        }
-
-        RemoveChild(module);
-        return module;
-    }
-
-    public bool HasModule()
-    {
-        return GetModule() != null;
     }
 
 }

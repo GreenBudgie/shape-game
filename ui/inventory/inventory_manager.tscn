@@ -5,16 +5,13 @@
 [ext_resource type="Script" uid="uid://uk0cdv5oks15" path="res://ui/inventory/PlayerInventory.cs" id="2_sgwov"]
 [ext_resource type="Script" uid="uid://ccs8ycrls12u5" path="res://ui/inventory/BlasterInventory.cs" id="5_a1ldh"]
 
-[node name="InventoryManager" type="Control" node_paths=PackedStringArray("_playerInventory", "_leftBlasterInventory", "_rightBlasterInventory")]
+[node name="InventoryManager" type="Control"]
 layout_mode = 3
 anchor_right = 0.85
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_bclat")
-_playerInventory = NodePath("PlayerInventory")
-_leftBlasterInventory = NodePath("LeftBlasterInventory")
-_rightBlasterInventory = NodePath("RightBlasterInventory")
 metadata/_edit_use_anchors_ = true
 
 [node name="Overlay" type="ColorRect" parent="."]
@@ -50,18 +47,23 @@ layout_mode = 2
 
 [node name="InventorySlot2" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 1
 
 [node name="InventorySlot3" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 2
 
 [node name="InventorySlot4" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 3
 
 [node name="InventorySlot5" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 4
 
 [node name="InventorySlot6" parent="PlayerInventory/CenterContainer/HBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 5
 
 [node name="LeftBlasterInventory" type="Control" parent="."]
 layout_mode = 1
@@ -85,12 +87,15 @@ metadata/_edit_group_ = true
 
 [node name="InventorySlot1" parent="LeftBlasterInventory/LeftHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 5
 
 [node name="InventorySlot3" parent="LeftBlasterInventory/LeftHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 3
 
 [node name="InventorySlot5" parent="LeftBlasterInventory/LeftHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 1
 
 [node name="RightHBoxContainer" type="VBoxContainer" parent="LeftBlasterInventory"]
 layout_mode = 2
@@ -104,9 +109,11 @@ metadata/_edit_group_ = true
 
 [node name="InventorySlot1" parent="LeftBlasterInventory/RightHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 4
 
 [node name="InventorySlot3" parent="LeftBlasterInventory/RightHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 2
 
 [node name="InventorySlot5" parent="LeftBlasterInventory/RightHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
@@ -133,12 +140,15 @@ metadata/_edit_group_ = true
 
 [node name="InventorySlot1" parent="RightBlasterInventory/LeftHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 5
 
 [node name="InventorySlot3" parent="RightBlasterInventory/LeftHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 3
 
 [node name="InventorySlot5" parent="RightBlasterInventory/LeftHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 1
 
 [node name="RightHBoxContainer" type="VBoxContainer" parent="RightBlasterInventory"]
 layout_mode = 2
@@ -152,9 +162,11 @@ metadata/_edit_group_ = true
 
 [node name="InventorySlot1" parent="RightBlasterInventory/RightHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 4
 
 [node name="InventorySlot3" parent="RightBlasterInventory/RightHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2
+Number = 2
 
 [node name="InventorySlot5" parent="RightBlasterInventory/RightHBoxContainer" instance=ExtResource("1_qat6u")]
 layout_mode = 2

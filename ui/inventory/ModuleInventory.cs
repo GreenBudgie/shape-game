@@ -1,27 +1,34 @@
-﻿using Godot.Collections;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Godot.Collections;
 
 public partial class ModuleInventory : Control
 {
-    private Array<InventorySlot> _slots = null!;
+    private List<InventorySlot> _slots = null!;
 
     public override void _Ready()
     {
         _slots = FindSlots(GetChildren());
     }
 
-    public Array<InventorySlot> GetSlots()
+    public List<InventorySlot> GetSlots()
     {
         return _slots;
     }
 
-    private Array<InventorySlot> FindSlots(Array<Node> children)
+    public List<ModuleData> GetModules()
+    {
+        return _slots.Select(slot => slot.GetModule()?.ModuleData).OfType<ModuleData>().ToList();
+    }
+
+    private List<InventorySlot> FindSlots(Array<Node> children)
     {
         if (children.Count == 0)
         {
             return [];
         }
 
-        var foundSlots = new Array<InventorySlot>();
+        var foundSlots = new List<InventorySlot>();
         foreach (var child in children)
         {
             if (child is InventorySlot slot)
@@ -33,6 +40,6 @@ public partial class ModuleInventory : Control
             foundSlots.AddRange(FindSlots(child.GetChildren()));
         }
 
-        return foundSlots;
+        return foundSlots.OrderBy(slot => slot.Number).ToList();
     }
 }

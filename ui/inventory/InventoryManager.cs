@@ -16,9 +16,9 @@ public partial class InventoryManager : Control
 
     public bool IsOpen { get; private set; } = true;
 
-    [Export] private PlayerInventory _playerInventory = null!;
-    [Export] private BlasterInventory _leftBlasterInventory = null!;
-    [Export] private BlasterInventory _rightBlasterInventory = null!;
+    [Export] public PlayerInventory PlayerInventory { get; private set; } = null!;
+    [Export] public BlasterInventory LeftBlasterInventory { get; private set; } = null!;
+    [Export] public BlasterInventory RightBlasterInventory { get; private set; } = null!;
 
     private InventorySlot? _dragAndDropFrom;
     private List<InventorySlot> _slots = null!;
@@ -35,9 +35,9 @@ public partial class InventoryManager : Control
     {
         _inventories =
         [
-            _playerInventory,
-            _leftBlasterInventory,
-            _rightBlasterInventory
+            PlayerInventory,
+            LeftBlasterInventory,
+            RightBlasterInventory
         ];
         _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 

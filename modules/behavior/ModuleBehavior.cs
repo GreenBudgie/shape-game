@@ -1,0 +1,1 @@
+public abstract partial class ModuleBehavior : Resource;

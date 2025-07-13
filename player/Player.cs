@@ -4,8 +4,6 @@ public partial class Player : CharacterBody2D
 
     private const int CornerDistance = 28;
 
-    private const float PrimaryFireDelay = 0.4f;
-
     private static Player? _instance;
 
     /**
@@ -32,8 +30,8 @@ public partial class Player : CharacterBody2D
     [Export(PropertyHint.Range, "0.1,2,0.1,or_greater")]
     private double _rotationDegreesEpsilon = 0.3;
 
-    private float _primaryFireTimer;
     private Vector2 _windowCenter;
+    private Blaster _leftBlaster = null!;
 
     public static Player? FindPlayer()
     {
@@ -47,6 +45,7 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
+        _leftBlaster = new Blaster();
         _windowCenter = new Vector2(
             GetViewportRect().Size.X / 2.0f,
             GetViewportRect().Size.Y / 2.0f
@@ -79,15 +78,9 @@ public partial class Player : CharacterBody2D
             RotationDegrees = 0;
         }
 
-        if (!InventoryManager.Instance.IsOpen && (int)Input.GetActionStrength("primary_fire") == 1 &&
-            _primaryFireTimer <= 0)
+        if (!InventoryManager.Instance.IsOpen && (int)Input.GetActionStrength("primary_fire") == 1)
         {
             PrimaryFire();
-        }
-
-        if (_primaryFireTimer > 0)
-        {
-            _primaryFireTimer -= (float)delta;
         }
     }
 
@@ -98,28 +91,23 @@ public partial class Player : CharacterBody2D
         return mousePosition - windowCenterToUse;
     }
 
-    private Vector2 GetNosePosition()
+    public Vector2 GetGlobalNosePosition()
     {
-        return Position - new Vector2(0, CornerDistance).Rotated(Rotation);
+        return ToGlobal(Position - new Vector2(0, CornerDistance).Rotated(Rotation));
     }
 
-    private Vector2 GetLeftCornerPosition()
+    public Vector2 GetGlobalLeftCornerPosition()
     {
-        return Position + new Vector2(-CornerDistance, CornerDistance).Rotated(Rotation);
+        return ToGlobal(Position + new Vector2(-CornerDistance, CornerDistance).Rotated(Rotation));
     }
 
-    private Vector2 GetRightCornerPosition()
+    public Vector2 GetGlobalRightCornerPosition()
     {
-        return Position + new Vector2(CornerDistance, CornerDistance).Rotated(Rotation);
+        return ToGlobal(Position + new Vector2(CornerDistance, CornerDistance).Rotated(Rotation));
     }
 
     private void PrimaryFire()
     {
-        var bolt = BoltProjectileScene.Instantiate<BoltProjectile>();
-        bolt.Position = GetNosePosition();
-        var moveVector = new Vector2(0, -400).Rotated(Rotation);
-        bolt.ApplyCentralImpulse(moveVector);
-        GetParent().AddChild(bolt);
-        _primaryFireTimer = PrimaryFireDelay;
+        _leftBlaster.Trigger();
     }
 }
