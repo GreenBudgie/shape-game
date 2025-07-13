@@ -1,22 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://csoad8g8f13qn"]
+[gd_scene load_steps=3 format=3 uid="uid://csoad8g8f13qn"]
 
+[ext_resource type="Texture2D" uid="uid://bq7o5q7v2nvei" path="res://modules/types/projectile/bolt/bolt_module.png" id="1_bnolh"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/UiModule.cs" id="1_hkxgl"]
 
-[node name="UiModule" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
+[node name="UiModule" type="Sprite2D"]
+texture = ExtResource("1_bnolh")
 script = ExtResource("1_hkxgl")
-
-[node name="Texture" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 3

@@ -29,6 +29,8 @@ public partial class InventorySlot : TextureButton
     private Tween? _glowTween;
     private Tween? _transformTween;
 
+    private UiModule? _module;
+
     public override void _Ready()
     {
         _glow = Glow.AddGlow(this)
@@ -95,13 +97,15 @@ public partial class InventorySlot : TextureButton
         }
 
         var previousModule = RemoveModule();
-        AddChild(module);
+        InventoryManager.Instance.AddChild(module);
+        module.GlobalPosition = GlobalPosition - Position + PivotOffset;
+        _module = module;
         return previousModule;
     }
 
     public UiModule? GetModule()
     {
-        return GetChildOrNull<UiModule>(0);
+        return _module;
     }
 
     public UiModule? RemoveModule()
@@ -112,7 +116,8 @@ public partial class InventorySlot : TextureButton
             return null;
         }
 
-        RemoveChild(module);
+        _module = null;
+        module.QueueFree();
         return module;
     }
 

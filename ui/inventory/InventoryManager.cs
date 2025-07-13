@@ -41,12 +41,17 @@ public partial class InventoryManager : Control
         ];
         _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 
+        ShapeGame.Instance.PostSetup += PostSetup;
+        
+        Visible = false;
+        Close();
+    }
+
+    private void PostSetup()
+    {
         LeftBlasterInventory.GetSlot(5).InsertModule(
             UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
         );
-
-        Visible = false;
-        Close();
     }
 
     public override void _Process(double delta)

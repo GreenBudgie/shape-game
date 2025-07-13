@@ -1,4 +1,4 @@
-﻿public partial class UiModule : Control
+﻿public partial class UiModule : Sprite2D
 {
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://csoad8g8f13qn");
@@ -17,8 +17,7 @@
 
     public override void _Ready()
     {
-        var textureRect = GetNode<TextureRect>("Texture");
-        textureRect.Texture = Module.Texture;
+        Texture = Module.Texture;
     }
 
     public override void _Process(double delta)
