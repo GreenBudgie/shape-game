@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="BoltModule" load_steps=3 format=3 uid="uid://cqjg5lcuad1hd"]
 
-[ext_resource type="Texture2D" uid="uid://bq7o5q7v2nvei" path="res://modules/types/projectile/bolt/bolt_module.png" id="1_81r4k"]
+[ext_resource type="Texture2D" uid="uid://bq4acwsx0reoh" path="res://modules/types/projectile/bolt/bolt_module.png" id="1_81r4k"]
 [ext_resource type="Script" uid="uid://dbop5xnp8ac4s" path="res://modules/types/projectile/bolt/BoltModule.cs" id="2_hdm4n"]
 
 [resource]

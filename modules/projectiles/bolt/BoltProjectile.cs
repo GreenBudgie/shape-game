@@ -1,7 +1,7 @@
 public partial class BoltProjectile : RigidBody2D, IProjectile
 {
 
-    private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
+    private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://cqjg5lcuad1hd");
 
     public static BoltProjectile Create()
     {

@@ -1,8 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://csoad8g8f13qn"]
+[gd_scene load_steps=5 format=3 uid="uid://csoad8g8f13qn"]
 
-[ext_resource type="Texture2D" uid="uid://bq7o5q7v2nvei" path="res://modules/types/projectile/bolt/bolt_module.png" id="1_bnolh"]
+[ext_resource type="Texture2D" uid="uid://bq4acwsx0reoh" path="res://modules/types/projectile/bolt/bolt_module.png" id="1_bnolh"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/UiModule.cs" id="1_hkxgl"]
+[ext_resource type="Shader" uid="uid://bhsohncxoijc7" path="res://ui/inventory/ui_module.gdshader" id="1_pprc0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mhdu2"]
+shader = ExtResource("1_pprc0")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = 0.0
+shader_parameter/inset = 0.0
 
 [node name="UiModule" type="Sprite2D"]
+material = SubResource("ShaderMaterial_mhdu2")
 texture = ExtResource("1_bnolh")
 script = ExtResource("1_hkxgl")

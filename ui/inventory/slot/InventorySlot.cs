@@ -185,6 +185,11 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseEnter()
     {
+        if (_module != null)
+        {
+            _module.IsSlotHovered = true;
+        }
+
         if (IsPressed())
         {
             return;
@@ -222,6 +227,11 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseExit()
     {
+        if (_module != null)
+        {
+            _module.IsSlotHovered = false;
+        }
+        
         if (IsPressed())
         {
             return;
