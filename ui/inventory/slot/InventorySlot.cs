@@ -88,19 +88,30 @@ public partial class InventorySlot : TextureButton
             _glowTween?.Kill();
         }
     }
-    
-    public UiModule? InsertModule(UiModule? module)
-    {
-        if (module == null)
-        {
-            return RemoveModule();
-        }
 
-        var previousModule = RemoveModule();
+    public void SwapModules(InventorySlot otherSlot)
+    {
+        (otherSlot._module, _module) = (_module, otherSlot._module);
+        if (_module != null)
+        {
+            PositionModuleOnSlot(_module);
+            _module.Slot = this;
+        }
+        
+        if (otherSlot._module != null)
+        {
+            otherSlot.PositionModuleOnSlot(otherSlot._module);
+            otherSlot._module.Slot = otherSlot;
+        }
+    }
+    
+    public void InsertModule(UiModule module)
+    {
+        RemoveModule();
         InventoryManager.Instance.AddChild(module);
-        module.GlobalPosition = GlobalPosition - Position + PivotOffset;
+        PositionModuleOnSlot(module);
         _module = module;
-        return previousModule;
+        module.Slot = this;
     }
 
     public UiModule? GetModule()
@@ -124,6 +135,11 @@ public partial class InventorySlot : TextureButton
     public bool HasModule()
     {
         return GetModule() != null;
+    }
+
+    public void PositionModuleOnSlot(UiModule module)
+    {
+        module.GlobalPosition = GetGlobalRect().GetCenter();
     }
 
     private void OnButtonDown()
@@ -185,11 +201,6 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseEnter()
     {
-        if (_module != null)
-        {
-            _module.IsSlotHovered = true;
-        }
-
         if (IsPressed())
         {
             return;
@@ -227,11 +238,6 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseExit()
     {
-        if (_module != null)
-        {
-            _module.IsSlotHovered = false;
-        }
-        
         if (IsPressed())
         {
             return;

@@ -41,10 +41,7 @@ public partial class InventoryManager : Control
         ];
         _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 
-        ShapeGame.Instance.PostSetup += PostSetup;
-        
-        Visible = false;
-        Close();
+        CallDeferred(MethodName.PostSetup);
     }
 
     private void PostSetup()
@@ -52,12 +49,15 @@ public partial class InventoryManager : Control
         LeftBlasterInventory.GetSlot(5).InsertModule(
             UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
         );
+        
+        Visible = false;
+        Close();
     }
 
     public override void _Process(double delta)
     {
         HandleInventoryOpenAndClose();
-        // HandleDragAndDrop();
+        HandleDragAndDrop();
     }
 
     private void HandleInventoryOpenAndClose()
@@ -87,19 +87,19 @@ public partial class InventoryManager : Control
         var leftPressed = Input.IsActionJustPressed("inventory_left_click");
         var leftReleased = Input.IsActionJustReleased("inventory_left_click");
         var leftReleaseHandled = false;
-        var hoveredSlots = _slots.Where(slot => slot.IsHovered());
-        foreach (var slot in hoveredSlots)
+        var hoveredSlot = _slots.Find(slot => slot.IsHovered());
+
+        if (hoveredSlot != null)
         {
             if (leftPressed)
             {
-                StartDragAndDropFromSlot(slot);
-                break;
+                StartDragAndDropFromSlot(hoveredSlot);
             }
 
             if (leftReleased && IsDragAndDropActive())
             {
                 leftReleaseHandled = true;
-                StopDragAndDropSwappingModulesWithSlot(slot);
+                StopDragAndDropSwappingModulesWithSlot(hoveredSlot);
             }
         }
 
@@ -125,13 +125,12 @@ public partial class InventoryManager : Control
     private void StopDragAndDropSwappingModulesWithSlot(InventorySlot slot)
     {
         _dragAndDropFrom?.GetModule()?.StopFollowingCursor();
-        if (_dragAndDropFrom == slot)
+        if (_dragAndDropFrom == null || _dragAndDropFrom == slot)
         {
             return;
         }
 
-        var draggedModule = _dragAndDropFrom?.RemoveModule();
-        slot.InsertModule(draggedModule);
+        _dragAndDropFrom.SwapModules(slot);
         _dragAndDropFrom = null;
     }
 
