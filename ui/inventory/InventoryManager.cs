@@ -105,8 +105,7 @@ public partial class InventoryManager : Control
 
         if (leftReleased && IsDragAndDropActive() && !leftReleaseHandled)
         {
-            _dragAndDropFrom?.GetModule()?.StopFollowingCursor();
-            _dragAndDropFrom = null;
+            CancelDragAndDrop();
         }
     }
 
@@ -124,13 +123,36 @@ public partial class InventoryManager : Control
 
     private void StopDragAndDropSwappingModulesWithSlot(InventorySlot slot)
     {
-        _dragAndDropFrom?.GetModule()?.StopFollowingCursor();
-        if (_dragAndDropFrom == null || _dragAndDropFrom == slot)
+        if (_dragAndDropFrom == null)
         {
             return;
         }
-
+        
+        if (_dragAndDropFrom == slot)
+        {
+            CancelDragAndDrop();
+            return;
+        }
+        
+        _dragAndDropFrom.GetModule()?.StopFollowingCursor();
+        
         _dragAndDropFrom.SwapModules(slot);
+        _dragAndDropFrom = null;
+    }
+
+    private void CancelDragAndDrop()
+    {
+        if (_dragAndDropFrom == null)
+        {
+            return;
+        }
+        
+        var module = _dragAndDropFrom.GetModule();
+        if (module != null)
+        {
+            module.StopFollowingCursor();
+            _dragAndDropFrom.PositionModuleOnSlot(module);
+        }
         _dragAndDropFrom = null;
     }
 
