@@ -17,7 +17,7 @@ public partial class InventorySlot : TextureButton
     private const float ButtonDownGlowStrength = 1.5f;
     private const float ButtonDownSize = 0.9f;
     private const float HoverSize = 1.15f;
-
+    
     [Export] private Color _glowColor;
     [Export] private AudioStream _hoverSound = null!;
     [Export] private AudioStream _clickSound = null!;
@@ -205,6 +205,8 @@ public partial class InventorySlot : TextureButton
         {
             return;
         }
+        
+        _module?.SlotHovered();
 
         var sound = SoundManager.Instance.PlaySound(_hoverSound);
         sound.RandomizePitchOffset(0.2f);
@@ -242,6 +244,8 @@ public partial class InventorySlot : TextureButton
         {
             return;
         }
+        
+        _module?.SlotUnhovered();
 
         _glowTween?.Kill();
         _glowTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
