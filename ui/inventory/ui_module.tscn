@@ -2,9 +2,10 @@
 
 [ext_resource type="Texture2D" uid="uid://bq4acwsx0reoh" path="res://modules/types/projectile/bolt/bolt_module.png" id="1_bnolh"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/UiModule.cs" id="1_hkxgl"]
-[ext_resource type="Shader" uid="uid://fxn8hdgq2td3" path="res://ui/inventory/ui_module2.gdshader" id="1_pprc0"]
+[ext_resource type="Shader" uid="uid://fxn8hdgq2td3" path="res://util/stretch.gdshader" id="1_pprc0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mhdu2"]
+resource_local_to_scene = true
 shader = ExtResource("1_pprc0")
 shader_parameter/stretch_amount = 0.0
 shader_parameter/stretch_direction = Vector2(1, 0)

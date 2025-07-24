@@ -1,10 +1,9 @@
 ﻿public partial class UiModule : Sprite2D
 {
 
-    private const float MaxStretch = 10;
-    private const float MaxStretchDistance = 100;
-    private const float HoverStretch = 0.2f;
-    private const float HoverStretchDuration = 0.12f;
+    private const float StretchAmountPerPixel = 0.02f;
+    private const float TargetPositionFollowSpeed = 10f;
+    private const float CursorFollowSpeed = 30f;
 
     private static readonly StringName StretchAmount = "stretch_amount";
     private static readonly StringName StretchDirection = "stretch_direction";
@@ -13,7 +12,7 @@
 
     private bool _isFollowingCursor;
     private ShaderMaterial _material = null!;
-    private Tween? _stretchTween;
+    private Vector2 _targetPosition;
 
     public Module Module { get; private set; } = null!;
     public InventorySlot? Slot { get; set; }
@@ -35,45 +34,73 @@
     {
         if (_isFollowingCursor)
         {
-            GlobalPosition = GetGlobalMousePosition();
+            _targetPosition = GetGlobalMousePosition();
+        }
+        else if (Slot != null)
+        {
+            _targetPosition = Slot.GetGlobalRect().GetCenter();
+        }
+
+        MoveToTargetPosition(delta);
+    }
+
+    public void MoveToSlotInstantly()
+    {
+        if (Slot != null)
+        {
+            _targetPosition = Slot.GetGlobalRect().GetCenter();
+            GlobalPosition = _targetPosition;
         }
     }
 
     public void StartFollowingCursor()
     {
         _isFollowingCursor = true;
+        ZIndex += 1;
     }
 
     public void StopFollowingCursor()
     {
         _isFollowingCursor = false;
+        ZIndex -= 1;
     }
 
     public void SlotHovered()
     {
-        var direction = GlobalPosition.DirectionTo(GetGlobalMousePosition()).Rotated(Pi / 2);
-        SetStretchDirection(direction);
-
-        _stretchTween?.Kill();
-        _stretchTween = CreateTween().SetTrans(Tween.TransitionType.Sine);
-        var method = SetStretchAmount;
-        _stretchTween.TweenMethod(
-            method: Callable.From(method),
-            from: GetStretchAmount(),
-            to: HoverStretch,
-            duration: HoverStretchDuration / 2
-        ).SetEase(Tween.EaseType.Out);
-        _stretchTween.TweenMethod(
-            method: Callable.From(method),
-            from: HoverStretch,
-            to: 0,
-            duration: HoverStretchDuration
-        ).SetEase(Tween.EaseType.In);
     }
 
     public void SlotUnhovered()
     {
-        
+    }
+
+    private void MoveToTargetPosition(double delta)
+    {
+        var position = GlobalPosition;
+        if (position.IsEqualApprox(_targetPosition))
+        {
+            return;
+        }
+
+        SetStretchDirection(position.DirectionTo(_targetPosition).Rotated(Pi / 2));
+
+        var followSpeed = _isFollowingCursor ? CursorFollowSpeed : TargetPositionFollowSpeed;
+        var distanceToX = Abs(position.X - _targetPosition.X);
+        var distanceToY = Abs(position.Y - _targetPosition.Y);
+        var x = MoveToward(
+            position.X,
+            _targetPosition.X,
+            followSpeed * (float)delta * distanceToX
+        );
+        var y = MoveToward(
+            position.Y,
+            _targetPosition.Y,
+            followSpeed * (float)delta * distanceToY
+        );
+        GlobalPosition = new Vector2(x, y);
+
+        var positionDelta = GlobalPosition.DistanceTo(position);
+        var stretchAmount = Clamp(StretchAmountPerPixel * positionDelta, 0, 2);
+        SetStretchAmount(stretchAmount);
     }
 
     private void SetStretchAmount(float stretchAmount)

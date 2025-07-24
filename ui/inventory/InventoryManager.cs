@@ -49,9 +49,12 @@ public partial class InventoryManager : Control
         LeftBlasterInventory.GetSlot(5).InsertModule(
             UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
         );
+        LeftBlasterInventory.GetSlot(4).InsertModule(
+            UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
+        );
         
-        Visible = false;
         Close();
+        Visible = false;
     }
 
     public override void _Process(double delta)
@@ -151,7 +154,6 @@ public partial class InventoryManager : Control
         if (module != null)
         {
             module.StopFollowingCursor();
-            _dragAndDropFrom.PositionModuleOnSlot(module);
         }
         _dragAndDropFrom = null;
     }

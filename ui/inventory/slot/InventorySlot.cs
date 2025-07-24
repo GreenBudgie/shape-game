@@ -94,13 +94,11 @@ public partial class InventorySlot : TextureButton
         (otherSlot._module, _module) = (_module, otherSlot._module);
         if (_module != null)
         {
-            PositionModuleOnSlot(_module);
             _module.Slot = this;
         }
         
         if (otherSlot._module != null)
         {
-            otherSlot.PositionModuleOnSlot(otherSlot._module);
             otherSlot._module.Slot = otherSlot;
         }
     }
@@ -109,9 +107,9 @@ public partial class InventorySlot : TextureButton
     {
         RemoveModule();
         InventoryManager.Instance.AddChild(module);
-        PositionModuleOnSlot(module);
         _module = module;
         module.Slot = this;
+        _module.MoveToSlotInstantly();
     }
 
     public UiModule? GetModule()
@@ -135,11 +133,6 @@ public partial class InventorySlot : TextureButton
     public bool HasModule()
     {
         return GetModule() != null;
-    }
-
-    public void PositionModuleOnSlot(UiModule module)
-    {
-        module.GlobalPosition = GetGlobalRect().GetCenter();
     }
 
     private void OnButtonDown()
