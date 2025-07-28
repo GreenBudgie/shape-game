@@ -5,6 +5,9 @@ public partial class BoltProjectile : RigidBody2D, IProjectile
 
     [Export]
     private AudioStream _shotSound = null!;
+    
+    [Export]
+    private AudioStream _wallHitSound = null!;
 
     public static BoltProjectile Create()
     {
@@ -34,7 +37,17 @@ public partial class BoltProjectile : RigidBody2D, IProjectile
 
     private void HandleBodyEntered(Node body)
     {
-        if (body is not Enemy enemy)
+        if (body is not CollisionObject2D collisionObject2D)
+        {
+            return;
+        }
+
+        if (collisionObject2D.GetCollisionLayerValue(CollisionLayers.LevelWalls))
+        {
+            SoundManager.Instance.PlayPositionalSound(this, _wallHitSound).RandomizePitchOffset(0.1f);
+        }
+        
+        if (collisionObject2D is not Enemy enemy)
         {
             return;
         }
