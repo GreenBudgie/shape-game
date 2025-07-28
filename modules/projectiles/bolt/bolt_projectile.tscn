@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bnh56fabyfl1o"]
+[gd_scene load_steps=8 format=3 uid="uid://bnh56fabyfl1o"]
 
 [ext_resource type="Script" uid="uid://ccp5pyqi3g16e" path="res://modules/projectiles/bolt/BoltProjectile.cs" id="1_uyfjk"]
 [ext_resource type="Texture2D" uid="uid://dbsmx1goi2kpp" path="res://modules/projectiles/bolt/bolt.png" id="2_1nglk"]
+[ext_resource type="AudioStream" uid="uid://3vgmpsu74edm" path="res://modules/projectiles/bolt/bolt_projectile_launch.wav" id="2_k0ksy"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="3_1nglk"]
 [ext_resource type="PackedScene" uid="uid://k5oagak4w5qw" path="res://modules/components/scenes/damage_component.tscn" id="4_tr1ym"]
 
@@ -24,6 +25,7 @@ contact_monitor = true
 max_contacts_reported = 5
 angular_damp = 5.0
 script = ExtResource("1_uyfjk")
+_shotSound = ExtResource("2_k0ksy")
 
 [node name="BoltSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_1nglk")

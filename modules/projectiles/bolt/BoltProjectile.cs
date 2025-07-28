@@ -1,7 +1,10 @@
 public partial class BoltProjectile : RigidBody2D, IProjectile
 {
 
-    private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://cqjg5lcuad1hd");
+    private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
+
+    [Export]
+    private AudioStream _shotSound = null!;
 
     public static BoltProjectile Create()
     {
@@ -10,6 +13,7 @@ public partial class BoltProjectile : RigidBody2D, IProjectile
 
     public override void _Ready()
     {
+        SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
         BodyEntered += HandleBodyEntered;
     }
 
