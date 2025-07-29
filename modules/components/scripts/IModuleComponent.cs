@@ -1,1 +1,6 @@
-public interface IModuleComponent;
+public interface IModuleComponent
+{
+    
+    public Node Node { get; }
+    
+}

@@ -1,4 +1,4 @@
-public partial class BoltProjectile : RigidBody2D, IProjectile
+public partial class BoltProjectile : RigidBody2D, IProjectile<BoltProjectile>
 {
 
     private static readonly PackedScene BoltProjectileScene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
@@ -8,7 +8,9 @@ public partial class BoltProjectile : RigidBody2D, IProjectile
     
     [Export]
     private AudioStream _wallHitSound = null!;
-
+    
+    public BoltProjectile Node => this;
+    
     public static BoltProjectile Create()
     {
         return BoltProjectileScene.Instantiate<BoltProjectile>();
@@ -55,5 +57,5 @@ public partial class BoltProjectile : RigidBody2D, IProjectile
         enemy.Damage();
         QueueFree();
     }
-    
+
 }

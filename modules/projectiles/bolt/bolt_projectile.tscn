@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bnh56fabyfl1o"]
+[gd_scene load_steps=10 format=3 uid="uid://bnh56fabyfl1o"]
 
 [ext_resource type="Script" uid="uid://ccp5pyqi3g16e" path="res://modules/projectiles/bolt/BoltProjectile.cs" id="1_uyfjk"]
 [ext_resource type="Texture2D" uid="uid://dbsmx1goi2kpp" path="res://modules/projectiles/bolt/bolt.png" id="2_1nglk"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="3_1nglk"]
 [ext_resource type="AudioStream" uid="uid://dcst5l714kycq" path="res://modules/projectiles/hit_wall.wav" id="3_lg5yd"]
 [ext_resource type="PackedScene" uid="uid://k5oagak4w5qw" path="res://modules/components/scenes/damage_component.tscn" id="4_tr1ym"]
+[ext_resource type="PackedScene" uid="uid://rjeqsegn36yl" path="res://modules/components/scenes/fire_rate_component.tscn" id="7_o5w4t"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
 friction = 0.0
@@ -42,3 +43,6 @@ BaseImpulse = Vector2(0, -400)
 
 [node name="DamageComponent" parent="." instance=ExtResource("4_tr1ym")]
 BaseDamage = 1.0
+
+[node name="FireRateComponent" parent="." instance=ExtResource("7_o5w4t")]
+BaseFireRate = 0.5

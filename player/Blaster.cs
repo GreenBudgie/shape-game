@@ -3,6 +3,8 @@ using System.Collections.Generic;
 public partial class Blaster : Node
 {
 
+    private const float MinDelay = 0.01f;
+
     private BlasterInventory _inventory = null!;
     private int _lastSlot;
 
@@ -18,7 +20,6 @@ public partial class Blaster : Node
         if (Delay > 0)
         {
             Delay -= (float)delta;
-            return;
         }
     }
 
@@ -61,7 +62,8 @@ public partial class Blaster : Node
 
     private void ShootProjectile(List<ModifierModule> modifiers, ProjectileModule projectileModule)
     {
-        var projectile = projectileModule.CreateProjectile().ToNode();
+        var projectile = projectileModule.CreateProjectile();
+        var projectileNode = projectile.Node;
 
         foreach (var modifier in modifiers)
         {
@@ -69,10 +71,18 @@ public partial class Blaster : Node
         }
 
         var spawnPosition = Player.FindPlayer()?.GetGlobalNosePosition() ?? ShapeGame.Center;
-        projectile.GlobalPosition = spawnPosition;
-        ShapeGame.Instance.AddChild(projectile);
+        projectileNode.GlobalPosition = spawnPosition;
+        ShapeGame.Instance.AddChild(projectileNode);
 
-        Delay = 1f;
+        var fireRateComponent = projectile.GetComponentOrNull<FireRateComponent>();
+        if (fireRateComponent != null)
+        {
+            Delay = Max(fireRateComponent.FireRate, MinDelay);
+        }
+        else
+        {
+            Delay = MinDelay;
+        }
     }
 
     private int NextSlot()

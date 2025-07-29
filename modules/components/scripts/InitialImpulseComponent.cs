@@ -3,6 +3,8 @@ public partial class InitialImpulseComponent : Node, IModuleComponent
     
     [Export] public RigidBody2D Projectile { get; private set; } = null!;
     [Export] public Vector2 BaseImpulse { get; private set; }
+    
+    public Node Node => this;
 
     public override void _Ready()
     {
