@@ -1,3 +1,5 @@
+using System;
+
 public partial class Player : CharacterBody2D
 {
 
@@ -31,6 +33,7 @@ public partial class Player : CharacterBody2D
 
     private Vector2 _windowCenter;
     private Blaster _leftBlaster = null!;
+    private ShapeCast2D _playerCollisionDetector = null!;
 
     public static Player? FindPlayer()
     {
@@ -55,6 +58,29 @@ public partial class Player : CharacterBody2D
         PauseManager.Instance.GamePause += () => MoveMouseToWindowCenter(ShapeGame.PlayableArea.GetCenter());
         InventoryManager.Instance.InventoryClosed += () => MoveMouseToWindowCenter(_windowCenter);
         InventoryManager.Instance.InventoryOpened += () => MoveMouseToWindowCenter(ShapeGame.PlayableArea.GetCenter());
+
+        CallDeferred(MethodName.SetupCollisionDetector);
+    }
+
+    private void SetupCollisionDetector()
+    {
+        _playerCollisionDetector = new ShapeCast2D();
+        _playerCollisionDetector.Shape = GetShape();
+        _playerCollisionDetector.Enabled = false;
+        _playerCollisionDetector.CollideWithBodies = true;
+        _playerCollisionDetector.CollideWithAreas = false;
+        _playerCollisionDetector.SetCollisionMaskValue((int)CollisionLayers.PlayerCollider, true);
+        _playerCollisionDetector.TargetPosition = Vector2.Zero;
+        
+        ShapeGame.Instance.AddChild(_playerCollisionDetector);
+    }
+
+    private ConvexPolygonShape2D GetShape()
+    {
+        var collisionPolygon = GetNode<CollisionPolygon2D>("PlayerCollisionShape");
+        var shape = new ConvexPolygonShape2D();
+        shape.Points = collisionPolygon.Polygon;
+        return shape;
     }
 
     public override void _Process(double delta)
@@ -64,11 +90,13 @@ public partial class Player : CharacterBody2D
         {
             mouseDelta = MoveMouseToWindowCenter(_windowCenter);
         }
+        
+        _playerCollisionDetector.GlobalPosition = GlobalPosition;
 
         var prevPosition = Position;
         Velocity = mouseDelta * (float)(1 / delta);
         MoveAndSlide();
-
+        
         var positionDelta = Position - prevPosition;
         var tiltDegrees = positionDelta.X * _tiltIncreaseFactor;
         RotationDegrees *= Clamp(1 - (float)(delta * _tiltDecreaseFactor), 0, 1);
@@ -77,10 +105,33 @@ public partial class Player : CharacterBody2D
         {
             RotationDegrees = 0;
         }
+        
+        RegisterPlayerCollisions();
 
         if (!InventoryManager.Instance.IsOpen && (int)Input.GetActionStrength("primary_fire") == 1)
         {
             PrimaryFire();
+        }
+    }
+
+    private void RegisterPlayerCollisions()
+    {
+        _playerCollisionDetector.Rotation = Rotation;
+        _playerCollisionDetector.TargetPosition = _playerCollisionDetector.ToLocal(GlobalPosition);
+        _playerCollisionDetector.ForceShapecastUpdate();
+
+        if (!_playerCollisionDetector.IsColliding())
+        {
+            return;
+        }
+        
+        for (var i = 0; i < _playerCollisionDetector.GetCollisionCount(); i++)
+        {
+            var collider = _playerCollisionDetector.GetCollider(i);
+            if (collider is IPlayerCollisionDetector collisionDetector)
+            {
+                collisionDetector.CollideWithPlayer(this);
+            }
         }
     }
 

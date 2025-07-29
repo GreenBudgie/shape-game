@@ -27,7 +27,7 @@ public partial class LevelManager : Node
 
     private void SpawnEnemy()
     {
-        EnemyTypeManager.Instance.SpawnEnemy(EnemyTypeManager.Instance.GetRandomEnemyType());
+        EnemyTypeManager.Instance.SpawnEnemy(EnemyTypeManager.EnemyTypes[1]);
     }
 
 

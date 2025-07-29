@@ -1,4 +1,4 @@
-public partial class EnemyRhombusProjectile : RigidBody2D
+public partial class EnemyRhombusProjectile : RigidBody2D, IPlayerCollisionDetector
 {
     private const double MaxLifetimeSeconds = 6;
     
@@ -28,27 +28,26 @@ public partial class EnemyRhombusProjectile : RigidBody2D
         Rotation = angle;
     }
     
+    public void CollideWithPlayer(Player player)
+    {
+        QueueFree();
+    }
+    
     private void HandleBodyEntered(Node body)
     {
-        if (body.IsInGroup("level_walls"))
+        if (!body.IsInGroup("level_walls"))
         {
-            var speed = LinearVelocity.Length();
-            if (speed <= 100)
-            {
-                return;
-            }
+            return;
+        }
+        
+        var speed = LinearVelocity.Length();
+        if (speed <= 100)
+        {
+            return;
+        }
 
-            var sound = SoundManager.Instance.PlayPositionalSound(this, _hitWallSound);
-            sound.RandomizePitch(0.8f, 1.2f);
-            return;
-        }
-        
-        if (body is not Player)
-        {
-            return;
-        }
-        
-        QueueFree();
+        var sound = SoundManager.Instance.PlayPositionalSound(this, _hitWallSound);
+        sound.RandomizePitch(0.8f, 1.2f);
     }
     
 }

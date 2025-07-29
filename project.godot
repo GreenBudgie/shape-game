@@ -110,13 +110,13 @@ fullscreen={
 2d_physics/layer_7="level_ceiling"
 2d_physics/layer_8="level_floor"
 2d_physics/layer_9="level_outside_boundary"
+2d_physics/layer_10="player_collider"
 
 [physics]
 
-common/physics_ticks_per_second=240
-common/max_physics_steps_per_frame=32
 2d/default_gravity=1960.0
 2d/default_linear_damp=0.0
+common/physics_interpolation=true
 
 [rendering]
 

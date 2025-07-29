@@ -1,4 +1,4 @@
-public partial class FallingCrystal : RigidBody2D
+public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
 {
 
     private const float MaxMagnetDistance = 512;
@@ -39,6 +39,11 @@ public partial class FallingCrystal : RigidBody2D
     public override void _PhysicsProcess(double delta)
     {
         ApplyMagnet();
+    }
+    
+    public void CollideWithPlayer(Player player)
+    {
+        Collect();
     }
 
     private void ApplyMagnet()
@@ -99,11 +104,6 @@ public partial class FallingCrystal : RigidBody2D
         if (collisionObject.GetCollisionLayerValue(CollisionLayers.LevelOutsideBoundary))
         {
             QueueFree();
-        }
-
-        if (node is Player)
-        {
-            Collect();
         }
     }
 

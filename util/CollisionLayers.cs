@@ -10,5 +10,6 @@ public enum CollisionLayers
     LevelCeiling = 7,
     LevelFloor = 8,
     LevelOutsideBoundary = 9,
+    PlayerCollider = 10,
     
 }

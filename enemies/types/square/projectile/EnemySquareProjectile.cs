@@ -1,4 +1,4 @@
-﻿public partial class EnemySquareProjectile : RigidBody2D
+﻿public partial class EnemySquareProjectile : RigidBody2D, IPlayerCollisionDetector
 {
 
     [Export] private AudioStream _hitWallSound = null!;
@@ -15,29 +15,28 @@
             QueueFree();
         }
     }
-    
+
+    public void CollideWithPlayer(Player player)
+    {
+        QueueFree();
+    }
+
     private void HandleBodyEntered(Node body)
     {
-        if (body.IsInGroup("level_walls"))
+        if (!body.IsInGroup("level_walls"))
         {
-            var speed = LinearVelocity.Length();
-            if (speed <= 100)
-            {
-                return;
-            }
+            return;
+        }
+        
+        var speed = LinearVelocity.Length();
+        if (speed <= 100)
+        {
+            return;
+        }
 
-            var pitch = speed / 1000f + 0.75f;
-            var sound = SoundManager.Instance.PlayPositionalSound(this, _hitWallSound);
-            sound.PitchScale = Clamp(pitch, 0.75f, 1.25f);
-            return;
-        }
-        
-        if (body is not Player)
-        {
-            return;
-        }
-        
-        QueueFree();
+        var pitch = speed / 1000f + 0.75f;
+        var sound = SoundManager.Instance.PlayPositionalSound(this, _hitWallSound);
+        sound.PitchScale = Clamp(pitch, 0.75f, 1.25f);
     }
     
     
