@@ -58,8 +58,8 @@
     private void Fire()
     {
         var bullet = ProjectileScene.Instantiate<EnemySquareProjectile>();
-        ShapeGame.Instance.AddChild(bullet);
         bullet.GlobalPosition = GlobalPosition;
+        ShapeGame.Instance.AddChild(bullet);
         var randomStrength = (float)GD.RandRange(1f, 2f);
         var velocityLength = LinearVelocity.Length();
         var impulse = Vector2.Down * velocityLength * 0.5f - LinearVelocity * randomStrength;

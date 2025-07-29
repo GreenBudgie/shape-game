@@ -136,8 +136,8 @@
     private void FireProjectile(Vector2 globalPosition)
     {
         var projectile = ProjectileScene.Instantiate<EnemyRhombusProjectile>();
-        ShapeGame.Instance.AddChild(projectile);
         projectile.GlobalPosition = globalPosition;
+        ShapeGame.Instance.AddChild(projectile);
 
         var projectileDirection = GlobalPosition.DirectionTo(globalPosition);
         projectile.ApplyCentralImpulse(projectileDirection * 1500f);
