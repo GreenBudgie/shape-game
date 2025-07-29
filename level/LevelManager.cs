@@ -20,9 +20,9 @@ public partial class LevelManager : Node
     {
         _level = level;
 
-        // CallDeferred(MethodName.SpawnEnemy);
-        // var tween = CreateTween().SetLoops();
-        // tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(5.0f);
+        CallDeferred(MethodName.SpawnEnemy);
+        var tween = CreateTween().SetLoops();
+        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(5.0f);
     }
 
     private void SpawnEnemy()

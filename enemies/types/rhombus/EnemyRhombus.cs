@@ -43,7 +43,7 @@
 
     public override float GetMaxHealth()
     {
-        return 1;
+        return 5;
     }
 
     public override float GetCrystalsToDrop()
