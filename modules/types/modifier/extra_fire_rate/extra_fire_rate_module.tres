@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="BoltModule" load_steps=3 format=3 uid="uid://dixg0bdyqb2ay"]
+[gd_resource type="Resource" script_class="ExtraFireRateModule" load_steps=3 format=3 uid="uid://dixg0bdyqb2ay"]
 
+[ext_resource type="Script" uid="uid://b0hauski8fk7j" path="res://modules/types/modifier/extra_fire_rate/ExtraFireRateModule.cs" id="1_1wrny"]
 [ext_resource type="Texture2D" uid="uid://c8o3rn0l3fgtx" path="res://modules/types/modifier/extra_fire_rate/extra_fire_rate_module.png" id="1_mg2yu"]
-[ext_resource type="Script" uid="uid://dbop5xnp8ac4s" path="res://modules/types/projectile/bolt/BoltModule.cs" id="2_v5qjp"]
 
 [resource]
-script = ExtResource("2_v5qjp")
+script = ExtResource("1_1wrny")
 Texture = ExtResource("1_mg2yu")
 metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

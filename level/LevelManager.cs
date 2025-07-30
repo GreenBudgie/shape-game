@@ -22,7 +22,7 @@ public partial class LevelManager : Node
 
         CallDeferred(MethodName.SpawnEnemy);
         var tween = CreateTween().SetLoops();
-        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(5.0f);
+        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(1.0f);
     }
 
     private void SpawnEnemy()

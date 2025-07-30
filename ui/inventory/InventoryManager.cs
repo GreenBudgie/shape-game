@@ -50,6 +50,15 @@ public partial class InventoryManager : Control
             UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
         );
         LeftBlasterInventory.GetSlot(4).InsertModule(
+            UiModule.Create(GD.Load<ExtraFireRateModule>("uid://dixg0bdyqb2ay"))
+        );
+        LeftBlasterInventory.GetSlot(3).InsertModule(
+            UiModule.Create(GD.Load<ExtraFireRateModule>("uid://dixg0bdyqb2ay"))
+        );
+        LeftBlasterInventory.GetSlot(2).InsertModule(
+            UiModule.Create(GD.Load<ExtraFireRateModule>("uid://dixg0bdyqb2ay"))
+        );
+        LeftBlasterInventory.GetSlot(1).InsertModule(
             UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
         );
         

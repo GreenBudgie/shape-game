@@ -53,6 +53,7 @@ public partial class Blaster : Node
             if (module is ProjectileModule projectileModule)
             {
                 ShootProjectile(modifiers, projectileModule);
+                _lastSlot = NextSlot();
                 return true;
             }
         }
