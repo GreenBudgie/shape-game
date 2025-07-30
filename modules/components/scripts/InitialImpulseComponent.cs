@@ -8,8 +8,8 @@ public partial class InitialImpulseComponent : Node, IModuleComponent
 
     public override void _Ready()
     {
-        var playerRotation = Player.FindPlayer()?.Rotation ?? 0;
-        var moveVector = BaseImpulse.Rotated(playerRotation);
+        var playerTilt = Player.FindPlayer()?.GetTilt() ?? 0;
+        var moveVector = BaseImpulse.Rotated(playerTilt);
         Projectile.ApplyCentralImpulse(moveVector);
     }
 
