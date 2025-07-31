@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
 [ext_resource type="Texture2D" uid="uid://ptdgrqellnu8" path="res://environment/wall/right_wall.png" id="7_eow3j"]
 [ext_resource type="Script" uid="uid://fxme35ooeqpu" path="res://level/LevelManager.cs" id="8_j5wjh"]
-[ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://enemies/types/EnemyTypeManager.cs" id="8_vef74"]
+[ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://enemies/EnemyManager.cs" id="8_vef74"]
 [ext_resource type="PackedScene" uid="uid://b8gd2gve05upa" path="res://systems/CrystalManager.tscn" id="9_vef74"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]

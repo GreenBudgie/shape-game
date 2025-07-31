@@ -1,9 +1,23 @@
 public partial class LevelManager : Node
 {
-
-
+    
     public static LevelManager Instance { get; private set; } = null!;
 
+    [Signal]
+    public delegate void LevelStartedEventHandler();
+    
+    [Signal]
+    public delegate void DestroyProgressUpdatedEventHandler(int prevProgress, int newProgress);
+    
+    [Signal]
+    public delegate void SurviveProgressUpdatedEventHandler(float prevProgress, float newProgress);
+    
+    public int DestroyRequirement { get; private set; }
+    public int DestroyProgress { get; private set; }
+    
+    public int SurviveRequirementSeconds { get; private set; }
+    public float SurviveProgressSeconds { get; private set; }
+    
     private int _level;
 
     public override void _EnterTree()
@@ -13,21 +27,59 @@ public partial class LevelManager : Node
 
     public override void _Ready()
     {
-        StartLevel(1);
+        Callable.From(() => StartLevel(1)).CallDeferred();
+
+        EnemyManager.Instance.EnemyDestroyed += OnEnemyDestroyed;
     }
 
     public void StartLevel(int level)
     {
         _level = level;
+        
+        SetDestroyRequirement(20);
+        SetSurviveRequirement(20);
 
-        CallDeferred(MethodName.SpawnEnemy);
+        SpawnEnemy();
         var tween = CreateTween().SetLoops();
-        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(1.0f);
+        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(5.0f);
+        
+        EmitSignalLevelStarted();
+    }
+
+    private void OnEnemyDestroyed(Enemy enemy)
+    {
+        SetDestroyProgress(DestroyProgress + 1);
+    }
+
+    private void SetDestroyRequirement(int requirement)
+    {
+        DestroyRequirement = requirement;
+        SetDestroyProgress(0);
+    }
+
+    private void SetDestroyProgress(int progress)
+    {
+        var prevDestroyProgress = DestroyProgress;
+        DestroyProgress = progress;
+        EmitSignalDestroyProgressUpdated(prevDestroyProgress, DestroyProgress);
+    }
+    
+    private void SetSurviveRequirement(int requirementSeconds)
+    {
+        SurviveRequirementSeconds = requirementSeconds;
+        SetSurviveProgress(0);
+    }
+
+    private void SetSurviveProgress(float progressSeconds)
+    {
+        var prevSurviveProgress = SurviveProgressSeconds;
+        SurviveProgressSeconds = progressSeconds;
+        EmitSignalSurviveProgressUpdated(prevSurviveProgress, SurviveProgressSeconds);
     }
 
     private void SpawnEnemy()
     {
-        EnemyTypeManager.Instance.SpawnEnemy(EnemyTypeManager.Instance.GetRandomEnemyType());
+        EnemyManager.Instance.SpawnEnemy(EnemyManager.Instance.GetRandomEnemyType());
     }
 
 

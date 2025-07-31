@@ -9,7 +9,6 @@
     <None Include="**/*.tres" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="enemies\types\" />
     <Folder Include="modules\components\scenes\" />
   </ItemGroup>
 </Project>

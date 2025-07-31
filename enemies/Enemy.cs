@@ -118,6 +118,8 @@ public abstract partial class Enemy : RigidBody2D
         finalGlowColor.A = 0;
         fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.25);
 
+        EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);
+        
         _enemyAnimations.Play("destroy");
         _enemyAnimations.AnimationFinished += _ => QueueFree();
     }
