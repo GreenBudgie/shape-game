@@ -1,8 +1,8 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://ciwqpwd0x241b"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://ciwqpwd0x241b"]
 
-[ext_resource type="FontFile" uid="uid://bv0ylkfqi1s7w" path="res://ui/default_font.ttf" id="1_vvb2q"]
+[ext_resource type="FontFile" uid="uid://bxlaon0gxsvq7" path="res://ui/default_font.ttf" id="1_vvb2q"]
 
-[sub_resource type="FontVariation" id="FontVariation_rqugq"]
+[sub_resource type="FontVariation" id="FontVariation_jf26r"]
 base_font = ExtResource("1_vvb2q")
 spacing_glyph = 4
 
@@ -21,6 +21,17 @@ corner_radius_bottom_left = 10
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqugq"]
 bg_color = Color(0.211765, 0.945098, 0.803922, 1)
 
+[sub_resource type="FontVariation" id="FontVariation_6lx7k"]
+base_font = ExtResource("1_vvb2q")
+variation_opentype = {
+2003265652: 700
+}
+spacing_glyph = 4
+
+[sub_resource type="FontVariation" id="FontVariation_rqugq"]
+base_font = ExtResource("1_vvb2q")
+spacing_glyph = 4
+
 [resource]
 Label/colors/font_color = Color(1, 1, 1, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
@@ -31,8 +42,10 @@ Label/constants/shadow_offset_x = 1
 Label/constants/shadow_offset_y = 1
 Label/constants/shadow_outline_size = 1
 Label/font_sizes/font_size = 56
-Label/fonts/font = SubResource("FontVariation_rqugq")
+Label/fonts/font = SubResource("FontVariation_jf26r")
 ProgressBar/styles/background = SubResource("StyleBoxFlat_jf26r")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_rqugq")
+RichTextLabel/font_sizes/bold_font_size = 56
 RichTextLabel/font_sizes/normal_font_size = 56
-RichTextLabel/fonts/normal_font = ExtResource("1_vvb2q")
+RichTextLabel/fonts/bold_font = SubResource("FontVariation_6lx7k")
+RichTextLabel/fonts/normal_font = SubResource("FontVariation_rqugq")

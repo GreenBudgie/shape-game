@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://ciwqpwd0x241b" path="res://ui/theme.tres" id="2_ocqps"]
 [ext_resource type="Script" uid="uid://l6srxp0yflbe" path="res://ui/stats/CrystalCounter.cs" id="3_ugiaq"]
 [ext_resource type="Texture2D" uid="uid://cfntiitlilkfv" path="res://ui/stats/crystal_ui.png" id="5_ugiaq"]
-[ext_resource type="Script" uid="uid://c61erqr6q540j" path="res://ui/stats/DestroyStats.cs" id="6_vkf4t"]
+[ext_resource type="Script" uid="uid://c61erqr6q540j" path="res://ui/stats/ProgressStats.cs" id="6_vkf4t"]
 [ext_resource type="Texture2D" uid="uid://ccssv1nnfx2xu" path="res://ui/stats/progress_bar_outline.png" id="6_yl4cn"]
 [ext_resource type="Texture2D" uid="uid://obnqmq5gkep8" path="res://ui/stats/progress_bar_fill.png" id="7_pkkqt"]
 
@@ -73,7 +73,7 @@ texture = ExtResource("5_ugiaq")
 expand_mode = 1
 stretch_mode = 3
 
-[node name="DestroyStats" type="Control" parent="."]
+[node name="ProgressStats" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -82,7 +82,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_vkf4t")
 
-[node name="DestroyLabel" type="Label" parent="DestroyStats"]
+[node name="DestroyLabel" type="RichTextLabel" parent="ProgressStats"]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -92,11 +92,13 @@ offset_top = -465.0
 offset_bottom = -393.833
 grow_horizontal = 2
 grow_vertical = 2
-text = "DESTROY"
+bbcode_enabled = true
+text = "[b]DESTROY[/b]"
+fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DestroyRequirementLabel" type="RichTextLabel" parent="DestroyStats"]
+[node name="DestroyRequirementLabel" type="RichTextLabel" parent="ProgressStats"]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -111,7 +113,7 @@ fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DestroyProgressLabel" type="RichTextLabel" parent="DestroyStats"]
+[node name="DestroyProgressLabel" type="RichTextLabel" parent="ProgressStats"]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -126,7 +128,7 @@ fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DestroyProgress" type="TextureProgressBar" parent="DestroyStats"]
+[node name="DestroyProgress" type="TextureProgressBar" parent="ProgressStats"]
 layout_mode = 0
 offset_left = 58.0
 offset_top = 905.0
@@ -141,18 +143,59 @@ stretch_margin_bottom = 10
 texture_over = ExtResource("6_yl4cn")
 texture_progress = ExtResource("7_pkkqt")
 
-[node name="SurviveTimer" type="Control" parent="."]
-visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="SurviveLabel" type="RichTextLabel" parent="ProgressStats"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 10.0
+offset_bottom = 81.167
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[b]SURVIVE[/b]"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TextureProgressBar" type="TextureProgressBar" parent="SurviveTimer"]
+[node name="SurviveRequirementLabel" type="RichTextLabel" parent="ProgressStats"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 86.0
+offset_bottom = 158.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "60 SEC"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SurviveProgressLabel" type="RichTextLabel" parent="ProgressStats"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 210.0
+offset_bottom = 282.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1 : 00"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SurviveProgress" type="TextureProgressBar" parent="ProgressStats"]
 layout_mode = 0
 offset_left = 58.0
-offset_top = 1145.0
+offset_top = 1372.0
 offset_right = 458.0
-offset_bottom = 1205.0
+offset_bottom = 1432.0
+step = 0.01
 value = 24.0
 nine_patch_stretch = true
 stretch_margin_left = 10
@@ -161,30 +204,3 @@ stretch_margin_right = 10
 stretch_margin_bottom = 10
 texture_over = ExtResource("6_yl4cn")
 texture_progress = ExtResource("7_pkkqt")
-
-[node name="Label" type="Label" parent="SurviveTimer"]
-layout_mode = 0
-offset_left = 94.0
-offset_top = 860.0
-offset_right = 423.0
-offset_bottom = 931.167
-text = "SURVIVE"
-
-[node name="Label2" type="Label" parent="SurviveTimer"]
-layout_mode = 0
-offset_left = 177.0
-offset_top = 931.0
-offset_right = 341.0
-offset_bottom = 1002.17
-text = "1 MIN"
-
-[node name="Label3" type="Label" parent="SurviveTimer"]
-layout_mode = 0
-offset_left = 142.0
-offset_top = 1020.0
-offset_right = 373.0
-offset_bottom = 1142.0
-theme_override_font_sizes/font_size = 72
-text = "1:00"
-horizontal_alignment = 1
-vertical_alignment = 1

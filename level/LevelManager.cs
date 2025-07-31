@@ -32,6 +32,14 @@ public partial class LevelManager : Node
         EnemyManager.Instance.EnemyDestroyed += OnEnemyDestroyed;
     }
 
+    public override void _Process(double delta)
+    {
+        if (SurviveProgressSeconds < SurviveRequirementSeconds)
+        {
+            SetSurviveProgress(Min(SurviveRequirementSeconds, SurviveProgressSeconds + (float)delta));
+        }
+    }
+
     public void StartLevel(int level)
     {
         _level = level;
