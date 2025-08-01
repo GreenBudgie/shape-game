@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bkdy1r0hmunja"]
+[gd_scene load_steps=10 format=3 uid="uid://bkdy1r0hmunja"]
 
 [ext_resource type="Script" uid="uid://dw1hyp3ktttge" path="res://ui/stats/StatsPanel.cs" id="1_oi65f"]
 [ext_resource type="Texture2D" uid="uid://d4gk336lqiaed" path="res://ui/stats/stats_panel.png" id="1_p1yf4"]
@@ -6,8 +6,9 @@
 [ext_resource type="Script" uid="uid://l6srxp0yflbe" path="res://ui/stats/CrystalCounter.cs" id="3_ugiaq"]
 [ext_resource type="Texture2D" uid="uid://cfntiitlilkfv" path="res://ui/stats/crystal_ui.png" id="5_ugiaq"]
 [ext_resource type="Script" uid="uid://c61erqr6q540j" path="res://ui/stats/ProgressStats.cs" id="6_vkf4t"]
-[ext_resource type="Texture2D" uid="uid://ccssv1nnfx2xu" path="res://ui/stats/progress_bar_outline.png" id="6_yl4cn"]
-[ext_resource type="Texture2D" uid="uid://obnqmq5gkep8" path="res://ui/stats/progress_bar_fill.png" id="7_pkkqt"]
+[ext_resource type="Texture2D" uid="uid://62q8y3ct3e6l" path="res://ui/stats/progress_bar_outline.png" id="7_vkf4t"]
+[ext_resource type="Texture2D" uid="uid://bwyriujuvrcdt" path="res://ui/stats/destroy_progress_fill.png" id="8_to8l2"]
+[ext_resource type="Texture2D" uid="uid://3kojc6rt6dst" path="res://ui/stats/survive_progress_fill.png" id="9_to8l2"]
 
 [node name="StatsPanel" type="Control"]
 z_index = -1
@@ -129,19 +130,25 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DestroyProgress" type="TextureProgressBar" parent="ProgressStats"]
-layout_mode = 0
-offset_left = 58.0
-offset_top = 905.0
-offset_right = 458.0
-offset_bottom = 965.0
-value = 24.0
-nine_patch_stretch = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -175.0
+offset_right = 210.0
+offset_bottom = -91.0
+grow_horizontal = 2
+grow_vertical = 2
+value = 20.0
 stretch_margin_left = 10
 stretch_margin_top = 10
 stretch_margin_right = 10
 stretch_margin_bottom = 10
-texture_over = ExtResource("6_yl4cn")
-texture_progress = ExtResource("7_pkkqt")
+texture_over = ExtResource("7_vkf4t")
+texture_progress = ExtResource("8_to8l2")
 
 [node name="SurviveLabel" type="RichTextLabel" parent="ProgressStats"]
 layout_mode = 1
@@ -190,17 +197,23 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SurviveProgress" type="TextureProgressBar" parent="ProgressStats"]
-layout_mode = 0
-offset_left = 58.0
-offset_top = 1372.0
-offset_right = 458.0
-offset_bottom = 1432.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = 289.0
+offset_right = 210.0
+offset_bottom = 373.0
+grow_horizontal = 2
+grow_vertical = 2
 step = 0.01
 value = 24.0
-nine_patch_stretch = true
 stretch_margin_left = 10
 stretch_margin_top = 10
 stretch_margin_right = 10
 stretch_margin_bottom = 10
-texture_over = ExtResource("6_yl4cn")
-texture_progress = ExtResource("7_pkkqt")
+texture_over = ExtResource("7_vkf4t")
+texture_progress = ExtResource("9_to8l2")

@@ -96,9 +96,9 @@ public partial class ProgressStats : Control
     {
         _surviveProgressLabel.Text = string.Empty;
 
-        var wholeSecondsProgress = FloorToInt(progressSeconds);
-        var remainingMinutes = wholeSecondsProgress / 60;
-        var remainingSeconds = wholeSecondsProgress % 60;
+        var remainingSecondsProgress = LevelManager.Instance.SurviveRequirementSeconds - FloorToInt(progressSeconds);
+        var remainingMinutes = remainingSecondsProgress / 60;
+        var remainingSeconds = remainingSecondsProgress % 60;
         
         _surviveProgressLabel.PushColor(ColorScheme.LightGreen);
         _surviveProgressLabel.AppendText(remainingMinutes.ToString());
