@@ -18,6 +18,10 @@ public partial class ProgressStats : Control
         _surviveRequirementLabel = GetNode<RichTextLabel>("SurviveRequirementLabel");
         _surviveProgressLabel = GetNode<RichTextLabel>("SurviveProgressLabel");
         _surviveProgress = GetNode<TextureProgressBar>("SurviveProgress");
+
+        Glow.AddGlow(_destroyProgress)
+            .SetColor(ColorScheme.Red)
+            .TurnOff();
         
         UpdateDestroyRequirementLabel(0);
         UpdateDestroyProgress(0);
@@ -39,7 +43,7 @@ public partial class ProgressStats : Control
 
     private void OnDestroyProgressUpdated(int prevProgress, int newProgress)
     {
-        UpdateDestroyProgress(newProgress);
+        UpdateDestroyProgress(newProgress, prevProgress < newProgress);
     }
     
     private void OnSurviveProgressUpdated(float prevProgress, float newProgress)
@@ -60,8 +64,10 @@ public partial class ProgressStats : Control
         _destroyProgress.MinValue = 0;
         _destroyProgress.MaxValue = requirement;
     }
+
+    private Tween? _destroyProgressGlowRadiusTween;
     
-    private void UpdateDestroyProgress(int progress)
+    private void UpdateDestroyProgress(int progress, bool playEffect = false)
     {
         _destroyProgressLabel.Text = string.Empty;
         
@@ -76,6 +82,23 @@ public partial class ProgressStats : Control
         _destroyProgressLabel.Pop();
 
         _destroyProgress.Value = progress;
+
+        if (!playEffect)
+        {
+            return;
+        }
+        
+        var isCompleted = progress == LevelManager.Instance.DestroyRequirement;
+        if (isCompleted)
+        {
+            
+            return;
+        }
+
+        const float maxGlowRadius = 20;
+        const float maxGlowStrength = 1.5f;
+
+        
     }
     
     private void UpdateSurviveRequirementLabel(int requirementSeconds)
@@ -104,10 +127,11 @@ public partial class ProgressStats : Control
         _surviveProgressLabel.AppendText(remainingMinutes.ToString());
         _surviveProgressLabel.Pop();
         
-        _surviveProgressLabel.AppendText(":");
-        
+        _surviveProgressLabel.AppendText(" : ");
+
+        var formattedSeconds = remainingSeconds < 10 ? $"0{remainingSeconds}" : remainingSeconds.ToString();
         _surviveProgressLabel.PushColor(ColorScheme.LightGreen);
-        _surviveProgressLabel.AppendText(remainingSeconds.ToString());
+        _surviveProgressLabel.AppendText(formattedSeconds);
         _surviveProgressLabel.Pop();
 
         _surviveProgress.Value = progressSeconds;

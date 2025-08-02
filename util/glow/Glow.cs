@@ -265,6 +265,18 @@ public partial class Glow : SubViewportContainer
     {
         return AttachGlow(textureButton, textureButton.TextureNormal, textureButton.Size / 2);
     }
+    
+    /// <summary>
+    /// Adds a Glow instance as a child to the given TextureProgressBar, with an "over" texture.
+    ///
+    /// Image in this TextureProgressBar should be centered.
+    /// </summary>
+    /// <param name="textureProgressBar">The texture progress bar to attach the glow to.</param>
+    /// <returns>The instantiated Glow node.</returns>
+    public static Glow AddGlow(TextureProgressBar textureProgressBar)
+    {
+        return AttachGlow(textureProgressBar, textureProgressBar.TextureOver, textureProgressBar.Size / 2);
+    }
 
     private static Glow AttachGlow(CanvasItem node, Texture2D texture, Vector2 centerShift)
     {

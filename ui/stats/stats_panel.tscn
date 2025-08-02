@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bkdy1r0hmunja"]
+[gd_scene load_steps=17 format=3 uid="uid://bkdy1r0hmunja"]
 
 [ext_resource type="Script" uid="uid://dw1hyp3ktttge" path="res://ui/stats/StatsPanel.cs" id="1_oi65f"]
 [ext_resource type="Texture2D" uid="uid://d4gk336lqiaed" path="res://ui/stats/stats_panel.png" id="1_p1yf4"]
@@ -6,9 +6,37 @@
 [ext_resource type="Script" uid="uid://l6srxp0yflbe" path="res://ui/stats/CrystalCounter.cs" id="3_ugiaq"]
 [ext_resource type="Texture2D" uid="uid://cfntiitlilkfv" path="res://ui/stats/crystal_ui.png" id="5_ugiaq"]
 [ext_resource type="Script" uid="uid://c61erqr6q540j" path="res://ui/stats/ProgressStats.cs" id="6_vkf4t"]
+[ext_resource type="Texture2D" uid="uid://f63ugyu52nav" path="res://ui/stats/progress_bar_background.png" id="7_2h7qm"]
 [ext_resource type="Texture2D" uid="uid://62q8y3ct3e6l" path="res://ui/stats/progress_bar_outline.png" id="7_vkf4t"]
 [ext_resource type="Texture2D" uid="uid://bwyriujuvrcdt" path="res://ui/stats/destroy_progress_fill.png" id="8_to8l2"]
 [ext_resource type="Texture2D" uid="uid://3kojc6rt6dst" path="res://ui/stats/survive_progress_fill.png" id="9_to8l2"]
+[ext_resource type="Texture2D" uid="uid://dyreygmcjs8hj" path="res://ui/ui_particle.png" id="10_2vw3g"]
+
+[sub_resource type="Curve" id="Curve_2vw3g"]
+_data = [Vector2(0, 0.662921), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.59158, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_21laa"]
+curve = SubResource("Curve_2vw3g")
+
+[sub_resource type="Curve" id="Curve_21laa"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.22228, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_4r0y7"]
+curve = SubResource("Curve_21laa")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_21laa"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(178, 10, 0)
+direction = Vector3(0, -1, 0)
+spread = 20.0
+initial_velocity_min = 200.0
+initial_velocity_max = 300.0
+gravity = Vector3(0, 300, 0)
+scale_curve = SubResource("CurveTexture_4r0y7")
+alpha_curve = SubResource("CurveTexture_21laa")
 
 [node name="StatsPanel" type="Control"]
 z_index = -1
@@ -75,6 +103,7 @@ expand_mode = 1
 stretch_mode = 3
 
 [node name="ProgressStats" type="Control" parent="."]
+z_index = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -147,8 +176,17 @@ stretch_margin_left = 10
 stretch_margin_top = 10
 stretch_margin_right = 10
 stretch_margin_bottom = 10
+texture_under = ExtResource("7_2h7qm")
 texture_over = ExtResource("7_vkf4t")
 texture_progress = ExtResource("8_to8l2")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="ProgressStats/DestroyProgress"]
+modulate = Color(0.937255, 0.356863, 0.356863, 1)
+z_index = -1
+position = Vector2(210, 42)
+texture = ExtResource("10_2vw3g")
+lifetime = 2.0
+process_material = SubResource("ParticleProcessMaterial_21laa")
 
 [node name="SurviveLabel" type="RichTextLabel" parent="ProgressStats"]
 layout_mode = 1
@@ -215,5 +253,6 @@ stretch_margin_left = 10
 stretch_margin_top = 10
 stretch_margin_right = 10
 stretch_margin_bottom = 10
+texture_under = ExtResource("7_2h7qm")
 texture_over = ExtResource("7_vkf4t")
 texture_progress = ExtResource("9_to8l2")

@@ -56,7 +56,10 @@ public partial class LevelManager : Node
 
     private void OnEnemyDestroyed(Enemy enemy)
     {
-        SetDestroyProgress(DestroyProgress + 1);
+        if (DestroyProgress < DestroyRequirement)
+        {
+            SetDestroyProgress(DestroyProgress + 1);
+        }
     }
 
     private void SetDestroyRequirement(int requirement)
