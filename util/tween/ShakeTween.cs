@@ -59,7 +59,7 @@ public class ShakeTween
         _tween?.Kill();
         
         // Create new tween
-        _tween = target.CreateTween();
+        _tween = target.CreateTween().SetTrans(Tween.TransitionType.Sine);
 
         // Calculate target values
         var randomDirTilt = GD.Randf() > 0.5 ? -_tiltDegDelta : _tiltDegDelta;

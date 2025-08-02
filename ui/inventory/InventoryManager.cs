@@ -58,9 +58,6 @@ public partial class InventoryManager : Control
         LeftBlasterInventory.GetSlot(2).InsertModule(
             UiModule.Create(GD.Load<ExtraFireRateModule>("uid://dixg0bdyqb2ay"))
         );
-        LeftBlasterInventory.GetSlot(1).InsertModule(
-            UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
-        );
         
         Close();
         Visible = false;

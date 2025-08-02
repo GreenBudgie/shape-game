@@ -9,6 +9,8 @@ public partial class ProgressStats : Control
     private RichTextLabel _surviveProgressLabel = null!;
     private TextureProgressBar _surviveProgress = null!;
 
+    private Glow _destroyProgressGlow = null!;
+    
     public override void _Ready()
     {
         _destroyRequirementLabel = GetNode<RichTextLabel>("DestroyRequirementLabel");
@@ -19,9 +21,10 @@ public partial class ProgressStats : Control
         _surviveProgressLabel = GetNode<RichTextLabel>("SurviveProgressLabel");
         _surviveProgress = GetNode<TextureProgressBar>("SurviveProgress");
 
-        Glow.AddGlow(_destroyProgress)
+        _destroyProgressGlow = Glow.AddGlow(_destroyProgress)
             .SetColor(ColorScheme.Red)
-            .TurnOff();
+            .SetStrength(0.5f)
+            .SetRadius(0);
         
         UpdateDestroyRequirementLabel(0);
         UpdateDestroyProgress(0);
@@ -65,7 +68,24 @@ public partial class ProgressStats : Control
         _destroyProgress.MaxValue = requirement;
     }
 
-    private Tween? _destroyProgressGlowRadiusTween;
+    private readonly ShakeTween _shakeTween = new ShakeTween()
+        .TiltDelta(5f)
+        .MaxTilt(5f)
+        .SizeDelta(0.1f)
+        .MaxSize(1.1f)
+        .InTime(0.15f)
+        .OutTime(0.4f);
+    
+    private readonly GlowTween _glowTween = new GlowTween()
+        .MinStrength(1f)
+        .StrengthDelta(1f)
+        .MaxStrength(2f)
+        .RadiusDelta(20f)
+        .MaxRadius(20f)
+        .InTime(0.15f)
+        .OutTime(0.5f);
+
+    private Tween? _destroyProgressTween;
     
     private void UpdateDestroyProgress(int progress, bool playEffect = false)
     {
@@ -81,7 +101,15 @@ public partial class ProgressStats : Control
         _destroyProgressLabel.AppendText(LevelManager.Instance.DestroyRequirement.ToString());
         _destroyProgressLabel.Pop();
 
-        _destroyProgress.Value = progress;
+        _destroyProgressTween?.Kill();
+
+        _destroyProgressTween = _destroyProgress.CreateTween().SetTrans(Tween.TransitionType.Sine);
+        _destroyProgressTween.TweenProperty(
+            @object: _destroyProgress,
+            property: Range.PropertyName.Value.ToString(),
+            finalVal: progress,
+            duration: 0.5f
+        ).SetEase(Tween.EaseType.Out);
 
         if (!playEffect)
         {
@@ -95,10 +123,8 @@ public partial class ProgressStats : Control
             return;
         }
 
-        const float maxGlowRadius = 20;
-        const float maxGlowStrength = 1.5f;
-
-        
+        _shakeTween.Play(_destroyProgress);
+        _glowTween.Play(_destroyProgressGlow);
     }
     
     private void UpdateSurviveRequirementLabel(int requirementSeconds)

@@ -94,7 +94,7 @@ public class GlowTween
         _tween?.Kill();
         
         // Create new tween
-        _tween = target.CreateTween();
+        _tween = target.CreateTween().SetTrans(Tween.TransitionType.Sine);
 
         // Get current values
         var strength = target.GetStrength();
