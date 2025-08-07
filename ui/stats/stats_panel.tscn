@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bkdy1r0hmunja"]
+[gd_scene load_steps=18 format=3 uid="uid://bkdy1r0hmunja"]
 
 [ext_resource type="Script" uid="uid://dw1hyp3ktttge" path="res://ui/stats/StatsPanel.cs" id="1_oi65f"]
 [ext_resource type="Texture2D" uid="uid://d4gk336lqiaed" path="res://ui/stats/stats_panel.png" id="1_p1yf4"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bwyriujuvrcdt" path="res://ui/stats/destroy_progress_fill.png" id="8_to8l2"]
 [ext_resource type="Texture2D" uid="uid://3kojc6rt6dst" path="res://ui/stats/survive_progress_fill.png" id="9_to8l2"]
 [ext_resource type="Texture2D" uid="uid://dyreygmcjs8hj" path="res://ui/ui_particle.png" id="10_2vw3g"]
+[ext_resource type="Script" uid="uid://bdppc48q0whgk" path="res://ui/stats/DestroyProgressBar.cs" id="10_21laa"]
 
 [sub_resource type="Curve" id="Curve_2vw3g"]
 _data = [Vector2(0, 0.662921), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.59158, 0.0, 0, 0]
@@ -181,8 +182,9 @@ stretch_margin_bottom = 10
 texture_under = ExtResource("7_2h7qm")
 texture_over = ExtResource("7_vkf4t")
 texture_progress = ExtResource("8_to8l2")
+script = ExtResource("10_21laa")
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="ProgressStats/DestroyProgress"]
+[node name="Particles" type="GPUParticles2D" parent="ProgressStats/DestroyProgress"]
 modulate = Color(0.937255, 0.356863, 0.356863, 1)
 z_index = -1
 position = Vector2(210, 42)
