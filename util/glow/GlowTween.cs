@@ -12,6 +12,21 @@ public class GlowTween
     private float _inTime = 0.2f;
     private float _outTime = 0.3f;
 
+    public static GlowTween From(GlowTween other)
+    {
+        return new GlowTween
+        {
+            _strengthDelta = other._strengthDelta,
+            _maxStrength = other._maxStrength,
+            _radiusDelta = other._radiusDelta,
+            _maxRadius = other._maxRadius,
+            _minStrength = other._minStrength,
+            _minRadius = other._minRadius,
+            _inTime = other._inTime,
+            _outTime = other._outTime
+        };
+    }
+    
     public GlowTween StrengthDelta(float delta)
     {
         _strengthDelta = delta;

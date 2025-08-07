@@ -10,6 +10,19 @@ public class ShakeTween
     private float _inTime = 0.08f;
     private float _outTime = 0.2f;
 
+    public static ShakeTween From(ShakeTween other)
+    {
+        return new ShakeTween
+        {
+            _tiltDegDelta = other._tiltDegDelta,
+            _maxTiltDeg = other._maxTiltDeg,
+            _sizeDelta = other._sizeDelta,
+            _maxSize = other._maxSize,
+            _inTime = other._inTime,
+            _outTime = other._outTime
+        };
+    }
+    
     public ShakeTween TiltDelta(float degrees)
     {
         _tiltDegDelta = degrees;
@@ -45,11 +58,18 @@ public class ShakeTween
         _outTime = time;
         return this;
     }
-
-    public ShakeTween Times(float inTime, float outTime)
+    
+    public ShakeTween FixedSize(float size)
     {
-        _inTime = inTime;
-        _outTime = outTime;
+        _maxSize = 1 + size;
+        _sizeDelta = size;
+        return this;
+    }
+    
+    public ShakeTween FixedTilt(float tiltDeg)
+    {
+        _maxTiltDeg = tiltDeg;
+        _tiltDegDelta = tiltDeg;
         return this;
     }
 

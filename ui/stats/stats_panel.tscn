@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bkdy1r0hmunja"]
+[gd_scene load_steps=19 format=3 uid="uid://bkdy1r0hmunja"]
 
 [ext_resource type="Script" uid="uid://dw1hyp3ktttge" path="res://ui/stats/StatsPanel.cs" id="1_oi65f"]
 [ext_resource type="Texture2D" uid="uid://d4gk336lqiaed" path="res://ui/stats/stats_panel.png" id="1_p1yf4"]
@@ -27,7 +27,7 @@ point_count = 2
 [sub_resource type="CurveTexture" id="CurveTexture_4r0y7"]
 curve = SubResource("Curve_21laa")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_21laa"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4r0y7"]
 particle_flag_disable_z = true
 emission_shape = 3
 emission_box_extents = Vector3(178, 10, 0)
@@ -35,6 +35,18 @@ direction = Vector3(0, -1, 0)
 spread = 20.0
 initial_velocity_min = 200.0
 initial_velocity_max = 300.0
+gravity = Vector3(0, 300, 0)
+scale_curve = SubResource("CurveTexture_4r0y7")
+alpha_curve = SubResource("CurveTexture_21laa")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_21laa"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(178, 10, 0)
+direction = Vector3(0, -1, 0)
+spread = 20.0
+initial_velocity_min = 300.0
+initial_velocity_max = 500.0
 gravity = Vector3(0, 300, 0)
 scale_curve = SubResource("CurveTexture_4r0y7")
 alpha_curve = SubResource("CurveTexture_21laa")
@@ -188,8 +200,19 @@ script = ExtResource("10_21laa")
 modulate = Color(0.937255, 0.356863, 0.356863, 1)
 z_index = -1
 position = Vector2(210, 42)
+emitting = false
 texture = ExtResource("10_2vw3g")
 lifetime = 2.0
+process_material = SubResource("ParticleProcessMaterial_4r0y7")
+
+[node name="FinalParticles" type="GPUParticles2D" parent="ProgressStats/DestroyProgress"]
+modulate = Color(0.937255, 0.356863, 0.356863, 1)
+z_index = -1
+position = Vector2(210, 42)
+emitting = false
+amount = 30
+texture = ExtResource("10_2vw3g")
+one_shot = true
 process_material = SubResource("ParticleProcessMaterial_21laa")
 
 [node name="SurviveLabel" type="RichTextLabel" parent="ProgressStats"]

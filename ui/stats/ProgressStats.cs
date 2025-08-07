@@ -22,13 +22,35 @@ public partial class ProgressStats : Control
         UpdateSurviveProgress(0);
         
         LevelManager.Instance.LevelStarted += OnLevelStarted;
+        LevelManager.Instance.DestroyProgressUpdated += OnDestroyProgressUpdated;
         LevelManager.Instance.SurviveProgressUpdated += OnSurviveProgressUpdated;
     }
 
     private void OnLevelStarted()
     {
+        UpdateDestroyRequirementLabel(LevelManager.Instance.DestroyRequirement);
         UpdateSurviveRequirementLabel(LevelManager.Instance.SurviveRequirementSeconds);
         UpdateSurviveProgress(LevelManager.Instance.SurviveProgressSeconds);
+    }
+    
+    private void OnDestroyProgressUpdated(int prevProgress, int newProgress)
+    {
+        UpdateDestroyProgress(newProgress);
+    }
+    
+    private void UpdateDestroyProgress(int progress)
+    {
+        _destroyProgressLabel.Text = string.Empty;
+        
+        _destroyProgressLabel.PushColor(ColorScheme.Red);
+        _destroyProgressLabel.AppendText(progress.ToString());
+        _destroyProgressLabel.Pop();
+        
+        _destroyProgressLabel.AppendText(" / ");
+        
+        _destroyProgressLabel.PushColor(ColorScheme.Red);
+        _destroyProgressLabel.AppendText(LevelManager.Instance.DestroyRequirement.ToString());
+        _destroyProgressLabel.Pop();
     }
     
     private void OnSurviveProgressUpdated(float prevProgress, float newProgress)
@@ -44,7 +66,7 @@ public partial class ProgressStats : Control
         _destroyRequirementLabel.AppendText(requirement.ToString());
         _destroyRequirementLabel.Pop();
         
-        _destroyRequirementLabel.AppendText(" SEC");
+        _destroyRequirementLabel.AppendText(" UNITS");
     }
 
     private void UpdateSurviveRequirementLabel(int requirementSeconds)

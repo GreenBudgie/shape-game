@@ -44,12 +44,12 @@ public partial class LevelManager : Node
     {
         _level = level;
         
-        SetDestroyRequirement(20);
+        SetDestroyRequirement(4);
         SetSurviveRequirement(20);
 
         SpawnEnemy();
         var tween = CreateTween().SetLoops();
-        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(5.0f);
+        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(2.0f);
         
         EmitSignalLevelStarted();
     }
