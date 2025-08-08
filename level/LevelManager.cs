@@ -10,14 +10,15 @@ public partial class LevelManager : Node
     public delegate void DestroyProgressUpdatedEventHandler(int prevProgress, int newProgress);
     
     [Signal]
-    public delegate void SurviveProgressUpdatedEventHandler(float prevProgress, float newProgress);
+    public delegate void SurviveProgressUpdatedEventHandler(int prevProgress, int newProgress);
     
     public int DestroyRequirement { get; private set; }
     public int DestroyProgress { get; private set; }
     
     public int SurviveRequirementSeconds { get; private set; }
-    public float SurviveProgressSeconds { get; private set; }
-    
+    public int SurviveProgressSeconds { get; private set; }
+
+    private double _surviveProgressRealSeconds;
     private int _level;
 
     public override void _EnterTree()
@@ -34,9 +35,11 @@ public partial class LevelManager : Node
 
     public override void _Process(double delta)
     {
-        if (SurviveProgressSeconds < SurviveRequirementSeconds)
+        _surviveProgressRealSeconds += delta;
+        var fullSecondsProgress = FloorToInt(_surviveProgressRealSeconds);
+        if (fullSecondsProgress > SurviveProgressSeconds && SurviveProgressSeconds < SurviveRequirementSeconds)
         {
-            SetSurviveProgress(Min(SurviveRequirementSeconds, SurviveProgressSeconds + (float)delta));
+            SetSurviveProgress(Min(SurviveRequirementSeconds, fullSecondsProgress));
         }
     }
 
@@ -45,7 +48,7 @@ public partial class LevelManager : Node
         _level = level;
         
         SetDestroyRequirement(4);
-        SetSurviveRequirement(20);
+        SetSurviveRequirement(4);
 
         SpawnEnemy();
         var tween = CreateTween().SetLoops();
@@ -81,7 +84,7 @@ public partial class LevelManager : Node
         SetSurviveProgress(0);
     }
 
-    private void SetSurviveProgress(float progressSeconds)
+    private void SetSurviveProgress(int progressSeconds)
     {
         var prevSurviveProgress = SurviveProgressSeconds;
         SurviveProgressSeconds = progressSeconds;

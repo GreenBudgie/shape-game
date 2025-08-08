@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bkdy1r0hmunja"]
+[gd_scene load_steps=22 format=3 uid="uid://bkdy1r0hmunja"]
 
 [ext_resource type="Script" uid="uid://dw1hyp3ktttge" path="res://ui/stats/StatsPanel.cs" id="1_oi65f"]
 [ext_resource type="Texture2D" uid="uid://d4gk336lqiaed" path="res://ui/stats/stats_panel.png" id="1_p1yf4"]
@@ -12,6 +12,9 @@
 [ext_resource type="Texture2D" uid="uid://3kojc6rt6dst" path="res://ui/stats/survive_progress_fill.png" id="9_to8l2"]
 [ext_resource type="Texture2D" uid="uid://dyreygmcjs8hj" path="res://ui/ui_particle.png" id="10_2vw3g"]
 [ext_resource type="Script" uid="uid://bdppc48q0whgk" path="res://ui/stats/DestroyProgressBar.cs" id="10_21laa"]
+[ext_resource type="AudioStream" uid="uid://cmq5h7ad0emxs" path="res://ui/stats/damage_complete.wav" id="11_4r0y7"]
+[ext_resource type="Script" uid="uid://cgkw0jfw8skbp" path="res://ui/stats/SurviveProgressBar.cs" id="14_trg4c"]
+[ext_resource type="AudioStream" uid="uid://dtdverdq67s4b" path="res://ui/stats/survive_complete.wav" id="15_53m3k"]
 
 [sub_resource type="Curve" id="Curve_2vw3g"]
 _data = [Vector2(0, 0.662921), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.59158, 0.0, 0, 0]
@@ -195,6 +198,7 @@ texture_under = ExtResource("7_2h7qm")
 texture_over = ExtResource("7_vkf4t")
 texture_progress = ExtResource("8_to8l2")
 script = ExtResource("10_21laa")
+_completeSound = ExtResource("11_4r0y7")
 
 [node name="Particles" type="GPUParticles2D" parent="ProgressStats/DestroyProgress"]
 modulate = Color(0.937255, 0.356863, 0.356863, 1)
@@ -283,3 +287,24 @@ stretch_margin_bottom = 10
 texture_under = ExtResource("7_2h7qm")
 texture_over = ExtResource("7_vkf4t")
 texture_progress = ExtResource("9_to8l2")
+script = ExtResource("14_trg4c")
+_completeSound = ExtResource("15_53m3k")
+
+[node name="Particles" type="GPUParticles2D" parent="ProgressStats/SurviveProgress"]
+modulate = Color(0.211765, 0.945098, 0.803922, 1)
+z_index = -1
+position = Vector2(210, 42)
+emitting = false
+texture = ExtResource("10_2vw3g")
+lifetime = 2.0
+process_material = SubResource("ParticleProcessMaterial_4r0y7")
+
+[node name="FinalParticles" type="GPUParticles2D" parent="ProgressStats/SurviveProgress"]
+modulate = Color(0.211765, 0.945098, 0.803922, 1)
+z_index = -1
+position = Vector2(210, 42)
+emitting = false
+amount = 30
+texture = ExtResource("10_2vw3g")
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_21laa")
