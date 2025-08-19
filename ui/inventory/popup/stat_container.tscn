@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://t2fb5q106t4q"]
+
+[ext_resource type="Script" uid="uid://bd8kpo8gqrxfa" path="res://ui/inventory/popup/StatContainer.cs" id="1_y2bbq"]
+
+[node name="StatContainer" type="HBoxContainer"]
+theme_override_constants/separation = 30
+script = ExtResource("1_y2bbq")
+
+[node name="StatIcon" type="TextureRect" parent="."]
+layout_mode = 2
+stretch_mode = 3
+
+[node name="StatLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48

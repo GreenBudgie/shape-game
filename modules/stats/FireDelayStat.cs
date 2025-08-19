@@ -6,8 +6,6 @@ public partial class FireDelayStat : ModuleStat
     
     [Export] public float FireDelay { get; private set; }
     
-    public override float Value => FireDelay;
-    
     public override StatInfo Info => new(Icon, FireDelay.FormatStat() + " sec");
     
 }

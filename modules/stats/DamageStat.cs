@@ -6,8 +6,6 @@ public partial class DamageStat : ModuleStat
     
     [Export] public float Damage { get; private set; }
 
-    public override float Value => Damage;
-
     public override StatInfo Info => new(Icon, Damage.FormatStat());
 
 }

@@ -1,9 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://c47f74u04f8m2"]
+[gd_scene load_steps=3 format=3 uid="uid://c47f74u04f8m2"]
 
 [ext_resource type="Texture2D" uid="uid://cbvrqyacpcq7b" path="res://ui/inventory/popup/popup_frame.png" id="1_ypff2"]
-[ext_resource type="Texture2D" uid="uid://5nlmhh1tle03" path="res://modules/stats/icons/damage_icon.png" id="2_1nvlt"]
-[ext_resource type="Texture2D" uid="uid://jen4xqupa4bn" path="res://modules/stats/icons/speed_icon.png" id="3_pn45w"]
-[ext_resource type="Texture2D" uid="uid://oxosftrf543w" path="res://modules/stats/icons/delay_icon.png" id="4_1ewh2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ypff2"]
 
@@ -40,6 +37,7 @@ theme_override_constants/separation = 48
 layout_mode = 2
 
 [node name="Title" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/InfoContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/bold_font_size = 64
 bbcode_enabled = true
@@ -47,6 +45,7 @@ text = "[b]Some Module[/b]"
 fit_content = true
 
 [node name="Description" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/InfoContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 52
 bbcode_enabled = true
@@ -54,47 +53,6 @@ text = "Some long text description if this very cool and nice little module that
 fit_content = true
 
 [node name="StatsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 15
-
-[node name="StatContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="StatIcon" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer/StatContainer"]
-layout_mode = 2
-texture = ExtResource("2_1nvlt")
-stretch_mode = 3
-
-[node name="StatLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer/StatContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "2"
-
-[node name="StatContainer2" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="StatIcon" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer/StatContainer2"]
-layout_mode = 2
-texture = ExtResource("3_pn45w")
-stretch_mode = 3
-
-[node name="StatLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer/StatContainer2"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "10"
-
-[node name="StatContainer3" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer"]
-layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="StatIcon" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer/StatContainer3"]
-layout_mode = 2
-texture = ExtResource("4_1ewh2")
-stretch_mode = 3
-
-[node name="StatLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/StatsContainer/StatContainer3"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "2 sec"
