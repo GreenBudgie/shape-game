@@ -1,4 +1,4 @@
-public partial class FireRateComponent : Node, IModuleComponent
+public partial class FireRateComponent : Node, IProjectileComponent
 {
 
     private float _baseFireRate;

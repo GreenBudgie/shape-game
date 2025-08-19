@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://oxosftrf543w"
-path="res://.godot/imported/delay_icon.png-3b8a3164a5c0adbb25158b91b95385f1.ctex"
+uid="uid://jen4xqupa4bn"
+path="res://.godot/imported/speed_icon.png-0019ad6ea9edd90532048f61a5a611df.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/inventory/popup/delay_icon.png"
-dest_files=["res://.godot/imported/delay_icon.png-3b8a3164a5c0adbb25158b91b95385f1.ctex"]
+source_file="res://modules/stats/icons/speed_icon.png"
+dest_files=["res://.godot/imported/speed_icon.png-0019ad6ea9edd90532048f61a5a611df.ctex"]
 
 [params]
 

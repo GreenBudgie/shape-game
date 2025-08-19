@@ -1,0 +1,1 @@
+public readonly struct StatInfo(Texture2D Icon, string Info);

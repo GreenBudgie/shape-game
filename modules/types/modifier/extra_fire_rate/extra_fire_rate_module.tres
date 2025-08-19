@@ -6,4 +6,7 @@
 [resource]
 script = ExtResource("1_1wrny")
 Texture = ExtResource("1_mg2yu")
+Name = "Extra Fire Rate"
+Description = "TODO"
+Stats = Array[Resource]([null])
 metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

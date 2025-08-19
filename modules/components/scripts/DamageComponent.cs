@@ -1,4 +1,4 @@
-public partial class DamageComponent : Node, IModuleComponent
+public partial class DamageComponent : Node, IProjectileComponent
 {
 
     [Export] public float BaseDamage { get; private set; }

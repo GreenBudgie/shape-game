@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://c47f74u04f8m2"]
 
 [ext_resource type="Texture2D" uid="uid://cbvrqyacpcq7b" path="res://ui/inventory/popup/popup_frame.png" id="1_ypff2"]
-[ext_resource type="Texture2D" uid="uid://5nlmhh1tle03" path="res://ui/inventory/popup/damage_icon.png" id="2_1nvlt"]
-[ext_resource type="Texture2D" uid="uid://jen4xqupa4bn" path="res://ui/inventory/popup/speed_icon.png" id="3_pn45w"]
-[ext_resource type="Texture2D" uid="uid://oxosftrf543w" path="res://ui/inventory/popup/delay_icon.png" id="4_1ewh2"]
+[ext_resource type="Texture2D" uid="uid://5nlmhh1tle03" path="res://modules/stats/icons/damage_icon.png" id="2_1nvlt"]
+[ext_resource type="Texture2D" uid="uid://jen4xqupa4bn" path="res://modules/stats/icons/speed_icon.png" id="3_pn45w"]
+[ext_resource type="Texture2D" uid="uid://oxosftrf543w" path="res://modules/stats/icons/delay_icon.png" id="4_1ewh2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ypff2"]
 
