@@ -1,9 +1,31 @@
-[gd_resource type="Resource" script_class="BoltModule" load_steps=3 format=3 uid="uid://cqjg5lcuad1hd"]
+[gd_resource type="Resource" script_class="BoltModule" load_steps=10 format=3 uid="uid://cqjg5lcuad1hd"]
 
 [ext_resource type="Texture2D" uid="uid://bq4acwsx0reoh" path="res://modules/types/projectile/bolt/bolt_module.png" id="1_81r4k"]
+[ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://modules/stats/ModuleStat.cs" id="1_hdm4n"]
+[ext_resource type="Script" uid="uid://73fwxoshnhmd" path="res://modules/stats/DamageStat.cs" id="2_5ec5i"]
 [ext_resource type="Script" uid="uid://dbop5xnp8ac4s" path="res://modules/types/projectile/bolt/BoltModule.cs" id="2_hdm4n"]
+[ext_resource type="Script" uid="uid://dxj6bmum8pdot" path="res://modules/stats/SpeedStat.cs" id="3_85yfv"]
+[ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/FireDelayStat.cs" id="4_2bf2o"]
+
+[sub_resource type="Resource" id="Resource_85yfv"]
+script = ExtResource("2_5ec5i")
+Damage = 1.0
+metadata/_custom_type_script = "uid://73fwxoshnhmd"
+
+[sub_resource type="Resource" id="Resource_2bf2o"]
+script = ExtResource("3_85yfv")
+Speed = 20.0
+metadata/_custom_type_script = "uid://dxj6bmum8pdot"
+
+[sub_resource type="Resource" id="Resource_ajk3t"]
+script = ExtResource("4_2bf2o")
+FireDelay = 1.0
+metadata/_custom_type_script = "uid://cd2f70s2ivisi"
 
 [resource]
 script = ExtResource("2_hdm4n")
 Texture = ExtResource("1_81r4k")
+Name = "Bolt"
+Description = "A random long description to see if it fits well or not"
+Stats = Array[ExtResource("1_hdm4n")]([SubResource("Resource_85yfv"), SubResource("Resource_2bf2o"), SubResource("Resource_ajk3t")])
 metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

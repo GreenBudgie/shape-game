@@ -30,6 +30,7 @@ public partial class InventorySlot : TextureButton
     private Tween? _transformTween;
 
     private UiModule? _module;
+    private ModuleInfo? _moduleInfo;
 
     public override void _Ready()
     {
@@ -194,6 +195,12 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseEnter()
     {
+        if (_module != null)
+        {
+            _moduleInfo = ModuleInfo.Create(_module.Module);
+            InventoryManager.Instance.AddChild(_moduleInfo);
+        }
+        
         if (IsPressed())
         {
             return;
@@ -233,6 +240,8 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseExit()
     {
+        _moduleInfo?.Remove();
+        
         if (IsPressed())
         {
             return;

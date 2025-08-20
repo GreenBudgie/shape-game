@@ -1,16 +1,31 @@
 public partial class InitialImpulseComponent : Node, IProjectileComponent
 {
 
-    [Export] public RigidBody2D Projectile { get; private set; } = null!;
-    [Export] public Vector2 BaseImpulse { get; private set; }
+    [Export]
+    public Vector2 Direction { get; private set; } = Vector2.Up;
+
+    private float _speed;
 
     public Node Node => this;
 
-    public override void _Ready()
+    public void Prepare(ShotContext context)
     {
+        _speed = context.CalculateStat<SpeedStat>();
+        Direction = Direction.Normalized();
+    }
+
+    public void Apply(ShotContext context)
+    {
+        var projectile = context.Projectile.Node;
+        if (projectile is not RigidBody2D rigidBodyProjectile)
+        {
+            return;
+        }
+        
         var playerTilt = Player.FindPlayer()?.GetTilt() ?? 0;
-        var moveVector = BaseImpulse.Rotated(playerTilt);
-        Projectile.ApplyCentralImpulse(moveVector);
+        var vector = Direction * _speed;
+        var moveVector = vector.Rotated(playerTilt);
+        rigidBodyProjectile.ApplyCentralImpulse(moveVector);
     }
 
 }

@@ -23,7 +23,7 @@ public partial class InventoryManager : Control
     private InventorySlot? _dragAndDropFrom;
     private List<InventorySlot> _slots = null!;
     private List<ModuleInventory> _inventories = null!;
-
+    
     private Tween? _alphaTween;
 
     public override void _EnterTree()

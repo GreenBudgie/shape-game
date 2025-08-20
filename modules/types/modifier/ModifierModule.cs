@@ -1,6 +1,8 @@
 public abstract partial class ModifierModule : Module
 {
 
-    public abstract void Apply(IProjectile<Node2D> projectile);
+    public virtual void Apply(ShotContext context)
+    {
+    }
 
 }

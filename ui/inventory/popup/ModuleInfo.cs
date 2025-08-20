@@ -27,11 +27,28 @@ public partial class ModuleInfo : Control
             _statsContainer.QueueFree();
             return;
         }
+
+        _title.Clear();
+        _title.PushBold();
+        _title.AppendText(_module.Name);
+        _title.Pop();
+        
+        _description.Text = _module.Description;
         
         foreach (var stat in _module.Stats)
         {
             AddStat(stat.Info);
         }
+    }
+
+    public override void _Process(double delta)
+    {
+        GlobalPosition = GetGlobalMousePosition();
+    }
+
+    public void Remove()
+    {
+        QueueFree();
     }
 
     private void AddStat(StatInfo stat)

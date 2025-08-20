@@ -1,17 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://c47f74u04f8m2"]
+[gd_scene load_steps=4 format=3 uid="uid://c47f74u04f8m2"]
 
-[ext_resource type="Texture2D" uid="uid://cbvrqyacpcq7b" path="res://ui/inventory/popup/popup_frame.png" id="1_ypff2"]
+[ext_resource type="Script" uid="uid://c4k04v6md1l4" path="res://ui/inventory/popup/ModuleInfo.cs" id="1_1nvlt"]
+[ext_resource type="Texture2D" uid="uid://7rwnfvn0fi87" path="res://ui/inventory/popup/popup_frame.png" id="1_ypff2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ypff2"]
 
 [node name="ModuleInfo" type="Control"]
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("1_1nvlt")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -76.0
 offset_right = 838.0
-offset_bottom = 581.0
+offset_bottom = 76.0
+grow_vertical = 2
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_ypff2")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="PanelContainer"]
@@ -24,6 +33,7 @@ patch_margin_bottom = 50
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 50
@@ -31,17 +41,18 @@ theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 48
 
 [node name="InfoContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Title" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/InfoContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/bold_font_size = 64
 bbcode_enabled = true
-text = "[b]Some Module[/b]"
 fit_content = true
 
 [node name="Description" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/InfoContainer"]
@@ -49,10 +60,10 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 52
 bbcode_enabled = true
-text = "Some long text description if this very cool and nice little module that does some crazy stuff!"
 fit_content = true
 
 [node name="StatsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 15

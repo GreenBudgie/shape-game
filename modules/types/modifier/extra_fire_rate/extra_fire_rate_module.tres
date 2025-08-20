@@ -1,12 +1,19 @@
-[gd_resource type="Resource" script_class="ExtraFireRateModule" load_steps=3 format=3 uid="uid://dixg0bdyqb2ay"]
+[gd_resource type="Resource" script_class="ExtraFireRateModule" load_steps=6 format=3 uid="uid://dixg0bdyqb2ay"]
 
 [ext_resource type="Script" uid="uid://b0hauski8fk7j" path="res://modules/types/modifier/extra_fire_rate/ExtraFireRateModule.cs" id="1_1wrny"]
 [ext_resource type="Texture2D" uid="uid://c8o3rn0l3fgtx" path="res://modules/types/modifier/extra_fire_rate/extra_fire_rate_module.png" id="1_mg2yu"]
+[ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://modules/stats/ModuleStat.cs" id="1_resfs"]
+[ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/FireDelayStat.cs" id="2_nisvt"]
+
+[sub_resource type="Resource" id="Resource_6edp1"]
+script = ExtResource("2_nisvt")
+FireDelay = -0.3
+metadata/_custom_type_script = "uid://cd2f70s2ivisi"
 
 [resource]
 script = ExtResource("1_1wrny")
 Texture = ExtResource("1_mg2yu")
 Name = "Extra Fire Rate"
-Description = "TODO"
-Stats = Array[Resource]([null])
+Description = "Increases fire rate"
+Stats = Array[ExtResource("1_resfs")]([SubResource("Resource_6edp1")])
 metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

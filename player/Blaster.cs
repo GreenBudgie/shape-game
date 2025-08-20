@@ -64,21 +64,36 @@ public partial class Blaster : Node
     private void ShootProjectile(List<ModifierModule> modifiers, ProjectileModule projectileModule)
     {
         var projectile = projectileModule.CreateProjectile();
-        var projectileNode = projectile.Node;
-
-        foreach (var modifier in modifiers)
+        var context = new ShotContext(projectile, projectileModule, modifiers);
+        
+        // Stage 1 - prepare components
+        foreach (var component in projectile.GetComponents())
         {
-            modifier.Apply(projectile);
+            component.Prepare(context);
         }
 
+        // Stage 2 - apply modifiers
+        foreach (var modifier in modifiers)
+        {
+            modifier.Apply(context);
+        }
+        
+        // Stage 3 - apply components
+        foreach (var component in projectile.GetComponents())
+        {
+            component.Apply(context);
+        }
+
+
+        var projectileNode = projectile.Node;
         var spawnPosition = Player.FindPlayer()?.GetGlobalNosePosition() ?? ShapeGame.Center;
         projectileNode.GlobalPosition = spawnPosition;
         ShapeGame.Instance.AddChild(projectileNode);
 
-        var fireRateComponent = projectile.GetComponentOrNull<FireRateComponent>();
+        var fireRateComponent = projectile.GetComponentOrNull<FireDelayStatComponent>();
         if (fireRateComponent != null)
         {
-            Delay = Max(fireRateComponent.FireRate, MinDelay);
+            Delay = Max(fireRateComponent.FireDelay, MinDelay);
         }
         else
         {

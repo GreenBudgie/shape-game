@@ -4,6 +4,11 @@ using System.Linq;
 
 public static class ComponentManager
 {
+    
+    public static IEnumerable<IProjectileComponent> GetComponents(this IProjectile<Node2D> projectile)
+    {
+        return projectile.Node.GetChildren().OfType<IProjectileComponent>();
+    }
 
     public static IEnumerable<T> GetComponents<T>(this IProjectile<Node2D> projectile) where T : IProjectileComponent
     {
