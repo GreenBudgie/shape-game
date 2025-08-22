@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://oxosftrf543w"
-path="res://.godot/imported/fire_delay_icon.png-f7b46d14609adf808c5b6a2c1ee3d619.ctex"
+uid="uid://bahh717wv8wh8"
+path="res://.godot/imported/explosion_radius_icon.png-cd7ce32968084e20f25d1e0466bb4820.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://modules/stats/icons/fire_delay_icon.png"
-dest_files=["res://.godot/imported/fire_delay_icon.png-f7b46d14609adf808c5b6a2c1ee3d619.ctex"]
+source_file="res://modules/stats/icons/explosion_radius_icon.png"
+dest_files=["res://.godot/imported/explosion_radius_icon.png-cd7ce32968084e20f25d1e0466bb4820.ctex"]
 
 [params]
 

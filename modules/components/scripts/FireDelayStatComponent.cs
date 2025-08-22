@@ -7,7 +7,7 @@ public partial class FireDelayStatComponent : Node, IProjectileComponent
     
     public void Prepare(ShotContext context)
     {
-        FireDelay = context.CalculateStat<FireDelayStat>();
+        FireDelay = context.CalculateStat<ReloadStat>();
     }
 
 }

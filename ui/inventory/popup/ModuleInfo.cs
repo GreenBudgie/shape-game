@@ -42,7 +42,7 @@ public partial class ModuleInfo : Control
         
         foreach (var stat in _module.Stats)
         {
-            AddStat(stat.Info);
+            AddStat(stat);
         }
 
         Scale = Vector2.Zero;
@@ -75,7 +75,7 @@ public partial class ModuleInfo : Control
         return _scaleTween;
     }
 
-    private void AddStat(StatInfo stat)
+    private void AddStat(ModuleStat stat)
     {
         _statsContainer.AddChild(StatContainer.Create(stat));
     }

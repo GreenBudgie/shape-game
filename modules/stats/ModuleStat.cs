@@ -1,9 +1,13 @@
 [GlobalClass]
 public abstract partial class ModuleStat : Resource
 {
-    
-    public abstract float Value { get; }
 
-    public abstract StatInfo Info { get; }
+    public abstract string Name { get; }
+
+    public abstract float Value { get; }
+    
+    public abstract Texture2D Icon { get; }
+
+    public virtual string FormattedValue => Value.FormatStat();
 
 }

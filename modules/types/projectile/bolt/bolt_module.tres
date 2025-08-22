@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://73fwxoshnhmd" path="res://modules/stats/DamageStat.cs" id="2_5ec5i"]
 [ext_resource type="Script" uid="uid://dbop5xnp8ac4s" path="res://modules/types/projectile/bolt/BoltModule.cs" id="2_hdm4n"]
 [ext_resource type="Script" uid="uid://dxj6bmum8pdot" path="res://modules/stats/SpeedStat.cs" id="3_85yfv"]
-[ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/FireDelayStat.cs" id="4_2bf2o"]
+[ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/ReloadStat.cs" id="4_2bf2o"]
 
 [sub_resource type="Resource" id="Resource_85yfv"]
 script = ExtResource("2_5ec5i")
