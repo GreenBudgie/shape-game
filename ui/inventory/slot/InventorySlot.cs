@@ -42,6 +42,9 @@ public partial class InventorySlot : TextureButton
         MouseExited += OnMouseExit;
         ButtonDown += OnButtonDown;
         ButtonUp += OnButtonUp;
+
+        InventoryManager.Instance.DragAndDropStarted += OnDragAndDropStarted;
+        InventoryManager.Instance.DragAndDropEnded += OnDragAndDropEnded;
     }
     
     public override void _Process(double delta)
@@ -138,6 +141,8 @@ public partial class InventorySlot : TextureButton
 
     private void OnButtonDown()
     {
+        HideModuleInfo();
+        
         _transformTween?.Kill();
         _transformTween = CreateTween().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
 
@@ -187,7 +192,11 @@ public partial class InventorySlot : TextureButton
         var sound = SoundManager.Instance.PlaySound(_buttonUpSound);
         sound.RandomizePitchOffset(0.2f);
 
-        if (!IsHovered())
+        if (IsHovered())
+        {
+            ShowModuleInfo();
+        }
+        else
         {
             OnMouseExit();
         }
@@ -195,17 +204,12 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseEnter()
     {
-        if (_module != null)
-        {
-            _moduleInfo = ModuleInfo.Create(_module.Module);
-            InventoryManager.Instance.AddChild(_moduleInfo);
-        }
-        
         if (IsPressed())
         {
             return;
         }
         
+        ShowModuleInfo();
         _module?.SlotHovered();
 
         var sound = SoundManager.Instance.PlaySound(_hoverSound);
@@ -240,7 +244,7 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseExit()
     {
-        _moduleInfo?.Remove();
+        HideModuleInfo();
         
         if (IsPressed())
         {
@@ -274,6 +278,36 @@ public partial class InventorySlot : TextureButton
             finalVal: Vector2.One,
             duration: GlowHoverTweenDuration
         );
+    }
+
+    private void ShowModuleInfo()
+    {
+        if (_module == null || InventoryManager.Instance.IsDragAndDropActive())
+        {
+            return;
+        }
+        
+        _moduleInfo = ModuleInfo.Create(_module.Module);
+        InventoryManager.Instance.AddChild(_moduleInfo);
+    }
+
+    private void HideModuleInfo()
+    {
+        _moduleInfo?.Remove();
+        _moduleInfo = null;
+    }
+
+    private void OnDragAndDropStarted()
+    {
+        HideModuleInfo();
+    }
+    
+    private void OnDragAndDropEnded()
+    {
+        if (IsHovered())
+        {
+            ShowModuleInfo();
+        }
     }
 
 }

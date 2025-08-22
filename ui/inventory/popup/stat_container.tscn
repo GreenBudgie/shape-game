@@ -3,11 +3,13 @@
 [ext_resource type="Script" uid="uid://bd8kpo8gqrxfa" path="res://ui/inventory/popup/StatContainer.cs" id="1_y2bbq"]
 
 [node name="StatContainer" type="HBoxContainer"]
+mouse_filter = 2
 theme_override_constants/separation = 30
 script = ExtResource("1_y2bbq")
 
 [node name="StatIcon" type="TextureRect" parent="."]
 layout_mode = 2
+mouse_filter = 2
 stretch_mode = 3
 
 [node name="StatLabel" type="Label" parent="."]

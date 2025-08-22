@@ -12,6 +12,12 @@ public partial class InventoryManager : Control
     [Signal]
     public delegate void InventoryClosedEventHandler();
 
+    [Signal]
+    public delegate void DragAndDropStartedEventHandler();
+    
+    [Signal]
+    public delegate void DragAndDropEndedEventHandler();
+
     public static InventoryManager Instance { get; private set; } = null!;
 
     public bool IsOpen { get; private set; } = true;
@@ -86,7 +92,7 @@ public partial class InventoryManager : Control
         }
     }
 
-    private bool IsDragAndDropActive()
+    public bool IsDragAndDropActive()
     {
         return _dragAndDropFrom != null;
     }
@@ -128,6 +134,7 @@ public partial class InventoryManager : Control
 
         _dragAndDropFrom = slot;
         module.StartFollowingCursor();
+        EmitSignalDragAndDropStarted();
     }
 
     private void StopDragAndDropSwappingModulesWithSlot(InventorySlot slot)
@@ -147,6 +154,8 @@ public partial class InventoryManager : Control
         
         _dragAndDropFrom.SwapModules(slot);
         _dragAndDropFrom = null;
+        
+        EmitSignalDragAndDropEnded();
     }
 
     private void CancelDragAndDrop()
@@ -156,12 +165,9 @@ public partial class InventoryManager : Control
             return;
         }
         
-        var module = _dragAndDropFrom.GetModule();
-        if (module != null)
-        {
-            module.StopFollowingCursor();
-        }
+        _dragAndDropFrom.GetModule()?.StopFollowingCursor();
         _dragAndDropFrom = null;
+        EmitSignalDragAndDropEnded();
     }
 
     private void Open()
