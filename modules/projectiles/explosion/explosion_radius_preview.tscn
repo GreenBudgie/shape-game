@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cw5lackk3gus7"]
+
+[ext_resource type="Script" uid="uid://gbg8imsjx4j4" path="res://modules/projectiles/explosion/ExplosionRadiusPreview.cs" id="1_15jhb"]
+
+[node name="ExplosionRadiusPreview" type="Node2D"]
+position = Vector2(1791, 1106)
+script = ExtResource("1_15jhb")
+Radius = 10.0

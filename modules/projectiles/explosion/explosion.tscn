@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://b676isra84rkm"]
+
+[ext_resource type="Script" uid="uid://c87li6ygs7coa" path="res://modules/projectiles/explosion/Explosion.cs" id="1_dew6s"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dew6s"]
+
+[node name="Explosion" type="Area2D"]
+script = ExtResource("1_dew6s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_dew6s")
