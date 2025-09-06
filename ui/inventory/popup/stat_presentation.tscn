@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://cmymkg60myemv"]
+
+[ext_resource type="Script" uid="uid://slqj4bufv2fm" path="res://ui/inventory/popup/StatPresentation.cs" id="1_n8hld"]
+[ext_resource type="Texture2D" uid="uid://5nlmhh1tle03" path="res://modules/stats/icons/damage_icon.png" id="1_scgen"]
+
+[node name="StatPresentation" type="HBoxContainer"]
+offset_right = 215.0
+offset_bottom = 48.0
+mouse_filter = 2
+theme_override_constants/separation = 15
+script = ExtResource("1_n8hld")
+
+[node name="StatIcon" type="TextureRect" parent="."]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("1_scgen")
+stretch_mode = 3
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "damage"
+vertical_alignment = 1
+uppercase = true

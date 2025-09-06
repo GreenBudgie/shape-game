@@ -9,7 +9,7 @@ public partial class ModuleInfo : Control
 
     private RichTextLabel _title = null!;
     private RichTextLabel _description = null!;
-    private VBoxContainer _statsContainer = null!;
+    private StatsContainer _statsContainer = null!;
 
     private Tween? _scaleTween;
     private bool _isRemoving;
@@ -25,7 +25,7 @@ public partial class ModuleInfo : Control
     {
         _title = GetNode<RichTextLabel>("%Title");
         _description = GetNode<RichTextLabel>("%Description");
-        _statsContainer = GetNode<VBoxContainer>("%StatsContainer");
+        _statsContainer = GetNode<StatsContainer>("%StatsContainer");
 
         if (_module.Stats.Count == 0)
         {
@@ -77,7 +77,7 @@ public partial class ModuleInfo : Control
 
     private void AddStat(ModuleStat stat)
     {
-        _statsContainer.AddChild(StatContainer.Create(stat));
+        _statsContainer.AddStat(stat);
     }
 
 }

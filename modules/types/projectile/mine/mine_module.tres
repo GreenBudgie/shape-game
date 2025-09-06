@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="BoltModule" load_steps=10 format=3 uid="uid://diarlu7m2iio1"]
+
+[ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://modules/stats/ModuleStat.cs" id="1_ex7fr"]
+[ext_resource type="Script" uid="uid://73fwxoshnhmd" path="res://modules/stats/DamageStat.cs" id="2_gqnx5"]
+[ext_resource type="Script" uid="uid://dxj6bmum8pdot" path="res://modules/stats/SpeedStat.cs" id="3_yw8eb"]
+[ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/ReloadStat.cs" id="4_gbl8y"]
+[ext_resource type="Texture2D" uid="uid://p7y7lo08drw1" path="res://modules/types/projectile/mine/mine_module.png" id="5_ev71l"]
+[ext_resource type="Script" uid="uid://dbop5xnp8ac4s" path="res://modules/types/projectile/bolt/BoltModule.cs" id="6_e0oe5"]
+
+[sub_resource type="Resource" id="Resource_85yfv"]
+script = ExtResource("2_gqnx5")
+Damage = 1.0
+metadata/_custom_type_script = "uid://73fwxoshnhmd"
+
+[sub_resource type="Resource" id="Resource_2bf2o"]
+script = ExtResource("3_yw8eb")
+Speed = 400.0
+metadata/_custom_type_script = "uid://dxj6bmum8pdot"
+
+[sub_resource type="Resource" id="Resource_ajk3t"]
+script = ExtResource("4_gbl8y")
+FireDelay = 1.0
+metadata/_custom_type_script = "uid://cd2f70s2ivisi"
+
+[resource]
+script = ExtResource("6_e0oe5")
+Texture = ExtResource("5_ev71l")
+Name = "Mine"
+Description = "A mine"
+Stats = Array[ExtResource("1_ex7fr")]([SubResource("Resource_85yfv"), SubResource("Resource_2bf2o"), SubResource("Resource_ajk3t")])
+metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

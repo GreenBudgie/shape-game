@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c47f74u04f8m2"]
+[gd_scene load_steps=5 format=3 uid="uid://c47f74u04f8m2"]
 
 [ext_resource type="Script" uid="uid://c4k04v6md1l4" path="res://ui/inventory/popup/ModuleInfo.cs" id="1_1nvlt"]
 [ext_resource type="Texture2D" uid="uid://7rwnfvn0fi87" path="res://ui/inventory/popup/popup_frame.png" id="1_ypff2"]
+[ext_resource type="Script" uid="uid://c3lyubpyn0tm3" path="res://ui/inventory/popup/StatsContainer.cs" id="3_pn45w"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ypff2"]
 
@@ -57,6 +58,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/bold_font_size = 64
 bbcode_enabled = true
+text = "[b]Title[/b]"
 fit_content = true
 
 [node name="Description" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/InfoContainer"]
@@ -65,10 +67,13 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 52
 bbcode_enabled = true
+text = "dasd d hjah dha sj kjsajd hkskjsdhhs h askjdh ak k ajs k asj"
 fit_content = true
 
-[node name="StatsContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="StatsContainer" type="GridContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 15
+theme_override_constants/h_separation = 50
+columns = 2
+script = ExtResource("3_pn45w")

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnqq1umhkun6x"]
+
+[ext_resource type="Script" uid="uid://bnpdlp466fynt" path="res://ui/inventory/popup/StatValue.cs" id="1_rwmfa"]
+
+[node name="StatValue" type="Label"]
+offset_right = 73.0
+offset_bottom = 72.0
+text = "10"
+vertical_alignment = 1
+script = ExtResource("1_rwmfa")
