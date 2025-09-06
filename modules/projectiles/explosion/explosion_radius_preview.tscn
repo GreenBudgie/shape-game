@@ -3,5 +3,4 @@
 [ext_resource type="Script" uid="uid://gbg8imsjx4j4" path="res://modules/projectiles/explosion/ExplosionRadiusPreview.cs" id="1_15jhb"]
 
 [node name="ExplosionRadiusPreview" type="Node2D"]
-position = Vector2(1791, 1106)
 script = ExtResource("1_15jhb")

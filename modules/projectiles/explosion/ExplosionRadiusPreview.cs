@@ -53,10 +53,10 @@ public partial class ExplosionRadiusPreview : Node2D
             // Draw the arc (body of the dash)
             DrawArc(Vector2.Zero, Radius, startAngle, endAngle, 32, Color, Thickness, true);
 
+            // Calculate positions for the caps
             var (startAngleSin, startAngleCos) = SinCos(startAngle);
             var (endAngleSin, endAngleCos) = SinCos(endAngle);
-            // Calculate positions for the caps
-            var startPos = new Vector2(startAngleSin, startAngleCos) * Radius;
+            var startPos = new Vector2(startAngleCos, startAngleSin) * Radius;
             var endPos = new Vector2(endAngleCos, endAngleSin) * Radius;
 
             // Draw round caps (filled circles) at each end

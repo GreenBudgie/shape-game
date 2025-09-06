@@ -61,7 +61,7 @@ public partial class Player : CharacterBody2D
         InventoryManager.Instance.InventoryOpened += () => MoveMouseToWindowCenter(ShapeGame.PlayableArea.GetCenter());
 
         _playerCollisionDetector = GetNode<ShapeCast2D>("PlayerCollisionDetector");
-        CallDeferred(MethodName.SetupCollisionDetector);
+        Callable.From(SetupCollisionDetector).CallDeferred();
     }
 
     private void SetupCollisionDetector()
