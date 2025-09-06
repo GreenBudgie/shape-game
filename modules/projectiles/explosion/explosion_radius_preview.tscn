@@ -5,4 +5,3 @@
 [node name="ExplosionRadiusPreview" type="Node2D"]
 position = Vector2(1791, 1106)
 script = ExtResource("1_15jhb")
-Radius = 10.0

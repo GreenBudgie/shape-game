@@ -3,25 +3,17 @@ using System;
 public partial class ExplosionRadiusPreview : Node2D
 {
     [Export]
-    public float Radius = 300.0f; // Only adjustable property
+    public float Radius = 300.0f; 
 
-    private const float Thickness = 20.0f; // Fixed thickness
+    private const float Thickness = 20.0f;
     private const float BaseRadius = 300.0f;
     private const float BaseDashDeg = 20.0f;
     private const float BaseGapDeg = 20.0f;
     [Export]
-    public Color Color = ColorScheme.Red; // Color of the circle
-
-    public override void _Process(double delta)
-    {
-        Radius += (float)delta * 100;
-        QueueRedraw();
-    }
+    public Color Color = ColorScheme.Red;
 
     public override void _Draw()
     {
-        var center = Vector2.Zero; // Center of the circle (adjust if needed)
-
         // Calculate fixed linear dash and base gap
         var baseDashLinear = BaseRadius * DegToRad(BaseDashDeg);
         var baseGapLinear = BaseRadius * DegToRad(BaseGapDeg);
@@ -59,11 +51,13 @@ public partial class ExplosionRadiusPreview : Node2D
             var endAngle = currentAngle + dashRad;
 
             // Draw the arc (body of the dash)
-            DrawArc(center, Radius, startAngle, endAngle, 32, Color, Thickness, true);
+            DrawArc(Vector2.Zero, Radius, startAngle, endAngle, 32, Color, Thickness, true);
 
+            var (startAngleSin, startAngleCos) = SinCos(startAngle);
+            var (endAngleSin, endAngleCos) = SinCos(endAngle);
             // Calculate positions for the caps
-            var startPos = center + new Vector2(Cos(startAngle), Sin(startAngle)) * Radius;
-            var endPos = center + new Vector2(Cos(endAngle), Sin(endAngle)) * Radius;
+            var startPos = new Vector2(startAngleSin, startAngleCos) * Radius;
+            var endPos = new Vector2(endAngleCos, endAngleSin) * Radius;
 
             // Draw round caps (filled circles) at each end
             DrawCircle(startPos, Thickness / 2, Color);
