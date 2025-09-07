@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bafb067vadvj4"]
+
+[ext_resource type="Shader" uid="uid://cp1ajqhuvd4ij" path="res://modules/projectiles/explosion/explosion.gdshader" id="1_dvcmp"]
+[ext_resource type="Script" uid="uid://bncj3rfhcmpmg" path="res://modules/projectiles/explosion/ExplosionEffect.cs" id="2_wc6uf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iotsf"]
+resource_local_to_scene = true
+shader = ExtResource("1_dvcmp")
+shader_parameter/strength = 0.08
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/radius = 0.0
+shader_parameter/aberration = 0.425
+shader_parameter/width = 0.04
+shader_parameter/feather = 0.135
+
+[node name="ExplosionEffect" type="ColorRect"]
+material = SubResource("ShaderMaterial_iotsf")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_wc6uf")

@@ -1,9 +1,11 @@
 [gd_scene load_steps=5 format=3 uid="uid://b676isra84rkm"]
 
 [ext_resource type="Script" uid="uid://c87li6ygs7coa" path="res://modules/projectiles/explosion/Explosion.cs" id="1_dew6s"]
-[ext_resource type="Shader" uid="uid://cp1ajqhuvd4ij" path="res://util/explosion.gdshader" id="1_nflol"]
+[ext_resource type="Shader" uid="uid://cp1ajqhuvd4ij" path="res://modules/projectiles/explosion/explosion.gdshader" id="1_nflol"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rpkw0"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_dew6s"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nflol"]
 shader = ExtResource("1_nflol")
 shader_parameter/strength = 0.08
 shader_parameter/center = Vector2(0.5, 0.5)
@@ -12,12 +14,23 @@ shader_parameter/aberration = 0.425
 shader_parameter/width = 0.04
 shader_parameter/feather = 0.135
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_dew6s"]
-
 [node name="Explosion" type="ShapeCast2D"]
-material = SubResource("ShaderMaterial_rpkw0")
 enabled = false
 shape = SubResource("CircleShape2D_dew6s")
 target_position = Vector2(0, 0)
 collision_mask = 526
 script = ExtResource("1_dew6s")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_nflol")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2

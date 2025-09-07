@@ -22,6 +22,8 @@ public partial class Explosion : ShapeCast2D
         return this;
     }
 
+    public float GetRadius() => _radius;
+
     public Explosion FuseTimeSeconds(float fuseTimeSeconds)
     {
         _fuseTimeSeconds = fuseTimeSeconds;
@@ -30,6 +32,7 @@ public partial class Explosion : ShapeCast2D
 
     public void Detonate()
     {
+        ExplosionEffects.Instance.PlayEffect(this);
         ForceShapecastUpdate();
         if (!IsColliding())
         {
