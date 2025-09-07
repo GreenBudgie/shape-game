@@ -1,12 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://bhj8dgeytmpxx"]
+[gd_scene load_steps=6 format=3 uid="uid://bhj8dgeytmpxx"]
 
 [ext_resource type="Script" uid="uid://r5s6weechulc" path="res://enemies/types/square/projectile/EnemySquareProjectile.cs" id="1_jyvyp"]
-[ext_resource type="Texture2D" uid="uid://b512c0n1380pp" path="res://enemies/types/square/projectile/enemy_square_projectile.png" id="2_eu8a1"]
+[ext_resource type="Texture2D" uid="uid://dklcu0esdul0h" path="res://enemies/types/square/projectile/enemy_square_projectile.png" id="2_eu8a1"]
 [ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://enemies/types/square/projectile/enemy_square_projectile_hit_wall.wav" id="2_y3uyh"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jyvyp"]
 friction = 0.5
 bounce = 0.5
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vpvkw"]
+size = Vector2(42, 42)
 
 [node name="EnemySquareProjectile" type="RigidBody2D"]
 collision_layer = 520
@@ -23,5 +26,6 @@ _hitWallSound = ExtResource("2_y3uyh")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_eu8a1")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(0, -30, 30, 0, 0, 30, -30, 0)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_vpvkw")
