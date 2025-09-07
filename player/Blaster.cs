@@ -31,7 +31,7 @@ public partial class Blaster : Node
         }
         
         Explosion.Create(Player.FindPlayer()!.GlobalPosition)
-            .Radius(300)
+            .Radius(600)
             .Detonate();
 
         var slots = _inventory.GetSlots();
