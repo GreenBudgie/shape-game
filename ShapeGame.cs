@@ -1,5 +1,6 @@
 ﻿global using Godot;
 global using static Godot.Mathf;
+global using static GodotConstants;
 
 public partial class ShapeGame : Node2D
 {

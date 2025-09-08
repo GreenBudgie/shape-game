@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://snfu2b1ifqye"]
+[gd_scene load_steps=21 format=3 uid="uid://snfu2b1ifqye"]
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://b8gd2gve05upa" path="res://systems/CrystalManager.tscn" id="9_vef74"]
 [ext_resource type="Texture2D" uid="uid://ck75mef3o2t0i" path="res://environment/background_square.png" id="10_hve3p"]
 [ext_resource type="Script" uid="uid://dbtjcecl2kyym" path="res://modules/projectiles/explosion/ExplosionEffects.cs" id="11_mfdv2"]
+[ext_resource type="Shader" uid="uid://c8tu4dwq8epsu" path="res://screen_shake.gdshader" id="12_iotsf"]
+[ext_resource type="Script" uid="uid://cek6yfy2gipxe" path="res://util/screenshake/ScreenShake.cs" id="13_lc2xo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
 size = Vector2(512, 4208)
@@ -29,6 +31,11 @@ size = Vector2(4288, 512)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vef74"]
 size = Vector2(4288, 528)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lc2xo"]
+shader = ExtResource("12_iotsf")
+shader_parameter/strength = 0.0
+shader_parameter/magnitude = Vector2(0, 0)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_ryrav")
@@ -113,5 +120,17 @@ script = ExtResource("8_j5wjh")
 
 [node name="CrystalManager" parent="." instance=ExtResource("9_vef74")]
 
-[node name="ExplosionEffects" type="CanvasLayer" parent="."]
+[node name="ExplosionEffectsLayer" type="CanvasLayer" parent="."]
 script = ExtResource("11_mfdv2")
+
+[node name="ScreenShakeLayer" type="CanvasLayer" parent="."]
+
+[node name="ScreenShake" type="ColorRect" parent="ScreenShakeLayer"]
+material = SubResource("ShaderMaterial_lc2xo")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("13_lc2xo")

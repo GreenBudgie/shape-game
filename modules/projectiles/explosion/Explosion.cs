@@ -33,6 +33,7 @@ public partial class Explosion : ShapeCast2D
     public void Detonate()
     {
         ExplosionEffects.Instance.PlayEffect(this);
+        ScreenShake.Instance.Shake(ShakeStrength.High);
         ForceShapecastUpdate();
         if (!IsColliding())
         {
