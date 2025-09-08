@@ -16,14 +16,40 @@ public partial class ScreenShake : ColorRect
     public void Shake(ShakeStrength strength)
     {
         var shaderMaterial = (ShaderMaterial)Material;
-        shaderMaterial.SetShaderParameter(StrengthParam, strength.Strength);
-        shaderMaterial.SetShaderParameter(MagnitudeParam, new Vector2(strength.Magnitude, strength.Magnitude));
+
+        var duration = strength.Duration();
+        const float initDuration = 0.05f;
+        var actualStrength = strength.Strength();
+        var magnitude = new Vector2(strength.Magnitude(), strength.Magnitude());
         
         _tween?.Kill();
         _tween = CreateTween().SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
         
-        _tween.TweenProperty(shaderMaterial, ShaderParameter(StrengthParam), 0, strength.Duration);
-        _tween.TweenProperty(shaderMaterial, ShaderParameter(MagnitudeParam), Vector2.Zero, strength.Duration);
+        _tween.TweenProperty(
+            shaderMaterial,
+            ShaderParameter(StrengthParam),
+            actualStrength,
+            initDuration
+        );
+        _tween.Parallel().TweenProperty(
+            shaderMaterial,
+            ShaderParameter(MagnitudeParam),
+            magnitude,
+            initDuration
+        );
+
+        _tween.TweenProperty(
+            shaderMaterial,
+            ShaderParameter(StrengthParam),
+            0,
+            duration
+        );
+        _tween.Parallel().TweenProperty(
+            shaderMaterial,
+            ShaderParameter(MagnitudeParam),
+            Vector2.Zero,
+            duration
+        );
     }
 
 }
