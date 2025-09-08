@@ -3,7 +3,7 @@ public partial class Explosion : ShapeCast2D
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b676isra84rkm");
 
-    private float _radius = 30;
+    private float _radius = 300;
     private float _fuseTimeSeconds;
 
     public static Explosion Create(Vector2 globalPosition)

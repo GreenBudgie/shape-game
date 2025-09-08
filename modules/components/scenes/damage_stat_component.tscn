@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://k5oagak4w5qw"]
-
-[ext_resource type="Script" uid="uid://cwgxe4ny00f2b" path="res://modules/components/scripts/DamageStatComponent.cs" id="1_lsoxx"]
-
-[node name="DamageStatComponent" type="Node"]
-script = ExtResource("1_lsoxx")

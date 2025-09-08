@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://rjeqsegn36yl"]
-
-[ext_resource type="Script" uid="uid://bdj11sfduvg6x" path="res://modules/components/scripts/FireDelayStatComponent.cs" id="1_gabco"]
-
-[node name="FireDelayStatComponent" type="Node"]
-script = ExtResource("1_gabco")

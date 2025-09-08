@@ -1,12 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://bnh56fabyfl1o"]
+[gd_scene load_steps=8 format=3 uid="uid://bnh56fabyfl1o"]
 
 [ext_resource type="Script" uid="uid://ccp5pyqi3g16e" path="res://modules/projectiles/bolt/BoltProjectile.cs" id="1_uyfjk"]
 [ext_resource type="Texture2D" uid="uid://dbsmx1goi2kpp" path="res://modules/projectiles/bolt/bolt.png" id="2_1nglk"]
 [ext_resource type="AudioStream" uid="uid://3vgmpsu74edm" path="res://modules/projectiles/bolt/bolt_projectile_launch.wav" id="2_k0ksy"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="3_1nglk"]
 [ext_resource type="AudioStream" uid="uid://dcst5l714kycq" path="res://modules/projectiles/hit_wall.wav" id="3_lg5yd"]
-[ext_resource type="PackedScene" uid="uid://k5oagak4w5qw" path="res://modules/components/scenes/damage_stat_component.tscn" id="4_tr1ym"]
-[ext_resource type="PackedScene" uid="uid://rjeqsegn36yl" path="res://modules/components/scenes/fire_delay_stat_component.tscn" id="7_o5w4t"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
 friction = 0.0
@@ -38,7 +36,3 @@ position = Vector2(0, 8)
 shape = SubResource("CircleShape2D_guu8r")
 
 [node name="InitialImpulseComponent" parent="." instance=ExtResource("3_1nglk")]
-
-[node name="DamageComponent" parent="." instance=ExtResource("4_tr1ym")]
-
-[node name="FireRateComponent" parent="." instance=ExtResource("7_o5w4t")]

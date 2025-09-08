@@ -1,0 +1,38 @@
+[gd_scene load_steps=8 format=3 uid="uid://coo3tnuma02fs"]
+
+[ext_resource type="Script" uid="uid://cs1n2qdcpxc1v" path="res://modules/projectiles/mine/MineProjectile.cs" id="1_g34o2"]
+[ext_resource type="AudioStream" uid="uid://3vgmpsu74edm" path="res://modules/projectiles/bolt/bolt_projectile_launch.wav" id="2_unq05"]
+[ext_resource type="AudioStream" uid="uid://dcst5l714kycq" path="res://modules/projectiles/hit_wall.wav" id="3_q3r3b"]
+[ext_resource type="Texture2D" uid="uid://3dvamnyph43c" path="res://modules/projectiles/mine/mine.png" id="4_h5gdj"]
+[ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="5_2eq07"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
+friction = 0.5
+bounce = 0.5
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_guu8r"]
+radius = 28.0179
+
+[node name="MineProjectile" type="RigidBody2D"]
+collision_layer = 0
+collision_mask = 304
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_guu8r")
+gravity_scale = 0.0
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 5
+linear_damp = 3.0
+angular_damp = 1.0
+script = ExtResource("1_g34o2")
+_shotSound = ExtResource("2_unq05")
+_wallHitSound = ExtResource("3_q3r3b")
+
+[node name="MineSprite" type="Sprite2D" parent="."]
+texture = ExtResource("4_h5gdj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_guu8r")
+
+[node name="InitialImpulseComponent" parent="." instance=ExtResource("5_2eq07")]
+TorqueDelta = 1000.0

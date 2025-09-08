@@ -52,8 +52,12 @@ public partial class InventoryManager : Control
 
     private void PostSetup()
     {
-        LeftBlasterInventory.GetSlot(5).InsertModule(
+        RightBlasterInventory.GetSlot(5).InsertModule(
             UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
+        );
+        
+        LeftBlasterInventory.GetSlot(5).InsertModule(
+            UiModule.Create(GD.Load<MineModule>("uid://diarlu7m2iio1"))
         );
         LeftBlasterInventory.GetSlot(4).InsertModule(
             UiModule.Create(GD.Load<ExtraFireRateModule>("uid://dixg0bdyqb2ay"))

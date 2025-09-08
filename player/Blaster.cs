@@ -29,10 +29,6 @@ public partial class Blaster : Node
         {
             return false;
         }
-        
-        Explosion.Create(Player.FindPlayer()!.GlobalPosition)
-            .Radius(1000)
-            .Detonate();
 
         var slots = _inventory.GetSlots();
         var startSlot = _lastSlot;
@@ -88,21 +84,16 @@ public partial class Blaster : Node
             component.Apply(context);
         }
 
+        // Stage 4 - prepare projectile
+        projectile.Prepare(context);
 
         var projectileNode = projectile.Node;
         var spawnPosition = Player.FindPlayer()?.GetGlobalNosePosition() ?? ShapeGame.Center;
         projectileNode.GlobalPosition = spawnPosition;
         ShapeGame.Instance.AddChild(projectileNode);
 
-        var fireRateComponent = projectile.GetComponentOrNull<FireDelayStatComponent>();
-        if (fireRateComponent != null)
-        {
-            Delay = Max(fireRateComponent.FireDelay, MinDelay);
-        }
-        else
-        {
-            Delay = MinDelay;
-        }
+        var reload = context.CalculateStat<ReloadStat>();
+        Delay = Max(reload, MinDelay);
     }
 
     private int NextSlot()

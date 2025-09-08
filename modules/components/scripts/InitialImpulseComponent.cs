@@ -3,6 +3,10 @@ public partial class InitialImpulseComponent : Node, IProjectileComponent
 
     [Export]
     public Vector2 Direction { get; private set; } = Vector2.Up;
+    
+    [ExportCategory("Torque")]
+    [Export] public float Torque { get; private set; }
+    [Export] public float TorqueDelta { get; private set; }
 
     private float _speed;
 
@@ -26,6 +30,13 @@ public partial class InitialImpulseComponent : Node, IProjectileComponent
         var vector = Direction * _speed;
         var moveVector = vector.Rotated(playerTilt);
         rigidBodyProjectile.ApplyCentralImpulse(moveVector);
+        
+        if (Torque == 0 && TorqueDelta == 0)
+        {
+            return;
+        }
+        var actualTorque = (float)GD.RandRange(Torque - TorqueDelta, Torque + TorqueDelta);
+        rigidBodyProjectile.ApplyTorqueImpulse(actualTorque);
     }
 
 }

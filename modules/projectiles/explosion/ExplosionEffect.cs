@@ -24,8 +24,7 @@ public partial class ExplosionEffect : ColorRect
 
         shaderMaterial.SetShaderParameter("radius", 0.0f);
         shaderMaterial.SetShaderParameter("intensity", 1.0f);
-
-        var duration = _explosion.GetRadius() * 0.0006f;
+        var duration = Sqrt(_explosion.GetRadius()) * 0.015f;
         var tween = CreateTween();
 
         tween.TweenProperty(shaderMaterial, "shader_parameter/radius", targetRadius * 1.2, duration)
