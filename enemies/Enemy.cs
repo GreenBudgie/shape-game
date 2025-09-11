@@ -45,22 +45,22 @@ public abstract partial class Enemy : RigidBody2D
     
     public abstract float GetCrystalsToDrop();
 
-    public void Damage()
+    public void Damage(float damage)
     {
         if (IsDestroyed)
         {
             return;
         }
 
-        _health -= 1;
-        var hpPercent = Clamp(_health / GetMaxHealth(), 0f, 1f);
-        var dangerLevel = 1f - hpPercent;
-
+        _health -= damage;
         if (_health <= 0)
         {
             Destroy();
             return;
         }
+        
+        var hpRatio = Clamp(_health / GetMaxHealth(), 0f, 1f);
+        var dangerLevel = 1f - hpRatio;
 
         var sound = SoundManager.Instance.PlayPositionalSound(this, DamageSound);
         sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
@@ -93,7 +93,7 @@ public abstract partial class Enemy : RigidBody2D
         var maxCrystalSpawnY = areaY + halfShapeSize.Y;
         for (var i = 0; i < GetCrystalsToDrop(); i++)
         {
-            var crystal = FallingCrystal.CreateFallingCrystal();
+            var crystal = FallingCrystal.Create();
             ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, crystal);
             
             var randomXOffset = (float)GD.RandRange(minCrystalSpawnX, maxCrystalSpawnX);
@@ -105,9 +105,6 @@ public abstract partial class Enemy : RigidBody2D
             var randomDirection = Vector2.FromAngle((float)randomAngle);
             var impulse = randomDirection * randomStrength;
             crystal.ApplyCentralImpulse(impulse);
-
-            var randomTorque = (float)GD.RandRange(-1, 1);
-            crystal.ApplyTorqueImpulse(randomTorque);
         }
 
         _glow.DisablePulsing();

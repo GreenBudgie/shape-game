@@ -43,6 +43,7 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         var radius = (float)GD.RandRange(200, 1500);
         var explosion = Explosion.Create(this)
             .SetRadius(radius)
+            .SetDamage(_context.CalculateStat<ExplosionDamageStat>())
             //.SetRadius(_context.CalculateStat<ExplosionRadiusStat>())
             .SetFuseTimeSeconds(1);
 

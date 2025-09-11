@@ -20,6 +20,7 @@ public partial class Explosion : ShapeCast2D
 
     private Node2D _initiator = null!;
     private float _radius = 300;
+    private float _damage = 1;
     private float _fuseTimeSeconds;
 
     public static Explosion Create(Node2D initiator)
@@ -64,6 +65,14 @@ public partial class Explosion : ShapeCast2D
     }
 
     public float GetRadius() => _radius;
+    
+    public Explosion SetDamage(float damage)
+    {
+        _damage = Max(damage, 0);
+        return this;
+    }
+
+    public float GetDamage() => _damage;
 
     public float GetEffectRadiusRatio() => Clamp(_radius / MaxEffectRadius, 0, MaxEffectRadius);
 
@@ -100,8 +109,13 @@ public partial class Explosion : ShapeCast2D
             }
 
             var direction = GlobalPosition.DirectionTo(body.ToGlobal(body.CenterOfMass));
-            var strength = 200;
+            var strength = 1000;
             body.ApplyCentralImpulse(direction * strength);
+
+            if (body is Enemy enemy)
+            {
+                enemy.Damage(_damage);
+            }
         }
 
         QueueFree();

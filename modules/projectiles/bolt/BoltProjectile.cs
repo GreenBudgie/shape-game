@@ -10,10 +10,17 @@ public partial class BoltProjectile : RigidBody2D, IProjectile<BoltProjectile>
     private AudioStream _wallHitSound = null!;
     
     public BoltProjectile Node => this;
+
+    private ShotContext _context = null!; 
     
     public static BoltProjectile Create()
     {
         return BoltProjectileScene.Instantiate<BoltProjectile>();
+    }
+
+    public void Prepare(ShotContext context)
+    {
+        _context = context;
     }
 
     public override void _Ready()
@@ -54,7 +61,7 @@ public partial class BoltProjectile : RigidBody2D, IProjectile<BoltProjectile>
             return;
         }
         
-        enemy.Damage();
+        enemy.Damage(_context.CalculateStat<DamageStat>());
         QueueFree();
     }
 

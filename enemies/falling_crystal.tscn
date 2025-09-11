@@ -5,7 +5,7 @@
 [ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve.gdshader" id="2_e1k7q"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e1k7q"]
-friction = 0.5
+friction = 0.0
 bounce = 0.5
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ylhy4"]
@@ -193,10 +193,9 @@ _data = {
 
 [node name="FallingCrystal" type="RigidBody2D"]
 collision_layer = 512
-collision_mask = 305
-mass = 0.05
+collision_mask = 304
+mass = 0.4
 physics_material_override = SubResource("PhysicsMaterial_e1k7q")
-inertia = 0.05
 continuous_cd = 2
 contact_monitor = true
 max_contacts_reported = 2
