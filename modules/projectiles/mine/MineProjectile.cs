@@ -26,7 +26,7 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
     public override void _Ready()
     {
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
-        GetTree().CreateTimer(1).Timeout += Explode;
+        GetTree().CreateTimer(0.5f).Timeout += Fuse;
         BodyEntered += HandleBodyEntered;
     }
 
@@ -38,12 +38,13 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         }
     }
 
-    private void Explode()
+    private void Fuse()
     {
-        Explosion.Create(GlobalPosition)
-            .Radius(_context.CalculateStat<ExplosionRadiusStat>())
-            .Detonate();
-        QueueFree();
+        var explosion = Explosion.Create(this)
+            .SetRadius(_context.CalculateStat<ExplosionRadiusStat>())
+            .SetFuseTimeSeconds(1);
+
+        explosion.Detonated += QueueFree;
     }
     
     private void HandleBodyEntered(Node body)

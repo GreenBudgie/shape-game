@@ -6,22 +6,51 @@ public partial class Explosion : ShapeCast2D
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b676isra84rkm");
 
+    [Signal]
+    public delegate void DetonatedEventHandler();
+
     [Export] private AudioStream _smallExplosionSound = null!;
     [Export] private AudioStream _mediumExplosionSound = null!;
     [Export] private AudioStream _largeExplosionSound = null!;
 
+    private Node2D _initiator = null!;
     private float _radius = 300;
     private float _fuseTimeSeconds;
 
-    public static Explosion Create(Vector2 globalPosition)
+    public static Explosion Create(Node2D initiator)
     {
         var explosion = Scene.Instantiate<Explosion>();
-        explosion.GlobalPosition = globalPosition;
+        explosion._initiator = initiator;
+        explosion.GlobalPosition = initiator.GlobalPosition;
         ShapeGame.Instance.AddChild(explosion);
         return explosion;
     }
 
-    public Explosion Radius(float radius)
+    public override void _Ready()
+    {
+        Callable.From(() => ExplosionRadiusPreview.Create(this)).CallDeferred();
+    }
+
+    public override void _Process(double delta)
+    {
+        if (IsInstanceValid(_initiator))
+        {
+            GlobalPosition = _initiator.GlobalPosition;
+        }
+        
+        if (_fuseTimeSeconds <= 0)
+        {
+            return;
+        }
+        
+        _fuseTimeSeconds = Max((float)(_fuseTimeSeconds - delta), 0);
+        if (_fuseTimeSeconds <= 0)
+        {
+            Detonate();
+        }
+    }
+
+    public Explosion SetRadius(float radius)
     {
         _radius = radius;
         var circleShape = (CircleShape2D)Shape;
@@ -31,17 +60,21 @@ public partial class Explosion : ShapeCast2D
 
     public float GetRadius() => _radius;
 
-    public Explosion FuseTimeSeconds(float fuseTimeSeconds)
+    public Explosion SetFuseTimeSeconds(float fuseTimeSeconds)
     {
         _fuseTimeSeconds = fuseTimeSeconds;
         return this;
     }
 
+    public float GetFuseTimeSeconds() => _fuseTimeSeconds;
+
     public void Detonate()
     {
         PlaySound();
         ExplosionEffects.Instance.PlayEffect(this);
-        ScreenShake.Instance.Shake(ShakeStrength.High);
+        //ScreenShake.Instance.Shake(ShakeStrength.High);
+        
+        EmitSignalDetonated();
 
         ForceShapecastUpdate();
         if (!IsColliding())

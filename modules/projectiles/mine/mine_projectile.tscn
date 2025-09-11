@@ -32,6 +32,7 @@ _wallHitSound = ExtResource("3_q3r3b")
 texture = ExtResource("4_h5gdj")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_guu8r")
 
 [node name="InitialImpulseComponent" parent="." instance=ExtResource("5_2eq07")]
