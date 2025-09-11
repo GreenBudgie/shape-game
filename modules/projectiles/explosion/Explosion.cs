@@ -106,6 +106,8 @@ public partial class Explosion : ShapeCast2D
             return;
         }
 
+        const float maxStrength = 1500f;
+        var strength = GetEffectRadiusRatio() * maxStrength;
         for (var i = 0; i < GetCollisionCount(); i++)
         {
             var collider = GetCollider(i);
@@ -114,9 +116,11 @@ public partial class Explosion : ShapeCast2D
                 continue;
             }
 
-            var direction = GlobalPosition.DirectionTo(body.ToGlobal(body.CenterOfMass));
-            var strength = 1000;
-            body.ApplyCentralImpulse(direction * strength);
+            var bodyPosition = body.ToGlobal(body.CenterOfMass);
+            var direction = GlobalPosition.DirectionTo(bodyPosition);
+            var distance = GlobalPosition.DistanceTo(bodyPosition);
+            var relativeStrength = 1f - Clamp(distance / _radius, 0, 1);
+            body.ApplyCentralImpulse(direction * strength * relativeStrength);
 
             if (body is Enemy enemy)
             {
