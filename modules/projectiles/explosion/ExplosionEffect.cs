@@ -33,16 +33,16 @@ public partial class ExplosionEffect : ColorRect
         var tween = CreateTween();
 
         tween.TweenProperty(shaderMaterial, ShaderParameter(RadiusParam), targetRadius * 1.2, duration)
-            .SetTrans(Tween.TransitionType.Cubic)
+            .SetTrans(Tween.TransitionType.Quint)
             .SetEase(Tween.EaseType.Out);
         
         tween.Parallel().TweenProperty(shaderMaterial, ShaderParameter(IntensityParam), 0.0f, duration)
-            .SetTrans(Tween.TransitionType.Cubic)
-            .SetEase(Tween.EaseType.OutIn);
-
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.In);
+        
         tween.Parallel().TweenProperty(shaderMaterial, ShaderParameter(WidthParam), 0.0f, duration)
-            .SetTrans(Tween.TransitionType.Cubic)
-            .SetEase(Tween.EaseType.OutIn);
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.In);
 
         tween.Finished += QueueFree;
     }
