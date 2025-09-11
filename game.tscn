@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://snfu2b1ifqye"]
+[gd_scene load_steps=22 format=3 uid="uid://snfu2b1ifqye"]
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bkdy1r0hmunja" path="res://ui/stats/stats_panel.tscn" id="6_eow3j"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
 [ext_resource type="Texture2D" uid="uid://ptdgrqellnu8" path="res://environment/wall/right_wall.png" id="7_eow3j"]
+[ext_resource type="Script" uid="uid://djxx4y1127mi" path="res://ui/FpsCounter.cs" id="8_215e1"]
 [ext_resource type="Script" uid="uid://fxme35ooeqpu" path="res://level/LevelManager.cs" id="8_j5wjh"]
 [ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://enemies/EnemyManager.cs" id="8_vef74"]
 [ext_resource type="PackedScene" uid="uid://b8gd2gve05upa" path="res://systems/CrystalManager.tscn" id="9_vef74"]
@@ -111,6 +112,13 @@ offset_right = 512.0
 
 [node name="PauseMenu" parent="UI" instance=ExtResource("6_mfdv2")]
 visible = false
+
+[node name="FpsCounter" type="Label" parent="UI"]
+offset_left = 16.41
+offset_top = 10.655
+offset_right = 56.41
+offset_bottom = 81.8217
+script = ExtResource("8_215e1")
 
 [node name="EnemyManager" type="Node" parent="."]
 script = ExtResource("8_vef74")

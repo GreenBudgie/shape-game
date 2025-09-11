@@ -6,7 +6,7 @@ public partial class ExplosionRadiusPreview : Node2D
     private const float Thickness = 8.0f;
     private const float BaseRadius = 300.0f;
     private const float BaseDashDeg = 10.0f;
-    private const float BaseGapDeg = 10.0f;
+    private const float BaseGapDeg = 20.0f;
 
     private const float StartScale = 0.7f;
     private const float EndScale = 1.2f;
@@ -76,8 +76,6 @@ public partial class ExplosionRadiusPreview : Node2D
         {
             GlobalPosition = _explosion.GlobalPosition;
         }
-
-        QueueRedraw();
     }
 
     public override void _Draw()
@@ -121,7 +119,7 @@ public partial class ExplosionRadiusPreview : Node2D
             var endAngle = currentAngle + dashRad;
 
             // Draw the arc (body of the dash)
-            DrawArc(Vector2.Zero, radius, startAngle, endAngle, 32, Color, Thickness, true);
+            DrawArc(Vector2.Zero, radius, startAngle, endAngle, 4, Color, Thickness, true);
 
             // Calculate positions for the caps
             var (startAngleSin, startAngleCos) = SinCos(startAngle);
