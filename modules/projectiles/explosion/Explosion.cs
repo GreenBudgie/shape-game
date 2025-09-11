@@ -72,7 +72,8 @@ public partial class Explosion : ShapeCast2D
     {
         PlaySound();
         ExplosionEffects.Instance.PlayEffect(this);
-        //ScreenShake.Instance.Shake(ShakeStrength.High);
+        ExplosionParticles.Create(this);
+        ScreenShake.Instance.Shake(ShakeStrength.Low);
         
         EmitSignalDetonated();
 
