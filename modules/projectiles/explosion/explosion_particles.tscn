@@ -4,14 +4,14 @@
 [ext_resource type="Script" uid="uid://sn0rklgjp3ux" path="res://modules/projectiles/explosion/ExplosionParticles.cs" id="2_58lnq"]
 
 [sub_resource type="Curve" id="Curve_qe7b6"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.800485), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_58lnq"]
 curve = SubResource("Curve_qe7b6")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qe7b6"]
-lifetime_randomness = 0.75
+lifetime_randomness = 0.85
 particle_flag_disable_z = true
 emission_shape = 1
 emission_sphere_radius = 20.0
@@ -22,7 +22,7 @@ gravity = Vector3(0, 0, 0)
 damping_min = 1400.0
 damping_max = 1600.0
 scale_min = 0.5
-scale_max = 1.5
+scale_max = 1.25
 alpha_curve = SubResource("CurveTexture_58lnq")
 turbulence_influence_min = 0.0
 turbulence_influence_max = 0.106
@@ -31,6 +31,7 @@ turbulence_initial_displacement_max = 16.8
 
 [node name="ExplosionParticles" type="GPUParticles2D"]
 modulate = Color(1, 0.623529, 0.309804, 1)
+emitting = false
 amount = 30
 texture = ExtResource("1_qe7b6")
 one_shot = true
