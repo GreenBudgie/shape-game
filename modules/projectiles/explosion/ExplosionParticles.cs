@@ -1,6 +1,5 @@
 public partial class ExplosionParticles : GpuParticles2D
 {
-    private const float MaxRadius = 2000;
 
     private const float MinAmount = 15;
     private const float MaxAmount = 70;
@@ -28,20 +27,20 @@ public partial class ExplosionParticles : GpuParticles2D
 
     public override void _Ready()
     {
-        var weight = Clamp(_explosion.GetRadius(), 0, MaxRadius) / MaxRadius;
+        var radiusRatio = _explosion.GetEffectRadiusRatio();
         var material = (ParticleProcessMaterial)ProcessMaterial;
 
-        Amount = RoundToInt(Lerp(MinAmount, MaxAmount, weight));
+        Amount = RoundToInt(Easings.LerpQuad(MinAmount, MaxAmount, radiusRatio));
         
-        var maxInitialVelocity = Lerp(MinInitialVelocity, MaxInitialVelocity, weight);
+        var maxInitialVelocity = Easings.LerpQuad(MinInitialVelocity, MaxInitialVelocity, radiusRatio);
         material.InitialVelocityMin = MinInitialVelocity - InitialVelocityDelta;
         material.InitialVelocityMax = maxInitialVelocity + InitialVelocityDelta;
 
-        var scale = Lerp(MinScale, MaxScale, weight);
+        var scale = Easings.LerpQuad(MinScale, MaxScale, radiusRatio);
         material.ScaleMin = scale - ScaleDelta;
         material.ScaleMax = scale + ScaleDelta;
 
-        material.EmissionSphereRadius = Lerp(MinEmissionRadius, MaxEmissionRadius, weight); 
+        material.EmissionSphereRadius = Easings.LerpQuad(MinEmissionRadius, MaxEmissionRadius, radiusRatio); 
 
         Finished += QueueFree;
         

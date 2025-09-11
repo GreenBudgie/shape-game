@@ -1,7 +1,5 @@
 public partial class ExplosionEffect : ColorRect
 {
-    private const float MaxSupportedRadius = 2000;
-
     private const float MinWidth = 0.04f;
     private const float MaxWidth = 0.15f;
     private const float RadiusIncreaseFactor = 1.4f;
@@ -36,9 +34,8 @@ public partial class ExplosionEffect : ColorRect
         shaderMaterial.SetShaderParameter(RadiusParam, 0.0f);
         shaderMaterial.SetShaderParameter(IntensityParam, 1.0f);
 
-        var radiusForWidth = Clamp(_explosion.GetRadius(), 0, MaxSupportedRadius);
-        var radiusFactor = radiusForWidth / MaxSupportedRadius;
-        var width = Lerp(MinWidth, MaxWidth, radiusFactor);
+        var radiusFactor = _explosion.GetEffectRadiusRatio();
+        var width = Easings.LerpQuad(MinWidth, MaxWidth, radiusFactor);
         shaderMaterial.SetShaderParameter(WidthParam, width);
 
         // Tween

@@ -1,8 +1,13 @@
 public partial class Explosion : ShapeCast2D
 {
 
-    private const float MediumExplosionRadius = 600;
-    private const float LargeExplosionRadius = 1200;
+    /// <summary>
+    /// Represents max radius for some effects like screen shake, particles e.t.c.
+    ///
+    /// This does not mean that explosion can't use a larger radius. Just effects won't be more intense for
+    /// radii larger than this one.
+    /// </summary>
+    private const float MaxEffectRadius = 1600;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b676isra84rkm");
 
@@ -52,13 +57,15 @@ public partial class Explosion : ShapeCast2D
 
     public Explosion SetRadius(float radius)
     {
-        _radius = radius;
+        _radius = Max(radius, 0);
         var circleShape = (CircleShape2D)Shape;
         circleShape.Radius = radius;
         return this;
     }
 
     public float GetRadius() => _radius;
+
+    public float GetEffectRadiusRatio() => Clamp(_radius / MaxEffectRadius, 0, MaxEffectRadius);
 
     public Explosion SetFuseTimeSeconds(float fuseTimeSeconds)
     {
@@ -71,9 +78,9 @@ public partial class Explosion : ShapeCast2D
     public void Detonate()
     {
         PlaySound();
+        ShakeScreen();
         ExplosionEffects.Instance.PlayEffect(this);
         ExplosionParticles.Create(this);
-        ScreenShake.Instance.Shake(ShakeStrength.Low);
         
         EmitSignalDetonated();
 
@@ -102,15 +109,23 @@ public partial class Explosion : ShapeCast2D
 
     private void PlaySound()
     {
-        var sound = _radius switch
+        var ratio = GetEffectRadiusRatio();
+        var sound = ratio switch
         {
-            < MediumExplosionRadius => _smallExplosionSound,
-            < LargeExplosionRadius => _mediumExplosionSound,
+            < 0.33f => _smallExplosionSound,
+            < 0.66f => _mediumExplosionSound,
             _ => _largeExplosionSound
         };
 
         SoundManager.Instance.PlayPositionalSound(this, sound)
             .RandomizePitchOffset(0.1f);
+    }
+
+    private void ShakeScreen()
+    {
+        var ratio = GetEffectRadiusRatio();
+        var quadRatio = ratio * ratio;
+        ScreenShake.Instance.Shake(ShakeStrength.FromRatio(quadRatio));
     }
 
 }
