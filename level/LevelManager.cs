@@ -52,7 +52,7 @@ public partial class LevelManager : Node
 
         SpawnEnemy();
         var tween = CreateTween().SetLoops();
-        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(1.0f);
+        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(5.0f);
         
         EmitSignalLevelStarted();
     }
@@ -94,7 +94,7 @@ public partial class LevelManager : Node
     private void SpawnEnemy()
     {
         // EnemyManager.Instance.SpawnEnemy(EnemyManager.Instance.GetRandomEnemyType());
-        EnemyManager.Instance.SpawnEnemy(EnemyManager.EnemyTypes[1]);
+        EnemyManager.Instance.SpawnEnemy(EnemyManager.EnemyTypes[0]);
     }
 
 

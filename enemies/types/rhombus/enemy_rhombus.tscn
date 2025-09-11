@@ -16,6 +16,7 @@ collision_layer = 4
 collision_mask = 291
 gravity_scale = 0.0
 linear_damp = 2.0
+angular_damp = 1.0
 script = ExtResource("1_hl3kr")
 _shotSound = ExtResource("2_m8fef")
 _leftProjectileSpawnPosition = NodePath("LeftProjectileSpawnPosition")
