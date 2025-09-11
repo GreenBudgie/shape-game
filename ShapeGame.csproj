@@ -11,4 +11,7 @@
   <ItemGroup>
     <Folder Include="modules\components\scenes\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="credit.txt" />
+  </ItemGroup>
 </Project>

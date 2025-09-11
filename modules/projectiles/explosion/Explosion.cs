@@ -1,7 +1,14 @@
 public partial class Explosion : ShapeCast2D
 {
 
+    private const float MediumExplosionRadius = 600;
+    private const float LargeExplosionRadius = 1200;
+
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b676isra84rkm");
+
+    [Export] private AudioStream _smallExplosionSound = null!;
+    [Export] private AudioStream _mediumExplosionSound = null!;
+    [Export] private AudioStream _largeExplosionSound = null!;
 
     private float _radius = 300;
     private float _fuseTimeSeconds;
@@ -32,8 +39,10 @@ public partial class Explosion : ShapeCast2D
 
     public void Detonate()
     {
+        PlaySound();
         ExplosionEffects.Instance.PlayEffect(this);
         ScreenShake.Instance.Shake(ShakeStrength.High);
+
         ForceShapecastUpdate();
         if (!IsColliding())
         {
@@ -55,6 +64,19 @@ public partial class Explosion : ShapeCast2D
         }
 
         QueueFree();
+    }
+
+    private void PlaySound()
+    {
+        var sound = _radius switch
+        {
+            < MediumExplosionRadius => _smallExplosionSound,
+            < LargeExplosionRadius => _mediumExplosionSound,
+            _ => _largeExplosionSound
+        };
+
+        SoundManager.Instance.PlayPositionalSound(this, sound)
+            .RandomizePitchOffset(0.1f);
     }
 
 }

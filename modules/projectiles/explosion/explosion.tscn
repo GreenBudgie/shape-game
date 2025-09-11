@@ -1,6 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://b676isra84rkm"]
+[gd_scene load_steps=6 format=3 uid="uid://b676isra84rkm"]
 
 [ext_resource type="Script" uid="uid://c87li6ygs7coa" path="res://modules/projectiles/explosion/Explosion.cs" id="1_dew6s"]
+[ext_resource type="AudioStream" uid="uid://dwoojus4lwr30" path="res://modules/projectiles/explosion/small_explosion.wav" id="2_nflol"]
+[ext_resource type="AudioStream" uid="uid://bt02xhkt13ook" path="res://modules/projectiles/explosion/medium_explosion.wav" id="3_t2otm"]
+[ext_resource type="AudioStream" uid="uid://dr5jfdlhatyth" path="res://modules/projectiles/explosion/large_explosion.wav" id="4_3kpl1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dew6s"]
 
@@ -10,3 +13,6 @@ shape = SubResource("CircleShape2D_dew6s")
 target_position = Vector2(0, 0)
 collision_mask = 526
 script = ExtResource("1_dew6s")
+_smallExplosionSound = ExtResource("2_nflol")
+_mediumExplosionSound = ExtResource("3_t2otm")
+_largeExplosionSound = ExtResource("4_3kpl1")
