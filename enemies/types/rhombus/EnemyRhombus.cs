@@ -14,7 +14,7 @@
     {
         base._Ready();
         
-        _direction = GD.Randf() > 0.5f ? -1 : 1;
+        _direction = RandomUtils.RandomSign();
         var path = EnemyRhombusPath.CreatePath(_direction);
         ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, path);
         _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, path);

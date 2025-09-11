@@ -14,5 +14,3 @@ void fragment() {
 	dt.y = cos(TIME * 100.0) * magnitude.y;
 	COLOR = texture(SCREEN_TEXTURE, uv + (dt * strength));
 }
-
-

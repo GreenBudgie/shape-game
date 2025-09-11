@@ -1,17 +1,22 @@
 ﻿public partial class EnemySquareProjectile : RigidBody2D, IPlayerCollisionDetector
 {
 
+    private const float InitialTorque = 1000; 
+    private const float InitialTorqueDelta = 300; 
+    
+    private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bhj8dgeytmpxx");
+    
     [Export] private AudioStream _hitWallSound = null!;
+
+    public static EnemySquareProjectile Create(EnemySquare shooter)
+    {
+        var bullet = Scene.Instantiate<EnemySquareProjectile>();
+        return bullet;
+    }
     
     public override void _Ready()
     {
-        Callable.From(Test).CallDeferred();
         BodyEntered += HandleBodyEntered;
-    }
-
-    private void Test()
-    {
-        PhysicsServer2D.BodyGetDirectState(GetRid());
     }
 
     public override void _Process(double delta)
@@ -20,6 +25,20 @@
         {
             QueueFree();
         }
+    }
+
+    private bool _torqueApplied;
+    
+    public override void _IntegrateForces(PhysicsDirectBodyState2D state)
+    {
+        if (_torqueApplied)
+        {
+            return;
+        }
+
+        var torque = RandomUtils.RandomSignedDeltaRange(InitialTorque, InitialTorqueDelta);
+        ApplyTorqueImpulse(torque);
+        _torqueApplied = true;
     }
 
     public void CollideWithPlayer(Player player)
@@ -33,7 +52,7 @@
         {
             return;
         }
-        
+
         var speed = LinearVelocity.Length();
         if (speed <= 100)
         {
@@ -44,6 +63,4 @@
         var sound = SoundManager.Instance.PlayPositionalSound(this, _hitWallSound);
         sound.PitchScale = Clamp(pitch, 0.75f, 1.25f);
     }
-    
-    
 }
