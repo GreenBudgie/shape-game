@@ -5,7 +5,13 @@
     
     public override void _Ready()
     {
+        Callable.From(Test).CallDeferred();
         BodyEntered += HandleBodyEntered;
+    }
+
+    private void Test()
+    {
+        PhysicsServer2D.BodyGetDirectState(GetRid());
     }
 
     public override void _Process(double delta)

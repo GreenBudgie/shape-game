@@ -59,12 +59,13 @@
     {
         var bullet = ProjectileScene.Instantiate<EnemySquareProjectile>();
         bullet.GlobalPosition = GlobalPosition;
-        ShapeGame.Instance.AddChild(bullet);
         var randomStrength = (float)GD.RandRange(1f, 2f);
         var velocityLength = LinearVelocity.Length();
         var impulse = Vector2.Down * velocityLength * 0.5f - LinearVelocity * randomStrength;
         bullet.ApplyCentralImpulse(impulse);
         bullet.ApplyTorqueImpulse(velocityLength * 0.005f);
+        
+        ShapeGame.Instance.AddChild(bullet);
 
         var randomOffset = new Vector2((float)GD.RandRange(-3f, 3f), (float)GD.RandRange(-3f, 3f));
 

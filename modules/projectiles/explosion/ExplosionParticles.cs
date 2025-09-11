@@ -30,17 +30,17 @@ public partial class ExplosionParticles : GpuParticles2D
         var radiusRatio = _explosion.GetEffectRadiusRatio();
         var material = (ParticleProcessMaterial)ProcessMaterial;
 
-        Amount = RoundToInt(Easings.LerpQuad(MinAmount, MaxAmount, radiusRatio));
+        Amount = RoundToInt(Lerp(MinAmount, MaxAmount, radiusRatio));
         
-        var maxInitialVelocity = Easings.LerpQuad(MinInitialVelocity, MaxInitialVelocity, radiusRatio);
+        var maxInitialVelocity = Lerp(MinInitialVelocity, MaxInitialVelocity, radiusRatio);
         material.InitialVelocityMin = MinInitialVelocity - InitialVelocityDelta;
         material.InitialVelocityMax = maxInitialVelocity + InitialVelocityDelta;
 
-        var scale = Easings.LerpQuad(MinScale, MaxScale, radiusRatio);
+        var scale = Lerp(MinScale, MaxScale, radiusRatio);
         material.ScaleMin = scale - ScaleDelta;
         material.ScaleMax = scale + ScaleDelta;
 
-        material.EmissionSphereRadius = Easings.LerpQuad(MinEmissionRadius, MaxEmissionRadius, radiusRatio); 
+        material.EmissionSphereRadius = Lerp(MinEmissionRadius, MaxEmissionRadius, radiusRatio); 
 
         Finished += QueueFree;
         

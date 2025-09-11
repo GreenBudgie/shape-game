@@ -35,7 +35,7 @@ public partial class ExplosionEffect : ColorRect
         shaderMaterial.SetShaderParameter(IntensityParam, 1.0f);
 
         var radiusFactor = _explosion.GetEffectRadiusRatio();
-        var width = Easings.LerpQuad(MinWidth, MaxWidth, radiusFactor);
+        var width = Lerp(MinWidth, MaxWidth, radiusFactor);
         shaderMaterial.SetShaderParameter(WidthParam, width);
 
         // Tween

@@ -16,7 +16,6 @@ collision_layer = 520
 collision_mask = 304
 mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_jyvyp")
-inertia = 0.1
 continuous_cd = 2
 contact_monitor = true
 max_contacts_reported = 2

@@ -123,9 +123,7 @@ public partial class Explosion : ShapeCast2D
 
     private void ShakeScreen()
     {
-        var ratio = GetEffectRadiusRatio();
-        var quadRatio = ratio * ratio;
-        ScreenShake.Instance.Shake(ShakeStrength.FromRatio(quadRatio));
+        ScreenShake.Instance.Shake(ShakeStrength.FromRatio(GetEffectRadiusRatio()));
     }
 
 }
