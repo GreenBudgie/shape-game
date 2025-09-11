@@ -1,22 +1,20 @@
 public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
 {
-
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://coo3tnuma02fs");
 
-    [Export]
-    private AudioStream _shotSound = null!;
-    
-    [Export]
-    private AudioStream _wallHitSound = null!;
-    
+    [Export] private AudioStream _shotSound = null!;
+
+    [Export] private AudioStream _wallHitSound = null!;
+
     public MineProjectile Node => this;
-    
+
     public static MineProjectile Create()
     {
         return Scene.Instantiate<MineProjectile>();
     }
 
     private ShotContext _context = null!;
+    private Explosion? _explosion;
 
     public void Prepare(ShotContext context)
     {
@@ -30,26 +28,34 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         BodyEntered += HandleBodyEntered;
     }
 
-    public override void _Process(double delta)
+    private bool _torqueApplied;
+
+    public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
-        if (this.IsOutsidePlayableArea())
+        if (_torqueApplied)
         {
-            QueueFree();
+            return;
         }
+
+        const float initialTorque = 500;
+        const float initialTorqueDelta = 200;
+        var torque = RandomUtils.RandomSignedDeltaRange(initialTorque, initialTorqueDelta);
+        ApplyTorqueImpulse(torque);
+        _torqueApplied = true;
     }
 
     private void Fuse()
     {
         var radius = (float)GD.RandRange(200, 1500);
-        var explosion = Explosion.Create(this)
+        _explosion = Explosion.Create(this)
             .SetRadius(radius)
             .SetDamage(_context.CalculateStat<ExplosionDamageStat>())
             //.SetRadius(_context.CalculateStat<ExplosionRadiusStat>())
             .SetFuseTimeSeconds(1);
 
-        explosion.Detonated += QueueFree;
+        _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(QueueFree));
     }
-    
+
     private void HandleBodyEntered(Node body)
     {
         if (body is not CollisionObject2D collisionObject2D)
@@ -61,6 +67,10 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         {
             SoundManager.Instance.PlayPositionalSound(this, _wallHitSound).RandomizePitchOffset(0.1f);
         }
-    }
 
+        if (collisionObject2D.GetCollisionLayerValue(CollisionLayers.LevelOutsideBoundary))
+        {
+            QueueFree();
+        }
+    }
 }

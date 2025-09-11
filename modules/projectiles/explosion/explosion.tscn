@@ -11,7 +11,7 @@
 enabled = false
 shape = SubResource("CircleShape2D_dew6s")
 target_position = Vector2(0, 0)
-collision_mask = 526
+collision_mask = 1550
 script = ExtResource("1_dew6s")
 _smallExplosionSound = ExtResource("2_nflol")
 _mediumExplosionSound = ExtResource("3_t2otm")

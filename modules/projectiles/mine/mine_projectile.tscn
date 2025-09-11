@@ -14,8 +14,8 @@ bounce = 0.5
 radius = 28.0179
 
 [node name="MineProjectile" type="RigidBody2D"]
-collision_layer = 0
-collision_mask = 304
+collision_layer = 1024
+collision_mask = 1328
 mass = 0.2
 physics_material_override = SubResource("PhysicsMaterial_guu8r")
 gravity_scale = 0.0
@@ -36,4 +36,3 @@ visible = false
 shape = SubResource("CircleShape2D_guu8r")
 
 [node name="InitialImpulseComponent" parent="." instance=ExtResource("5_2eq07")]
-TorqueDelta = 1000.0

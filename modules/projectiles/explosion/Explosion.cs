@@ -43,6 +43,12 @@ public partial class Explosion : ShapeCast2D
         {
             GlobalPosition = _initiator.GlobalPosition;
         }
+        else
+        {
+            // Instantly detonate if initiator was freed (invalidated)
+            Detonate();
+            return;
+        }
         
         if (_fuseTimeSeconds <= 0)
         {

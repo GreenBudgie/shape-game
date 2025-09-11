@@ -34,7 +34,7 @@ public partial class ExplosionRadiusPreview : Node2D
 
     public override void _Ready()
     {
-        _explosion.Detonated += OnDetonate;
+        _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(RemovePreview));
         
         var fuseTime = _explosion.GetFuseTimeSeconds();
         if (fuseTime <= 0)
@@ -75,6 +75,10 @@ public partial class ExplosionRadiusPreview : Node2D
         if (IsInstanceValid(_explosion))
         {
             GlobalPosition = _explosion.GlobalPosition;
+        }
+        else
+        {
+            RemovePreview();
         }
     }
 
@@ -135,7 +139,7 @@ public partial class ExplosionRadiusPreview : Node2D
         }
     }
 
-    private void OnDetonate()
+    private void RemovePreview()
     {
         _startTween?.Kill();
 

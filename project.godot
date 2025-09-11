@@ -111,6 +111,7 @@ fullscreen={
 2d_physics/layer_8="level_floor"
 2d_physics/layer_9="level_outside_boundary"
 2d_physics/layer_10="player_collider"
+2d_physics/layer_11="background_projectiles"
 
 [physics]
 
