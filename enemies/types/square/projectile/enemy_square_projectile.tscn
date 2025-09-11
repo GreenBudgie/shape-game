@@ -14,7 +14,6 @@ size = Vector2(42, 42)
 [node name="EnemySquareProjectile" type="RigidBody2D"]
 collision_layer = 520
 collision_mask = 304
-mass = 0.5
 physics_material_override = SubResource("PhysicsMaterial_jyvyp")
 continuous_cd = 2
 contact_monitor = true

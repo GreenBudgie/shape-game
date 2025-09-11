@@ -57,7 +57,7 @@
     {
         var bullet = EnemySquareProjectile.Create(this);
         bullet.GlobalPosition = GlobalPosition;
-        var randomStrength = (float)GD.RandRange(1f, 4f);
+        var randomStrength = (float)GD.RandRange(1f, 2f);
         var velocityLength = LinearVelocity.Length();
         var impulse = Vector2.Down * velocityLength * 0.5f - LinearVelocity * randomStrength;
         bullet.ApplyCentralImpulse(impulse);

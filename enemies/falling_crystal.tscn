@@ -194,13 +194,12 @@ _data = {
 [node name="FallingCrystal" type="RigidBody2D"]
 collision_layer = 512
 collision_mask = 304
-mass = 0.4
+mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_e1k7q")
 continuous_cd = 2
 contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_qiyar")
-_glowColor = Color(0.956863, 0.909804, 0.486275, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_e1k7q")

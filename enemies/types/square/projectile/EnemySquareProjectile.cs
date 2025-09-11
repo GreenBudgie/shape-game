@@ -1,8 +1,8 @@
 ﻿public partial class EnemySquareProjectile : RigidBody2D, IPlayerCollisionDetector
 {
 
-    private const float InitialTorque = 1000; 
-    private const float InitialTorqueDelta = 300; 
+    private const float InitialTorque = 1500; 
+    private const float InitialTorqueDelta = 500; 
     
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bhj8dgeytmpxx");
     

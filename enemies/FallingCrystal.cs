@@ -5,14 +5,14 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
 
     private const float MaxMagnetDistance = 512;
     private const float MaxMagnetDistanceSq = MaxMagnetDistance * MaxMagnetDistance;
-    private const float MaxMagnetForce = 3200;
+    private const float MaxMagnetForce = 800;
     private const float MinGlowStrength = 1f;
     private const float MaxGlowStrength = 2f;
     private const float MinGlowRadius = 20f;
     private const float MaxGlowRadius = 40f;
     private const float MaxLinearDamp = 4;
     private const float CollectedDamp = 10;
-    private const float CollectedMagnetForce = 12000;
+    private const float CollectedMagnetForce = 3000;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bu4bb10k0x66d");
 
