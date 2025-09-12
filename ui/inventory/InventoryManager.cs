@@ -186,14 +186,14 @@ public partial class InventoryManager : Control
         IsOpen = true;
         foreach (var child in GetChildren())
         {
-            child.SetProcess(true);
+            child.ProcessMode = ProcessModeEnum.Inherit;
         }
 
         _alphaTween?.Kill();
         _alphaTween = CreateTween();
         _alphaTween.TweenProperty(
             @object: this,
-            property: CanvasItem.PropertyName.Modulate.ToString(),
+            property: ModulateProperty,
             finalVal: Colors.White,
             duration: FadeDuration
         );
@@ -212,7 +212,7 @@ public partial class InventoryManager : Control
         IsOpen = false;
         foreach (var child in GetChildren())
         {
-            child.SetProcess(false);
+            child.ProcessMode = ProcessModeEnum.Disabled;
         }
 
         if (Visible)
@@ -221,7 +221,7 @@ public partial class InventoryManager : Control
             _alphaTween = CreateTween();
             _alphaTween.TweenProperty(
                 @object: this,
-                property: CanvasItem.PropertyName.Modulate.ToString(),
+                property: ModulateProperty,
                 finalVal: Colors.Transparent,
                 duration: FadeDuration
             );

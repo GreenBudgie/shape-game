@@ -110,7 +110,7 @@ public abstract partial class StatsProgressBar : TextureProgressBar
         _progressTween = CreateTween().SetTrans(Tween.TransitionType.Sine);
         _progressTween.TweenProperty(
             @object: this,
-            property: Range.PropertyName.Value.ToString(),
+            property: ValueProperty,
             finalVal: progress,
             duration: 0.5f
         ).SetEase(Tween.EaseType.Out);

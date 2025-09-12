@@ -46,11 +46,9 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
 
     private void Fuse()
     {
-        var radius = (float)GD.RandRange(200, 1500);
         _explosion = Explosion.Create(this)
-            .SetRadius(radius)
             .SetDamage(_context.CalculateStat<ExplosionDamageStat>())
-            //.SetRadius(_context.CalculateStat<ExplosionRadiusStat>())
+            .SetRadius(_context.CalculateStat<ExplosionRadiusStat>())
             .SetFuseTimeSeconds(1);
 
         _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(QueueFree));

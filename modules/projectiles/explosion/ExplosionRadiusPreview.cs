@@ -20,6 +20,7 @@ public partial class ExplosionRadiusPreview : Node2D
     private static readonly Color Color = ColorScheme.Red;
 
     private Explosion _explosion = null!;
+    private bool _isRemoving;
 
     public static ExplosionRadiusPreview Create(Explosion explosion)
     {
@@ -52,19 +53,19 @@ public partial class ExplosionRadiusPreview : Node2D
         
         _startTween.TweenProperty(
             this,
-            Node2D.PropertyName.RotationDegrees.ToString(),
+            RotationDegreesProperty,
             StartRotationDegrees,
             fuseTime * StartRotationDuration
         );
         _startTween.TweenProperty(
             this,
-            Node2D.PropertyName.Scale.ToString(),
+            ScaleProperty,
             Vector2.One,
             fuseTime * StartAppearDuration
         );
         _startTween.TweenProperty(
             this,
-            CanvasItem.PropertyName.Modulate.ToString(),
+            ModulateProperty,
             Colors.White,
             fuseTime * StartAppearDuration
         );
@@ -72,6 +73,11 @@ public partial class ExplosionRadiusPreview : Node2D
 
     public override void _Process(double delta)
     {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
         if (IsInstanceValid(_explosion))
         {
             GlobalPosition = _explosion.GlobalPosition;
@@ -141,6 +147,7 @@ public partial class ExplosionRadiusPreview : Node2D
 
     private void RemovePreview()
     {
+        _isRemoving = true;
         _startTween?.Kill();
 
         var endTween = CreateTween()
@@ -150,20 +157,21 @@ public partial class ExplosionRadiusPreview : Node2D
         
         endTween.TweenProperty(
             this,
-            Node2D.PropertyName.RotationDegrees.ToString(),
+            RotationDegreesProperty,
             EndRotationDegrees,
             EndDuration
         );
+        
         var endScale = new Vector2(EndScale, EndScale);
         endTween.TweenProperty(
             this,
-            Node2D.PropertyName.Scale.ToString(),
+            ScaleProperty,
             endScale,
             EndDuration
         );
         endTween.TweenProperty(
             this,
-            CanvasItem.PropertyName.Modulate.ToString(),
+            ModulateProperty,
             Colors.Transparent,
             EndDuration
         );

@@ -89,14 +89,14 @@ public class ShakeTween
         // Tween in (shake)
         _tween.TweenProperty(
             @object: target,
-            property: Control.PropertyName.RotationDegrees.ToString(),
+            property: RotationDegreesProperty,
             finalVal: cappedTilt,
             duration: _inTime
         ).SetEase(Tween.EaseType.In);
 
         _tween.Parallel().TweenProperty(
             @object: target,
-            property: Control.PropertyName.Scale.ToString(),
+            property: ScaleProperty,
             finalVal: new Vector2(cappedSize, cappedSize),
             duration: _inTime
         ).SetEase(Tween.EaseType.In);
@@ -104,14 +104,14 @@ public class ShakeTween
         // Tween out (return to normal)
         _tween.TweenProperty(
             @object: target,
-            property: Control.PropertyName.RotationDegrees.ToString(),
+            property: RotationDegreesProperty,
             finalVal: 0,
             duration: _outTime
         ).SetEase(Tween.EaseType.Out);
 
         _tween.Parallel().TweenProperty(
             @object: target,
-            property: Control.PropertyName.Scale.ToString(),
+            property: ScaleProperty,
             finalVal: Vector2.One,
             duration: _outTime
         ).SetEase(Tween.EaseType.Out);

@@ -1,8 +1,14 @@
+using System.Diagnostics;
+
 /// <summary>
 /// A component for adding a glow effect to a Sprite2D or TextureRect using a shader.
 /// </summary>
 public partial class Glow : SubViewportContainer
 {
+    
+    public static readonly NodePath RadiusProperty = PropertyName.Radius.ToString();
+    public static readonly NodePath StrengthProperty = PropertyName.Strength.ToString();
+    
     private static readonly StringName GlowColorName = "glow_color";
     private static readonly StringName GlowRadiusName = "glow_radius";
     private static readonly StringName GlowStrengthName = "glow_strength";
@@ -17,8 +23,10 @@ public partial class Glow : SubViewportContainer
     private float _pulseStrengthDelta = 0.0f;
     private float _pulsesPerSecond = 1.0f;
 
-    private float _baseStrength;
-    private float _baseRadius;
+    private float? _baseStrength;
+    private float? _baseRadius;
+    private Color? _cachedColor;
+    private bool? _cachedCullOccluded;
 
     public Color Color
     {
@@ -28,13 +36,13 @@ public partial class Glow : SubViewportContainer
 
     public float Radius
     {
-        get => GetRadius();
+        get => GetBaseRadius();
         set => SetRadius(value);
     }
     
     public float Strength
     {
-        get => GetStrength();
+        get => GetBaseStrength();
         set => SetStrength(value);
     }
     
@@ -47,8 +55,8 @@ public partial class Glow : SubViewportContainer
     public override void _Ready()
     {
         _shaderMaterial = (ShaderMaterial)Material;
-        _baseStrength = GetStrength();
-        _baseRadius = GetRadius();
+        _baseStrength = GetBaseStrength();
+        _baseRadius = GetBaseRadius();
     }
 
     public override void _Process(double delta)
@@ -65,8 +73,8 @@ public partial class Glow : SubViewportContainer
 
         var t = Time.GetTicksMsec() / 1000f; // TODO fps
         var pulse = 0.5f + 0.5f * Sin(t * Tau * _pulsesPerSecond);
-        UpdateRadius(_baseRadius + _pulseRadiusDelta * pulse);
-        UpdateStrength(_baseStrength + _pulseStrengthDelta * pulse);
+        UpdateRadius(GetBaseRadius() + _pulseRadiusDelta * pulse);
+        UpdateStrength(GetBaseStrength() + _pulseStrengthDelta * pulse);
     }
 
     /// <summary>
@@ -76,6 +84,12 @@ public partial class Glow : SubViewportContainer
     /// <returns>The current Glow instance for chaining.</returns>
     public Glow SetColor(Color color)
     {
+        if (_cachedColor.HasValue && _cachedColor.Value == color)
+        {
+            return this;
+        }
+
+        _cachedColor = color;
         _shaderMaterial.SetShaderParameter(GlowColorName, color);
         return this;
     }
@@ -87,8 +101,14 @@ public partial class Glow : SubViewportContainer
     /// <returns>The current Glow instance for chaining.</returns>
     public Glow SetRadius(float radius)
     {
-        _baseRadius = Max(radius, 0);
-        UpdateRadius(_baseRadius);
+        var positiveRadius = Max(radius, 0);
+        if (IsEqualApprox(GetBaseRadius(), positiveRadius))
+        {
+            return this;
+        }
+        
+        _baseRadius = positiveRadius;
+        UpdateRadius(positiveRadius);
         return this;
     }
     
@@ -104,8 +124,14 @@ public partial class Glow : SubViewportContainer
     /// <returns>The current Glow instance for chaining.</returns>
     public Glow SetStrength(float strength)
     {
-        _baseStrength = Max(strength, 0);
-        UpdateStrength(strength);
+        var positiveStrength = Max(strength, 0);
+        if (IsEqualApprox(GetBaseStrength(), positiveStrength))
+        {
+            return this;
+        }
+        
+        _baseStrength = positiveStrength;
+        UpdateStrength(positiveStrength);
         return this;
     }
     
@@ -116,6 +142,12 @@ public partial class Glow : SubViewportContainer
 
     public Glow SetCullOccluded(bool cullOccluded)
     {
+        if (_cachedCullOccluded == cullOccluded)
+        {
+            return this;
+        }
+
+        _cachedCullOccluded = cullOccluded;
         _shaderMaterial.SetShaderParameter(CullOccludedName, cullOccluded);
         return this;
     }
@@ -137,30 +169,54 @@ public partial class Glow : SubViewportContainer
     /// <returns>The glow color.</returns>
     public Color GetColor()
     {
-        return (Color)_shaderMaterial.GetShaderParameter(GlowColorName);
+        if (_cachedColor.HasValue)
+        {
+            return _cachedColor.Value;
+        }
+        
+        _cachedColor = (Color)_shaderMaterial.GetShaderParameter(GlowColorName);
+        return _cachedColor.Value;
     }
 
     /// <summary>
     /// Gets the current blur radius of the glow effect.
     /// </summary>
     /// <returns>The blur radius in pixels.</returns>
-    public float GetRadius()
+    public float GetBaseRadius()
     {
-        return (float)_shaderMaterial.GetShaderParameter(GlowRadiusName);
+        if (_baseRadius.HasValue)
+        {
+            return _baseRadius.Value;
+        }
+
+        _baseRadius = (float)_shaderMaterial.GetShaderParameter(GlowRadiusName);
+        return _baseRadius.Value;
     }
 
     /// <summary>
     /// Gets the current strength (opacity multiplier) of the glow.
     /// </summary>
     /// <returns>The glow strength.</returns>
-    public float GetStrength()
+    public float GetBaseStrength()
     {
-        return (float)_shaderMaterial.GetShaderParameter(GlowStrengthName);
+        if (_baseStrength.HasValue)
+        {
+            return _baseStrength.Value;
+        }
+
+        _baseStrength = (float)_shaderMaterial.GetShaderParameter(GlowStrengthName);
+        return _baseStrength.Value;
     }
 
     public bool IsCullOccluded()
     {
-        return (bool)_shaderMaterial.GetShaderParameter(CullOccludedName);
+        if (_cachedCullOccluded.HasValue)
+        {
+            return _cachedCullOccluded.Value;
+        }
+
+        _cachedCullOccluded = (bool)_shaderMaterial.GetShaderParameter(CullOccludedName);
+        return _cachedCullOccluded.Value;
     }
 
     /// <summary>
@@ -168,8 +224,8 @@ public partial class Glow : SubViewportContainer
     /// </summary>
     public Glow EnablePulsing()
     {
-        _baseStrength = GetStrength();
-        _baseRadius = GetRadius();
+        _baseStrength = GetBaseStrength();
+        _baseRadius = GetBaseRadius();
         _isPulsing = true;
         return this;
     }
@@ -180,8 +236,8 @@ public partial class Glow : SubViewportContainer
     public Glow DisablePulsing()
     {
         _isPulsing = false;
-        SetStrength(_baseStrength);
-        SetRadius(_baseRadius);
+        SetStrength(GetBaseStrength());
+        SetRadius(GetBaseRadius());
         return this;
     }
 

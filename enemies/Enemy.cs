@@ -37,8 +37,10 @@ public abstract partial class Enemy : RigidBody2D
         _glow = Glow.AddGlow(sprite)
             .SetColor(EnemyColor)
             .SetStrength(0)
-            .SetRadius(0)
-            .EnablePulsing();
+            .SetRadius(0);
+            // .EnablePulsing();
+        
+        Damage(GetMaxHealth() - 1f);
     }
 
     public abstract float GetMaxHealth();
@@ -64,7 +66,7 @@ public abstract partial class Enemy : RigidBody2D
 
         var sound = SoundManager.Instance.PlayPositionalSound(this, DamageSound);
         sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
-
+        
         _glow
             .SetRadius(40f * dangerLevel)
             .SetStrength(2f * dangerLevel)
