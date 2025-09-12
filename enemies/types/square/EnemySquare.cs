@@ -22,6 +22,7 @@
     {
         base._Process(delta);
 
+        return;
         if (IsDestroyed)
         {
             return;

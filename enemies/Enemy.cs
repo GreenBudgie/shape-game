@@ -37,8 +37,8 @@ public abstract partial class Enemy : RigidBody2D
         _glow = Glow.AddGlow(sprite)
             .SetColor(EnemyColor)
             .SetStrength(0)
-            .SetRadius(0);
-            // .EnablePulsing();
+            .SetRadius(0)
+            .EnablePulsing();
         
         Damage(GetMaxHealth() - 1f);
     }
