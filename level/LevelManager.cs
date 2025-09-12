@@ -50,12 +50,9 @@ public partial class LevelManager : Node
         SetDestroyRequirement(4);
         SetSurviveRequirement(4);
 
-        for (var i = 0; i < 50; i++)
-        {
-            SpawnEnemy();
-        }
-        // var tween = CreateTween().SetLoops();
-        // tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(5.0f);
+        SpawnEnemy();
+        var tween = CreateTween().SetLoops();
+        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(2.0f);
         
         EmitSignalLevelStarted();
     }

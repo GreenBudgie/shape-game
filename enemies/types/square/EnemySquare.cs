@@ -22,7 +22,6 @@
     {
         base._Process(delta);
 
-        return;
         if (IsDestroyed)
         {
             return;
@@ -51,7 +50,7 @@
 
     public override float GetCrystalsToDrop()
     {
-        return 0;
+        return 25;
     }
 
     private void Fire()
