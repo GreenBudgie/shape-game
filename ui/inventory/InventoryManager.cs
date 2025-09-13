@@ -47,7 +47,7 @@ public partial class InventoryManager : Control
         ];
         _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 
-        CallDeferred(MethodName.PostSetup);
+        Callable.From(PostSetup).CallDeferred();
     }
 
     private void PostSetup()

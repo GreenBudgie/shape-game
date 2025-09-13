@@ -31,6 +31,7 @@ public partial class Player : CharacterBody2D
 
     private Vector2 _windowCenter;
     private Blaster _leftBlaster = null!;
+    private Blaster _rightBlaster = null!;
     private ShapeCast2D _playerCollisionDetector = null!;
     private Sprite2D _sprite = null!;
 
@@ -48,8 +49,11 @@ public partial class Player : CharacterBody2D
     {
         _sprite = GetNode<Sprite2D>("PlayerSprite");
 
-        _leftBlaster = new Blaster();
+        _leftBlaster = Blaster.Create(InventoryManager.Instance.LeftBlasterInventory);
         AddChild(_leftBlaster);
+        _rightBlaster = Blaster.Create(InventoryManager.Instance.RightBlasterInventory);
+        AddChild(_rightBlaster);
+        
         _windowCenter = new Vector2(
             GetViewportRect().Size.X / 2.0f,
             GetViewportRect().Size.Y / 2.0f
@@ -89,9 +93,24 @@ public partial class Player : CharacterBody2D
 
         RegisterPlayerCollisions();
 
-        if (!InventoryManager.Instance.IsOpen && (int)Input.GetActionStrength("primary_fire") == 1)
+        HandleFire();
+    }
+
+    private void HandleFire()
+    {
+        if (InventoryManager.Instance.IsOpen)
         {
-            PrimaryFire();
+            return;
+        }
+        
+        if (Input.IsActionPressed("primary_fire"))
+        {
+            _leftBlaster.Trigger();
+        }
+        
+        if (Input.IsActionPressed("secondary_fire"))
+        {
+            _rightBlaster.Trigger();
         }
     }
 
@@ -162,8 +181,4 @@ public partial class Player : CharacterBody2D
         return _sprite.RotationDegrees;
     }
 
-    private void PrimaryFire()
-    {
-        _leftBlaster.Trigger();
-    }
 }

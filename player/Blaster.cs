@@ -10,9 +10,12 @@ public partial class Blaster : Node
 
     public float Delay { get; private set; }
 
-    public override void _Ready()
+    public static Blaster Create(BlasterInventory inventory)
     {
-        _inventory = InventoryManager.Instance.LeftBlasterInventory;
+        return new Blaster
+        {
+            _inventory = inventory
+        };
     }
 
     public override void _Process(double delta)
