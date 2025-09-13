@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://coo3tnuma02fs"]
+[gd_scene load_steps=9 format=3 uid="uid://coo3tnuma02fs"]
 
 [ext_resource type="Script" uid="uid://cs1n2qdcpxc1v" path="res://modules/projectiles/mine/MineProjectile.cs" id="1_g34o2"]
 [ext_resource type="AudioStream" uid="uid://3vgmpsu74edm" path="res://modules/projectiles/bolt/bolt_projectile_launch.wav" id="2_unq05"]
 [ext_resource type="AudioStream" uid="uid://dcst5l714kycq" path="res://modules/projectiles/hit_wall.wav" id="3_q3r3b"]
 [ext_resource type="Texture2D" uid="uid://3dvamnyph43c" path="res://modules/projectiles/mine/mine.png" id="4_h5gdj"]
+[ext_resource type="AudioStream" uid="uid://crvggub3a2u1b" path="res://modules/projectiles/mine/mine_beep.wav" id="4_jya8t"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="5_2eq07"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
@@ -27,6 +28,7 @@ angular_damp = 1.0
 script = ExtResource("1_g34o2")
 _shotSound = ExtResource("2_unq05")
 _wallHitSound = ExtResource("3_q3r3b")
+_beepSound = ExtResource("4_jya8t")
 
 [node name="MineSprite" type="Sprite2D" parent="."]
 texture = ExtResource("4_h5gdj")

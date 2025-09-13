@@ -39,8 +39,6 @@ public abstract partial class Enemy : RigidBody2D
             .SetStrength(0)
             .SetRadius(0)
             .EnablePulsing();
-        
-        Damage(GetMaxHealth() - 1f);
     }
 
     public abstract float GetMaxHealth();

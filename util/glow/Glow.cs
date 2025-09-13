@@ -5,7 +5,7 @@ using System.Diagnostics;
 /// </summary>
 public partial class Glow : SubViewportContainer
 {
-    
+
     public static readonly NodePath RadiusProperty = PropertyName.Radius.ToString();
     public static readonly NodePath StrengthProperty = PropertyName.Strength.ToString();
     
@@ -341,8 +341,10 @@ public partial class Glow : SubViewportContainer
         var glowSprite = glow.GetNode<Sprite2D>("SubViewport/Sprite");
         
         node.AddChild(glow);
-
-        subViewport.Size = (Vector2I)(texture.GetSize() * 2);
+        
+        const int viewportSizeMultiplier = 4;
+        
+        subViewport.Size = (Vector2I)(texture.GetSize() * viewportSizeMultiplier);
         glowSprite.Texture = texture;
         glowSprite.Position = subViewport.Size / 2;
         glow.ZIndex = node.ZIndex - 1;
