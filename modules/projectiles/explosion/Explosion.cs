@@ -106,7 +106,7 @@ public partial class Explosion : ShapeCast2D
             return;
         }
 
-        const float maxStrength = 1500f;
+        const float maxStrength = 1800f;
         var strength = GetEffectRadiusRatio() * maxStrength;
         for (var i = 0; i < GetCollisionCount(); i++)
         {

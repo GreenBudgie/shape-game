@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bhga26pudvab6"]
 
-[ext_resource type="Texture2D" uid="uid://dpxrffbekmfvj" path="res://modules/projectiles/explosion/explosion_particle.png" id="1_qe7b6"]
+[ext_resource type="Texture2D" uid="uid://vseo0idnwpav" path="res://common/particles/particle_circle.png" id="1_58lnq"]
 [ext_resource type="Script" uid="uid://sn0rklgjp3ux" path="res://modules/projectiles/explosion/ExplosionParticles.cs" id="2_58lnq"]
 
 [sub_resource type="Curve" id="Curve_qe7b6"]
@@ -33,7 +33,7 @@ turbulence_initial_displacement_max = 16.8
 modulate = Color(1, 0.623529, 0.309804, 1)
 emitting = false
 amount = 30
-texture = ExtResource("1_qe7b6")
+texture = ExtResource("1_58lnq")
 one_shot = true
 explosiveness = 0.95
 process_material = SubResource("ParticleProcessMaterial_qe7b6")

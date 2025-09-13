@@ -3,10 +3,9 @@
 public abstract partial class Enemy : RigidBody2D
 {
 
-    [Export] protected Color EnemyColor { get; private set; }
+    [Export] public Color Color { get; private set; }
 
-    [Export] protected CollisionShape2D CrystalSpawnArea = null!;
-
+    [Export] protected CollisionShape2D Area = null!;
     [Export] protected AudioStream DamageSound = null!;
     [Export] protected AudioStream DestroySound = null!;
 
@@ -16,26 +15,31 @@ public abstract partial class Enemy : RigidBody2D
     private AnimationPlayer _enemyAnimations = null!;
 
     public bool IsDestroyed { get; private set; }
+    /// <summary>
+    /// A rectangle (in local coordinates) to use for spawning effects inside the enemy
+    /// </summary>
+    public Rect2 AreaRect { get; private set; }
 
     public override void _Ready()
     {
-        if (CrystalSpawnArea.Shape is not RectangleShape2D)
+        if (Area.Shape is not RectangleShape2D areaShape)
         {
             throw new ArgumentException(
                 $"Crystal spawn area should be a RectangleShape2D, but {Name} uses different shape"
             );
         }
-        if (!CrystalSpawnArea.Disabled)
+        if (!Area.Disabled)
         {
-            CrystalSpawnArea.Disabled = true;
+            Area.Disabled = true;
         }
+        AreaRect = areaShape.GetRect();
 
         _enemyAnimations = GetNode<AnimationPlayer>("EnemyAnimations");
         _health = GetMaxHealth();
 
         var sprite = GetNode<Sprite2D>("Sprite");
         _glow = Glow.AddGlow(sprite)
-            .SetColor(EnemyColor)
+            .SetColor(Color)
             .SetStrength(0)
             .SetRadius(0)
             .EnablePulsing();
@@ -81,25 +85,15 @@ public abstract partial class Enemy : RigidBody2D
         CollisionLayer = 0;
         CollisionMask = 0;
 
+        EnemyDestroyParticles.Create(this);
         SoundManager.Instance.PlayPositionalSound(this, DestroySound);
 
-        var crystalSpawnAreaShape = (RectangleShape2D)CrystalSpawnArea.Shape;
-        var halfShapeSize = crystalSpawnAreaShape.Size * 0.5f;
-        var areaX = CrystalSpawnArea.Position.X;
-        var areaY = CrystalSpawnArea.Position.Y;
-        var minCrystalSpawnX = areaX - halfShapeSize.X;
-        var maxCrystalSpawnX = areaX + halfShapeSize.X;
-        var minCrystalSpawnY = areaY + halfShapeSize.Y;
-        var maxCrystalSpawnY = areaY + halfShapeSize.Y;
         for (var i = 0; i < GetCrystalsToDrop(); i++)
         {
             var crystal = FallingCrystal.Create();
-            ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, crystal);
-            
-            var randomXOffset = (float)GD.RandRange(minCrystalSpawnX, maxCrystalSpawnX);
-            var randomYOffset = (float)GD.RandRange(minCrystalSpawnY, maxCrystalSpawnY);
-            var randomOffset = new Vector2(randomXOffset, randomYOffset);
-            crystal.GlobalPosition = GlobalPosition + randomOffset;
+            Callable.From(() => ShapeGame.Instance.AddChild(crystal)).CallDeferred();
+
+            crystal.GlobalPosition = GlobalPosition + AreaRect.RandomPoint();
             var randomStrength = (float)GD.RandRange(750f, 1500f);
             var randomAngle = GD.RandRange(5 * Pi / 4, 7 * Pi / 4);
             var randomDirection = Vector2.FromAngle((float)randomAngle);

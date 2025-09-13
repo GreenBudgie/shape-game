@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b46tonhhbayne"
-path="res://.godot/imported/particle.png-1e213bf1414d3c8ae8cf20986d35eb19.ctex"
+uid="uid://vseo0idnwpav"
+path="res://.godot/imported/particle_circle.png-c6b5217b751d35ca82e39cc558a7d4fd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://enemies/particle.png"
-dest_files=["res://.godot/imported/particle.png-1e213bf1414d3c8ae8cf20986d35eb19.ctex"]
+source_file="res://common/particles/particle_circle.png"
+dest_files=["res://.godot/imported/particle_circle.png-c6b5217b751d35ca82e39cc558a7d4fd.ctex"]
 
 [params]
 

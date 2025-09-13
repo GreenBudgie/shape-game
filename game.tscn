@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://b8gd2gve05upa" path="res://systems/CrystalManager.tscn" id="9_vef74"]
 [ext_resource type="Texture2D" uid="uid://ck75mef3o2t0i" path="res://environment/background_square.png" id="10_hve3p"]
 [ext_resource type="Script" uid="uid://dbtjcecl2kyym" path="res://modules/projectiles/explosion/ExplosionEffects.cs" id="11_mfdv2"]
-[ext_resource type="Shader" uid="uid://c8tu4dwq8epsu" path="res://screen_shake.gdshader" id="12_iotsf"]
+[ext_resource type="Shader" uid="uid://c8tu4dwq8epsu" path="res://util/screenshake/screen_shake.gdshader" id="12_iotsf"]
 [ext_resource type="Script" uid="uid://cek6yfy2gipxe" path="res://util/screenshake/ScreenShake.cs" id="13_lc2xo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]

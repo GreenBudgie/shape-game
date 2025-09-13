@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://ch1pv0ey6wg5u"]
+
+[ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://common/particles/particle_square.png" id="1_2kqya"]
+[ext_resource type="Script" uid="uid://jhwybcaeray4" path="res://enemies/EnemyDestroyParticles.cs" id="2_kmqei"]
+
+[sub_resource type="Curve" id="Curve_dm35f"]
+_data = [Vector2(0, 0.800485), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.83923, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_pckkg"]
+curve = SubResource("Curve_dm35f")
+
+[sub_resource type="Curve" id="Curve_pckkg"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.495961), -1.36511, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_f1g0p"]
+curve = SubResource("Curve_pckkg")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xs78n"]
+resource_local_to_scene = true
+lifetime_randomness = 0.8
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(100, 100, 1)
+angle_min = 1.07288e-05
+angle_max = 360.0
+spread = 0.0
+initial_velocity_min = 200.0
+initial_velocity_max = 500.0
+angular_velocity_min = -200.0
+angular_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+damping_min = 200.0
+damping_max = 400.0
+scale_min = 0.5
+scale_curve = SubResource("CurveTexture_f1g0p")
+alpha_curve = SubResource("CurveTexture_pckkg")
+
+[node name="EnemyDestroyParticles" type="GPUParticles2D"]
+emitting = false
+amount = 20
+texture = ExtResource("1_2kqya")
+lifetime = 0.75
+one_shot = true
+explosiveness = 0.95
+process_material = SubResource("ParticleProcessMaterial_xs78n")
+script = ExtResource("2_kmqei")

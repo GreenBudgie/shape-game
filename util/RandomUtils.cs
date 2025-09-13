@@ -31,4 +31,15 @@ public static class RandomUtils
     {
         return DeltaRange(value, delta) * RandomSign();
     }
+
+    /// <summary>
+    /// Selects a random point inside the given rect
+    /// </summary>
+    public static Vector2 RandomPoint(this Rect2 rect)
+    {
+        var randomX = (float)GD.RandRange(rect.Position.X, rect.End.X);
+        var randomY = (float)GD.RandRange(rect.Position.Y, rect.End.Y);
+        return new Vector2(randomX, randomY);
+    }
+    
 }

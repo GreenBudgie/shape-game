@@ -10,9 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://62q8y3ct3e6l" path="res://ui/stats/progress_bar_outline.png" id="7_vkf4t"]
 [ext_resource type="Texture2D" uid="uid://bwyriujuvrcdt" path="res://ui/stats/destroy_progress_fill.png" id="8_to8l2"]
 [ext_resource type="Texture2D" uid="uid://3kojc6rt6dst" path="res://ui/stats/survive_progress_fill.png" id="9_to8l2"]
-[ext_resource type="Texture2D" uid="uid://dyreygmcjs8hj" path="res://ui/ui_particle.png" id="10_2vw3g"]
 [ext_resource type="Script" uid="uid://bdppc48q0whgk" path="res://ui/stats/DestroyProgressBar.cs" id="10_21laa"]
 [ext_resource type="AudioStream" uid="uid://cmq5h7ad0emxs" path="res://ui/stats/damage_complete.wav" id="11_4r0y7"]
+[ext_resource type="Texture2D" uid="uid://vseo0idnwpav" path="res://common/particles/particle_circle.png" id="12_53m3k"]
 [ext_resource type="Script" uid="uid://cgkw0jfw8skbp" path="res://ui/stats/SurviveProgressBar.cs" id="14_trg4c"]
 [ext_resource type="AudioStream" uid="uid://dtdverdq67s4b" path="res://ui/stats/survive_complete.wav" id="15_53m3k"]
 
@@ -205,7 +205,7 @@ modulate = Color(0.937255, 0.356863, 0.356863, 1)
 z_index = -1
 position = Vector2(210, 42)
 emitting = false
-texture = ExtResource("10_2vw3g")
+texture = ExtResource("12_53m3k")
 lifetime = 2.0
 process_material = SubResource("ParticleProcessMaterial_4r0y7")
 
@@ -215,7 +215,7 @@ z_index = -1
 position = Vector2(210, 42)
 emitting = false
 amount = 30
-texture = ExtResource("10_2vw3g")
+texture = ExtResource("12_53m3k")
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_21laa")
 
@@ -295,7 +295,7 @@ modulate = Color(0.211765, 0.945098, 0.803922, 1)
 z_index = -1
 position = Vector2(210, 42)
 emitting = false
-texture = ExtResource("10_2vw3g")
+texture = ExtResource("12_53m3k")
 lifetime = 2.0
 process_material = SubResource("ParticleProcessMaterial_4r0y7")
 
@@ -305,6 +305,6 @@ z_index = -1
 position = Vector2(210, 42)
 emitting = false
 amount = 30
-texture = ExtResource("10_2vw3g")
+texture = ExtResource("12_53m3k")
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_21laa")

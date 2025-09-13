@@ -11,15 +11,15 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_igh3h"]
 size = Vector2(150, 150)
 
-[node name="EnemySquare" type="RigidBody2D" node_paths=PackedStringArray("CrystalSpawnArea")]
+[node name="EnemySquare" type="RigidBody2D" node_paths=PackedStringArray("Area")]
 collision_layer = 4
 collision_mask = 291
 gravity_scale = 0.0
 linear_damp = 2.0
 script = ExtResource("1_qo6cg")
 _shotSound = ExtResource("2_7g7p5")
-EnemyColor = Color(0.223529, 0.627451, 0.929412, 1)
-CrystalSpawnArea = NodePath("CrystalSpawnArea")
+Color = Color(0.223529, 0.627451, 0.929412, 1)
+Area = NodePath("Area")
 DamageSound = ExtResource("3_igh3h")
 DestroySound = ExtResource("4_700y2")
 
@@ -34,7 +34,7 @@ polygon = PackedVector2Array(90, -68, 90, 68, 82, 82, 68, 90, -68, 90, -82, 82, 
 [node name="EnemyAnimations" parent="." instance=ExtResource("7_igh3h")]
 root_node = NodePath("../Sprite")
 
-[node name="CrystalSpawnArea" type="CollisionShape2D" parent="."]
+[node name="Area" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_igh3h")
 disabled = true
 one_way_collision_margin = 8.3
