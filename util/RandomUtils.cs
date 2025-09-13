@@ -42,4 +42,45 @@ public static class RandomUtils
         return new Vector2(randomX, randomY);
     }
     
+    /// <summary>
+    /// Generates a random point uniformly distributed within a circle of the given radius.
+    /// </summary>
+    /// <param name="radius">The radius of the circle (must be non-negative)</param>
+    /// <returns>A Vector2 point inside the circle</returns>
+    public static Vector2 RandomPointInRadius(float radius)
+    {
+        if (radius <= 0)
+        {
+            return Vector2.Zero;
+        }
+
+        var theta = GD.Randf() * Tau;
+        var r = Sqrt(GD.Randf()) * radius;
+        var (sinTheta, cosTheta) = SinCos(theta);
+        return new Vector2(r * cosTheta, r * sinTheta);
+    }
+    
+    /// <summary>
+    /// Generates a random point uniformly distributed within an annulus (donut shape) defined by minimum and maximum radii.
+    /// </summary>
+    /// <param name="minRadius">The minimum radius (inner radius, must be non-negative and less than or equal to maxRadius)</param>
+    /// <param name="maxRadius">The maximum radius (outer radius, must be non-negative)</param>
+    /// <returns>A Vector2 point inside the annulus</returns>
+    public static Vector2 RandomPointInRadii(float minRadius, float maxRadius)
+    {
+        if (maxRadius <= 0 || minRadius > maxRadius)
+        {
+            return Vector2.Zero;
+        }
+        
+        minRadius = Max(minRadius, 0);
+
+        var theta = GD.Randf() * Tau;
+        var minSq = minRadius * minRadius;
+        var maxSq = maxRadius * maxRadius;
+        var r = Sqrt(GD.Randf() * (maxSq - minSq) + minSq);
+        var (sinTheta, cosTheta) = SinCos(theta);
+        return new Vector2(r * cosTheta, r * sinTheta);
+    }
+    
 }
