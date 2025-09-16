@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://enemies/types/square/enemy_square.png" id="3_7g7p5"]
 [ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/enemy_damage.wav" id="3_igh3h"]
 [ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://enemies/enemy_destroy.wav" id="4_700y2"]
-[ext_resource type="Material" uid="uid://ef46pfecv73h" path="res://util/dissolve_material.tres" id="5_4dxbg"]
+[ext_resource type="Material" uid="uid://ef46pfecv73h" path="res://util/dissolve/dissolve_material.tres" id="5_4dxbg"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://enemies/enemy_animations.tscn" id="7_igh3h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_igh3h"]

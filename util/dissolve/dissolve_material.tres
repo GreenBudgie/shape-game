@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://ef46pfecv73h"]
 
-[ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve.gdshader" id="1_xuh7u"]
+[ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve/dissolve.gdshader" id="1_4ndas"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ylhy4"]
 noise_type = 4
@@ -11,6 +11,6 @@ noise = SubResource("FastNoiseLite_ylhy4")
 
 [resource]
 resource_local_to_scene = true
-shader = ExtResource("1_xuh7u")
+shader = ExtResource("1_4ndas")
 shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_igh3h")
 shader_parameter/dissolve_value = 1.0

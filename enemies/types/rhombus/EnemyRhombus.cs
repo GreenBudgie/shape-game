@@ -1,38 +1,35 @@
 ﻿public partial class EnemyRhombus : Enemy
 {
-
-    private static readonly PackedScene ProjectileScene = GD.Load<PackedScene>("uid://c0kcy42pxfucm");
-    
     [Export] private AudioStream _shotSound = null!;
     [Export] private Marker2D _leftProjectileSpawnPosition = null!;
     [Export] private Marker2D _rightProjectileSpawnPosition = null!;
 
     private int _direction; // 1 = clockwise, -1 = counterclockwise
     private EnemyPathFollowController _pathFollowController = null!;
-    
+
     public override void _Ready()
     {
         base._Ready();
-        
+
         _direction = RandomUtils.RandomSign();
         var path = EnemyRhombusPath.CreatePath(_direction);
         ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, path);
         _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, path);
-        
+
         ResetAttack();
     }
 
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
- 
+
         ApplyTorque(-_direction * 10000f);
     }
 
     public override void _Process(double delta)
     {
         base._Process(delta);
-        
+
         if (IsDestroyed)
         {
             return;
@@ -82,7 +79,7 @@
             ProcessAttack(delta);
             return;
         }
-        
+
         if (_attackStartDelay <= 0)
         {
             StartAttack();
@@ -99,7 +96,7 @@
         _timeToFire = StartDelayPerShotSeconds;
         _prevTimeToFire = _timeToFire;
     }
-    
+
     private void ProcessAttack(double delta)
     {
         if (_attackDuration <= 0)
@@ -112,12 +109,12 @@
         {
             _timeToFire = Max(_prevTimeToFire - DelayPerShotDecreaseSeconds, MinDelayPerShotSeconds);
             _prevTimeToFire = _timeToFire;
-            
+
             FireProjectiles();
         }
 
         ApplyTorque(-_direction * (StartAttackTorqueAcceleration + _attackTorque));
-        
+
         _attackTorque += (float)(delta * AttackTorqueAcceleration);
         _attackDuration -= delta;
         _timeToFire -= delta;
@@ -127,7 +124,7 @@
     {
         FireProjectile(_leftProjectileSpawnPosition.GlobalPosition);
         FireProjectile(_rightProjectileSpawnPosition.GlobalPosition);
-        
+
         var delayPercent = (_timeToFire - MinDelayPerShotSeconds) / (StartDelayPerShotSeconds - MinDelayPerShotSeconds);
         var sound = SoundManager.Instance.PlayPositionalSound(this, _shotSound);
         sound.PitchScale = Lerp(0.8f, 1.2f, 1f - (float)delayPercent);
@@ -135,12 +132,13 @@
 
     private void FireProjectile(Vector2 globalPosition)
     {
-        var projectile = ProjectileScene.Instantiate<EnemyRhombusProjectile>();
+        var projectile = EnemyRhombusProjectile.Create();
         projectile.GlobalPosition = globalPosition;
-        ShapeGame.Instance.AddChild(projectile);
 
+        const float initialSpeed = 2000f;
         var projectileDirection = GlobalPosition.DirectionTo(globalPosition);
-        projectile.ApplyCentralImpulse(projectileDirection * 1500f);
-    }
+        projectile.ApplyCentralImpulse(projectileDirection * initialSpeed);
 
+        ShapeGame.Instance.AddChild(projectile);
+    }
 }

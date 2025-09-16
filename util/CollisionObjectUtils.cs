@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Godot.Collections;
 
 public static class CollisionObjectUtils
 {
@@ -29,15 +31,7 @@ public static class CollisionObjectUtils
     {
         var playableAreaBottom = ShapeGame.PlayableArea.End.Y;
 
-        foreach (var rect in collisionObject.GetCollisionRects())
-        {
-            if (rect.Position.Y <= playableAreaBottom)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return collisionObject.GetCollisionRects().All(rect => rect.Position.Y > playableAreaBottom);
     }
     
     /// <summary>

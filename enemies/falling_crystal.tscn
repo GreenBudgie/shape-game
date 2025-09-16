@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bf4gkg13wl2b8" path="res://enemies/crystal.png" id="1_5v78r"]
 [ext_resource type="Script" uid="uid://j44h0xyk3xdr" path="res://enemies/FallingCrystal.cs" id="1_qiyar"]
-[ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve.gdshader" id="2_e1k7q"]
+[ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve/dissolve.gdshader" id="2_e1k7q"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e1k7q"]
 friction = 0.0
