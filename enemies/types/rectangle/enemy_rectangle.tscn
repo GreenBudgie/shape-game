@@ -17,6 +17,7 @@ collision_mask = 291
 mass = 1.2
 gravity_scale = 0.0
 linear_damp = 2.0
+angular_damp = 1.0
 script = ExtResource("1_h54be")
 _shotSound = ExtResource("2_60diu")
 Color = Color(0.541176, 0.419608, 0.745098, 1)
@@ -39,3 +40,29 @@ root_node = NodePath("../Sprite")
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_igh3h")
 disabled = true
+
+[node name="ProjectileSpawnPositions" type="Node2D" parent="."]
+
+[node name="Position1" type="Marker2D" parent="ProjectileSpawnPositions"]
+position = Vector2(-132, -44)
+
+[node name="Position2" type="Marker2D" parent="ProjectileSpawnPositions"]
+position = Vector2(-44, -44)
+
+[node name="Position3" type="Marker2D" parent="ProjectileSpawnPositions"]
+position = Vector2(44, -44)
+
+[node name="Position4" type="Marker2D" parent="ProjectileSpawnPositions"]
+position = Vector2(132, -44)
+
+[node name="Position5" type="Marker2D" parent="ProjectileSpawnPositions"]
+position = Vector2(-132, 44)
+
+[node name="Position6" type="Marker2D" parent="ProjectileSpawnPositions"]
+position = Vector2(-44, 44)
+
+[node name="Position7" type="Marker2D" parent="ProjectileSpawnPositions"]
+position = Vector2(44, 44)
+
+[node name="Position8" type="Marker2D" parent="ProjectileSpawnPositions"]
+position = Vector2(132, 44)
