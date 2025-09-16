@@ -31,8 +31,8 @@ public partial class EnemyManager : Node
     public Enemy SpawnEnemy(EnemyType type)
     {
         var enemy = type.Scene.Instantiate<Enemy>();
-        ShapeGame.Instance.AddChild(enemy);
         enemy.GlobalPosition = GetRandomEnemySpawnLocation();
+        ShapeGame.Instance.AddChild(enemy);
         return enemy;
     }
 

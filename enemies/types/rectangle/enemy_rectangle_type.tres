@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemyType" load_steps=3 format=3 uid="uid://ddty2g0vmmg3"]
+
+[ext_resource type="PackedScene" uid="uid://b6vn5eqi2kauj" path="res://enemies/types/rectangle/enemy_rectangle.tscn" id="1_u3ytn"]
+[ext_resource type="Script" uid="uid://bdn3thmkqhurl" path="res://enemies/types/EnemyType.cs" id="2_uquqs"]
+
+[resource]
+script = ExtResource("2_uquqs")
+Scene = ExtResource("1_u3ytn")
+metadata/_custom_type_script = "uid://bdn3thmkqhurl"

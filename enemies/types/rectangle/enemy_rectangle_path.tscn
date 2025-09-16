@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dipoelw83e5kl"]
+
+[ext_resource type="Script" uid="uid://cxrk8itp88btc" path="res://enemies/types/rectangle/EnemyRectanglePath.cs" id="1_rlgcd"]
+
+[sub_resource type="Curve2D" id="Curve2D_uovvh"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 400, 0, 0, 0, 0, 2500, 400, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[node name="EnemyRectanglePath" type="Path2D"]
+curve = SubResource("Curve2D_uovvh")
+script = ExtResource("1_rlgcd")
+
+[node name="PathPoint" type="PathFollow2D" parent="."]
+rotation = 1.5708

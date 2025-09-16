@@ -1,37 +1,16 @@
-public partial class EnemyRhombusPath : EnemyPath
+public partial class EnemyRhombusPath : ClosedEnemyPath
 {
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dofw2c36kh88s");
-    
-    private const float MinYOffset = 300;
-    private const float MaxYOffset = 600;
 
-    private const float PathWidth = 2800;
-    
-    private int _direction = 1; // 1 = clockwise, -1 = counterclockwise
+    protected override float MinYOffset => 300;
+    protected override float MaxYOffset => 600;
+    protected override float PathWidth => 2800;
+    protected override float Speed => 0.1f;
 
-    public static EnemyRhombusPath CreatePath(int direction)
+    public static EnemyRhombusPath Create()
     {
-        var path = Scene.Instantiate<EnemyRhombusPath>();
-        path._direction = direction;
-        return path;
-    }
-    
-    public override void _Ready()
-    {
-        base._Ready();
-        
-        PathPoint.ProgressRatio = (float)GD.RandRange(0f, 1f);
-        
-        var xOffset = ShapeGame.PlayableArea.GetCenter().X - PathWidth / 2f;
-        var yOffset = (float)GD.RandRange(MinYOffset, MaxYOffset);
-        GlobalPosition = new Vector2(xOffset, yOffset);
-    }
-
-    public override void _Process(double delta)
-    {
-        const float speed = 0.1f;
-        PathPoint.ProgressRatio += (float)(speed * _direction * delta);
+        return Scene.Instantiate<EnemyRhombusPath>();
     }
 
 }
