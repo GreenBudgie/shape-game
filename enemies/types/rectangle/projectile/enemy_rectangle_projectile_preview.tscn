@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://cx5i17e1gcnmb"]
+
+[ext_resource type="Texture2D" uid="uid://44pceip607pu" path="res://enemies/types/rectangle/projectile/rectangle_projectile.png" id="1_6l44u"]
+[ext_resource type="Script" uid="uid://dng344dseapnj" path="res://enemies/types/rectangle/projectile/EnemyRectangleProjectilePreview.cs" id="2_wqhhp"]
+
+[node name="EnemyRectangleProjectilePreview" type="Sprite2D"]
+texture = ExtResource("1_6l44u")
+script = ExtResource("2_wqhhp")

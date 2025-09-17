@@ -1,14 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public partial class EnemyRectangle : Enemy
 {
+    public const float ProjectileChargeTime = 1f;
+
     [Export] private AudioStream _shotSound = null!;
 
-    private const double FireDelay = 1;
+    private const double FireDelay = 2;
 
     private double _fireTimer = FireDelay;
     private EnemyPathFollowController _pathFollowController = null!;
-    private List<Vector2> _projectileSpawnPositions = null!;
+    private List<ProjectileSpawn> _projectileSpawns = null!;
+    private State _state = State.Idle;
 
     public override void _Ready()
     {
@@ -19,6 +24,12 @@ public partial class EnemyRectangle : Enemy
         var path = EnemyRectanglePath.Create();
         Callable.From(() => ShapeGame.Instance.AddChild(path)).CallDeferred();
         _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, path);
+
+        var projectileSpawnPositionsNode = GetNode("ProjectileSpawnPositions");
+        _projectileSpawns = projectileSpawnPositionsNode.GetChildren()
+            .OfType<Marker2D>()
+            .Select(node => new ProjectileSpawn(node.GetPosition()))
+            .ToList();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -32,7 +43,7 @@ public partial class EnemyRectangle : Enemy
         {
             return;
         }
-        
+
         const float torqueByDegree = 1000f;
         var direction = rotationDegrees < 0 ? 1 : -1;
         var torque = Abs(rotationDegrees) * torqueByDegree;
@@ -53,14 +64,16 @@ public partial class EnemyRectangle : Enemy
             return;
         }
 
-        if (_fireTimer <= 0)
+        if (_state == State.Idle)
         {
-            Fire();
-            _fireTimer = FireDelay;
+            ProcessIdle(delta);
         }
-        else
+        else if (_state == State.ChargingAttack)
         {
-            _fireTimer -= delta;
+            ProcessChargeAttack(delta);
+        } else if (_state == State.Attacking)
+        {
+            ProcessAttack(delta);
         }
     }
 
@@ -74,8 +87,109 @@ public partial class EnemyRectangle : Enemy
         return 25;
     }
 
-    private void Fire()
+    private void SetIdle()
     {
-        // TODO
+        _fireTimer = FireDelay;
+        _state = State.Idle;
+    }
+
+    private void ProcessIdle(double delta)
+    {
+        _fireTimer -= delta;
+
+        if (_fireTimer <= 0)
+        {
+            ChargeAttack();
+        }
+    }
+
+    private void ChargeAttack()
+    {
+        _nextProjectileChargeTime = 0;
+        _state = State.ChargingAttack;
+    }
+
+    private const float ProjectileChargeDelay = 0.25f;
+
+    private double _nextProjectileChargeTime;
+
+    private void ProcessChargeAttack(double delta)
+    {
+        _nextProjectileChargeTime -= delta;
+
+        if (_nextProjectileChargeTime <= 0)
+        {
+            ChargeProjectileOrAttack();
+        }
+    }
+
+    private void ChargeProjectileOrAttack()
+    {
+        var availableProjectileSpawns = _projectileSpawns.Where(spawn => spawn.ProjectilePreview == null).ToList();
+
+        if (availableProjectileSpawns.Count == 0)
+        {
+            Attack();
+            return;
+        }
+
+        var randomSpawn = availableProjectileSpawns.GetRandom();
+        var projectile = EnemyRectangleProjectilePreview.Create(this);
+        projectile.Position = randomSpawn.Position;
+        AddChild(projectile);
+        randomSpawn.ProjectilePreview = projectile;
+
+        _nextProjectileChargeTime = ProjectileChargeDelay;
+    }
+    
+    private const float ProjectileLaunchDelay = 0.25f;
+
+    private double _nextProjectileLaunchTime;
+
+    private void Attack()
+    {
+        _nextProjectileLaunchTime = ProjectileChargeTime;
+        _state = State.Attacking;
+    }
+
+    private void ProcessAttack(double delta)
+    {
+        _nextProjectileLaunchTime -= delta;
+
+        if (_nextProjectileLaunchTime <= 0)
+        {
+            LaunchProjectile();
+        }
+    }
+
+    private void LaunchProjectile()
+    {
+        var availableProjectileSpawns = _projectileSpawns.Where(spawn => spawn.ProjectilePreview != null).ToList();
+
+        if (availableProjectileSpawns.Count == 0)
+        {
+            SetIdle();
+            return;
+        }
+
+        var randomSpawn = availableProjectileSpawns.GetRandom();
+        var projectile = randomSpawn.ProjectilePreview!;
+        projectile.Launch();
+        randomSpawn.ProjectilePreview = null;
+        
+        _nextProjectileLaunchTime = ProjectileLaunchDelay;
+    }
+
+    private class ProjectileSpawn(Vector2 position)
+    {
+        public Vector2 Position { get; } = position;
+        public EnemyRectangleProjectilePreview? ProjectilePreview { get; set; }
+    }
+
+    private enum State
+    {
+        Idle,
+        ChargingAttack,
+        Attacking
     }
 }

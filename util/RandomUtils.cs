@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 public static class RandomUtils
 {
     /// <summary>
@@ -81,6 +84,17 @@ public static class RandomUtils
         var r = Sqrt(GD.Randf() * (maxSq - minSq) + minSq);
         var (sinTheta, cosTheta) = SinCos(theta);
         return new Vector2(r * cosTheta, r * sinTheta);
+    }
+        
+    public static T GetRandom<T>(this IEnumerable<T> enumerable)
+    {
+        return enumerable.ToList().GetRandom();
+    }
+    
+    public static T GetRandom<T>(this List<T> list)
+    {
+        var index = GD.RandRange(0, list.Count - 1);
+        return list[index];
     }
     
 }

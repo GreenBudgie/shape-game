@@ -25,7 +25,8 @@ public partial class EnemyManager : Node
 
     public EnemyType GetRandomEnemyType()
     {
-        return EnemyTypes[GD.RandRange(0, EnemyTypes.Count - 1)];
+        return EnemyTypes[0];
+        //return EnemyTypes.GetRandom();
     }
 
     public Enemy SpawnEnemy(EnemyType type)
