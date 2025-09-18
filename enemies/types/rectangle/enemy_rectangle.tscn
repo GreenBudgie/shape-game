@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://b6vn5eqi2kauj"]
+[gd_scene load_steps=10 format=3 uid="uid://b6vn5eqi2kauj"]
 
 [ext_resource type="Script" uid="uid://bb76xp345m7u1" path="res://enemies/types/rectangle/EnemyRectangle.cs" id="1_h54be"]
-[ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/types/square/projectile/enemy_square_shot.wav" id="2_60diu"]
+[ext_resource type="AudioStream" uid="uid://dlhdnpa11hxfc" path="res://enemies/types/rectangle/entity_rectangle_projectile_charge.wav" id="3_d47au"]
+[ext_resource type="AudioStream" uid="uid://bqtu1tw4mii2w" path="res://enemies/types/rectangle/entity_rectangle_projectile_launch.wav" id="3_hx3wo"]
 [ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/enemy_damage.wav" id="3_n54bf"]
 [ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://enemies/enemy_destroy.wav" id="4_3g2uu"]
 [ext_resource type="Material" uid="uid://ef46pfecv73h" path="res://util/dissolve/dissolve_material.tres" id="5_3y3oo"]
@@ -19,7 +20,8 @@ gravity_scale = 0.0
 linear_damp = 2.0
 angular_damp = 1.0
 script = ExtResource("1_h54be")
-_shotSound = ExtResource("2_60diu")
+_chargeSound = ExtResource("3_d47au")
+_launchSound = ExtResource("3_hx3wo")
 Color = Color(0.541176, 0.419608, 0.745098, 1)
 Area = NodePath("Area")
 DamageSound = ExtResource("3_n54bf")

@@ -3,6 +3,9 @@
 public abstract partial class Enemy : RigidBody2D
 {
 
+    [Signal]
+    public delegate void DestroyedEventHandler();
+    
     [Export] public Color Color { get; private set; }
 
     [Export] protected CollisionShape2D Area = null!;
@@ -110,6 +113,7 @@ public abstract partial class Enemy : RigidBody2D
         finalGlowColor.A = 0;
         fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.25);
 
+        EmitSignalDestroyed();
         EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);
         
         _enemyAnimations.Play("destroy");

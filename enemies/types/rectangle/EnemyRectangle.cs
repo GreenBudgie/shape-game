@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 public partial class EnemyRectangle : Enemy
 {
-    public const float ProjectileChargeTime = 1f;
+    public const float ProjectileChargeTime = 0.3f;
 
-    [Export] private AudioStream _shotSound = null!;
+    [Export] private AudioStream _chargeSound = null!;
+    [Export] private AudioStream _launchSound = null!;
 
-    private const double FireDelay = 2;
+    private const float FireDelay = 2.5f;
+    private const float FireDelayDelta = 1f;
+    private const float PitchPerProjectileSpawn = 0.1f;
 
-    private double _fireTimer = FireDelay;
+    private double _fireTimer = RandomFireDelay();
     private EnemyPathFollowController _pathFollowController = null!;
     private List<ProjectileSpawn> _projectileSpawns = null!;
     private State _state = State.Idle;
@@ -89,7 +91,7 @@ public partial class EnemyRectangle : Enemy
 
     private void SetIdle()
     {
-        _fireTimer = FireDelay;
+        _fireTimer = RandomFireDelay();
         _state = State.Idle;
     }
 
@@ -139,10 +141,16 @@ public partial class EnemyRectangle : Enemy
         AddChild(projectile);
         randomSpawn.ProjectilePreview = projectile;
 
+        var totalSpawns = _projectileSpawns.Count;
+        var pitch = 1 + (totalSpawns - availableProjectileSpawns.Count) * PitchPerProjectileSpawn;
+        var sound = SoundManager.Instance.PlayPositionalSound(projectile, _chargeSound);
+        sound.PitchScale = RandomUtils.DeltaRange(pitch, 0.05f);
+
         _nextProjectileChargeTime = ProjectileChargeDelay;
     }
     
-    private const float ProjectileLaunchDelay = 0.25f;
+    private const float ProjectileLaunchDelay = 0.2f;
+    private const float ProjectileLaunchDelayDelta = 0.05f;
 
     private double _nextProjectileLaunchTime;
 
@@ -176,9 +184,21 @@ public partial class EnemyRectangle : Enemy
         var projectile = randomSpawn.ProjectilePreview!;
         projectile.Launch();
         randomSpawn.ProjectilePreview = null;
+
+        const float midImpulseStrength = 300f;
+        const float impulseStrengthDelta = 100f;
+        var impulseStrength = RandomUtils.DeltaRange(midImpulseStrength, impulseStrengthDelta);
+        var impulse = Vector2.FromAngle(Rotation - Pi / 2) * impulseStrength;
+        ApplyImpulse(impulse, randomSpawn.Position);
+
+        var pitch = 1 + availableProjectileSpawns.Count * PitchPerProjectileSpawn;
+        var sound = SoundManager.Instance.PlayPositionalSound(projectile, _launchSound);
+        sound.PitchScale = RandomUtils.DeltaRange(pitch, 0.05f);
         
-        _nextProjectileLaunchTime = ProjectileLaunchDelay;
+        _nextProjectileLaunchTime = RandomUtils.DeltaRange(ProjectileLaunchDelay, ProjectileLaunchDelayDelta);
     }
+
+    private static float RandomFireDelay() => RandomUtils.DeltaRange(FireDelay, FireDelayDelta);
 
     private class ProjectileSpawn(Vector2 position)
     {

@@ -20,18 +20,19 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
     {
         var tween = CreateTween()
             .SetParallel()
-            .SetTrans(Tween.TransitionType.Quad)
-            .SetEase(Tween.EaseType.InOut);
+            .SetTrans(Tween.TransitionType.Quint)
+            .SetEase(Tween.EaseType.Out);
 
         tween.TweenProperty(this, ScaleProperty, Vector2.One, EnemyRectangle.ProjectileChargeTime);
         tween.TweenProperty(this, RotationDegreesProperty, 360, EnemyRectangle.ProjectileChargeTime);
+
+        _owner.Connect(Enemy.SignalName.Destroyed, Callable.From(Remove));
     }
 
     public void Launch()
     {
         if (!IsInstanceValid(_owner))
         {
-            QueueFree(); // TODO
             return;
         }
 
@@ -39,6 +40,11 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
         projectile.GlobalPosition = GlobalPosition;
         ShapeGame.Instance.AddChild(projectile);
         QueueFree();
+    }
+
+    private void Remove()
+    {
+        DissolveEffect.Dissolve(this, this, 0.25f);
     }
 
 }
