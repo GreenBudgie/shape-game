@@ -109,7 +109,7 @@ public partial class EnemyRectangle : Enemy
         _state = State.ChargingAttack;
     }
 
-    private const float ProjectileChargeDelay = 0.25f;
+    private const float ProjectileChargeDelay = 0.15f;
 
     private double _nextProjectileChargeTime;
 

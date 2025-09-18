@@ -1,0 +1,46 @@
+[gd_scene load_steps=8 format=3 uid="uid://co10tbovvd43l"]
+
+[ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://common/particles/particle_square.png" id="1_lm277"]
+[ext_resource type="Script" uid="uid://brevtet3uw60c" path="res://enemies/types/rectangle/projectile/EnemyRectangleProjectileParticles.cs" id="2_v46fc"]
+
+[sub_resource type="Curve" id="Curve_3vm2w"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -0.00887444, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_fpsbt"]
+curve = SubResource("Curve_3vm2w")
+
+[sub_resource type="Curve" id="Curve_px6o3"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.49670506), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_nt86p"]
+curve = SubResource("Curve_px6o3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_e67ai"]
+resource_local_to_scene = true
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(30, 30, 0)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 0, 0)
+spread = 180.0
+initial_velocity_min = 50.0
+initial_velocity_max = 150.0
+angular_velocity_min = -500.0
+angular_velocity_max = 500.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.7
+scale_curve = SubResource("CurveTexture_nt86p")
+alpha_curve = SubResource("CurveTexture_fpsbt")
+
+[node name="EnemyRectangleProjectileParticles" type="GPUParticles2D"]
+modulate = Color(0.541176, 0.419608, 0.745098, 1)
+z_index = -1
+amount = 10
+texture = ExtResource("1_lm277")
+lifetime = 0.4
+process_material = SubResource("ParticleProcessMaterial_e67ai")
+script = ExtResource("2_v46fc")

@@ -21,6 +21,8 @@ public partial class EnemyRectangleProjectile : RigidBody2D, IPlayerCollisionDet
         var speed = RandomUtils.DeltaRange(initialSpeed, initialSpeedDelta);
         var direction = Vector2.FromAngle(_owner.Rotation + Pi / 2);
         ApplyCentralImpulse(direction * speed);
+
+        EnemyRectangleProjectileParticles.Create(this);
         
         BodyEntered += HandleBodyEntered;
     }
