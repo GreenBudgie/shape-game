@@ -1,8 +1,9 @@
 public partial class InitialImpulseComponent : Node, IProjectileComponent
 {
+    [Export] public Vector2 Direction { get; private set; } = Vector2.Up;
 
-    [Export]
-    public Vector2 Direction { get; private set; } = Vector2.Up;
+    [Export(PropertyHint.Range, "0,360")] public float Spread { get; private set; }
+    [Export] public float SpeedDelta { get; private set; }
 
     private float _speed;
 
@@ -21,11 +22,13 @@ public partial class InitialImpulseComponent : Node, IProjectileComponent
         {
             return;
         }
-        
+
         var playerTilt = Player.FindPlayer()?.GetTilt() ?? 0;
-        var vector = Direction * _speed;
-        var moveVector = vector.Rotated(playerTilt);
+        var randomSpreadDegree = RandomUtils.DeltaRange(0, Spread / 2);
+        var randomSpreadDegreeRad = DegToRad(randomSpreadDegree);
+        var speed = RandomUtils.DeltaRange(_speed, SpeedDelta);
+        var vector = Direction * speed;
+        var moveVector = vector.Rotated(playerTilt + randomSpreadDegreeRad);
         rigidBodyProjectile.ApplyCentralImpulse(moveVector);
     }
-
 }

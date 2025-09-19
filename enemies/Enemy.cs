@@ -52,7 +52,13 @@ public abstract partial class Enemy : RigidBody2D
     
     public abstract float GetCrystalsToDrop();
 
-    public void Damage(float damage)
+    /// <summary>
+    /// Damages the enemy by provided amount of HP. Optionally, source of the damage can be provided
+    /// (usually a projectile).
+    /// </summary>
+    /// <param name="damage">The amount of damage in HP</param>
+    /// <param name="source">Optional damage source (usually a projectile)</param>
+    public void Damage(float damage, Node2D? source = null)
     {
         if (IsDestroyed)
         {

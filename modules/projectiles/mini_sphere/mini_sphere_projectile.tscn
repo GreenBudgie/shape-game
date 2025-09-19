@@ -1,0 +1,38 @@
+[gd_scene load_steps=8 format=3 uid="uid://dbw8nhcxt7xux"]
+
+[ext_resource type="Texture2D" uid="uid://crp3cc4ct8tsb" path="res://modules/projectiles/mini_sphere/mini_sphere.png" id="1_2pmsr"]
+[ext_resource type="Script" uid="uid://28ufo051xtdx" path="res://modules/projectiles/mini_sphere/MiniSphereProjectile.cs" id="1_h65vd"]
+[ext_resource type="AudioStream" uid="uid://ctepk7ljvwknw" path="res://modules/projectiles/mini_sphere/mini_sphere_launch.wav" id="2_rw2q6"]
+[ext_resource type="AudioStream" uid="uid://dcst5l714kycq" path="res://modules/projectiles/hit_wall.wav" id="3_ctkrq"]
+[ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="5_1worh"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
+friction = 0.5
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_guu8r"]
+radius = 18.027756
+
+[node name="MiniSphereProjectile" type="RigidBody2D"]
+collision_layer = 2
+collision_mask = 308
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_guu8r")
+gravity_scale = 0.0
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 5
+linear_damp = 2.0
+script = ExtResource("1_h65vd")
+_shotSound = ExtResource("2_rw2q6")
+_wallHitSound = ExtResource("3_ctkrq")
+
+[node name="MiniSphereSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_2pmsr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_guu8r")
+
+[node name="InitialImpulseComponent" parent="." instance=ExtResource("5_1worh")]
+Spread = 30.0
+SpeedDelta = 500.0
