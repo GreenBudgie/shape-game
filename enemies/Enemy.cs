@@ -91,6 +91,11 @@ public abstract partial class Enemy : RigidBody2D
 
     private void Destroy()
     {
+        if (IsDestroyed)
+        {
+            return;
+        }
+        
         IsDestroyed = true;
         CollisionLayer = 0;
         CollisionMask = 0;

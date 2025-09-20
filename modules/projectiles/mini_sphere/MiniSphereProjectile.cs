@@ -24,8 +24,16 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile<MiniSphereP
         GetTree().CreateTimer(randomizedLifetime).Timeout += Remove;
     }
 
+    private bool _isRemoving;
+    
     protected override void Remove()
     {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
+        _isRemoving = true;
         CollisionLayer = 0;
         CollisionMask = 0;
         LinearDamp = 4;

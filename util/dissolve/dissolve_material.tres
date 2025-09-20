@@ -3,12 +3,10 @@
 [ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve/dissolve.gdshader" id="1_4ndas"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ylhy4"]
-resource_local_to_scene = true
 noise_type = 4
 fractal_weighted_strength = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_igh3h"]
-resource_local_to_scene = true
 noise = SubResource("FastNoiseLite_ylhy4")
 
 [resource]

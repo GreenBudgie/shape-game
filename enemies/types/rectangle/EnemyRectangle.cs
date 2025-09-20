@@ -86,7 +86,7 @@ public partial class EnemyRectangle : Enemy
 
     public override float GetCrystalsToDrop()
     {
-        return 25;
+        return 1;
     }
 
     private void SetIdle()
