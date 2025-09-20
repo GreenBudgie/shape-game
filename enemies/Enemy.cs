@@ -95,7 +95,7 @@ public abstract partial class Enemy : RigidBody2D
         CollisionLayer = 0;
         CollisionMask = 0;
 
-        EnemyDestroyParticles.Create(this);
+        Callable.From(SpawnParticles).CallNextPhysicsFrame(GetTree());
         SoundManager.Instance.PlayPositionalSound(this, DestroySound);
 
         for (var i = 0; i < GetCrystalsToDrop(); i++)
@@ -124,6 +124,22 @@ public abstract partial class Enemy : RigidBody2D
         
         _enemyAnimations.Play("destroy");
         _enemyAnimations.AnimationFinished += _ => QueueFree();
+    }
+
+    private void SpawnParticles()
+    {
+        BurstParticleEffect.Create(GlobalPosition)
+            .WithTexture(ParticleTextures.Square)
+            .RectangleShape(AreaRect)
+            .WithAmountPerPixel(0.15f)
+            .Color(Color)
+            .InheritVelocity(this)
+            .VelocitySpreadFactor(0.08f)
+            .MinVelocity(300f)
+            .VelocityDelta(150f)
+            .MaxVelocity(2000f)
+            .Configure()
+            .Spawn();
     }
 
 }

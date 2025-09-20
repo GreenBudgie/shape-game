@@ -1,6 +1,8 @@
 public static class DissolveEffect
 {
 
+    private const string DissolveTexture = "dissolve_texture";
+    
     private static readonly string DissolveValueParam = ShaderParameter("dissolve_value");
 
     private static readonly ShaderMaterial Resource = GD.Load<ShaderMaterial>("uid://ef46pfecv73h");

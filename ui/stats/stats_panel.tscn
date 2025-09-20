@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://3kojc6rt6dst" path="res://ui/stats/survive_progress_fill.png" id="9_to8l2"]
 [ext_resource type="Script" uid="uid://bdppc48q0whgk" path="res://ui/stats/DestroyProgressBar.cs" id="10_21laa"]
 [ext_resource type="AudioStream" uid="uid://cmq5h7ad0emxs" path="res://ui/stats/damage_complete.wav" id="11_4r0y7"]
-[ext_resource type="Texture2D" uid="uid://vseo0idnwpav" path="res://common/particles/particle_circle.png" id="12_53m3k"]
+[ext_resource type="Texture2D" uid="uid://vseo0idnwpav" path="res://util/particles/textures/particle_circle.png" id="12_53m3k"]
 [ext_resource type="Script" uid="uid://cgkw0jfw8skbp" path="res://ui/stats/SurviveProgressBar.cs" id="14_trg4c"]
 [ext_resource type="AudioStream" uid="uid://dtdverdq67s4b" path="res://ui/stats/survive_complete.wav" id="15_53m3k"]
 

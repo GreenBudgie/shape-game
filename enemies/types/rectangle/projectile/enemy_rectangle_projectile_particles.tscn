@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://co10tbovvd43l"]
 
-[ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://common/particles/particle_square.png" id="1_lm277"]
+[ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://util/particles/textures/particle_square.png" id="1_lm277"]
 [ext_resource type="Script" uid="uid://brevtet3uw60c" path="res://enemies/types/rectangle/projectile/EnemyRectangleProjectileParticles.cs" id="2_v46fc"]
 
 [sub_resource type="Curve" id="Curve_3vm2w"]
