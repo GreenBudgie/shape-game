@@ -66,7 +66,7 @@ public partial class Glow : SubViewportContainer
 
     private void HandlePulsing()
     {
-        if (!_isPulsing)
+        if (!_isPulsing || (_pulseRadiusDelta == 0 && _pulseStrengthDelta == 0))
         {
             return;
         }
