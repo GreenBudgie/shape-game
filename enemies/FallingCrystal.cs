@@ -117,7 +117,7 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
             return;
         }
 
-        if (collisionObject.GetCollisionLayerValue(CollisionLayers.LevelOutsideBoundary))
+        if (collisionObject.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
         {
             QueueFree();
         }

@@ -79,6 +79,7 @@ public partial class Blaster : Node
         foreach (var modifier in modifiers)
         {
             modifier.Apply(context);
+            context.AppliedModifiers.Add(modifier);
         }
         
         // Stage 3 - apply components

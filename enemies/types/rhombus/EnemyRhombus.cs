@@ -44,7 +44,7 @@
 
     public override float GetCrystalsToDrop()
     {
-        return 25;
+        return 1;
     }
 
     private const double MinAttackStartDelaySeconds = 2;

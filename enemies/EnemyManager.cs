@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 
 public partial class EnemyManager : Node
 {
@@ -18,7 +17,7 @@ public partial class EnemyManager : Node
     
     [Signal]
     public delegate void EnemyDestroyedEventHandler(Enemy enemy);
-
+    
     public override void _EnterTree()
     {
         Instance = this;
@@ -26,8 +25,7 @@ public partial class EnemyManager : Node
 
     public EnemyType GetRandomEnemyType()
     {
-        return EnemyTypes[0];
-        //return EnemyTypes.GetRandom();
+        return EnemyTypes.GetRandom();
     }
 
     public Enemy SpawnEnemy(EnemyType type)

@@ -10,7 +10,7 @@ public partial class ModuleManager : Node
         ResourceSearcher.FindResourcesRecursively<Module>("res://modules/types");
 
     private static readonly Dictionary<Type, Module> ModuleByType = Modules
-        .GroupBy(m => m.GetType())
+        .GroupBy(module => module.GetType())
         .ToDictionary(
             group => group.Key,
             group => group.Single()

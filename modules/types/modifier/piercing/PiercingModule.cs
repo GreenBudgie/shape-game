@@ -1,10 +1,10 @@
 [GlobalClass]
-public partial class ExtraDamageModule : ModifierModule
+public partial class PiercingModule : ModifierModule
 {
     
     public override void Apply(ShotContext context)
     {
-        if (context.IsModifierTypeApplied<ExtraDamageModule>())
+        if (context.IsModifierTypeApplied<PiercingModule>())
         {
             return;
         }
@@ -13,7 +13,7 @@ public partial class ExtraDamageModule : ModifierModule
         TrailParticles.Create(projectile)
             .WithTexture(ParticleTextures.Triangle)
             .WithScale(0.4f, 0.1f)
-            .Color(ColorScheme.Red)
+            .Color(ColorScheme.LightBlue)
             .Spawn();
     }
     

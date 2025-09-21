@@ -63,13 +63,13 @@ public partial class EnemyRectangleProjectile : RigidBody2D, IPlayerCollisionDet
             return;
         }
 
-        if (collisionObject.GetCollisionLayerValue(CollisionLayers.LevelOutsideBoundary))
+        if (collisionObject.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
         {
             QueueFree();
             return;
         }
 
-        if (!collisionObject.GetCollisionLayerValue(CollisionLayers.LevelWalls))
+        if (!collisionObject.HasCollisionLayer(CollisionLayers.LevelWalls))
         {
             return;
         }

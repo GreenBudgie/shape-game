@@ -100,13 +100,13 @@ public partial class EnemyRhombusProjectile : RigidBody2D, IPlayerCollisionDetec
             return;
         }
 
-        if (collisionObject.GetCollisionLayerValue(CollisionLayers.LevelOutsideBoundary))
+        if (collisionObject.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
         {
             QueueFree();
             return;
         }
 
-        if (!collisionObject.GetCollisionLayerValue(CollisionLayers.LevelWalls))
+        if (!collisionObject.HasCollisionLayer(CollisionLayers.LevelWalls))
         {
             return;
         }

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="PiercingModule" load_steps=7 format=3 uid="uid://bcuwcgxkrjj5a"]
+
+[ext_resource type="Texture2D" uid="uid://b0ulov3iql674" path="res://modules/types/modifier/piercing/piercing_module.png" id="1_fmsru"]
+[ext_resource type="Script" uid="uid://b2elgisfws1do" path="res://modules/stats/PiercingStat.cs" id="1_m7ju2"]
+[ext_resource type="Script" uid="uid://btj3q5hjomwww" path="res://modules/types/modifier/piercing/PiercingModule.cs" id="1_qqxje"]
+[ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/ReloadStat.cs" id="2_6pepp"]
+
+[sub_resource type="Resource" id="Resource_6pepp"]
+script = ExtResource("1_m7ju2")
+Piercing = 1
+metadata/_custom_type_script = "uid://b2elgisfws1do"
+
+[sub_resource type="Resource" id="Resource_up2ps"]
+script = ExtResource("2_6pepp")
+FireDelay = 0.2
+metadata/_custom_type_script = "uid://cd2f70s2ivisi"
+
+[resource]
+script = ExtResource("1_qqxje")
+Texture = ExtResource("1_fmsru")
+Name = "Piercing"
+Description = "The projectile pierces +1 additional enemy"
+Stats = Array[Object]([SubResource("Resource_6pepp"), SubResource("Resource_up2ps")])
+metadata/_custom_type_script = "uid://btj3q5hjomwww"

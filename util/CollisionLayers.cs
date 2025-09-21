@@ -12,5 +12,6 @@ public enum CollisionLayers
     LevelOutsideBoundary = 9,
     PlayerCollider = 10,
     BackgroundProjectiles = 11,
+    PiercingPlayerProjectiles = 12,
     
 }

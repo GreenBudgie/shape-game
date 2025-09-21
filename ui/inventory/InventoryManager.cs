@@ -53,14 +53,17 @@ public partial class InventoryManager : Control
     private void PostSetup()
     {
         RightBlasterInventory.GetSlot(5).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<BoltModule>())
+            UiModule.Create(ModuleManager.GetModule<MiniSphereModule>())
         );
         RightBlasterInventory.GetSlot(4).InsertModule(
             UiModule.Create(ModuleManager.GetModule<MineModule>())
         );
+        RightBlasterInventory.GetSlot(3).InsertModule(
+            UiModule.Create(ModuleManager.GetModule<ExtraDamageModule>())
+        );
         
         LeftBlasterInventory.GetSlot(5).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<MiniSphereModule>())
+            UiModule.Create(ModuleManager.GetModule<BoltModule>())
         );
         LeftBlasterInventory.GetSlot(4).InsertModule(
             UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
@@ -72,7 +75,10 @@ public partial class InventoryManager : Control
             UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
         );
         LeftBlasterInventory.GetSlot(1).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<ExtraDamageModule>())
+            UiModule.Create(ModuleManager.GetModule<PiercingModule>())
+        );
+        LeftBlasterInventory.GetSlot(0).InsertModule(
+            UiModule.Create(ModuleManager.GetModule<PiercingModule>())
         );
         
         Close();

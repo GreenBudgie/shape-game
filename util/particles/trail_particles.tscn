@@ -42,5 +42,6 @@ physics_interpolation_mode = 2
 amount = 4
 texture = ExtResource("1_r3l4b")
 lifetime = 0.5
+randomness = 0.5
 process_material = SubResource("ParticleProcessMaterial_r3l4b")
 script = ExtResource("2_r3l4b")

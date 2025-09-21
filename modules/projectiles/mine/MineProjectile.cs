@@ -109,12 +109,12 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
             return;
         }
 
-        if (collisionObject2D.GetCollisionLayerValue(CollisionLayers.LevelWalls))
+        if (collisionObject2D.HasCollisionLayer(CollisionLayers.LevelWalls))
         {
             SoundManager.Instance.PlayPositionalSound(this, _wallHitSound).RandomizePitchOffset(0.1f);
         }
 
-        if (collisionObject2D.GetCollisionLayerValue(CollisionLayers.LevelOutsideBoundary))
+        if (collisionObject2D.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
         {
             QueueFree();
         }

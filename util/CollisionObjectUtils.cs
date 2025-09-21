@@ -66,9 +66,41 @@ public static class CollisionObjectUtils
         return allAbove || allBelow;
     }
 
-    public static bool GetCollisionLayerValue(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    public static bool HasCollisionLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
     {
         return collisionObject.GetCollisionLayerValue((int)collisionLayer);
+    }
+
+    public static void DisableCollisionMaskLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    {
+        var collisionLayerNumber = (int)collisionLayer;
+        var bitIndex = collisionLayerNumber - 1;
+        var layerBit = ~(1u << bitIndex);
+        collisionObject.CollisionMask &= layerBit;
+    }
+    
+    public static void DisableCollisionLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    {
+        var collisionLayerNumber = (int)collisionLayer;
+        var bitIndex = collisionLayerNumber - 1;
+        var layerBit = ~(1u << bitIndex);
+        collisionObject.CollisionLayer &= layerBit;
+    }
+    
+    public static void EnableCollisionMaskLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    {
+        var collisionLayerNumber = (int)collisionLayer;
+        var bitIndex = collisionLayerNumber - 1;
+        var layerBit = 1u << bitIndex;
+        collisionObject.CollisionMask |= layerBit;
+    }
+    
+    public static void EnableCollisionLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    {
+        var collisionLayerNumber = (int)collisionLayer;
+        var bitIndex = collisionLayerNumber - 1;
+        var layerBit = 1u << bitIndex;
+        collisionObject.CollisionLayer |= layerBit;
     }
 
     private static IEnumerable<Rect2> GetCollisionRects(this CollisionObject2D collisionObject)
