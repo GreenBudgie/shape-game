@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ExtraDamageModule" load_steps=7 format=3 uid="uid://djwl18d5af4x"]
+
+[ext_resource type="Script" uid="uid://73fwxoshnhmd" path="res://modules/stats/DamageStat.cs" id="1_8kb3p"]
+[ext_resource type="Script" uid="uid://d1h7yrhkjx6kp" path="res://modules/types/modifier/extra_damage/ExtraDamageModule.cs" id="1_plluy"]
+[ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/ReloadStat.cs" id="2_by8ii"]
+[ext_resource type="Texture2D" uid="uid://c7vc2h5xg45xt" path="res://modules/types/modifier/extra_damage/extra_damage.png" id="2_ev3j8"]
+
+[sub_resource type="Resource" id="Resource_by8ii"]
+script = ExtResource("1_8kb3p")
+Damage = 1.0
+metadata/_custom_type_script = "uid://73fwxoshnhmd"
+
+[sub_resource type="Resource" id="Resource_1psb6"]
+script = ExtResource("2_by8ii")
+FireDelay = 0.1
+metadata/_custom_type_script = "uid://cd2f70s2ivisi"
+
+[resource]
+script = ExtResource("1_plluy")
+Texture = ExtResource("2_ev3j8")
+Name = "Extra Damage"
+Description = "Provides additional damage at the cost of reload time"
+Stats = Array[Object]([SubResource("Resource_by8ii"), SubResource("Resource_1psb6")])
+metadata/_custom_type_script = "uid://d1h7yrhkjx6kp"

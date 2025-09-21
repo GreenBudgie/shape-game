@@ -7,22 +7,6 @@ public abstract partial class ParticleBuilder<T> : GpuParticles2D where T : Part
         ProcMaterial = (ParticleProcessMaterial)ProcessMaterial;
     }
 
-    public override void _Ready()
-    {
-        Finished += QueueFree;
-        Restart();
-    }
-
-    public void Spawn()
-    {
-        ShapeGame.Instance.AddChild(this);
-    }
-
-    public void SpawnDeferred()
-    {
-        Callable.From(Spawn).CallDeferred();
-    }
-
     public T RectangleShape(Rect2 area)
     {
         ProcMaterial.EmissionShape = ParticleProcessMaterial.EmissionShapeEnum.Box;

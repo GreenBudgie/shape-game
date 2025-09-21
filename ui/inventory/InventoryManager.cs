@@ -53,23 +53,26 @@ public partial class InventoryManager : Control
     private void PostSetup()
     {
         RightBlasterInventory.GetSlot(5).InsertModule(
-            UiModule.Create(GD.Load<BoltModule>("uid://cqjg5lcuad1hd"))
+            UiModule.Create(ModuleManager.GetModule<BoltModule>())
         );
         RightBlasterInventory.GetSlot(4).InsertModule(
-            UiModule.Create(GD.Load<MineModule>("uid://diarlu7m2iio1"))
+            UiModule.Create(ModuleManager.GetModule<MineModule>())
         );
         
         LeftBlasterInventory.GetSlot(5).InsertModule(
-            UiModule.Create(GD.Load<MiniSphereModule>("uid://ccuh2d7r0dhxc"))
+            UiModule.Create(ModuleManager.GetModule<MiniSphereModule>())
         );
         LeftBlasterInventory.GetSlot(4).InsertModule(
-            UiModule.Create(GD.Load<ExtraFireRateModule>("uid://dixg0bdyqb2ay"))
+            UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
         );
         LeftBlasterInventory.GetSlot(3).InsertModule(
-            UiModule.Create(GD.Load<ExtraFireRateModule>("uid://dixg0bdyqb2ay"))
+            UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
         );
         LeftBlasterInventory.GetSlot(2).InsertModule(
-            UiModule.Create(GD.Load<ExtraFireRateModule>("uid://dixg0bdyqb2ay"))
+            UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
+        );
+        LeftBlasterInventory.GetSlot(1).InsertModule(
+            UiModule.Create(ModuleManager.GetModule<ExtraDamageModule>())
         );
         
         Close();

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://snfu2b1ifqye"]
+[gd_scene load_steps=23 format=3 uid="uid://snfu2b1ifqye"]
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://b8gd2gve05upa" path="res://systems/CrystalManager.tscn" id="9_vef74"]
 [ext_resource type="Texture2D" uid="uid://ck75mef3o2t0i" path="res://environment/background_square.png" id="10_hve3p"]
 [ext_resource type="Script" uid="uid://dbtjcecl2kyym" path="res://modules/projectiles/explosion/ExplosionEffects.cs" id="11_mfdv2"]
+[ext_resource type="Script" uid="uid://bv1plqu1a5f10" path="res://modules/types/ModuleManager.cs" id="12_7sc4i"]
 [ext_resource type="Shader" uid="uid://c8tu4dwq8epsu" path="res://util/screenshake/screen_shake.gdshader" id="12_iotsf"]
 [ext_resource type="Script" uid="uid://cek6yfy2gipxe" path="res://util/screenshake/ScreenShake.cs" id="13_lc2xo"]
 
@@ -127,6 +128,9 @@ script = ExtResource("8_vef74")
 script = ExtResource("8_j5wjh")
 
 [node name="CrystalManager" parent="." instance=ExtResource("9_vef74")]
+
+[node name="ModuleManager" type="Node" parent="."]
+script = ExtResource("12_7sc4i")
 
 [node name="ExplosionEffectsLayer" type="CanvasLayer" parent="."]
 script = ExtResource("11_mfdv2")
