@@ -31,11 +31,6 @@ public partial class TrailParticles : ParticleBuilder<TrailParticles>
         ShapeGame.Instance.AddChild(this);
     }
 
-    public void SpawnDeferred()
-    {
-        Callable.From(Spawn).CallDeferred();
-    }
-
     private void Remove()
     {
         Emitting = false;

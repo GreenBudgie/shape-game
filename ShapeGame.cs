@@ -20,10 +20,19 @@ public partial class ShapeGame : Node2D
 
     public override void _Ready()
     {
+        GetTree().NodeAdded += A;
         Input.MouseMode = Input.MouseModeEnum.Hidden;
         // Engine.MaxFps = 60; 
         
         EmitSignalPostSetup();
+    }
+
+    private void A(Node node)
+    {
+        if (node is Enemy enemy)
+        {
+            enemy.GetName();
+        }
     }
 
     public override void _Process(double delta)

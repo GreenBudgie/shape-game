@@ -13,7 +13,7 @@ size = Vector2(150, 150)
 
 [node name="EnemySquare" type="RigidBody2D" node_paths=PackedStringArray("Area")]
 collision_layer = 4
-collision_mask = 291
+collision_mask = 307
 gravity_scale = 0.0
 linear_damp = 2.0
 script = ExtResource("1_qo6cg")

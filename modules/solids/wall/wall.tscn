@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://cgm0yfj1g1own"]
+
+[ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://modules/solids/wall/wall.png" id="1_j1wca"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_468xe"]
+radius = 15.0
+height = 450.0
+
+[node name="Wall" type="StaticBody2D"]
+collision_layer = 16
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_j1wca")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_468xe")

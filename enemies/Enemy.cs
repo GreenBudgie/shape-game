@@ -23,6 +23,11 @@ public abstract partial class Enemy : RigidBody2D
     /// </summary>
     public Rect2 AreaRect { get; private set; }
 
+    public override void _EnterTree()
+    {
+        base._EnterTree();
+    }
+
     public override void _Ready()
     {
         if (Area.Shape is not RectangleShape2D areaShape)

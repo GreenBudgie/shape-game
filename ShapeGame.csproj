@@ -1,17 +1,14 @@
 <Project Sdk="Godot.NET.Sdk/4.5.0">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <EnableDynamicLoading>true</EnableDynamicLoading>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="**/*.tscn" />
-    <None Include="**/*.tres" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="modules\components\scenes\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="credit.txt" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="**/*.tscn"/>
+        <None Include="**/*.tres"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="credit.txt"/>
+    </ItemGroup>
 </Project>

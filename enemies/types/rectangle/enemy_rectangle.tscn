@@ -14,7 +14,7 @@ size = Vector2(360, 190)
 
 [node name="EnemyRectangle" type="RigidBody2D" node_paths=PackedStringArray("Area")]
 collision_layer = 4
-collision_mask = 291
+collision_mask = 307
 mass = 1.2
 gravity_scale = 0.0
 linear_damp = 2.0

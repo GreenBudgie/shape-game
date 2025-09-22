@@ -54,7 +54,7 @@ public partial class LevelManager : Node
 
         SpawnEnemy();
         var tween = CreateTween().SetLoops();
-        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(1f);
+        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(3f);
         
         EmitSignalLevelStarted();
     }
