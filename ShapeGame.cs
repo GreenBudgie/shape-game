@@ -8,6 +8,7 @@ public partial class ShapeGame : Node2D
     [Signal]
     public delegate void PostSetupEventHandler();
     
+    public static readonly Vector2 WindowSize = new(3840, 2160);
     public static readonly Rect2 PlayableArea = new(512, 0, 3264, 2160);
     public static readonly Vector2 Center = PlayableArea.GetCenter();
     
@@ -20,22 +21,13 @@ public partial class ShapeGame : Node2D
 
     public override void _Ready()
     {
-        GetTree().NodeAdded += A;
         Input.MouseMode = Input.MouseModeEnum.Hidden;
         // Engine.MaxFps = 60; 
-
+        
         var beam = Beam.Create().From(new Vector2(400, 400)).To(new Vector2(2000, 2000)).Build();
         AddChild(beam);
         
         EmitSignalPostSetup();
-    }
-
-    private void A(Node node)
-    {
-        if (node is Enemy enemy)
-        {
-            enemy.GetName();
-        }
     }
 
     public override void _Process(double delta)
