@@ -23,6 +23,9 @@ public partial class ShapeGame : Node2D
         GetTree().NodeAdded += A;
         Input.MouseMode = Input.MouseModeEnum.Hidden;
         // Engine.MaxFps = 60; 
+
+        var beam = Beam.Create().From(new Vector2(400, 400)).To(new Vector2(2000, 2000)).Build();
+        AddChild(beam);
         
         EmitSignalPostSetup();
     }

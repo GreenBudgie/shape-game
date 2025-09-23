@@ -1,4 +1,5 @@
 shader_type canvas_item;
+render_mode unshaded;
 
 uniform sampler2D viewport_texture : hint_default_transparent;
 uniform vec4 glow_color : source_color = vec4(0.937, 0.357, 0.357, 1.0);
