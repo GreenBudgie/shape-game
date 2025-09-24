@@ -3,6 +3,45 @@ public partial class Beam : ColorRect
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://g21wng36wpva");
 
+    // StringName constants for shader parameters
+    private static readonly StringName BeamsParam = "beams";
+    private static readonly StringName EnergyParam = "energy";
+    private static readonly StringName RoughnessParam = "roughness";
+    private static readonly StringName FrequencyParam = "frequency";
+    private static readonly StringName SpeedParam = "speed";
+    private static readonly StringName ThicknessParam = "thickness";
+    private static readonly StringName OutlineThicknessParam = "outline_thickness";
+    private static readonly StringName BeamDifferenceParam = "beam_difference";
+    private static readonly StringName GlowParam = "glow";
+    private static readonly StringName OutlineGlowParam = "outline_glow";
+    private static readonly StringName ColorParam = "color";
+    private static readonly StringName OutlineColorParam = "outline_color";
+    private static readonly StringName ProgressParam = "progress";
+    private static readonly StringName YOffsetParam = "y_offset";
+    private static readonly StringName FixedEdgeSizeParam = "fixed_edge_size";
+    private static readonly StringName NoiseScaleParam = "noise_scale";
+    private static readonly StringName BeamLengthParam = "beam_length";
+    private static readonly StringName FadeDistanceParam = "fade_distance";
+
+    public static readonly NodePath BeamsShaderParam = ShaderParameter(BeamsParam);
+    public static readonly NodePath EnergyShaderParam = ShaderParameter(EnergyParam);
+    public static readonly NodePath RoughnessShaderParam = ShaderParameter(RoughnessParam);
+    public static readonly NodePath FrequencyShaderParam = ShaderParameter(FrequencyParam);
+    public static readonly NodePath SpeedShaderParam = ShaderParameter(SpeedParam);
+    public static readonly NodePath ThicknessShaderParam = ShaderParameter(ThicknessParam);
+    public static readonly NodePath OutlineThicknessShaderParam = ShaderParameter(OutlineThicknessParam);
+    public static readonly NodePath BeamDifferenceShaderParam = ShaderParameter(BeamDifferenceParam);
+    public static readonly NodePath GlowShaderParam = ShaderParameter(GlowParam);
+    public static readonly NodePath OutlineGlowShaderParam = ShaderParameter(OutlineGlowParam);
+    public static readonly NodePath ColorShaderParam = ShaderParameter(ColorParam);
+    public static readonly NodePath OutlineColorShaderParam = ShaderParameter(OutlineColorParam);
+    public static readonly NodePath ProgressShaderParam = ShaderParameter(ProgressParam);
+    public static readonly NodePath YOffsetShaderParam = ShaderParameter(YOffsetParam);
+    public static readonly NodePath FixedEdgeSizeShaderParam = ShaderParameter(FixedEdgeSizeParam);
+    public static readonly NodePath NoiseScaleShaderParam = ShaderParameter(NoiseScaleParam);
+    public static readonly NodePath BeamLengthShaderParam = ShaderParameter(BeamLengthParam);
+    public static readonly NodePath FadeDistanceShaderParam = ShaderParameter(FadeDistanceParam);
+
     private const float BaseSizeMultiplier = 1.5f;
     private static readonly Vector2 BaseSize = ShapeGame.WindowSize * BaseSizeMultiplier;
     
@@ -45,7 +84,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetBeamCount(int count)
     {
-        _shaderMaterial.SetShaderParameter("beams", count);
+        _shaderMaterial.SetShaderParameter(BeamsParam, count);
         return this;
     }
 
@@ -57,7 +96,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetEnergy(float energy)
     {
-        _shaderMaterial.SetShaderParameter("energy", energy);
+        _shaderMaterial.SetShaderParameter(EnergyParam, energy);
         return this;
     }
 
@@ -69,7 +108,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetRoughness(int roughness)
     {
-        _shaderMaterial.SetShaderParameter("roughness", roughness);
+        _shaderMaterial.SetShaderParameter(RoughnessParam, roughness);
         return this;
     }
 
@@ -81,7 +120,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetFrequency(int frequency)
     {
-        _shaderMaterial.SetShaderParameter("frequency", frequency);
+        _shaderMaterial.SetShaderParameter(FrequencyParam, frequency);
         return this;
     }
 
@@ -93,7 +132,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetSpeed(float speed)
     {
-        _shaderMaterial.SetShaderParameter("speed", speed);
+        _shaderMaterial.SetShaderParameter(SpeedParam, speed);
         return this;
     }
 
@@ -105,7 +144,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetProgress(float progress)
     {
-        _shaderMaterial.SetShaderParameter("progress", progress);
+        _shaderMaterial.SetShaderParameter(ProgressParam, progress);
         return this;
     }
 
@@ -116,7 +155,7 @@ public partial class Beam : ColorRect
     public Beam SetThickness(float thickness)
     {
         var realThickness = thickness / BaseSize.Y / 2;
-        _shaderMaterial.SetShaderParameter("thickness", realThickness);
+        _shaderMaterial.SetShaderParameter(ThicknessParam, realThickness);
         return this;
     }
 
@@ -132,7 +171,7 @@ public partial class Beam : ColorRect
         const float minVisibleOutlineThickness = 150f;
         var effectiveThickness = Max(outlineThickness, minVisibleOutlineThickness);
         var realThickness = effectiveThickness / BaseSize.Y / 2;
-        _shaderMaterial.SetShaderParameter("outline_thickness", realThickness);
+        _shaderMaterial.SetShaderParameter(OutlineThicknessParam, realThickness);
         return this;
     }
 
@@ -144,7 +183,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetBeamDifference(float difference)
     {
-        _shaderMaterial.SetShaderParameter("beam_difference", difference);
+        _shaderMaterial.SetShaderParameter(BeamDifferenceParam, difference);
         return this;
     }
 
@@ -153,7 +192,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetBeamColor(Color color)
     {
-        _shaderMaterial.SetShaderParameter("color", color);
+        _shaderMaterial.SetShaderParameter(ColorParam, color);
         return this;
     }
 
@@ -162,7 +201,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetOutlineColor(Color color)
     {
-        _shaderMaterial.SetShaderParameter("outline_color", color);
+        _shaderMaterial.SetShaderParameter(OutlineColorParam, color);
         return this;
     }
 
@@ -172,13 +211,13 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetLength(float length)
     {
-        _shaderMaterial.SetShaderParameter("beam_length", length);
+        _shaderMaterial.SetShaderParameter(BeamLengthParam, length);
         return this;
     }
 
     public Beam SetFadeDistance(float distance)
     {
-        _shaderMaterial.SetShaderParameter("fade_distance", distance);
+        _shaderMaterial.SetShaderParameter(FadeDistanceParam, distance);
         return this;
     }
 
