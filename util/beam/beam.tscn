@@ -6,23 +6,22 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qpksk"]
 resource_local_to_scene = true
 shader = ExtResource("1_m3urq")
-shader_parameter/beams = 1
-shader_parameter/energy = 3.0
+shader_parameter/beams = 2
+shader_parameter/energy = 13.32
 shader_parameter/roughness = 3
-shader_parameter/frequency = 2
+shader_parameter/frequency = 3
 shader_parameter/speed = 1.0
-shader_parameter/beam_core_width = 0.00999999977648
-shader_parameter/beam_outline_width = 0.02000000095
+shader_parameter/thickness = 0.006
+shader_parameter/outline_thickness = 0.03
 shader_parameter/beam_difference = 0.0
 shader_parameter/glow = 0.0
 shader_parameter/outline_glow = 0.0
 shader_parameter/color = Color(0.91, 1, 1, 1)
 shader_parameter/outline_color = Color(0.5, 1, 0.96, 1)
 shader_parameter/progress = 1.0
-shader_parameter/edge_fade_size = 0.05
-shader_parameter/end_fade_size = 0.1
-shader_parameter/start_point = Vector2(0.785, 0.505)
-shader_parameter/end_point = Vector2(0.795, 0.76)
+shader_parameter/y_offset = 0.0
+shader_parameter/fixed_edge_size = 0.05
+shader_parameter/noise_scale = Vector2(1, 1)
 
 [node name="Beam" type="ColorRect"]
 material = SubResource("ShaderMaterial_qpksk")
