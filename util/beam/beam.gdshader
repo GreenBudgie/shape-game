@@ -24,6 +24,11 @@ uniform float y_offset : hint_range (-0.5, 0.5) = 0.0; // Position of the beam
 uniform float fixed_edge_size : hint_range(0.0, 0.5) = 0.05; // How close to the edge should the beam be still before the animatino starts
 uniform vec2 noise_scale = vec2(1.0); // If the object (for example the ColorRect or Sprite node) is compressed use this to compensate for the noise texture being compressed.
 
+// NEW UNIFORMS
+uniform float beam_length : hint_range(0.0, 1.0) = 1.0; // Controls how much of the ColorRect the beam covers (0 = no beam, 1 = full width)
+uniform float fade_distance : hint_range(0.0, 0.5) = 0.1; // Distance over which the beam fades in/out at start and end
+uniform float corner_roundness : hint_range(0.0, 1.0) = 0.5; // How rounded the beam corners are (0 = sharp, 1 = very rounded)
+
 float random(vec2 uv) {
    return fract(sin(dot(uv.xy,
        vec2(12.9898,78.233))) *
@@ -46,7 +51,6 @@ float noise(vec2 uv) {
                     dot( randomVec2(uv_index + vec2(1.0,1.0) ), uv_fract - vec2(1.0,1.0) ), blur.x), blur.y) + 0.5;
 }
 
-
 float fbm(vec2 uv, float time) {
    int octaves = roughness;
    float amp = 0.01 * energy * progress;
@@ -63,6 +67,55 @@ float fbm(vec2 uv, float time) {
 
 vec4 difference(vec4 base, vec4 blend){
    return abs(base - blend);
+}
+
+// NEW FUNCTION: Calculate fade and rounding mask
+float calculateBeamMask(vec2 uv) {
+    // Calculate beam boundaries based on beam_length
+    float beam_start = (1.0 - beam_length) * 0.5;
+    float beam_end = beam_start + beam_length;
+    
+    // If beam_length is 0, return 0 (no beam)
+    if (beam_length <= 0.0) {
+        return 0.0;
+    }
+    
+    // Check if we're outside the beam area
+    if (uv.x < beam_start || uv.x > beam_end) {
+        return 0.0;
+    }
+    
+    // Calculate fade mask for start and end
+    float fade_mask = 1.0;
+    
+    // Fade in at the start
+    if (uv.x < beam_start + fade_distance) {
+        fade_mask *= smoothstep(beam_start, beam_start + fade_distance, uv.x);
+    }
+    
+    // Fade out at the end
+    if (uv.x > beam_end - fade_distance) {
+        fade_mask *= smoothstep(beam_end, beam_end - fade_distance, uv.x);
+    }
+    
+    // Add corner rounding by considering distance from center in Y direction
+    float y_center = 0.5 + y_offset;
+    float y_distance = abs(uv.y - y_center);
+    
+    // Create rounded corners effect
+    float corner_fade = 1.0;
+    if (corner_roundness > 0.0) {
+        // Calculate distance from corners
+        float corner_x_dist = min(uv.x - beam_start, beam_end - uv.x);
+        float normalized_corner_dist = corner_x_dist / (fade_distance + 0.001); // Avoid division by zero
+        
+        // Apply rounding based on Y distance and corner proximity
+        float rounding_factor = corner_roundness * (1.0 - clamp(normalized_corner_dist, 0.0, 1.0));
+        corner_fade = smoothstep(rounding_factor * 0.3, 0.0, y_distance - 0.1);
+        corner_fade = max(corner_fade, 1.0 - rounding_factor);
+    }
+    
+    return fade_mask * corner_fade;
 }
 
 vec4 bolt(vec2 uv, float time, float i)
@@ -88,8 +141,11 @@ vec4 bolt(vec2 uv, float time, float i)
    beam_outline = clamp(smoothstep(outline, outline + 0.04, 1.0 - diff_clouds), 0.0, 1.0);
    beam_outline = clamp(beam_outline - beam, 0.0, 1.0);
 
+   // Apply beam mask for length control and fading/rounding
+   float beam_mask = calculateBeamMask(uv);
+
    // Merge the beam and the outline and return to the fragment function
-   return (beam * (color + vec4(glow, glow, glow, 0.))) + (beam_outline * (outline_color + vec4(outline_glow, outline_glow, outline_glow, 0.)));
+   return ((beam * (color + vec4(glow, glow, glow, 0.))) + (beam_outline * (outline_color + vec4(outline_glow, outline_glow, outline_glow, 0.)))) * beam_mask;
 }
 
 void fragment()
