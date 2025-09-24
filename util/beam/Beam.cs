@@ -3,7 +3,8 @@ public partial class Beam : ColorRect
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://g21wng36wpva");
 
-    private static readonly Vector2 BaseSize = ShapeGame.WindowSize * 1.5f;
+    private const float BaseSizeMultiplier = 1.5f;
+    private static readonly Vector2 BaseSize = ShapeGame.WindowSize * BaseSizeMultiplier;
     
     private ShaderMaterial _shaderMaterial;
 
@@ -12,35 +13,21 @@ public partial class Beam : ColorRect
         _shaderMaterial = (ShaderMaterial)Material;
     }
     
-    public static BeamBuilder Create()
+    public static Beam Create()
     {
         var beam = Scene.Instantiate<Beam>();
-        return new BeamBuilder(beam);
+        beam.SetAnchorsPreset(LayoutPreset.TopLeft);
+        beam.Size = BaseSize;
+        return beam;
     }
 
-    public override void _Ready()
+    /// <summary>
+    /// Sets the start and end point for the bean in global coordinates
+    /// </summary>
+    /// <param name="from">From position, in global coords</param>
+    /// <param name="to">To position, in global coords</param>
+    public Beam SetFromTo(Vector2 from, Vector2 to)
     {
-        
-    }
-
-    private static Vector2 PixelsToUV(Vector2 pixelPosition)
-    {
-        return new Vector2(
-            pixelPosition.X / BaseSize.X,
-            pixelPosition.Y / BaseSize.Y
-        );
-    }
-
-    private float PixelsToRelativeWidth(float pixelWidth)
-    {
-        var referenceDimension = Min(BaseSize.X, BaseSize.Y);
-        return pixelWidth / referenceDimension;
-    }
-
-    public void SetFromTo(Vector2 from, Vector2 to)
-    {
-        SetAnchorsPreset(LayoutPreset.TopLeft);
-        Size = BaseSize;
         Position = from - new Vector2(0, BaseSize.Y / 2);
         Rotation = from.AngleToPoint(to);
         var length = from.DistanceTo(to) / Size.X;
@@ -48,231 +35,151 @@ public partial class Beam : ColorRect
 
         const float fadeDistanceToLengthFactor = 0.05f;
         SetFadeDistance(length * fadeDistanceToLengthFactor);
+        return this;
     }
 
-    public void SetBeamCount(int count) => _shaderMaterial.SetShaderParameter("beams", count);
-    public void SetEnergy(float energy) => _shaderMaterial.SetShaderParameter("energy", energy);
-    public void SetRoughness(int roughness) => _shaderMaterial.SetShaderParameter("roughness", roughness);
-    public void SetFrequency(int frequency) => _shaderMaterial.SetShaderParameter("frequency", frequency);
-    public void SetSpeed(float speed) => _shaderMaterial.SetShaderParameter("speed", speed);
-    public void SetProgress(float progress) => _shaderMaterial.SetShaderParameter("progress", progress);
-
-    public void SetCoreWidthPixels(float widthPixels)
+    /// <summary>
+    /// Sets the number of beams
+    ///
+    /// <p>Default: 2</p>
+    /// </summary>
+    public Beam SetBeamCount(int count)
     {
-        _shaderMaterial.SetShaderParameter("beam_core_width", PixelsToRelativeWidth(widthPixels));
+        _shaderMaterial.SetShaderParameter("beams", count);
+        return this;
     }
 
-    public void SetOutlineWidthPixels(float widthPixels)
+    /// <summary>
+    /// Sets the energy - how much the beams will travel up and down.
+    /// If zero, the beam will not move.
+    /// 
+    /// <p>Default: 3.0</p>
+    /// </summary>
+    public Beam SetEnergy(float energy)
     {
-        _shaderMaterial.SetShaderParameter("beam_outline_width", PixelsToRelativeWidth(widthPixels));
+        _shaderMaterial.SetShaderParameter("energy", energy);
+        return this;
     }
 
-    public void SetBeamDifference(float difference) =>
+    /// <summary>
+    /// Sets the roughness - how "noisy" the beam is. Higher values produce more chaotic beams.
+    /// If zero, the beam will not move.
+    /// 
+    /// <p>Default: 3</p>
+    /// </summary>
+    public Beam SetRoughness(int roughness)
+    {
+        _shaderMaterial.SetShaderParameter("roughness", roughness);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the frequency - amount of "ripples" in the beams.
+    /// If zero, the beam will not move.
+    /// 
+    /// <p>Default: 3</p>
+    /// </summary>
+    public Beam SetFrequency(int frequency)
+    {
+        _shaderMaterial.SetShaderParameter("frequency", frequency);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the animation speed.
+    /// If zero, the beam will be frozen, but still can be distorted by other parameters.
+    /// 
+    /// <p>Default: 1</p>
+    /// </summary>
+    public Beam SetSpeed(float speed)
+    {
+        _shaderMaterial.SetShaderParameter("speed", speed);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the progress, or the amount of beam visible on screen. Can be used to slowly show the beam.
+    /// If zero, the beam will be hidden.
+    /// 
+    /// <p>Default: 1</p>
+    /// </summary>
+    public Beam SetProgress(float progress)
+    {
+        _shaderMaterial.SetShaderParameter("progress", progress);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the thickness of the beam (center part of it), in pixels.
+    /// If zero, the beam center part will not be visible.
+    /// </summary>
+    public Beam SetThickness(float thickness)
+    {
+        var realThickness = thickness / BaseSize.Y / 2;
+        _shaderMaterial.SetShaderParameter("thickness", realThickness);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the outline thickness of the beam, in pixels. This is an absolute value and is not relative to beam
+    /// center part thickness.
+    /// If zero, the outline will not be visible.
+    ///
+    /// <p>Default: ~194px (set in UV in shader, equal to 0.03)</p>
+    /// </summary>
+    public Beam SetOutlineThickness(float outlineThickness)
+    {
+        const float minVisibleOutlineThickness = 150f;
+        var effectiveThickness = Max(outlineThickness, minVisibleOutlineThickness);
+        var realThickness = effectiveThickness / BaseSize.Y / 2;
+        _shaderMaterial.SetShaderParameter("outline_thickness", realThickness);
+        return this;
+    }
+
+    /// <summary>
+    /// The thickness difference between the main beam and the other, if there are more than one beam.
+    /// The closer to 1 the smaller the thickness difference.
+    ///
+    /// <p>Default: 0</p>
+    /// </summary>
+    public Beam SetBeamDifference(float difference)
+    {
         _shaderMaterial.SetShaderParameter("beam_difference", difference);
-
-    public void SetGlow(float glow) => _shaderMaterial.SetShaderParameter("glow", glow);
-    public void SetOutlineGlow(float glow) => _shaderMaterial.SetShaderParameter("outline_glow", glow);
-    public void SetBeamColor(Color color) => _shaderMaterial.SetShaderParameter("color", color);
-    public void SetOutlineColor(Color color) => _shaderMaterial.SetShaderParameter("outline_color", color);
-    public void SetLength(float length) => _shaderMaterial.SetShaderParameter("beam_length", length);
-    public void SetFadeDistance(float distance) => _shaderMaterial.SetShaderParameter("fade_distance", distance);
-
-    public ShaderMaterial GetShaderMaterial() => _shaderMaterial;
-}
-
-public class BeamBuilder
-{
-    private readonly Beam _beam;
-
-    private Vector2? _fromPixels;
-    private Vector2? _toPixels;
-    private int _beamCount = 2;
-    private float _energy = 3.0f;
-    private int _roughness = 3;
-    private int _frequency = 10;
-    private float _speed = 1.0f;
-    private float _coreWidthPixels = 20.0f;
-    private float _outlineWidthPixels = 60.0f;
-    private float _beamDifference = 0.0f;
-    private float _glow = 0.0f;
-    private float _outlineGlow = 0.0f;
-    private Color _color = new Color(0.91f, 1.0f, 1.0f, 1.0f);
-    private Color _outlineColor = new Color(0.5f, 1.0f, 0.96f, 1.0f);
-    private float _progress = 1.0f;
-    private float _edgeFadeSize = 0.05f;
-    private float _endFadeSize = 0.1f;
-
-    internal BeamBuilder(Beam beam)
-    {
-        _beam = beam;
-    }
-
-    public BeamBuilder FromTo(Vector2 fromPixels, Vector2 toPixels)
-    {
-        _fromPixels = fromPixels;
-        _toPixels = toPixels;
         return this;
     }
 
-    public BeamBuilder From(Vector2 fromPixels)
+    /// <summary>
+    /// Sets the color of the beam (its center part). 
+    /// </summary>
+    public Beam SetBeamColor(Color color)
     {
-        _fromPixels = fromPixels;
+        _shaderMaterial.SetShaderParameter("color", color);
         return this;
     }
 
-    public BeamBuilder To(Vector2 toPixels)
+    /// <summary>
+    /// Sets the outline color
+    /// </summary>
+    public Beam SetOutlineColor(Color color)
     {
-        _toPixels = toPixels;
+        _shaderMaterial.SetShaderParameter("outline_color", color);
         return this;
     }
 
-    public BeamBuilder WithBeamCount(int count)
+    /// <summary>
+    /// Sets the beam length relative to its total width, from 0 to 1.
+    /// Can be used to animate the beam "shooting" without actually moving the from/to points.
+    /// </summary>
+    public Beam SetLength(float length)
     {
-        _beamCount = count;
+        _shaderMaterial.SetShaderParameter("beam_length", length);
         return this;
     }
 
-    public BeamBuilder WithEnergy(float energy)
+    public Beam SetFadeDistance(float distance)
     {
-        _energy = energy;
+        _shaderMaterial.SetShaderParameter("fade_distance", distance);
         return this;
     }
 
-    public BeamBuilder WithRoughness(int roughness)
-    {
-        _roughness = Clamp(roughness, 1, 10);
-        return this;
-    }
-
-    public BeamBuilder WithFrequency(int frequency)
-    {
-        _frequency = frequency;
-        return this;
-    }
-
-    public BeamBuilder WithSpeed(float speed)
-    {
-        _speed = speed;
-        return this;
-    }
-
-    public BeamBuilder WithCoreWidth(float widthPixels)
-    {
-        _coreWidthPixels = widthPixels;
-        return this;
-    }
-
-    public BeamBuilder WithOutlineWidth(float widthPixels)
-    {
-        _outlineWidthPixels = widthPixels;
-        return this;
-    }
-
-    public BeamBuilder WithBeamDifference(float difference)
-    {
-        _beamDifference = Clamp(difference, 0.0f, 1.0f);
-        return this;
-    }
-
-    public BeamBuilder WithGlow(float glow)
-    {
-        _glow = Clamp(glow, 0.0f, 3.0f);
-        return this;
-    }
-
-    public BeamBuilder WithOutlineGlow(float glow)
-    {
-        _outlineGlow = Clamp(glow, 0.0f, 3.0f);
-        return this;
-    }
-
-    public BeamBuilder WithColor(Color color)
-    {
-        _color = color;
-        return this;
-    }
-
-    public BeamBuilder WithOutlineColor(Color color)
-    {
-        _outlineColor = color;
-        return this;
-    }
-
-    public BeamBuilder WithProgress(float progress)
-    {
-        _progress = Clamp(progress, 0.0f, 1.0f);
-        return this;
-    }
-
-    public BeamBuilder WithEdgeFade(float fadeSize)
-    {
-        _edgeFadeSize = Clamp(fadeSize, 0.0f, 0.5f);
-        return this;
-    }
-
-    public BeamBuilder WithEndFade(float fadeSize)
-    {
-        _endFadeSize = Clamp(fadeSize, 0.0f, 0.5f);
-        return this;
-    }
-
-    public BeamBuilder ElectricPreset()
-    {
-        return WithColor(new Color(0.7f, 0.9f, 1.0f, 1.0f))
-            .WithOutlineColor(new Color(0.3f, 0.6f, 1.0f, 1.0f))
-            .WithEnergy(4.0f)
-            .WithFrequency(15)
-            .WithSpeed(2.0f)
-            .WithGlow(1.5f)
-            .WithOutlineGlow(0.8f);
-    }
-
-    public BeamBuilder LaserPreset()
-    {
-        return WithColor(new Color(1.0f, 0.2f, 0.2f, 1.0f))
-            .WithOutlineColor(new Color(1.0f, 0.6f, 0.0f, 1.0f))
-            .WithEnergy(1.0f)
-            .WithFrequency(5)
-            .WithSpeed(0.5f)
-            .WithBeamCount(1)
-            .WithGlow(2.0f);
-    }
-
-    public BeamBuilder MagicPreset()
-    {
-        return WithColor(new Color(0.8f, 0.2f, 1.0f, 1.0f))
-            .WithOutlineColor(new Color(1.0f, 0.4f, 0.8f, 1.0f))
-            .WithEnergy(5.0f)
-            .WithFrequency(20)
-            .WithSpeed(1.5f)
-            .WithBeamCount(3)
-            .WithGlow(1.0f)
-            .WithOutlineGlow(1.5f);
-    }
-
-    public Beam Build()
-    {
-        if (!_fromPixels.HasValue || !_toPixels.HasValue)
-        {
-            GD.PrintErr("BeamBuilder: From and To positions must be set before building!");
-            return _beam;
-        }
-
-        _beam.SetFromTo(_fromPixels.Value, _toPixels.Value);
-        _beam.SetBeamCount(_beamCount);
-        _beam.SetEnergy(_energy);
-        _beam.SetRoughness(_roughness);
-        _beam.SetFrequency(_frequency);
-        _beam.SetSpeed(_speed);
-        _beam.SetCoreWidthPixels(_coreWidthPixels);
-        _beam.SetOutlineWidthPixels(_outlineWidthPixels);
-        _beam.SetBeamDifference(_beamDifference);
-        _beam.SetGlow(_glow);
-        _beam.SetOutlineGlow(_outlineGlow);
-        _beam.SetBeamColor(_color);
-        _beam.SetOutlineColor(_outlineColor);
-        _beam.SetProgress(_progress);
-
-        return _beam;
-    }
 }

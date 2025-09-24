@@ -5,15 +5,12 @@ uniform int beams = 2; // How many beams the energy field should have
 
 uniform float energy = 3.0; // How much the beams will travel up and down
 uniform int roughness : hint_range(1, 10) = 3; // How compact the noise texture will be
-uniform int frequency = 10; // Amount of "ripples" in the beams
+uniform int frequency = 3; // Amount of "ripples" in the beams
 
 uniform float speed = 1.0; // Animation speed
 uniform float thickness : hint_range(0.0, 0.1) = 0.006; // Thickness of the main beam
 uniform float outline_thickness : hint_range(0.0, 0.1) = 0.03; //Thickness of the outline color
 uniform float beam_difference : hint_range(0.0, 1.0) = 0.0; // The thickness difference between the main beam and the other, if there are more than one beam. The closer to 1 the smaller the thickness difference.
-
-uniform float glow : hint_range(0.0, 3.0) = 0.0; // Use together with WorldEnvironment's Glow feature
-uniform float outline_glow : hint_range(0.0, 3.0) = 0.0;
 
 uniform vec4 color : source_color = vec4(0.91, 1.0, 1.0, 1.0);
 uniform vec4 outline_color : source_color = vec4(0.5, 1.0, 0.96, 1.0);
@@ -145,7 +142,7 @@ vec4 bolt(vec2 uv, float time, float i)
    float beam_mask = calculateBeamMask(uv);
 
    // Merge the beam and the outline and return to the fragment function
-   return ((beam * (color + vec4(glow, glow, glow, 0.))) + (beam_outline * (outline_color + vec4(outline_glow, outline_glow, outline_glow, 0.)))) * beam_mask;
+   return (beam * color + beam_outline * outline_color) * beam_mask;
 }
 
 void fragment()
