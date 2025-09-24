@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cgm0yfj1g1own"]
+[gd_scene load_steps=4 format=3 uid="uid://cgm0yfj1g1own"]
 
+[ext_resource type="Script" uid="uid://cyhfswbha1aoo" path="res://modules/projectiles/wall/Wall.cs" id="1_g8gck"]
 [ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://modules/projectiles/wall/wall.png" id="1_j1wca"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_468xe"]
@@ -9,6 +10,7 @@ height = 450.0
 [node name="Wall" type="StaticBody2D"]
 collision_layer = 16
 collision_mask = 0
+script = ExtResource("1_g8gck")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_j1wca")

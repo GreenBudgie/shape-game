@@ -38,12 +38,12 @@ public partial class Beam : ColorRect
 
     private const float BaseSizeMultiplier = 1.5f;
     private static readonly Vector2 BaseSize = ShapeGame.WindowSize * BaseSizeMultiplier; // (5760, 3240)
-    
-    private ShaderMaterial _shaderMaterial;
+
+    public ShaderMaterial ShaderMaterial { get; private set; }
 
     public Beam()
     {
-        _shaderMaterial = (ShaderMaterial)Material;
+        ShaderMaterial = (ShaderMaterial)Material;
     }
     
     public static Beam Create()
@@ -54,6 +54,9 @@ public partial class Beam : ColorRect
         return beam;
     }
 
+    private Vector2 _from;
+    private Vector2 _to;
+
     /// <summary>
     /// Sets the start and end point for the bean in global coordinates
     /// </summary>
@@ -61,14 +64,36 @@ public partial class Beam : ColorRect
     /// <param name="to">To position, in global coords</param>
     public Beam SetFromTo(Vector2 from, Vector2 to)
     {
+        _from = from;
+        _to = to;
         Position = from - new Vector2(0, BaseSize.Y / 2);
         Rotation = from.AngleToPoint(to);
         var length = from.DistanceTo(to) / Size.X;
         SetLength(length);
 
-        const float fadeDistanceToLengthFactor = 0.05f;
+        const float fadeDistanceToLengthFactor = 0.2f;
         SetFadeDistance(length * fadeDistanceToLengthFactor);
         return this;
+    }
+    
+    /// <summary>
+    /// Sets the end point for the bean in global coordinates
+    /// </summary>
+    /// <param name="to">To position, in global coords</param>
+    public Beam SetTo(Vector2 to)
+    {
+        SetFromTo(_from, to);
+        return this;
+    }
+
+    public Vector2 GetFrom()
+    {
+        return _from;
+    }
+    
+    public Vector2 GetTo()
+    {
+        return _to;
     }
 
     /// <summary>
@@ -78,7 +103,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetBeamCount(int count)
     {
-        _shaderMaterial.SetShaderParameter(BeamsParam, count);
+        ShaderMaterial.SetShaderParameter(BeamsParam, count);
         return this;
     }
 
@@ -90,7 +115,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetEnergy(float energy)
     {
-        _shaderMaterial.SetShaderParameter(EnergyParam, energy);
+        ShaderMaterial.SetShaderParameter(EnergyParam, energy);
         return this;
     }
 
@@ -102,7 +127,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetRoughness(int roughness)
     {
-        _shaderMaterial.SetShaderParameter(RoughnessParam, roughness);
+        ShaderMaterial.SetShaderParameter(RoughnessParam, roughness);
         return this;
     }
 
@@ -114,7 +139,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetFrequency(int frequency)
     {
-        _shaderMaterial.SetShaderParameter(FrequencyParam, frequency);
+        ShaderMaterial.SetShaderParameter(FrequencyParam, frequency);
         return this;
     }
 
@@ -126,7 +151,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetSpeed(float speed)
     {
-        _shaderMaterial.SetShaderParameter(SpeedParam, speed);
+        ShaderMaterial.SetShaderParameter(SpeedParam, speed);
         return this;
     }
 
@@ -138,7 +163,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetProgress(float progress)
     {
-        _shaderMaterial.SetShaderParameter(ProgressParam, progress);
+        ShaderMaterial.SetShaderParameter(ProgressParam, progress);
         return this;
     }
 
@@ -151,7 +176,7 @@ public partial class Beam : ColorRect
     public Beam SetThickness(float thickness)
     {
         var realThickness = thickness / BaseSize.Y / 2;
-        _shaderMaterial.SetShaderParameter(ThicknessParam, realThickness);
+        ShaderMaterial.SetShaderParameter(ThicknessParam, realThickness);
         return this;
     }
 
@@ -165,7 +190,7 @@ public partial class Beam : ColorRect
     public Beam SetOutlineThickness(float outlineThickness)
     {
         var realThickness = outlineThickness / BaseSize.Y / 2;
-        _shaderMaterial.SetShaderParameter(OutlineThicknessParam, realThickness);
+        ShaderMaterial.SetShaderParameter(OutlineThicknessParam, realThickness);
         return this;
     }
 
@@ -177,7 +202,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetBeamDifference(float difference)
     {
-        _shaderMaterial.SetShaderParameter(BeamDifferenceParam, difference);
+        ShaderMaterial.SetShaderParameter(BeamDifferenceParam, difference);
         return this;
     }
 
@@ -186,7 +211,7 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetBeamColor(Color color)
     {
-        _shaderMaterial.SetShaderParameter(ColorParam, color);
+        ShaderMaterial.SetShaderParameter(ColorParam, color);
         return this;
     }
 
@@ -195,23 +220,19 @@ public partial class Beam : ColorRect
     /// </summary>
     public Beam SetOutlineColor(Color color)
     {
-        _shaderMaterial.SetShaderParameter(OutlineColorParam, color);
+        ShaderMaterial.SetShaderParameter(OutlineColorParam, color);
         return this;
     }
 
-    /// <summary>
-    /// Sets the beam length relative to its total width, from 0 to 1.
-    /// Can be used to animate the beam "shooting" without actually moving the from/to points.
-    /// </summary>
     public Beam SetLength(float length)
     {
-        _shaderMaterial.SetShaderParameter(BeamLengthParam, length);
+        ShaderMaterial.SetShaderParameter(BeamLengthParam, length);
         return this;
     }
 
     public Beam SetFadeDistance(float distance)
     {
-        _shaderMaterial.SetShaderParameter(FadeDistanceParam, distance);
+        ShaderMaterial.SetShaderParameter(FadeDistanceParam, distance);
         return this;
     }
 

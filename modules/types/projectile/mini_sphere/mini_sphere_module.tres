@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="MiniSphereModule" load_steps=11 format=3 uid="uid://ccuh2d7r0dhxc"]
 
 [ext_resource type="Script" uid="uid://bphg4uxj331w1" path="res://modules/types/projectile/mini_sphere/MiniSphereModule.cs" id="1_hns7l"]
-[ext_resource type="Texture2D" uid="uid://dax1am0tfnonj" path="res://modules/types/projectile/mini_sphere/mini_sphere.png" id="1_j2p3u"]
+[ext_resource type="Texture2D" uid="uid://dax1am0tfnonj" path="res://modules/types/projectile/mini_sphere/mini_sphere_module.png" id="1_j2p3u"]
 [ext_resource type="Script" uid="uid://73fwxoshnhmd" path="res://modules/stats/DamageStat.cs" id="2_16jbp"]
 [ext_resource type="Script" uid="uid://dxj6bmum8pdot" path="res://modules/stats/SpeedStat.cs" id="3_1kxyq"]
 [ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/ReloadStat.cs" id="4_fdpkq"]

@@ -24,12 +24,6 @@ public partial class ShapeGame : Node2D
         Input.MouseMode = Input.MouseModeEnum.Hidden;
         // Engine.MaxFps = 60; 
 
-        var beam = Beam.Create()
-            .SetFromTo(new Vector2(800, WindowSize.Y / 2), new Vector2(3000, WindowSize.Y / 2))
-            .SetThickness(30)
-            .SetOutlineThickness(150);
-        AddChild(beam);
-        
         EmitSignalPostSetup();
     }
 

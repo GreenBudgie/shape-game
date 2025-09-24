@@ -88,12 +88,13 @@ public partial class Blaster : Node
             component.Apply(context);
         }
 
-        // Stage 4 - prepare projectile
-        projectile.Prepare(context);
-
         var projectileNode = projectile.Node;
         var spawnPosition = Player.FindPlayer()?.GetGlobalNosePosition() ?? ShapeGame.Center;
         projectileNode.GlobalPosition = spawnPosition;
+        
+        // Stage 4 - prepare projectile
+        projectile.Prepare(context);
+        
         ShapeGame.Instance.AddChild(projectileNode);
 
         var reload = context.CalculateStat<ReloadStat>();
