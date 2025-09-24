@@ -2,6 +2,8 @@ public partial class Beam : ColorRect
 {
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://g21wng36wpva");
+
+    private static readonly Vector2 BaseSize = ShapeGame.WindowSize * 1.5f;
     
     private ShaderMaterial _shaderMaterial;
 
@@ -18,28 +20,34 @@ public partial class Beam : ColorRect
 
     public override void _Ready()
     {
-        SetAnchorsPreset(LayoutPreset.TopLeft);
-        Callable.From(() => Size = ShapeGame.WindowSize).CallDeferred();
+        
     }
 
-    private Vector2 PixelsToUV(Vector2 pixelPosition)
+    private static Vector2 PixelsToUV(Vector2 pixelPosition)
     {
         return new Vector2(
-            pixelPosition.X / ShapeGame.WindowSize.X,
-            pixelPosition.Y / ShapeGame.WindowSize.Y
+            pixelPosition.X / BaseSize.X,
+            pixelPosition.Y / BaseSize.Y
         );
     }
 
     private float PixelsToRelativeWidth(float pixelWidth)
     {
-        var referenceDimension = Min(ShapeGame.WindowSize.X, ShapeGame.WindowSize.Y);
+        var referenceDimension = Min(BaseSize.X, BaseSize.Y);
         return pixelWidth / referenceDimension;
     }
 
-    public void SetFromTo(Vector2 fromPixels, Vector2 toPixels)
+    public void SetFromTo(Vector2 from, Vector2 to)
     {
-        _shaderMaterial.SetShaderParameter("start_point", PixelsToUV(fromPixels));
-        _shaderMaterial.SetShaderParameter("end_point", PixelsToUV(toPixels));
+        SetAnchorsPreset(LayoutPreset.TopLeft);
+        Size = BaseSize;
+        Position = from - new Vector2(0, BaseSize.Y / 2);
+        Rotation = from.AngleToPoint(to);
+        var length = from.DistanceTo(to) / Size.X;
+        SetLength(length);
+
+        const float fadeDistanceToLengthFactor = 0.05f;
+        SetFadeDistance(length * fadeDistanceToLengthFactor);
     }
 
     public void SetBeamCount(int count) => _shaderMaterial.SetShaderParameter("beams", count);
@@ -66,8 +74,8 @@ public partial class Beam : ColorRect
     public void SetOutlineGlow(float glow) => _shaderMaterial.SetShaderParameter("outline_glow", glow);
     public void SetBeamColor(Color color) => _shaderMaterial.SetShaderParameter("color", color);
     public void SetOutlineColor(Color color) => _shaderMaterial.SetShaderParameter("outline_color", color);
-    public void SetEdgeFadeSize(float size) => _shaderMaterial.SetShaderParameter("edge_fade_size", size);
-    public void SetEndFadeSize(float size) => _shaderMaterial.SetShaderParameter("end_fade_size", size);
+    public void SetLength(float length) => _shaderMaterial.SetShaderParameter("beam_length", length);
+    public void SetFadeDistance(float distance) => _shaderMaterial.SetShaderParameter("fade_distance", distance);
 
     public ShaderMaterial GetShaderMaterial() => _shaderMaterial;
 }
@@ -264,8 +272,6 @@ public class BeamBuilder
         _beam.SetBeamColor(_color);
         _beam.SetOutlineColor(_outlineColor);
         _beam.SetProgress(_progress);
-        _beam.SetEdgeFadeSize(_edgeFadeSize);
-        _beam.SetEndFadeSize(_endFadeSize);
 
         return _beam;
     }
