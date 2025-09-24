@@ -8,8 +8,8 @@ uniform int roughness : hint_range(1, 10) = 3; // How compact the noise texture 
 uniform int frequency = 3; // Amount of "ripples" in the beams
 
 uniform float speed = 1.0; // Animation speed
-uniform float thickness : hint_range(0.0, 0.1) = 0.006; // Thickness of the main beam
-uniform float outline_thickness : hint_range(0.0, 0.1) = 0.03; //Thickness of the outline color
+uniform float thickness : hint_range(0.0, 0.1) = 0.0045; // Thickness of the main beam
+uniform float outline_thickness : hint_range(0.0, 0.1) = 0.023; //Thickness of the outline color
 uniform float beam_difference : hint_range(0.0, 1.0) = 0.0; // The thickness difference between the main beam and the other, if there are more than one beam. The closer to 1 the smaller the thickness difference.
 
 uniform vec4 color : source_color = vec4(0.91, 1.0, 1.0, 1.0);

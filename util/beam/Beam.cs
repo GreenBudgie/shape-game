@@ -17,9 +17,6 @@ public partial class Beam : ColorRect
     private static readonly StringName ColorParam = "color";
     private static readonly StringName OutlineColorParam = "outline_color";
     private static readonly StringName ProgressParam = "progress";
-    private static readonly StringName YOffsetParam = "y_offset";
-    private static readonly StringName FixedEdgeSizeParam = "fixed_edge_size";
-    private static readonly StringName NoiseScaleParam = "noise_scale";
     private static readonly StringName BeamLengthParam = "beam_length";
     private static readonly StringName FadeDistanceParam = "fade_distance";
 
@@ -36,14 +33,11 @@ public partial class Beam : ColorRect
     public static readonly NodePath ColorShaderParam = ShaderParameter(ColorParam);
     public static readonly NodePath OutlineColorShaderParam = ShaderParameter(OutlineColorParam);
     public static readonly NodePath ProgressShaderParam = ShaderParameter(ProgressParam);
-    public static readonly NodePath YOffsetShaderParam = ShaderParameter(YOffsetParam);
-    public static readonly NodePath FixedEdgeSizeShaderParam = ShaderParameter(FixedEdgeSizeParam);
-    public static readonly NodePath NoiseScaleShaderParam = ShaderParameter(NoiseScaleParam);
     public static readonly NodePath BeamLengthShaderParam = ShaderParameter(BeamLengthParam);
     public static readonly NodePath FadeDistanceShaderParam = ShaderParameter(FadeDistanceParam);
 
     private const float BaseSizeMultiplier = 1.5f;
-    private static readonly Vector2 BaseSize = ShapeGame.WindowSize * BaseSizeMultiplier;
+    private static readonly Vector2 BaseSize = ShapeGame.WindowSize * BaseSizeMultiplier; // (5760, 3240)
     
     private ShaderMaterial _shaderMaterial;
 
@@ -151,6 +145,8 @@ public partial class Beam : ColorRect
     /// <summary>
     /// Sets the thickness of the beam (center part of it), in pixels.
     /// If zero, the beam center part will not be visible.
+    ///
+    /// <p>Default: ~30px (set in UV in shader, equal to 0.0045)</p>
     /// </summary>
     public Beam SetThickness(float thickness)
     {
@@ -162,15 +158,13 @@ public partial class Beam : ColorRect
     /// <summary>
     /// Sets the outline thickness of the beam, in pixels. This is an absolute value and is not relative to beam
     /// center part thickness.
-    /// If zero, the outline will not be visible.
+    /// Minimum noticeable width is 150px, otherwise it's too dim.
     ///
-    /// <p>Default: ~194px (set in UV in shader, equal to 0.03)</p>
+    /// <p>Default: ~150px (set in UV in shader, equal to 0.023)</p>
     /// </summary>
     public Beam SetOutlineThickness(float outlineThickness)
     {
-        const float minVisibleOutlineThickness = 150f;
-        var effectiveThickness = Max(outlineThickness, minVisibleOutlineThickness);
-        var realThickness = effectiveThickness / BaseSize.Y / 2;
+        var realThickness = outlineThickness / BaseSize.Y / 2;
         _shaderMaterial.SetShaderParameter(OutlineThicknessParam, realThickness);
         return this;
     }
