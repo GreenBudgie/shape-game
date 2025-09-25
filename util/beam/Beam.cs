@@ -85,6 +85,16 @@ public partial class Beam : ColorRect
         SetFromTo(_from, to);
         return this;
     }
+    
+    /// <summary>
+    /// Sets the start point for the bean in global coordinates
+    /// </summary>
+    /// <param name="from">From position, in global coords</param>
+    public Beam SetFrom(Vector2 from)
+    {
+        SetFromTo(from, _to);
+        return this;
+    }
 
     public Vector2 GetFrom()
     {

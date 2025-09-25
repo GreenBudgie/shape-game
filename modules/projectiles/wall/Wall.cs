@@ -2,8 +2,14 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://cgm0yfj1g1own");
 
+    private static readonly StringName ProgressMaskParam = "progress";
+    private static readonly NodePath ProgressMaskShaderParam = ShaderParameter(ProgressMaskParam);
+
     private static readonly Vector2 LeftCornerPosition = new(-225, 0);
     private static readonly Vector2 RightCornerPosition = new(225, 0);
+
+    private Sprite2D _sprite = null!;
+    private ShaderMaterial _spriteMaterial = null!;
 
     public Wall Node => this;
 
@@ -15,23 +21,79 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
     public void Prepare(ShotContext context)
     {
+        _sprite = GetNode<Sprite2D>("Sprite2D");
+        _spriteMaterial = (ShaderMaterial)_sprite.Material;
+        _spriteMaterial.SetShaderParameter(ProgressMaskParam, 0f);
+
         const float yOffset = 250f;
         GlobalPosition += new Vector2(0, -yOffset);
     }
 
     public override void _Ready()
     {
+        // Glow.AddGlow(_sprite)
+        //     .SetColor(ColorScheme.LightGreen)
+        //     .SetStrength(1)
+        //     .SetRadius(30);
+
         var player = Player.FindPlayer();
         if (player != null)
         {
-            PlaySpawnEffect(player);
+            PlaySpawnBeamEffectForPlayer(player);
+        }
+
+        PlayAppearEffect();
+    }
+
+    private Beam? _leftBeam;
+    private Beam? _rightBeam;
+
+    public override void _Process(double delta)
+    {
+        if (_leftBeam == null || _rightBeam == null)
+        {
+            return;
+        }
+        
+        var player = Player.FindPlayer();
+        if (player == null)
+        {
+            return;
+        }
+        
+        if (IsInstanceValid(_leftBeam))
+        {
+            _leftBeam.SetFrom(player.GetGlobalNosePosition());
+        }
+        if (IsInstanceValid(_rightBeam))
+        {
+            _rightBeam.SetFrom(player.GetGlobalNosePosition());
         }
     }
 
-    private void PlaySpawnEffect(Player player)
+    private const float EffectStartupDuration = 0.15f;
+    private const float EffectDuration = 0.3f;
+    private const float EffectEndDuration = 0.15f;
+
+    private void PlayAppearEffect()
+    {
+        var tween = CreateTween();
+        tween.TweenProperty(_spriteMaterial, ProgressMaskShaderParam, 1f, EffectDuration)
+            .SetDelay(EffectStartupDuration)
+            .SetEase(Tween.EaseType.InOut)
+            .SetTrans(Tween.TransitionType.Quad);
+    }
+
+    private void PlaySpawnBeamEffectForPlayer(Player player)
+    {
+        _leftBeam = CreateAndAnimateBeam(player, ToGlobal(LeftCornerPosition));
+        _rightBeam = CreateAndAnimateBeam(player, ToGlobal(RightCornerPosition));
+    }
+
+    private Beam CreateAndAnimateBeam(Player player, Vector2 toPosition)
     {
         var beam = Beam.Create()
-            .SetFromTo(player.GetGlobalNosePosition(), ToGlobal(LeftCornerPosition))
+            .SetFromTo(player.GetGlobalNosePosition(), GlobalPosition)
             .SetEnergy(0)
             .SetProgress(0)
             .SetOutlineThickness(100)
@@ -40,20 +102,26 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
         var positionTween = beam.CreateTween();
         positionTween.TweenMethod(
-            Callable.From<Vector2>(a => beam.SetTo(a)),
-            ToGlobal(LeftCornerPosition),
-            ToGlobal(RightCornerPosition),
-            1
-        );
+                Callable.From<Vector2>(a => beam.SetTo(a)),
+                GlobalPosition,
+                toPosition,
+                EffectDuration
+            )
+            .SetDelay(EffectStartupDuration)
+            .SetEase(Tween.EaseType.InOut)
+            .SetTrans(Tween.TransitionType.Quad);
 
         var tween = beam.CreateTween();
-        tween.TweenProperty(beam.ShaderMaterial, Beam.ProgressShaderParam, 1, 0.5)
+        tween.TweenProperty(beam.ShaderMaterial, Beam.ProgressShaderParam, 1, EffectStartupDuration)
             .SetEase(Tween.EaseType.Out)
-            .SetTrans(Tween.TransitionType.Quint);
-        tween.TweenProperty(beam.ShaderMaterial, Beam.ProgressShaderParam, 0, 0.5)
-            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Quad);
+        tween.TweenProperty(beam.ShaderMaterial, Beam.ProgressShaderParam, 0, EffectEndDuration)
+            .SetDelay(EffectDuration)
+            .SetEase(Tween.EaseType.In)
             .SetTrans(Tween.TransitionType.Quad);
         tween.Finished += () => beam.QueueFree();
         ShapeGame.Instance.AddChild(beam);
+
+        return beam;
     }
 }

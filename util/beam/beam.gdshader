@@ -153,5 +153,5 @@ void fragment()
       beam = max(beam, bolt(UV, TIME, float(i)));
    }
 
-   COLOR = beam;
+   COLOR = vec4(beam.rgb, progress);
 }

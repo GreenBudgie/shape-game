@@ -1,7 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://cgm0yfj1g1own"]
+[gd_scene load_steps=6 format=3 uid="uid://cgm0yfj1g1own"]
 
 [ext_resource type="Script" uid="uid://cyhfswbha1aoo" path="res://modules/projectiles/wall/Wall.cs" id="1_g8gck"]
 [ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://modules/projectiles/wall/wall.png" id="1_j1wca"]
+[ext_resource type="Shader" uid="uid://rvd7qj3hbrha" path="res://modules/projectiles/wall/wall_mask.gdshader" id="2_4f48b"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3nu1x"]
+resource_local_to_scene = true
+shader = ExtResource("2_4f48b")
+shader_parameter/progress = 1.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_468xe"]
 radius = 15.0
@@ -13,6 +19,7 @@ collision_mask = 0
 script = ExtResource("1_g8gck")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_3nu1x")
 texture = ExtResource("1_j1wca")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
