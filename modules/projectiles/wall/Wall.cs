@@ -10,6 +10,7 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
     private Sprite2D _sprite = null!;
     private ShaderMaterial _spriteMaterial = null!;
+    private GpuParticles2D _particles = null!;
 
     public Wall Node => this;
 
@@ -21,6 +22,9 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
     public void Prepare(ShotContext context)
     {
+        _particles = GetNode<GpuParticles2D>("GPUParticles2D");
+        _particles.Emitting = false;
+        
         _sprite = GetNode<Sprite2D>("Sprite2D");
         _spriteMaterial = (ShaderMaterial)_sprite.Material;
         _spriteMaterial.SetShaderParameter(ProgressMaskParam, 0f);
@@ -30,9 +34,13 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
     }
 
     private Glow _glow = null!;
-
+    private uint _initialCollisionLayer;
+    
     public override void _Ready()
     {
+        _initialCollisionLayer = CollisionLayer;
+        CollisionLayer = 0;
+        
         _glow = Glow.AddGlow(_sprite, addChild: false);
         _glow.Sprite.Scale = new Vector2(0, 1);
         _glow.SetColor(ColorScheme.LightBlueGreen)
@@ -77,9 +85,32 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
         }
     }
 
+    private bool _isRemoving;
+    private const float RemoveDuration = 0.25f;
+
     public void Remove()
     {
-        QueueFree(); // TODO remove effect
+        if (_isRemoving)
+        {
+            return;
+        }
+        _isRemoving = true;
+
+        CollisionLayer = 0;
+        
+        _particles.Reparent(ShapeGame.Instance);
+        _particles.OneShot = true;
+        _particles.Emitting = false;
+        _particles.Finished += QueueFree;
+        
+        var tween = CreateTween()
+            .SetParallel()
+            .SetEase(Tween.EaseType.InOut)
+            .SetTrans(Tween.TransitionType.Quad);
+        tween.TweenProperty(_spriteMaterial, ProgressMaskShaderParam, 0f, RemoveDuration);
+        tween.TweenProperty(_glow.Sprite, ScaleProperty, new Vector2(0, 1), RemoveDuration);
+
+        tween.Finished += QueueFree;
     }
 
     private const float EffectStartupDuration = 0.15f;
@@ -88,17 +119,23 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
     private void PlayAppearEffect()
     {
-        var tween = CreateTween();
+        var tween = CreateTween()
+            .SetParallel()
+            .SetEase(Tween.EaseType.InOut)
+            .SetTrans(Tween.TransitionType.Quad);
         tween.TweenProperty(_spriteMaterial, ProgressMaskShaderParam, 1f, EffectDuration)
-            .SetDelay(EffectStartupDuration)
-            .SetEase(Tween.EaseType.InOut)
-            .SetTrans(Tween.TransitionType.Quad);
+            .SetDelay(EffectStartupDuration);
+        
+        tween.TweenProperty(_glow.Sprite, ScaleProperty, Vector2.One, EffectDuration)
+            .SetDelay(EffectStartupDuration);
+        
+        tween.Finished += OnAppear;
+    }
 
-        _glow.Sprite.Scale = new Vector2(0, 1);
-        tween.Parallel().TweenProperty(_glow.Sprite, ScaleProperty, Vector2.One, EffectDuration)
-            .SetDelay(EffectStartupDuration)
-            .SetEase(Tween.EaseType.InOut)
-            .SetTrans(Tween.TransitionType.Quad);
+    private void OnAppear()
+    {
+        _particles.Emitting = true;
+        CollisionLayer = _initialCollisionLayer;
     }
 
     private void PlaySpawnBeamEffectForPlayer(Player player)

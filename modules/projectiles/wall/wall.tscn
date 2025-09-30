@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cgm0yfj1g1own"]
+[gd_scene load_steps=12 format=3 uid="uid://cgm0yfj1g1own"]
 
 [ext_resource type="Script" uid="uid://cyhfswbha1aoo" path="res://modules/projectiles/wall/Wall.cs" id="1_g8gck"]
 [ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://modules/projectiles/wall/wall.png" id="1_j1wca"]
 [ext_resource type="Shader" uid="uid://rvd7qj3hbrha" path="res://modules/projectiles/wall/wall_mask.gdshader" id="2_4f48b"]
+[ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://util/particles/textures/particle_square.png" id="4_3nu1x"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3nu1x"]
 resource_local_to_scene = true
@@ -12,6 +13,38 @@ shader_parameter/progress = 1.0
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_468xe"]
 radius = 15.0
 height = 450.0
+
+[sub_resource type="Curve" id="Curve_3nu1x"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.2105308, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_3qs30"]
+curve = SubResource("Curve_3nu1x")
+
+[sub_resource type="Curve" id="Curve_3qs30"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.46457982), -1.5534314, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_v3vkq"]
+curve = SubResource("Curve_3qs30")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3nu1x"]
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(220, 5, 1)
+angle_min = -179.99998
+angle_max = 180.00002
+spread = 180.0
+initial_velocity_min = 100.0
+initial_velocity_max = 150.0
+angular_velocity_min = -250.00002
+angular_velocity_max = 249.99998
+gravity = Vector3(0, 0, 0)
+scale_min = 0.25
+scale_max = 0.75
+scale_curve = SubResource("CurveTexture_v3vkq")
+alpha_curve = SubResource("CurveTexture_3qs30")
 
 [node name="Wall" type="StaticBody2D"]
 collision_layer = 16
@@ -23,5 +56,15 @@ material = SubResource("ShaderMaterial_3nu1x")
 texture = ExtResource("1_j1wca")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_468xe")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+physics_interpolation_mode = 2
+modulate = Color(0.21176471, 0.94509804, 0.8039216, 1)
+show_behind_parent = true
+texture = ExtResource("4_3nu1x")
+lifetime = 0.5
+visibility_rect = Rect2(-225, -100, 450, 200)
+process_material = SubResource("ParticleProcessMaterial_3nu1x")

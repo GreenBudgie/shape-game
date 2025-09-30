@@ -7,7 +7,7 @@
 
 [sub_resource type="Resource" id="Resource_h060a"]
 script = ExtResource("1_toy40")
-Lifetime = 5.0
+Lifetime = 10.0
 metadata/_custom_type_script = "uid://cmvf52kc3ad7v"
 
 [sub_resource type="Resource" id="Resource_ke7xy"]
