@@ -29,12 +29,17 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
         GlobalPosition += new Vector2(0, -yOffset);
     }
 
+    private Glow _glow = null!;
+
     public override void _Ready()
     {
-        // Glow.AddGlow(_sprite)
-        //     .SetColor(ColorScheme.LightGreen)
-        //     .SetStrength(1)
-        //     .SetRadius(30);
+        _glow = Glow.AddGlow(_sprite, addChild: false);
+        _glow.Sprite.Scale = new Vector2(0, 1);
+        _glow.SetColor(ColorScheme.LightBlueGreen)
+            .SetStrength(1)
+            .SetRadius(30);
+        
+        AddChild(_glow);
 
         var player = Player.FindPlayer();
         if (player != null)
@@ -54,17 +59,18 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
         {
             return;
         }
-        
+
         var player = Player.FindPlayer();
         if (player == null)
         {
             return;
         }
-        
+
         if (IsInstanceValid(_leftBeam))
         {
             _leftBeam.SetFrom(player.GetGlobalNosePosition());
         }
+
         if (IsInstanceValid(_rightBeam))
         {
             _rightBeam.SetFrom(player.GetGlobalNosePosition());
@@ -79,6 +85,12 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
     {
         var tween = CreateTween();
         tween.TweenProperty(_spriteMaterial, ProgressMaskShaderParam, 1f, EffectDuration)
+            .SetDelay(EffectStartupDuration)
+            .SetEase(Tween.EaseType.InOut)
+            .SetTrans(Tween.TransitionType.Quad);
+
+        _glow.Sprite.Scale = new Vector2(0, 1);
+        tween.Parallel().TweenProperty(_glow.Sprite, ScaleProperty, Vector2.One, EffectDuration)
             .SetDelay(EffectStartupDuration)
             .SetEase(Tween.EaseType.InOut)
             .SetTrans(Tween.TransitionType.Quad);
@@ -97,8 +109,8 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
             .SetEnergy(0)
             .SetProgress(0)
             .SetOutlineThickness(100)
-            .SetOutlineColor(ColorScheme.LightGreen)
-            .SetBeamColor(ColorScheme.LightGreen.Lightened(0.5f));
+            .SetOutlineColor(ColorScheme.LightBlueGreen)
+            .SetBeamColor(ColorScheme.LightBlueGreen.Lightened(0.5f));
 
         var positionTween = beam.CreateTween();
         positionTween.TweenMethod(

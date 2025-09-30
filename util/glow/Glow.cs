@@ -16,6 +16,8 @@ public partial class Glow : SubViewportContainer
 
     private static readonly PackedScene GlowScene = GD.Load<PackedScene>("uid://c3qvnso7dnntg");
 
+    public Sprite2D Sprite { get; private set; } = null!; 
+    
     private ShaderMaterial _shaderMaterial = null!;
 
     private bool _isPulsing;
@@ -52,9 +54,13 @@ public partial class Glow : SubViewportContainer
         set => SetCullOccluded(value);
     }
 
-    public override void _Ready()
+    public Glow()
     {
         _shaderMaterial = (ShaderMaterial)Material;
+    }
+
+    public override void _Ready()
+    {
         _baseStrength = GetBaseStrength();
         _baseRadius = GetBaseRadius();
     }
@@ -292,10 +298,11 @@ public partial class Glow : SubViewportContainer
     /// Adds a Glow instance as a child to the given Sprite2D, with the same texture.
     /// </summary>
     /// <param name="sprite">The sprite to attach the glow to.</param>
+    /// <param name="addChild">Whether to automatically add glow as a child to this node. True by default</param>
     /// <returns>The instantiated Glow node.</returns>
-    public static Glow AddGlow(Sprite2D sprite)
+    public static Glow AddGlow(Sprite2D sprite, bool addChild = true)
     {
-        return AttachGlow(sprite, sprite.Texture, Vector2.Zero);
+        return AttachGlow(sprite, sprite.Texture, Vector2.Zero, addChild);
     }
     
     /// <summary>
@@ -304,10 +311,11 @@ public partial class Glow : SubViewportContainer
     /// Image in this TextureRect should be centered.
     /// </summary>
     /// <param name="textureRect">The texture rect to attach the glow to.</param>
+    /// <param name="addChild">Whether to automatically add glow as a child to this node. True by default</param>
     /// <returns>The instantiated Glow node.</returns>
-    public static Glow AddGlow(TextureRect textureRect)
+    public static Glow AddGlow(TextureRect textureRect, bool addChild = true)
     {
-        return AttachGlow(textureRect, textureRect.Texture, textureRect.Size / 2);
+        return AttachGlow(textureRect, textureRect.Texture, textureRect.Size / 2, addChild);
     }
     
     /// <summary>
@@ -316,10 +324,11 @@ public partial class Glow : SubViewportContainer
     /// Image in this TextureButton should be centered.
     /// </summary>
     /// <param name="textureButton">The texture button to attach the glow to.</param>
+    /// <param name="addChild">Whether to automatically add glow as a child to this node. True by default</param>
     /// <returns>The instantiated Glow node.</returns>
-    public static Glow AddGlow(TextureButton textureButton)
+    public static Glow AddGlow(TextureButton textureButton, bool addChild = true)
     {
-        return AttachGlow(textureButton, textureButton.TextureNormal, textureButton.Size / 2);
+        return AttachGlow(textureButton, textureButton.TextureNormal, textureButton.Size / 2, addChild);
     }
     
     /// <summary>
@@ -328,20 +337,25 @@ public partial class Glow : SubViewportContainer
     /// Image in this TextureProgressBar should be centered.
     /// </summary>
     /// <param name="textureProgressBar">The texture progress bar to attach the glow to.</param>
+    /// <param name="addChild">Whether to automatically add glow as a child to this node. True by default</param>
     /// <returns>The instantiated Glow node.</returns>
-    public static Glow AddGlow(TextureProgressBar textureProgressBar)
+    public static Glow AddGlow(TextureProgressBar textureProgressBar, bool addChild = true)
     {
-        return AttachGlow(textureProgressBar, textureProgressBar.TextureOver, textureProgressBar.Size / 2);
+        return AttachGlow(textureProgressBar, textureProgressBar.TextureOver, textureProgressBar.Size / 2, addChild);
     }
 
-    private static Glow AttachGlow(CanvasItem node, Texture2D texture, Vector2 centerShift)
+    private static Glow AttachGlow(CanvasItem node, Texture2D texture, Vector2 centerShift, bool addChild)
     {
         var glow = GlowScene.Instantiate<Glow>();
         var subViewport = glow.GetNode<SubViewport>("SubViewport");
         var glowSprite = glow.GetNode<Sprite2D>("SubViewport/Sprite");
-        
-        node.AddChild(glow);
-        
+        glow.Sprite = glowSprite;
+
+        if (addChild)
+        {
+            node.AddChild(glow);
+        }
+
         const int viewportSizeMultiplier = 4;
         
         subViewport.Size = (Vector2I)(texture.GetSize() * viewportSizeMultiplier);
