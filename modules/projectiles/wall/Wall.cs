@@ -38,7 +38,7 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
         _glow.SetColor(ColorScheme.LightBlueGreen)
             .SetStrength(1)
             .SetRadius(30);
-        
+
         AddChild(_glow);
 
         var player = Player.FindPlayer();
@@ -75,6 +75,11 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
         {
             _rightBeam.SetFrom(player.GetGlobalNosePosition());
         }
+    }
+
+    public void Remove()
+    {
+        QueueFree(); // TODO remove effect
     }
 
     private const float EffectStartupDuration = 0.15f;

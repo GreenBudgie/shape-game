@@ -32,7 +32,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
         }
     }
 
-    protected virtual void Remove()
+    public virtual void Remove()
     {
         QueueFree();
     }

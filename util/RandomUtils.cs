@@ -20,6 +20,11 @@ public static class RandomUtils
     /// <returns>A random float between (value - delta) and (value + delta)</returns>
     public static float DeltaRange(float value, float delta)
     {
+        if (delta == 0)
+        {
+            return value;
+        }
+        
         return (float)GD.RandRange(value - delta, value + delta);
     }
     
@@ -31,6 +36,11 @@ public static class RandomUtils
     /// <returns>A random float between (value - delta) and (value + delta)</returns>
     public static int DeltaRange(int value, int delta)
     {
+        if (delta == 0)
+        {
+            return value;
+        }
+        
         return GD.RandRange(value - delta, value + delta);
     }
     

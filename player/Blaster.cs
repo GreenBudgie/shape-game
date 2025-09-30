@@ -69,6 +69,8 @@ public partial class Blaster : Node
         var projectile = projectileModule.CreateProjectile();
         var context = new ShotContext(projectile, projectileModule, modifiers);
         
+        context.ApplyStats();
+        
         // Stage 1 - prepare components
         foreach (var component in projectile.GetComponents())
         {

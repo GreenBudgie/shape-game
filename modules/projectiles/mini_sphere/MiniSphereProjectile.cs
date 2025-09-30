@@ -18,15 +18,11 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile<MiniSphereP
         base._Ready();
         
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
-
-        var lifetime = Context.CalculateStat<LifetimeStat>();
-        var randomizedLifetime = Max(RandomUtils.DeltaRange(lifetime, 0.1f), 0.1f);
-        GetTree().CreateTimer(randomizedLifetime).Timeout += Remove;
     }
 
     private bool _isRemoving;
     
-    protected override void Remove()
+    public override void Remove()
     {
         if (_isRemoving)
         {

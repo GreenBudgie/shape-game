@@ -32,7 +32,6 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
     public override void _Ready()
     {
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
-        GetTree().CreateTimer(0.5f).Timeout += Fuse;
         BodyEntered += HandleBodyEntered;
 
         _sprite = GetNode<Sprite2D>("MineSprite");
@@ -40,6 +39,14 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
             .SetColor(ColorScheme.Red)
             .SetStrength(2)
             .SetRadius(0);
+    }
+
+    private bool _isFused;
+
+    // Fuse instead of removing instantly, that's a feature of mine
+    public void Remove()
+    {
+        Fuse();
     }
 
     private bool _torqueApplied;
@@ -60,6 +67,12 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
 
     private void Fuse()
     {
+        if (_isFused)
+        {
+            return;
+        }
+
+        _isFused = true;
         const float fuseTime = 1f;
 
         _explosion = Explosion.Create(this)

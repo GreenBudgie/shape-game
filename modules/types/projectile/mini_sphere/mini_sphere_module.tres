@@ -25,6 +25,7 @@ metadata/_custom_type_script = "uid://cd2f70s2ivisi"
 [sub_resource type="Resource" id="Resource_r5ee6"]
 script = ExtResource("4_pf61b")
 Lifetime = 1.0
+LifetimeDelta = 0.1
 metadata/_custom_type_script = "uid://cmvf52kc3ad7v"
 
 [resource]
