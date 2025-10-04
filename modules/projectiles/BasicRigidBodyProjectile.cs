@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjectile<T> where T : Node2D
@@ -7,14 +8,14 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
     public abstract T Node { get; }
 
     protected ShotContext Context = null!;
-    protected int EnemiesToPierce;
-    
-    private Area2D? _piercingEnemyDetectionArea;
+    protected int ObstaclesToPierce;
+
+    private Area2D? _piercingDetectionArea;
 
     public void Prepare(ShotContext context)
     {
         Context = context;
-        EnemiesToPierce = RoundToInt(context.CalculateStat<PiercingStat>());
+        ObstaclesToPierce = RoundToInt(context.CalculateStat<PiercingStat>());
     }
 
     public override void _Ready()
@@ -40,23 +41,26 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
     private void OnCollideWithEnemy(Enemy enemy)
     {
         enemy.Damage(Context.CalculateStat<DamageStat>(), this);
-        if (EnemiesToPierce <= 0)
-        {
-            Remove();
-        }
     }
 
-    private void OnLeaveEnemy(Enemy enemy)
+    private void OnLeavePierceableObject(CollisionObject2D collisionObject)
     {
-        RemoveCollisionExceptionWith(enemy);
+        RemoveCollisionExceptionWith(collisionObject);
     }
 
     private void HandleBodyExited(Node body)
     {
-        if (body is Enemy enemy)
+        if (body is not CollisionObject2D collisionObject2D)
         {
-            OnLeaveEnemy(enemy);
+            return;
         }
+
+        if (!collisionObject2D.HasCollisionLayer(CollisionObjectUtils.PierceableLayers))
+        {
+            return;
+        }
+        
+        OnLeavePierceableObject(collisionObject2D);
     }
 
     private void HandleBodyEntered(Node body)
@@ -72,10 +76,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
             return;
         }
 
-        if (collisionObject2D.HasCollisionLayer(CollisionLayers.LevelWalls))
-        {
-            SoundManager.Instance.PlayPositionalSound(this, _wallHitSound).RandomizePitchOffset(0.1f);
-        }
+        HandleWallHit(collisionObject2D);
 
         if (collisionObject2D is Enemy enemy)
         {
@@ -83,9 +84,19 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
         }
     }
 
+    private void HandleWallHit(CollisionObject2D collisionObject)
+    {
+        const float minVelocityToMakeSound = 100f;
+        var isWall = collisionObject.HasCollisionLayer(CollisionLayers.LevelWalls, CollisionLayers.ProjectileBarrier);
+        if (isWall && LinearVelocity.Length() > minVelocityToMakeSound)
+        {
+            SoundManager.Instance.PlayPositionalSound(this, _wallHitSound).RandomizePitchOffset(0.1f);
+        }
+    }
+
     private void SetupPiercing()
     {
-        if (EnemiesToPierce <= 0)
+        if (ObstaclesToPierce <= 0)
         {
             return;
         }
@@ -95,25 +106,26 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
             this.DisableCollisionLayer(CollisionLayers.PlayerProjectiles);
             this.EnableCollisionLayer(CollisionLayers.PiercingPlayerProjectiles);
         }
-        
-        this.DisableCollisionMaskLayer(CollisionLayers.Enemies);
-        _piercingEnemyDetectionArea = new Area2D();
+
+        this.DisableCollisionMaskLayers(CollisionObjectUtils.PierceableLayers);
+        _piercingDetectionArea = new Area2D();
         var collisionPolygons = GetChildren().OfType<CollisionPolygon2D>();
         var collisionShapes = GetChildren().OfType<CollisionShape2D>();
         foreach (var collisionPolygon in collisionPolygons)
         {
-            _piercingEnemyDetectionArea.AddChild(collisionPolygon.Duplicate());
+            _piercingDetectionArea.AddChild(collisionPolygon.Duplicate());
         }
+
         foreach (var collisionShape in collisionShapes)
         {
-            _piercingEnemyDetectionArea.AddChild(collisionShape.Duplicate());
+            _piercingDetectionArea.AddChild(collisionShape.Duplicate());
         }
-        
-        _piercingEnemyDetectionArea.EnableCollisionMaskLayer(CollisionLayers.Enemies);
-        _piercingEnemyDetectionArea.BodyEntered += HandlePiercingEnemyDetectionAreaCollision;
-        _piercingEnemyDetectionArea.BodyExited += HandlePiercingEnemyDetectionAreaBodyExited;
-        
-        AddChild(_piercingEnemyDetectionArea);
+
+        _piercingDetectionArea.EnableCollisionMaskLayers(CollisionObjectUtils.PierceableLayers);
+        _piercingDetectionArea.BodyEntered += HandlePiercingDetectionAreaCollision;
+        _piercingDetectionArea.BodyExited += HandlePiercingDetectionAreaBodyExited;
+
+        AddChild(_piercingDetectionArea);
     }
 
     private void StopPiercing()
@@ -123,50 +135,65 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
             this.DisableCollisionLayer(CollisionLayers.PiercingPlayerProjectiles);
             this.EnableCollisionLayer(CollisionLayers.PlayerProjectiles);
         }
-        this.EnableCollisionMaskLayer(CollisionLayers.Enemies);
+
+        this.EnableCollisionMaskLayers(CollisionObjectUtils.PierceableLayers);
     }
 
-    private void HandlePiercingEnemyDetectionAreaCollision(Node body)
+    private void HandlePiercingDetectionAreaCollision(Node body)
     {
-        if (EnemiesToPierce <= 0)
+        if (ObstaclesToPierce <= 0)
         {
             return;
         }
 
-        if (body is not Enemy enemy)
+        if (body is not CollisionObject2D collisionObject2D)
         {
             return;
         }
+
+        if (!collisionObject2D.HasCollisionLayer(CollisionObjectUtils.PierceableLayers))
+        {
+            return;
+        }
+
+        if (collisionObject2D is Enemy enemy)
+        {
+            OnCollideWithEnemy(enemy);
+        }
         
-        OnCollideWithEnemy(enemy);
-        AddCollisionExceptionWith(enemy);
-        EnemiesToPierce--;
-        if (EnemiesToPierce == 0)
+        HandleWallHit(collisionObject2D);
+        AddCollisionExceptionWith(collisionObject2D);
+        ObstaclesToPierce--;
+        if (ObstaclesToPierce == 0)
         {
             StopPiercing();
         }
     }
-    
-    private void HandlePiercingEnemyDetectionAreaBodyExited(Node body)
+
+    private void HandlePiercingDetectionAreaBodyExited(Node body)
     {
-        if (body is not Enemy enemy)
+        if (body is not CollisionObject2D collisionObject2D)
         {
             return;
         }
 
-        if (!GetCollisionExceptions().Contains(enemy))
+        if (!collisionObject2D.HasCollisionLayer(CollisionObjectUtils.PierceableLayers))
         {
             return;
         }
-        
-        RemoveCollisionExceptionWith(enemy);
-        if (GetCollisionExceptions().Count != 0 || EnemiesToPierce > 0)
+
+        if (!GetCollisionExceptions().Contains(collisionObject2D))
         {
             return;
         }
-        
-        _piercingEnemyDetectionArea?.QueueFree();
-        _piercingEnemyDetectionArea = null;
+
+        RemoveCollisionExceptionWith(collisionObject2D);
+        if (GetCollisionExceptions().Count != 0 || ObstaclesToPierce > 0)
+        {
+            return;
+        }
+
+        _piercingDetectionArea?.QueueFree();
+        _piercingDetectionArea = null;
     }
-    
 }

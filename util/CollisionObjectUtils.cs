@@ -4,6 +4,12 @@ using Godot.Collections;
 
 public static class CollisionObjectUtils
 {
+    
+    public static readonly Array<CollisionLayers> PierceableLayers = [
+        CollisionLayers.Enemies, 
+        CollisionLayers.ProjectileBarrier
+    ];
+    
     /// <summary>
     /// Checks if the entire CollisionObject2D (all shapes) is above the playable area.
     /// Returns true only if all collision shapes are above the playable area's top edge.
@@ -33,7 +39,7 @@ public static class CollisionObjectUtils
 
         return collisionObject.GetCollisionRects().All(rect => rect.Position.Y > playableAreaBottom);
     }
-    
+
     /// <summary>
     /// Checks if the entire CollisionObject2D is outside the playable area (above OR below).
     /// More efficient than calling IsAbovePlayableArea() || IsBelowPlayableArea() separately.
@@ -44,7 +50,7 @@ public static class CollisionObjectUtils
         var playableAreaBottom = ShapeGame.PlayableArea.End.Y;
         var allAbove = true;
         var allBelow = true;
-        
+
         foreach (var rect in collisionObject.GetCollisionRects())
         {
             if (rect.End.Y >= playableAreaTop)
@@ -66,9 +72,20 @@ public static class CollisionObjectUtils
         return allAbove || allBelow;
     }
 
-    public static bool HasCollisionLayer(this CollisionObject2D collisionObject, params CollisionLayers[] collisionLayer)
+    public static bool HasCollisionLayer(
+        this CollisionObject2D collisionObject,
+        IEnumerable<CollisionLayers> collisionLayers
+    )
     {
-        return collisionLayer.Any(layer => collisionObject.GetCollisionLayerValue((int)layer));
+        return collisionLayers.Any(layer => collisionObject.GetCollisionLayerValue((int)layer));
+    }
+    
+    public static bool HasCollisionLayer(
+        this CollisionObject2D collisionObject,
+        params CollisionLayers[] collisionLayers
+    )
+    {
+        return collisionLayers.Any(layer => collisionObject.GetCollisionLayerValue((int)layer));
     }
 
     public static void DisableCollisionMaskLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
@@ -78,7 +95,18 @@ public static class CollisionObjectUtils
         var layerBit = ~(1u << bitIndex);
         collisionObject.CollisionMask &= layerBit;
     }
-    
+
+    public static void DisableCollisionMaskLayers(
+        this CollisionObject2D collisionObject,
+        IEnumerable<CollisionLayers> collisionLayers
+    )
+    {
+        foreach (var collisionLayer in collisionLayers)
+        {
+            collisionObject.DisableCollisionMaskLayer(collisionLayer);   
+        }
+    }
+
     public static void DisableCollisionLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
     {
         var collisionLayerNumber = (int)collisionLayer;
@@ -86,7 +114,7 @@ public static class CollisionObjectUtils
         var layerBit = ~(1u << bitIndex);
         collisionObject.CollisionLayer &= layerBit;
     }
-    
+
     public static void EnableCollisionMaskLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
     {
         var collisionLayerNumber = (int)collisionLayer;
@@ -95,6 +123,17 @@ public static class CollisionObjectUtils
         collisionObject.CollisionMask |= layerBit;
     }
     
+    public static void EnableCollisionMaskLayers(
+        this CollisionObject2D collisionObject, 
+        IEnumerable<CollisionLayers> collisionLayers
+        )
+    {
+        foreach (var collisionLayer in collisionLayers)
+        {
+            collisionObject.EnableCollisionMaskLayer(collisionLayer);
+        }
+    }
+
     public static void EnableCollisionLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
     {
         var collisionLayerNumber = (int)collisionLayer;
