@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="WallModule" load_steps=7 format=3 uid="uid://cyfc32h4mwt7u"]
+[gd_resource type="Resource" script_class="BarrierModule" load_steps=7 format=3 uid="uid://cyfc32h4mwt7u"]
 
-[ext_resource type="Script" uid="uid://ce47cdardq6qj" path="res://modules/types/projectile/wall/WallModule.cs" id="1_kabgn"]
+[ext_resource type="Script" uid="uid://ce47cdardq6qj" path="res://modules/types/projectile/barrier/BarrierModule.cs" id="1_kabgn"]
 [ext_resource type="Script" uid="uid://cmvf52kc3ad7v" path="res://modules/stats/LifetimeStat.cs" id="1_toy40"]
-[ext_resource type="Texture2D" uid="uid://cy3pk6xi70dch" path="res://modules/types/projectile/wall/wall_module.png" id="1_yjhod"]
+[ext_resource type="Texture2D" uid="uid://cy3pk6xi70dch" path="res://modules/types/projectile/barrier/barrier_module.png" id="1_yjhod"]
 [ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://modules/stats/ReloadStat.cs" id="2_rt2kj"]
 
 [sub_resource type="Resource" id="Resource_h060a"]
@@ -12,13 +12,13 @@ metadata/_custom_type_script = "uid://cmvf52kc3ad7v"
 
 [sub_resource type="Resource" id="Resource_ke7xy"]
 script = ExtResource("2_rt2kj")
-FireDelay = 3.0
+FireDelay = 2.0
 metadata/_custom_type_script = "uid://cd2f70s2ivisi"
 
 [resource]
 script = ExtResource("1_kabgn")
 Texture = ExtResource("1_yjhod")
-Name = "The Wall"
-Description = "Generates a wall in front of the player. Only one wall can exist at the same time"
+Name = "Barrier"
+Description = "Generates a projectile barrier in front of the player"
 Stats = Array[Object]([SubResource("Resource_h060a"), SubResource("Resource_ke7xy")])
 metadata/_custom_type_script = "uid://ce47cdardq6qj"

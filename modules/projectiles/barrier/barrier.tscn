@@ -1,13 +1,19 @@
-[gd_scene load_steps=12 format=3 uid="uid://cgm0yfj1g1own"]
+[gd_scene load_steps=15 format=3 uid="uid://cgm0yfj1g1own"]
 
-[ext_resource type="Script" uid="uid://cyhfswbha1aoo" path="res://modules/projectiles/wall/Wall.cs" id="1_g8gck"]
-[ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://modules/projectiles/wall/wall.png" id="1_j1wca"]
-[ext_resource type="Shader" uid="uid://rvd7qj3hbrha" path="res://modules/projectiles/wall/wall_mask.gdshader" id="2_4f48b"]
-[ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://util/particles/textures/particle_square.png" id="4_3nu1x"]
+[ext_resource type="Script" uid="uid://cyhfswbha1aoo" path="res://modules/projectiles/barrier/Barrier.cs" id="1_s4g7o"]
+[ext_resource type="AudioStream" uid="uid://bsgn7q80tqsqq" path="res://modules/projectiles/barrier/appear.wav" id="2_g8n68"]
+[ext_resource type="AudioStream" uid="uid://dhbep7xupvy65" path="res://modules/projectiles/barrier/disappear.wav" id="3_y6mjq"]
+[ext_resource type="Shader" uid="uid://rvd7qj3hbrha" path="res://modules/projectiles/barrier/barrier_mask.gdshader" id="4_lknuo"]
+[ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://modules/projectiles/barrier/barrier.png" id="5_wc1s4"]
+[ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://util/particles/textures/particle_square.png" id="6_jtdx1"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_s4g7o"]
+friction = 0.5
+bounce = 0.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3nu1x"]
 resource_local_to_scene = true
-shader = ExtResource("2_4f48b")
+shader = ExtResource("4_lknuo")
 shader_parameter/progress = 1.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_468xe"]
@@ -46,14 +52,23 @@ scale_max = 0.75
 scale_curve = SubResource("CurveTexture_v3vkq")
 alpha_curve = SubResource("CurveTexture_3qs30")
 
-[node name="Wall" type="StaticBody2D"]
+[node name="Barrier" type="RigidBody2D"]
 collision_layer = 16
-collision_mask = 0
-script = ExtResource("1_g8gck")
+collision_mask = 1034
+mass = 10.0
+physics_material_override = SubResource("PhysicsMaterial_s4g7o")
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 10
+linear_damp = 5.0
+angular_damp = 3.0
+script = ExtResource("1_s4g7o")
+_appearSound = ExtResource("2_g8n68")
+_disappearSound = ExtResource("3_y6mjq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_3nu1x")
-texture = ExtResource("1_j1wca")
+texture = ExtResource("5_wc1s4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -64,7 +79,7 @@ shape = SubResource("CapsuleShape2D_468xe")
 physics_interpolation_mode = 2
 modulate = Color(0.21176471, 0.94509804, 0.8039216, 1)
 show_behind_parent = true
-texture = ExtResource("4_3nu1x")
+texture = ExtResource("6_jtdx1")
 lifetime = 0.5
 visibility_rect = Rect2(-225, -100, 450, 200)
 process_material = SubResource("ParticleProcessMaterial_3nu1x")

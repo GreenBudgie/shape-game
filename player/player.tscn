@@ -7,7 +7,7 @@
 points = PackedVector2Array(0, -46, -8, -42, -48, 38, -48, 48, -42, 54, 42, 54, 48, 48, 48, 38, 8, -42)
 
 [node name="Player" type="CharacterBody2D"]
-collision_mask = 244
+collision_mask = 228
 motion_mode = 1
 script = ExtResource("1_3uijo")
 

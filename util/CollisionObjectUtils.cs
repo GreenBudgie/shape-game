@@ -66,9 +66,9 @@ public static class CollisionObjectUtils
         return allAbove || allBelow;
     }
 
-    public static bool HasCollisionLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    public static bool HasCollisionLayer(this CollisionObject2D collisionObject, params CollisionLayers[] collisionLayer)
     {
-        return collisionObject.GetCollisionLayerValue((int)collisionLayer);
+        return collisionLayer.Any(layer => collisionObject.GetCollisionLayerValue((int)layer));
     }
 
     public static void DisableCollisionMaskLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)

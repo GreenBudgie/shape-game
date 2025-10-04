@@ -1,4 +1,4 @@
-public partial class Wall : StaticBody2D, IProjectile<Wall>
+public partial class Barrier : RigidBody2D, IProjectile<Barrier>
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://cgm0yfj1g1own");
 
@@ -8,20 +8,29 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
     private static readonly Vector2 LeftCornerPosition = new(-225, 0);
     private static readonly Vector2 RightCornerPosition = new(225, 0);
 
+    [Export]
+    private AudioStream _appearSound = null!;
+    
+    [Export]
+    private AudioStream _disappearSound = null!;
+
     private Sprite2D _sprite = null!;
     private ShaderMaterial _spriteMaterial = null!;
     private GpuParticles2D _particles = null!;
+    private Vector2 _initialPosition;
 
-    public Wall Node => this;
+    public Barrier Node => this;
 
-    public static Wall Create()
+    public static Barrier Create()
     {
-        var node = Scene.Instantiate<Wall>();
+        var node = Scene.Instantiate<Barrier>();
         return node;
     }
 
     public void Prepare(ShotContext context)
     {
+        RotationDegrees = RandomUtils.DeltaRange(0, 15);
+        
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
         _particles.Emitting = false;
         
@@ -35,11 +44,15 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
     private Glow _glow = null!;
     private uint _initialCollisionLayer;
+    private uint _initialCollisionMask;
     
     public override void _Ready()
     {
+        _initialPosition = GlobalPosition;
         _initialCollisionLayer = CollisionLayer;
+        _initialCollisionMask = CollisionMask;
         CollisionLayer = 0;
+        CollisionMask = 0;
         
         _glow = Glow.AddGlow(_sprite, addChild: false);
         _glow.Sprite.Scale = new Vector2(0, 1);
@@ -60,8 +73,20 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
     private Beam? _leftBeam;
     private Beam? _rightBeam;
+    private float _animationProgress;
 
     public override void _Process(double delta)
+    {
+        UpdateBeams();
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        RetainPosition();
+        RetainRotation();
+    }
+
+    private void UpdateBeams()
     {
         if (_leftBeam == null || _rightBeam == null)
         {
@@ -76,13 +101,51 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
         if (IsInstanceValid(_leftBeam))
         {
-            _leftBeam.SetFrom(player.GetGlobalNosePosition());
+            UpdateBeamFromTo(_leftBeam, LeftCornerPosition);
         }
 
         if (IsInstanceValid(_rightBeam))
         {
-            _rightBeam.SetFrom(player.GetGlobalNosePosition());
+            UpdateBeamFromTo(_rightBeam, RightCornerPosition);
         }
+    }
+    
+    
+    private void UpdateBeamFromTo(Beam beam, Vector2 toPosition)
+    {
+        var globalPos = ToGlobal(toPosition * _animationProgress);
+    
+        var actualPlayer = Player.FindPlayer();
+        if (actualPlayer == null)
+        {
+            beam.SetTo(globalPos);
+            return;
+        }
+
+        beam.SetFromTo(actualPlayer.GetGlobalNosePosition(), globalPos);
+    }
+
+    private void RetainPosition()
+    {
+        const float force = 0.1f;
+        var direction = _initialPosition - GlobalPosition;
+        var speed = GlobalPosition.DistanceSquaredTo(_initialPosition);
+        ApplyCentralForce(speed * force * direction);
+    }
+
+    private void RetainRotation()
+    {
+        // TODO code is stolen from EnemyRectangle
+        var rotationDegrees = RotationDegrees;
+        if (IsZeroApprox(rotationDegrees))
+        {
+            return;
+        }
+
+        const float torqueByDegree = 100000f;
+        var direction = rotationDegrees < 0 ? 1 : -1;
+        var torque = Abs(rotationDegrees) * torqueByDegree;
+        ApplyTorque(torque * direction);
     }
 
     private bool _isRemoving;
@@ -95,8 +158,12 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
             return;
         }
         _isRemoving = true;
+        
+        SoundManager.Instance.PlayPositionalSound(this, _disappearSound)
+            .RandomizePitchOffset(0.1f);
 
         CollisionLayer = 0;
+        CollisionMask = 0;
         
         _particles.Reparent(ShapeGame.Instance);
         _particles.OneShot = true;
@@ -119,6 +186,9 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
 
     private void PlayAppearEffect()
     {
+        SoundManager.Instance.PlayPositionalSound(this, _appearSound)
+            .RandomizePitchOffset(0.1f);
+        
         var tween = CreateTween()
             .SetParallel()
             .SetEase(Tween.EaseType.InOut)
@@ -136,15 +206,27 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
     {
         _particles.Emitting = true;
         CollisionLayer = _initialCollisionLayer;
+        CollisionMask = _initialCollisionMask;
     }
 
     private void PlaySpawnBeamEffectForPlayer(Player player)
     {
-        _leftBeam = CreateAndAnimateBeam(player, ToGlobal(LeftCornerPosition));
-        _rightBeam = CreateAndAnimateBeam(player, ToGlobal(RightCornerPosition));
+        _leftBeam = CreateAndAnimateBeam(player);
+        _rightBeam = CreateAndAnimateBeam(player);
+
+        var tween = CreateTween();
+        tween.TweenMethod(
+                Callable.From<float>(progress => _animationProgress = progress),
+                0f,
+                1f,
+                EffectDuration
+            )
+            .SetDelay(EffectStartupDuration)
+            .SetEase(Tween.EaseType.InOut)
+            .SetTrans(Tween.TransitionType.Quad);
     }
 
-    private Beam CreateAndAnimateBeam(Player player, Vector2 toPosition)
+    private Beam CreateAndAnimateBeam(Player player)
     {
         var beam = Beam.Create()
             .SetFromTo(player.GetGlobalNosePosition(), GlobalPosition)
@@ -153,17 +235,6 @@ public partial class Wall : StaticBody2D, IProjectile<Wall>
             .SetOutlineThickness(100)
             .SetOutlineColor(ColorScheme.LightBlueGreen)
             .SetBeamColor(ColorScheme.LightBlueGreen.Lightened(0.5f));
-
-        var positionTween = beam.CreateTween();
-        positionTween.TweenMethod(
-                Callable.From<Vector2>(a => beam.SetTo(a)),
-                GlobalPosition,
-                toPosition,
-                EffectDuration
-            )
-            .SetDelay(EffectStartupDuration)
-            .SetEase(Tween.EaseType.InOut)
-            .SetTrans(Tween.TransitionType.Quad);
 
         var tween = beam.CreateTween();
         tween.TweenProperty(beam.ShaderMaterial, Beam.ProgressShaderParam, 1, EffectStartupDuration)

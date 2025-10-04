@@ -1,10 +1,10 @@
 [GlobalClass]
-public partial class WallModule : ProjectileModule
+public partial class BarrierModule : ProjectileModule
 {
     
     public override IProjectile<Node2D> CreateProjectile()
     {
-        return Wall.Create();
+        return Barrier.Create();
     }
     
 }
