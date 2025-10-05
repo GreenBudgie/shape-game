@@ -1,6 +1,5 @@
 public partial class ProgressStats : Control
 {
-
     private RichTextLabel _destroyRequirementLabel = null!;
     private RichTextLabel _destroyProgressLabel = null!;
 
@@ -24,11 +23,11 @@ public partial class ProgressStats : Control
         LevelManager.Instance.SurviveProgressUpdated += OnSurviveProgressUpdated;
     }
 
-    private void OnLevelStarted()
+    private void OnLevelStarted(Level level)
     {
-        UpdateDestroyRequirementLabel(LevelManager.Instance.DestroyRequirement);
-        UpdateSurviveRequirementLabel(LevelManager.Instance.SurviveRequirementSeconds);
-        UpdateSurviveProgress(LevelManager.Instance.SurviveProgressSeconds);
+        UpdateDestroyRequirementLabel(level.DestroyRequirement);
+        UpdateSurviveRequirementLabel(level.SurviveRequirement);
+        UpdateSurviveProgress(0);
     }
 
     private void OnDestroyProgressUpdated(int prevProgress, int newProgress)
@@ -39,6 +38,12 @@ public partial class ProgressStats : Control
     private void UpdateDestroyProgress(int progress)
     {
         _destroyProgressLabel.Text = string.Empty;
+        
+        var level = LevelManager.Instance.Level;
+        if (level == null)
+        {
+            return;
+        }
 
         _destroyProgressLabel.PushColor(ColorScheme.Red);
         _destroyProgressLabel.AppendText(progress.ToString());
@@ -47,7 +52,7 @@ public partial class ProgressStats : Control
         _destroyProgressLabel.AppendText(" / ");
 
         _destroyProgressLabel.PushColor(ColorScheme.Red);
-        _destroyProgressLabel.AppendText(LevelManager.Instance.DestroyRequirement.ToString());
+        _destroyProgressLabel.AppendText(level.DestroyRequirement.ToString());
         _destroyProgressLabel.Pop();
     }
 
@@ -81,8 +86,14 @@ public partial class ProgressStats : Control
     private void UpdateSurviveProgress(int progressSeconds)
     {
         _surviveProgressLabel.Text = string.Empty;
+        
+        var level = LevelManager.Instance.Level;
+        if (level == null)
+        {
+            return;
+        }
 
-        var remainingSecondsProgress = LevelManager.Instance.SurviveRequirementSeconds - progressSeconds;
+        var remainingSecondsProgress = level.SurviveRequirement - progressSeconds;
         var remainingMinutes = remainingSecondsProgress / 60;
         var remainingSeconds = remainingSecondsProgress % 60;
 
@@ -97,5 +108,4 @@ public partial class ProgressStats : Control
         _surviveProgressLabel.AppendText(formattedSeconds);
         _surviveProgressLabel.Pop();
     }
-
 }

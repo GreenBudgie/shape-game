@@ -2,7 +2,7 @@ public partial class DestroyProgressBar : StatsProgressBar
 {
 
     protected override Color Color => ColorScheme.Red;
-    protected override int Requirement => LevelManager.Instance.DestroyRequirement;
+    protected override int Requirement => LevelManager.Instance.Level?.DestroyRequirement ?? 0;
     protected override int Progress => LevelManager.Instance.DestroyProgress;
     protected override bool PlayProgressUpdateEffect => true;
 

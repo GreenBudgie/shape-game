@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="Level" load_steps=9 format=3 uid="uid://bjur0p5ammsj"]
+
+[ext_resource type="Resource" uid="uid://mbhykbplaxr5" path="res://enemies/types/square/enemy_square_type.tres" id="1_355h3"]
+[ext_resource type="Script" uid="uid://bkrrifxyi3ap8" path="res://level/Level.cs" id="1_jlba7"]
+[ext_resource type="Script" uid="uid://b5kaqptvcyo0j" path="res://level/EnemyTypeDistribution.cs" id="1_qi0c8"]
+[ext_resource type="Resource" uid="uid://bwjka3mi3c2eu" path="res://enemies/types/rhombus/enemy_rhombus_type.tres" id="3_ets1u"]
+[ext_resource type="Resource" uid="uid://ddty2g0vmmg3" path="res://enemies/types/rectangle/enemy_rectangle_type.tres" id="4_gvhn5"]
+
+[sub_resource type="Resource" id="Resource_355h3"]
+script = ExtResource("1_qi0c8")
+EnemyType = ExtResource("1_355h3")
+Weight = 5
+metadata/_custom_type_script = "uid://b5kaqptvcyo0j"
+
+[sub_resource type="Resource" id="Resource_gvhn5"]
+script = ExtResource("1_qi0c8")
+EnemyType = ExtResource("3_ets1u")
+Weight = 3
+PhaseDelay = 1
+metadata/_custom_type_script = "uid://b5kaqptvcyo0j"
+
+[sub_resource type="Resource" id="Resource_qhje5"]
+script = ExtResource("1_qi0c8")
+EnemyType = ExtResource("4_gvhn5")
+PhaseDelay = 3
+metadata/_custom_type_script = "uid://b5kaqptvcyo0j"
+
+[resource]
+script = ExtResource("1_jlba7")
+Number = 1
+DestroyRequirement = 15
+SurviveRequirement = 60
+PhaseDuration = 10
+EnemiesPerPhase = 3
+EnemyTypeDistributions = Array[Object]([SubResource("Resource_355h3"), SubResource("Resource_gvhn5"), SubResource("Resource_qhje5")])
+metadata/_custom_type_script = "uid://bkrrifxyi3ap8"

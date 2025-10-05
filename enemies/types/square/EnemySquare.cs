@@ -4,7 +4,7 @@
 
     [Export] private AudioStream _shotSound = null!;
 
-    private const double FireDelay = 1;
+    private const double FireDelay = 0.5f;
 
     private double _fireTimer = FireDelay;
     private EnemyPathFollowController _pathFollowController = null!;

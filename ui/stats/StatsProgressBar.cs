@@ -90,7 +90,7 @@ public abstract partial class StatsProgressBar : TextureProgressBar
         UpdateProgress(newProgress, prevProgress < newProgress);
     }
 
-    private void OnLevelStarted()
+    private void OnLevelStarted(Level level)
     {
         UpdateRequirement(Requirement);
         UpdateProgress(Progress);

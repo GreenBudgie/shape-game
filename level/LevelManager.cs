@@ -1,31 +1,46 @@
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 
 public partial class LevelManager : Node
 {
-    
     public static LevelManager Instance { get; private set; } = null!;
 
     [Signal]
-    public delegate void LevelStartedEventHandler();
-    
+    public delegate void LevelStartedEventHandler(Level level);
+
     [Signal]
     public delegate void DestroyProgressUpdatedEventHandler(int prevProgress, int newProgress);
-    
+
     [Signal]
     public delegate void SurviveProgressUpdatedEventHandler(int prevProgress, int newProgress);
-    
-    public int DestroyRequirement { get; private set; }
+
+    public static readonly List<Level> Levels = ResourceSearcher.FindResourcesInDirectory<Level>("res://level/config");
+
+    private static readonly Dictionary<int, Level> LevelByNumber = Levels
+        .GroupBy(level => level.Number)
+        .ToDictionary(
+            group => group.Key,
+            group => group.Single()
+        );
+
+    public Level? Level;
+
     public int DestroyProgress { get; private set; }
-    
-    public int SurviveRequirementSeconds { get; private set; }
-    public int SurviveProgressSeconds { get; private set; }
+
+    public int SurviveProgress { get; private set; }
 
     private double _surviveProgressRealSeconds;
-    private int _level;
+    private double _timeToNextPhase;
+    private bool _requirementsMet;
 
-    public override void _EnterTree()
+    public LevelManager()
     {
         Instance = this;
+    }
+
+    public static Level GetLevelByNumber(int number)
+    {
+        return LevelByNumber[number];
     }
 
     public override void _Ready()
@@ -37,40 +52,75 @@ public partial class LevelManager : Node
 
     public override void _Process(double delta)
     {
-        _surviveProgressRealSeconds += delta;
-        var fullSecondsProgress = FloorToInt(_surviveProgressRealSeconds);
-        if (fullSecondsProgress > SurviveProgressSeconds && SurviveProgressSeconds < SurviveRequirementSeconds)
+        if (Level != null)
         {
-            SetSurviveProgress(Min(SurviveRequirementSeconds, fullSecondsProgress));
+            ProcessLevel(delta, Level);
         }
     }
 
+    private void ProcessLevel(double delta, Level level)
+    {
+        if (_requirementsMet)
+        {
+            return;
+        }
+        
+        _surviveProgressRealSeconds += delta;
+        var fullSecondsProgress = FloorToInt(_surviveProgressRealSeconds);
+        if (fullSecondsProgress > SurviveProgress && SurviveProgress < level.SurviveRequirement)
+        {
+            SetSurviveProgress(Min(level.SurviveRequirement, fullSecondsProgress));
+        }
+
+        _timeToNextPhase -= delta;
+        if (_timeToNextPhase < 0)
+        {
+            _timeToNextPhase = level.PhaseDuration;
+            SpawnEnemies();
+        }
+    }
+
+    private int _phase = 1;
+
     public void StartLevel(int level)
     {
-        _level = level;
-        
-        SetDestroyRequirement(4);
-        SetSurviveRequirement(4);
+        Level = GetLevelByNumber(level);
 
-        SpawnEnemy();
-        var tween = CreateTween().SetLoops();
-        tween.TweenCallback(Callable.From(SpawnEnemy)).SetDelay(10f);
-        
-        EmitSignalLevelStarted();
+        SetSurviveProgress(0);
+        SetDestroyProgress(0);
+
+        _timeToNextPhase = Level.PhaseDuration;
+        SpawnEnemies();
+
+        EmitSignalLevelStarted(Level);
+    }
+
+    public void CheckIfRequirementsMet()
+    {
+        if (Level == null)
+        {
+            return;
+        }
+
+        if (DestroyProgress < Level.DestroyRequirement || SurviveProgress < Level.SurviveRequirement)
+        {
+            return;
+        }
+
+        _requirementsMet = true;
     }
 
     private void OnEnemyDestroyed(Enemy enemy)
     {
-        if (DestroyProgress < DestroyRequirement)
+        if (Level == null)
+        {
+            return;
+        }
+
+        if (DestroyProgress < Level.DestroyRequirement)
         {
             SetDestroyProgress(DestroyProgress + 1);
         }
-    }
-
-    private void SetDestroyRequirement(int requirement)
-    {
-        DestroyRequirement = requirement;
-        SetDestroyProgress(0);
     }
 
     private void SetDestroyProgress(int progress)
@@ -78,25 +128,29 @@ public partial class LevelManager : Node
         var prevDestroyProgress = DestroyProgress;
         DestroyProgress = progress;
         EmitSignalDestroyProgressUpdated(prevDestroyProgress, DestroyProgress);
-    }
-    
-    private void SetSurviveRequirement(int requirementSeconds)
-    {
-        SurviveRequirementSeconds = requirementSeconds;
-        SetSurviveProgress(0);
+        CheckIfRequirementsMet();
     }
 
     private void SetSurviveProgress(int progressSeconds)
     {
-        var prevSurviveProgress = SurviveProgressSeconds;
-        SurviveProgressSeconds = progressSeconds;
-        EmitSignalSurviveProgressUpdated(prevSurviveProgress, SurviveProgressSeconds);
+        var prevSurviveProgress = SurviveProgress;
+        SurviveProgress = progressSeconds;
+        EmitSignalSurviveProgressUpdated(prevSurviveProgress, SurviveProgress);
+        CheckIfRequirementsMet();
     }
 
-    private void SpawnEnemy()
+    private void SpawnEnemies()
     {
-        EnemyManager.Instance.SpawnEnemy(EnemyManager.Instance.GetRandomEnemyType());
+        if (Level == null)
+        {
+            return;
+        }
+
+        for (var i = 0; i < Level.EnemiesPerPhase; i++)
+        {
+            EnemyManager.Instance.SpawnEnemy(Level.GetRandomWeightedEnemyType(_phase));
+        }
+
+        _phase++;
     }
-
-
 }
