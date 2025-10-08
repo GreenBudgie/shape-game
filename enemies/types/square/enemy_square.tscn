@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://csm3f5807x7i8"]
+[gd_scene load_steps=10 format=3 uid="uid://csm3f5807x7i8"]
 
 [ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://enemies/types/square/EnemySquare.cs" id="1_qo6cg"]
 [ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://enemies/types/square/projectile/enemy_square_shot.wav" id="2_7g7p5"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://enemies/enemy_destroy.wav" id="4_700y2"]
 [ext_resource type="Material" uid="uid://ef46pfecv73h" path="res://util/dissolve/dissolve_material.tres" id="5_4dxbg"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://enemies/enemy_animations.tscn" id="7_igh3h"]
+[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="8_kaag5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_igh3h"]
 size = Vector2(150, 150)
@@ -38,3 +39,9 @@ root_node = NodePath("../Sprite")
 shape = SubResource("RectangleShape2D_igh3h")
 disabled = true
 one_way_collision_margin = 8.3
+
+[node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("8_kaag5")]
+rect = Rect2(-100, -100, 200, 200)
+show_rect = false
+_target = NodePath("..")
+_pointerColor = Color(0.22352941, 0.627451, 0.92941177, 1)

@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://b1rpikysssmoh"]
+[gd_scene load_steps=7 format=3 uid="uid://b1rpikysssmoh"]
 
 [ext_resource type="Script" uid="uid://cphrulhegtsgj" path="res://enemies/types/rectangle/projectile/EnemyRectangleProjectile.cs" id="1_er2ye"]
 [ext_resource type="Texture2D" uid="uid://44pceip607pu" path="res://enemies/types/rectangle/projectile/rectangle_projectile.png" id="1_t6ung"]
 [ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://enemies/types/square/projectile/enemy_square_projectile_hit_wall.wav" id="2_px6o3"]
+[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="4_px6o3"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ywo36"]
 friction = 0.5
@@ -28,3 +29,9 @@ texture = ExtResource("1_t6ung")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
 shape = SubResource("RectangleShape2D_t6ung")
+
+[node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("4_px6o3")]
+rect = Rect2(-45, -45, 90, 90)
+show_rect = false
+_target = NodePath("..")
+_pointerColor = Color(0.5411765, 0.41960785, 0.74509805, 1)

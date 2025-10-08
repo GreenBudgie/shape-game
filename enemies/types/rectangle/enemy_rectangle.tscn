@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b6vn5eqi2kauj"]
+[gd_scene load_steps=11 format=3 uid="uid://b6vn5eqi2kauj"]
 
 [ext_resource type="Script" uid="uid://bb76xp345m7u1" path="res://enemies/types/rectangle/EnemyRectangle.cs" id="1_h54be"]
 [ext_resource type="AudioStream" uid="uid://dlhdnpa11hxfc" path="res://enemies/types/rectangle/entity_rectangle_projectile_charge.wav" id="3_d47au"]
@@ -8,6 +8,7 @@
 [ext_resource type="Material" uid="uid://ef46pfecv73h" path="res://util/dissolve/dissolve_material.tres" id="5_3y3oo"]
 [ext_resource type="Texture2D" uid="uid://lb0yaaolwk6i" path="res://enemies/types/rectangle/rectangle.png" id="6_ynf1d"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://enemies/enemy_animations.tscn" id="7_ixvpt"]
+[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="9_hx3wo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_igh3h"]
 size = Vector2(360, 190)
@@ -68,3 +69,9 @@ position = Vector2(44, 44)
 
 [node name="Position8" type="Marker2D" parent="ProjectileSpawnPositions"]
 position = Vector2(132, 44)
+
+[node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("9_hx3wo")]
+rect = Rect2(-200, -112, 400, 224)
+show_rect = false
+_target = NodePath("..")
+_pointerColor = Color(0.5411765, 0.41960785, 0.74509805, 1)

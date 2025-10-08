@@ -27,14 +27,6 @@ public partial class EnemyRectangleProjectile : RigidBody2D, IPlayerCollisionDet
         BodyEntered += HandleBodyEntered;
     }
 
-    public override void _Process(double delta)
-    {
-        if (this.IsBelowPlayableArea())
-        {
-            QueueFree();
-        }
-    }
-
     private bool _torqueApplied;
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)

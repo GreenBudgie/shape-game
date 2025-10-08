@@ -29,12 +29,6 @@ public partial class EnemyRhombusProjectile : RigidBody2D, IPlayerCollisionDetec
             return;
         }
 
-        if (this.IsBelowPlayableArea())
-        {
-            QueueFree();
-            return;
-        }
-
         if (_lifetimeSeconds <= 0)
         {
             Dissolve();

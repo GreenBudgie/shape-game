@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bhj8dgeytmpxx"]
+[gd_scene load_steps=7 format=3 uid="uid://bhj8dgeytmpxx"]
 
 [ext_resource type="Script" uid="uid://r5s6weechulc" path="res://enemies/types/square/projectile/EnemySquareProjectile.cs" id="1_jyvyp"]
 [ext_resource type="Texture2D" uid="uid://dklcu0esdul0h" path="res://enemies/types/square/projectile/enemy_square_projectile.png" id="2_eu8a1"]
 [ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://enemies/types/square/projectile/enemy_square_projectile_hit_wall.wav" id="2_y3uyh"]
+[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="4_wxus7"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jyvyp"]
 friction = 0.5
@@ -25,5 +26,12 @@ _hitWallSound = ExtResource("2_y3uyh")
 texture = ExtResource("2_eu8a1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_vpvkw")
+
+[node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("4_wxus7")]
+rect = Rect2(-30, -29, 60, 59)
+show_rect = false
+_target = NodePath("..")
+_pointerColor = Color(0.22352941, 0.627451, 0.92941177, 1)

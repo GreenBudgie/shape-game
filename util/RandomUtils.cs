@@ -45,6 +45,22 @@ public static class RandomUtils
     }
     
     /// <summary>
+    /// Generates a random float within a range centered around the specified value.
+    /// </summary>
+    /// <param name="value">The center value of the range</param>
+    /// <param name="delta">The maximum deviation from the center value</param>
+    /// <returns>A random float between (value - delta) and (value + delta)</returns>
+    public static double DeltaRange(double value, double delta)
+    {
+        if (delta == 0)
+        {
+            return value;
+        }
+        
+        return GD.RandRange(value - delta, value + delta);
+    }
+    
+    /// <summary>
     /// Generates a random float within a range centered around the specified value, 
     /// multiplied by a random sign (+1 or -1).
     /// </summary>

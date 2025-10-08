@@ -37,7 +37,7 @@ public partial class Level : Resource
     {
         // Filter eligible enemy types based on phase delay
         var eligibleDistributions = EnemyTypeDistributions
-            .Where(dist => dist.PhaseDelay <= currentPhase)
+            .Where(dist => dist.PhaseDelay < currentPhase)
             .ToArray();
 
         if (eligibleDistributions.Length == 0)

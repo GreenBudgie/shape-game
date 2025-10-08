@@ -5,8 +5,9 @@
     [Export] private AudioStream _shotSound = null!;
 
     private const double FireDelay = 0.5f;
+    private const double FireDelayDelta = 0.1f;
 
-    private double _fireTimer = FireDelay;
+    private double _fireTimer = RandomUtils.DeltaRange(FireDelay, FireDelayDelta);
     private EnemyPathFollowController _pathFollowController = null!;
 
     public override void _Ready()
@@ -35,7 +36,7 @@
         if (_fireTimer <= 0)
         {
             Fire();
-            _fireTimer = FireDelay;
+            _fireTimer = RandomUtils.DeltaRange(FireDelay, FireDelayDelta);
         }
         else
         {

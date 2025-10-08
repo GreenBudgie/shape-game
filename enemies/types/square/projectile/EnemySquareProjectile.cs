@@ -19,14 +19,6 @@
         BodyEntered += HandleBodyEntered;
     }
 
-    public override void _Process(double delta)
-    {
-        if (this.IsBelowPlayableArea())
-        {
-            QueueFree();
-        }
-    }
-
     private bool _torqueApplied;
     
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
@@ -48,6 +40,17 @@
 
     private void HandleBodyEntered(Node body)
     {
+        if (body is not CollisionObject2D collisionObject)
+        {
+            return;
+        }
+
+        if (collisionObject.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
+        {
+            QueueFree();
+            return;
+        }
+        
         if (!body.IsInGroup("level_walls"))
         {
             return;
