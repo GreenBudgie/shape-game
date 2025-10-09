@@ -5,9 +5,9 @@ public partial class EnemyManager : Node
 
     private static readonly Rect2 EnemySpawnArea = new(
         ShapeGame.PlayableArea.Position.X + 128,
-        ShapeGame.PlayableArea.Position.Y - 256,
+        ShapeGame.PlayableArea.Position.Y - 384,
         ShapeGame.PlayableArea.Size.X - 128,
-        0
+        128
     );
 
     public static readonly List<EnemyType> EnemyTypes =

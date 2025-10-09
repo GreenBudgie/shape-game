@@ -1,7 +1,10 @@
 public partial class Pointer : Sprite2D
 {
     
-    private const float DistanceToEdge = 40;
+    private const float DistanceToEdge = 20;
+    private const float MinScale = 0.35f;
+    private const float SpawnDuration = 0.3f;
+    private const float RemoveDuration = 0.3f;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://kmwq84squv6w");
 
@@ -13,9 +16,8 @@ public partial class Pointer : Sprite2D
         var node = Scene.Instantiate<Pointer>();
         node._target = target;
         node._color = color;
-        node.Scale = new Vector2(0.5f, 0.5f);
-        node.Modulate = color;
-        node.UpdatePosition();
+        node.Modulate = color.AsTransparent();
+        node.UpdatePositionAndScale();
         node.Offset = new Vector2(0, -DistanceToEdge);
         return node;
     }
@@ -24,51 +26,58 @@ public partial class Pointer : Sprite2D
 
     public override void _Ready()
     {
-        const float spawnDuration = 0.25f;
+        _spawnTween = CreateTween().SetParallel();
 
-        _spawnTween = CreateTween()
-            .SetParallel()
+        _spawnTween.TweenProperty(this, OffsetProperty, Vector2.Zero, SpawnDuration)
             .SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Quad);
-
-        _spawnTween.TweenProperty(this, OffsetProperty, Vector2.Zero, spawnDuration);
-        _spawnTween.TweenProperty(this, ScaleProperty, Vector2.One, spawnDuration);
-        _spawnTween.TweenProperty(this, ModulateProperty, _color, spawnDuration);
+        _spawnTween.TweenProperty(this, ModulateProperty, _color, SpawnDuration)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Quad);
     }
 
     public override void _Process(double delta)
-    {
-        UpdatePosition();
-    }
-
-    private bool _isRemoving;
-
-    private void UpdatePosition()
     {
         if (_isRemoving)
         {
             return;
         }
-
+        
         if (!IsInstanceValid(_target))
         {
             Remove();
             return;
         }
+        
+        UpdatePositionAndScale();
+    }
 
+    private bool _isRemoving;
+
+    private void UpdatePositionAndScale()
+    {
         float y;
+        float distanceFromEdge;
         if (_target.GlobalPosition.Y < ShapeGame.Center.Y)
         {
+            // Above
             Rotation = 0;
             y = ShapeGame.PlayableArea.Position.Y + DistanceToEdge;
+            distanceFromEdge = Abs(_target.GlobalPosition.Y);
         }
         else
         {
+            // Below
             Rotation = Pi;
             y = ShapeGame.PlayableArea.End.Y - DistanceToEdge;
+            distanceFromEdge = _target.GlobalPosition.Y - ShapeGame.PlayableArea.End.Y;
         }
 
         GlobalPosition = new Vector2(_target.GlobalPosition.X, y);
+
+        var distanceRatio = 1 - distanceFromEdge / ShapeGame.DistanceToOutsideBorder;
+        var scale = Lerp(MinScale, 1, distanceRatio);
+        Scale =  new Vector2(scale, scale);
     }
 
     public void Remove()
@@ -81,16 +90,14 @@ public partial class Pointer : Sprite2D
         _isRemoving = true;
         _spawnTween?.Kill();
 
-        const float removeDuration = 0.25f;
+        var tween = CreateTween().SetParallel();
 
-        var tween = CreateTween()
-            .SetParallel()
+        tween.TweenProperty(this, OffsetProperty, new Vector2(0, -DistanceToEdge), RemoveDuration)
             .SetEase(Tween.EaseType.In)
             .SetTrans(Tween.TransitionType.Quad);
-
-        tween.TweenProperty(this, OffsetProperty, new Vector2(0, -DistanceToEdge), removeDuration);
-        tween.TweenProperty(this, ScaleProperty, new Vector2(0.5f, 0.5f), removeDuration);
-        tween.TweenProperty(this, ModulateProperty, _color.AsTransparent(), removeDuration);
+        tween.TweenProperty(this, ModulateProperty, _color.AsTransparent(), RemoveDuration)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Quad);
         tween.Finished += QueueFree;
     }
 
