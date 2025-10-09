@@ -22,6 +22,11 @@ public abstract partial class Enemy : RigidBody2D
     /// A rectangle (in local coordinates) to use for spawning effects inside the enemy
     /// </summary>
     public Rect2 AreaRect { get; private set; }
+    
+    protected bool IsActive { get; private set; }
+    
+    private uint _initialCollisionLayer;
+    private uint _initialCollisionMask;
 
     public override void _Ready()
     {
@@ -46,11 +51,51 @@ public abstract partial class Enemy : RigidBody2D
             .SetStrength(0)
             .SetRadius(0)
             .EnablePulsing();
+
+        Deactivate();
+        GetTree().CreateTimer(GetTimeToActivate()).Timeout += Activate;
+    }
+    
+    private void Deactivate()
+    {
+        _initialCollisionLayer = CollisionLayer;
+        _initialCollisionMask = CollisionMask;
+        CollisionLayer = 0;
+        CollisionMask = 0;
+        
+        SetPhysicsProcess(false);
+        SetProcess(false);
+    }
+
+    private void Activate()
+    {
+        IsActive = true;
+        CollisionLayer = _initialCollisionLayer;
+        CollisionMask = _initialCollisionMask;
+        SetPhysicsProcess(true);
+        SetProcess(true);
+        OnActivate();
+    }
+
+    protected virtual void OnActivate()
+    {
     }
 
     public abstract float GetMaxHealth();
     
     public abstract float GetCrystalsToDrop();
+
+    /// <summary>
+    /// The time it takes for entity to start any actions (firing, moving to path e.t.c.), in seconds.
+    ///
+    /// Before this time, entity is also invulnerable (its collision layer/mask are disabled).
+    ///
+    /// 1 second by default.
+    /// </summary>
+    public float GetTimeToActivate()
+    {
+        return 1;
+    }
 
     /// <summary>
     /// Damages the enemy by provided amount of HP. Optionally, source of the damage can be provided

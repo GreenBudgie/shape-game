@@ -31,7 +31,6 @@ position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_vpvkw")
 
 [node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("4_wxus7")]
-rect = Rect2(-30, -29, 60, 59)
-show_rect = false
 _target = NodePath("..")
 _pointerColor = Color(0.22352941, 0.627451, 0.92941177, 1)
+_showAbove = false

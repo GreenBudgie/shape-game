@@ -41,7 +41,6 @@ disabled = true
 one_way_collision_margin = 8.3
 
 [node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("8_kaag5")]
-rect = Rect2(-100, -100, 200, 200)
-show_rect = false
 _target = NodePath("..")
 _pointerColor = Color(0.22352941, 0.627451, 0.92941177, 1)
+_showOnlyWhenMovingIn = false

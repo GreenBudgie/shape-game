@@ -17,25 +17,25 @@
 [ext_resource type="Script" uid="uid://cek6yfy2gipxe" path="res://util/screenshake/ScreenShake.cs" id="13_lc2xo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
-size = Vector2(512, 3184)
+size = Vector2(512, 4208)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0lhi4"]
-size = Vector2(512, 3184)
+size = Vector2(512, 4208)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k07pp"]
-size = Vector2(3264, 512)
+size = Vector2(3264, 1024)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkk55"]
-size = Vector2(3264, 512)
+size = Vector2(3264, 1024)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j5wjh"]
 size = Vector2(4288, 512)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7sc4i"]
-size = Vector2(602, 4224)
+size = Vector2(602, 5248)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_80cx4"]
-size = Vector2(602, 4224)
+size = Vector2(602, 5248)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vef74"]
 size = Vector2(4288, 528)
@@ -84,7 +84,7 @@ collision_layer = 64
 collision_mask = 0
 
 [node name="TopWall" type="CollisionShape2D" parent="LevelCeiling"]
-position = Vector2(2144, -256)
+position = Vector2(2144, -512)
 shape = SubResource("RectangleShape2D_k07pp")
 
 [node name="LevelFloor" type="StaticBody2D" parent="."]
@@ -92,7 +92,7 @@ collision_layer = 128
 collision_mask = 0
 
 [node name="BottomWall" type="CollisionShape2D" parent="LevelFloor"]
-position = Vector2(2144, 2416)
+position = Vector2(2144, 2672)
 shape = SubResource("RectangleShape2D_jkk55")
 
 [node name="LevelOutsideBoundary" type="StaticBody2D" parent="."]
@@ -100,7 +100,7 @@ collision_layer = 256
 collision_mask = 0
 
 [node name="TopWall" type="CollisionShape2D" parent="LevelOutsideBoundary"]
-position = Vector2(2144, -768)
+position = Vector2(2144, -1280)
 shape = SubResource("RectangleShape2D_j5wjh")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
@@ -115,7 +115,7 @@ shape = SubResource("RectangleShape2D_80cx4")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
 [node name="BottomWall" type="CollisionShape2D" parent="LevelOutsideBoundary"]
-position = Vector2(2144, 2936)
+position = Vector2(2144, 3448)
 shape = SubResource("RectangleShape2D_vef74")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 

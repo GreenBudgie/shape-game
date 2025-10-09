@@ -2,8 +2,9 @@ public partial class EnemyPathFollowController : Node2D
 {
 
     private const double DefaultTimeToReachPath = 1.5;
-    private const float DefaultVelocityCapBeforePathReached = 1500;
+    private const float DefaultVelocityCapBeforePathReached = 1300;
     private const float DefaultPathFollowSpeed = 10;
+    private const float DefaultPathFollowSpeedBeforeReached = 5;
 
     private Enemy _enemy = null!;
 
@@ -16,6 +17,8 @@ public partial class EnemyPathFollowController : Node2D
     public float VelocityCapBeforePathReached { get; set; } = DefaultVelocityCapBeforePathReached;
     
     public float PathFollowSpeed { get; set; } = DefaultPathFollowSpeed;
+    
+    public float PathFollowSpeedBeforeReached { get; set; } = DefaultPathFollowSpeedBeforeReached;
 
     public override void _Ready()
     {
@@ -36,7 +39,9 @@ public partial class EnemyPathFollowController : Node2D
             return;
         }
 
-        _enemy.ApplyCentralForce(direction * distance * PathFollowSpeed);
+        var followSped = IsPathReached ? PathFollowSpeed : PathFollowSpeedBeforeReached;
+
+        _enemy.ApplyCentralForce(direction * distance * followSped);
     }
 
     public override void _ExitTree()

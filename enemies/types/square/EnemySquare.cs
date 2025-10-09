@@ -10,10 +10,8 @@
     private double _fireTimer = RandomUtils.DeltaRange(FireDelay, FireDelayDelta);
     private EnemyPathFollowController _pathFollowController = null!;
 
-    public override void _Ready()
+    protected override void OnActivate()
     {
-        base._Ready();
-
         var path = PathScene.Instantiate<EnemySquarePath>();
         ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, path);
         _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, path);

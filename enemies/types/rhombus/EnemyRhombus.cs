@@ -7,14 +7,12 @@
     private EnemyRhombusPath _path = null!;
     private EnemyPathFollowController _pathFollowController = null!;
 
-    public override void _Ready()
+    protected override void OnActivate()
     {
-        base._Ready();
-
         _path = EnemyRhombusPath.Create();
         ShapeGame.Instance.CallDeferred(Node.MethodName.AddChild, _path);
         _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, _path);
-
+        
         ResetAttack();
     }
 

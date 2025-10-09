@@ -71,7 +71,6 @@ position = Vector2(44, 44)
 position = Vector2(132, 44)
 
 [node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("9_hx3wo")]
-rect = Rect2(-200, -112, 400, 224)
-show_rect = false
 _target = NodePath("..")
 _pointerColor = Color(0.5411765, 0.41960785, 0.74509805, 1)
+_showOnlyWhenMovingIn = false

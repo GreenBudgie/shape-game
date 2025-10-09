@@ -216,7 +216,6 @@ libraries = {
 }
 
 [node name="PointerArea" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("4_pd4ca")]
-rect = Rect2(-22, -22, 45, 45)
-show_rect = false
 _target = NodePath("..")
 _pointerColor = Color(0.95686275, 0.9098039, 0.4862745, 1)
+_showOnlyWhenMovingIn = false

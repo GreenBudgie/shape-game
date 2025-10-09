@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" uid="uid://cbd1jh0wudd3e" path="res://util/pointer/PointerArea.cs" id="1_ah22o"]
 
-[node name="PointerArea" type="VisibleOnScreenNotifier2D"]
+[node name="PointerArea" type="Node2D"]
 script = ExtResource("1_ah22o")

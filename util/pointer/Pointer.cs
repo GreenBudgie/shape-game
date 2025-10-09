@@ -5,10 +5,10 @@ public partial class Pointer : Sprite2D
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://kmwq84squv6w");
 
-    private Node2D _target = null!;
+    private CollisionObject2D _target = null!;
     private Color _color;
 
-    public static Pointer Create(Node2D target, Color color)
+    public static Pointer Create(CollisionObject2D target, Color color)
     {
         var node = Scene.Instantiate<Pointer>();
         node._target = target;

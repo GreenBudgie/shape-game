@@ -31,7 +31,6 @@ visible = false
 shape = SubResource("RectangleShape2D_t6ung")
 
 [node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("4_px6o3")]
-rect = Rect2(-45, -45, 90, 90)
-show_rect = false
 _target = NodePath("..")
 _pointerColor = Color(0.5411765, 0.41960785, 0.74509805, 1)
+_showBelow = false

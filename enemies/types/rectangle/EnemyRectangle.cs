@@ -23,15 +23,18 @@ public partial class EnemyRectangle : Enemy
 
         RotationDegrees = (float)GD.RandRange(-180f, 180f);
 
-        var path = EnemyRectanglePath.Create();
-        Callable.From(() => ShapeGame.Instance.AddChild(path)).CallDeferred();
-        _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, path);
-
         var projectileSpawnPositionsNode = GetNode("ProjectileSpawnPositions");
         _projectileSpawns = projectileSpawnPositionsNode.GetChildren()
             .OfType<Marker2D>()
             .Select(node => new ProjectileSpawn(node.GetPosition()))
             .ToList();
+    }
+
+    protected override void OnActivate()
+    {
+        var path = EnemyRectanglePath.Create();
+        Callable.From(() => ShapeGame.Instance.AddChild(path)).CallDeferred();
+        _pathFollowController = EnemyPathFollowController.AttachEnemyToPath(this, path);
     }
 
     public override void _PhysicsProcess(double delta)

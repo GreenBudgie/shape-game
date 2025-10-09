@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://kmwq84squv6w"]
 
 [ext_resource type="Script" uid="uid://m1yyjb1f8llh" path="res://util/pointer/Pointer.cs" id="1_ox75f"]
-[ext_resource type="Texture2D" uid="uid://bqvqvf3266g6x" path="res://util/pointer/pointer.png" id="1_th37s"]
+[ext_resource type="Texture2D" uid="uid://j2dodt5ltpol" path="res://util/pointer/pointer.png" id="1_th37s"]
 
 [node name="Pointer" type="Sprite2D"]
 texture = ExtResource("1_th37s")
