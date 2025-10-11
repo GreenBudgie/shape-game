@@ -40,6 +40,7 @@ naming/default_signal_callback_to_self_name="On{signal_name}"
 [global_group]
 
 level_walls=""
+alive_enemies=""
 
 [gui]
 

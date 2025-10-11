@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class EnemyManager : Node
 {
+    
+    public static readonly StringName AliveEnemiesGroup = "alive_enemies";
 
     private static readonly Rect2 EnemySpawnArea = new(
         ShapeGame.PlayableArea.Position.X + 128,
@@ -15,10 +18,14 @@ public partial class EnemyManager : Node
 
     public static EnemyManager Instance { get; private set; } = null!;
     
+    /// <summary>
+    /// Emitted after an enemy has been destroyed. At this point, the enemy is still on screen and in the process
+    /// of removal, but it's not present in alive_enemies group.
+    /// </summary>
     [Signal]
     public delegate void EnemyDestroyedEventHandler(Enemy enemy);
-    
-    public override void _EnterTree()
+
+    public EnemyManager()
     {
         Instance = this;
     }
@@ -34,6 +41,14 @@ public partial class EnemyManager : Node
         enemy.GlobalPosition = GetRandomEnemySpawnLocation();
         ShapeGame.Instance.AddChild(enemy);
         return enemy;
+    }
+
+    /// <summary>
+    /// Returns a list of currently alive enemies on screen
+    /// </summary>
+    public IEnumerable<Enemy> GetAliveEnemies()
+    {
+        return GetTree().GetNodesInGroup(AliveEnemiesGroup).Cast<Enemy>();
     }
 
     private static Vector2 GetRandomEnemySpawnLocation()

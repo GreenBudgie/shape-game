@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,6 +33,7 @@ public partial class LevelManager : Node
     private double _surviveProgressRealSeconds;
     private double _timeToNextPhase;
     private bool _requirementsMet;
+    private int _phase = 1;
 
     public LevelManager()
     {
@@ -75,22 +77,22 @@ public partial class LevelManager : Node
         _timeToNextPhase -= delta;
         if (_timeToNextPhase < 0)
         {
-            _timeToNextPhase = level.PhaseDuration;
-            SpawnEnemies();
+            _timeToNextPhase = level.GetCurrentPhaseDuration(_phase);
+            SpawnEnemyBatch();
         }
     }
 
-    private int _phase = 1;
+    private const float PhaseStartMinDuration = 0.3f;
 
     public void StartLevel(int level)
     {
         Level = GetLevelByNumber(level);
+        _phase = 1;
 
         SetSurviveProgress(0);
         SetDestroyProgress(0);
-
-        _timeToNextPhase = Level.PhaseDuration;
-        SpawnEnemies();
+        
+        PrepareNextPhase();
 
         EmitSignalLevelStarted(Level);
     }
@@ -121,6 +123,17 @@ public partial class LevelManager : Node
         {
             SetDestroyProgress(DestroyProgress + 1);
         }
+
+        var aliveEnemies = EnemyManager.Instance.GetAliveEnemies();
+        if (!aliveEnemies.Any())
+        {
+            PrepareNextPhase();
+        }
+    }
+
+    private void PrepareNextPhase()
+    {
+        _timeToNextPhase = PhaseStartMinDuration;
     }
 
     private void SetDestroyProgress(int progress)
@@ -139,16 +152,31 @@ public partial class LevelManager : Node
         CheckIfRequirementsMet();
     }
 
-    private void SpawnEnemies()
+    private const float EnemyInBatchSpawnDelay = 0.25f;
+    private const float EnemyInBatchSpawnDelayDelta = 0.1f;
+
+    private void SpawnEnemyBatch()
     {
         if (Level == null)
         {
             return;
         }
 
-        for (var i = 0; i < Level.EnemiesPerPhase; i++)
+        for (var i = 0; i < Level.GetCurrentEnemiesPerPhase(_phase); i++)
         {
-            EnemyManager.Instance.SpawnEnemy(Level.GetRandomWeightedEnemyType(_phase));
+            var delay = i * RandomUtils.DeltaRange(EnemyInBatchSpawnDelay, EnemyInBatchSpawnDelayDelta);
+            if (delay == 0)
+            {
+                SpawnEnemy();
+            }
+            else
+            {
+                GetTree().CreateTimer(delay).Timeout += SpawnEnemy;
+            }
+
+            continue;
+
+            void SpawnEnemy() => EnemyManager.Instance.SpawnEnemy(Level.GetRandomWeightedEnemyType(_phase));
         }
 
         _phase++;

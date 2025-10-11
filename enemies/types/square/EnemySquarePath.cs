@@ -3,6 +3,9 @@ public partial class EnemySquarePath : EnemyPath
 
     private const float MinYOffset = 300;
     private const float MaxYOffset = 600;
+    
+    private int _direction = RandomUtils.RandomSign(); // 1 = forward, -1 = backward
+    private float _speed = RandomUtils.DeltaRange(0.15f, 0.05f);
 
     public override void _Ready()
     {
@@ -19,12 +22,9 @@ public partial class EnemySquarePath : EnemyPath
         GlobalPosition = new Vector2(xOffset, yOffset);
     }
 
-    private int _direction = 1; // 1 = forward, -1 = backward
-
     public override void _Process(double delta)
     {
-        const float speed = 0.1f;
-        PathPoint.ProgressRatio = Clamp(PathPoint.ProgressRatio + (float)(speed * _direction * delta), 0f, 1f);
+        PathPoint.ProgressRatio = Clamp(PathPoint.ProgressRatio + (float)(_speed * _direction * delta), 0f, 1f);
 
         if (PathPoint.ProgressRatio is >= 1.0f or <= 0.0f)
         {

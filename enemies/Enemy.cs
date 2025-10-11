@@ -41,6 +41,8 @@ public abstract partial class Enemy : RigidBody2D
             Area.Disabled = true;
         }
         AreaRect = areaShape.GetRect();
+        
+        AddToGroup(EnemyManager.AliveEnemiesGroup);
 
         _enemyAnimations = GetNode<AnimationPlayer>("EnemyAnimations");
         _health = GetMaxHealth();
@@ -141,6 +143,7 @@ public abstract partial class Enemy : RigidBody2D
             return;
         }
         
+        RemoveFromGroup(EnemyManager.AliveEnemiesGroup);
         IsDestroyed = true;
         CollisionLayer = 0;
         CollisionMask = 0;

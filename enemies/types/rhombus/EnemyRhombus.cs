@@ -51,9 +51,9 @@
     private const double MaxAttackDurationSeconds = 5;
     private const float AttackTorqueAcceleration = 25000;
     private const float StartAttackTorqueAcceleration = 100000;
-    private const double StartDelayPerShotSeconds = 0.6f;
-    private const double MinDelayPerShotSeconds = 0.2f;
-    private const double DelayPerShotDecreaseSeconds = 0.05f;
+    private const double StartDelayPerShotSeconds = 0.8f;
+    private const double MinDelayPerShotSeconds = 0.4f;
+    private const double DelayPerShotDecreaseSeconds = 0.075f;
 
     private double _attackStartDelay;
     private double _attackDuration;

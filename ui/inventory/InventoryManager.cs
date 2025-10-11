@@ -53,7 +53,7 @@ public partial class InventoryManager : Control
     private void PostSetup()
     {
         PlayerInventory.GetSlot(0).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<BoltModule>())
+            UiModule.Create(ModuleManager.GetModule<BarrierModule>())
         );
         
         RightBlasterInventory.GetSlot(5).InsertModule(
@@ -67,7 +67,7 @@ public partial class InventoryManager : Control
         );
         
         LeftBlasterInventory.GetSlot(5).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<BarrierModule>())
+            UiModule.Create(ModuleManager.GetModule<BoltModule>())
         );
         LeftBlasterInventory.GetSlot(4).InsertModule(
             UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
