@@ -112,7 +112,7 @@ public abstract partial class Enemy : RigidBody2D
             return;
         }
         
-        DamageEffect.Create(damage, this);
+        DamageLabel.Create(damage, this);
         _health -= damage;
         if (_health <= 0)
         {

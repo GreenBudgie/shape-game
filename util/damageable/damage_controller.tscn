@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://v608jbnpitvx"]
+
+[ext_resource type="Script" uid="uid://ydul5wg7pj8i" path="res://util/damageable/DamageController.cs" id="1_68cdk"]
+
+[node name="DamageController" type="Node2D"]
+script = ExtResource("1_68cdk")

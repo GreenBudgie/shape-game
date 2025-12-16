@@ -1,13 +1,13 @@
-public partial class DamageEffect : Label
+public partial class DamageLabel : Label
 {
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://vtgnvnodulxr");
 
     private float _damage;
     
-    public static DamageEffect Create(float damage, Enemy enemy)
+    public static DamageLabel Create(float damage, Enemy enemy)
     {
-        var node = Scene.Instantiate<DamageEffect>();
+        var node = Scene.Instantiate<DamageLabel>();
         node.GlobalPosition = enemy.ToGlobal(enemy.AreaRect.RandomPoint());
         node._damage = damage;
         ShapeGame.Instance.AddChild(node);

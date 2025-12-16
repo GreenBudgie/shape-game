@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxk6fqsbmbep0"]
+
+[ext_resource type="Texture2D" uid="uid://0xcwtpg0bp2g" path="res://shop/friend/friend.png" id="1_lhlro"]
+
+[node name="Friend" type="RigidBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_lhlro")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(3.3333344, 15.666666)
+polygon = PackedVector2Array(-55.333336, 31.333334, -65.333336, 17.333334, 0.66666555, -62.666664, 12.666666, -62.666664, 57.666664, 17.333334, 49.666664, 31.333334)
