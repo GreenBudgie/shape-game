@@ -2,9 +2,6 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://cgm0yfj1g1own");
 
-    private static readonly StringName ProgressMaskParam = "progress";
-    private static readonly NodePath ProgressMaskShaderParam = ShaderParameter(ProgressMaskParam);
-
     private static readonly Vector2 LeftCornerPosition = new(-225, 0);
     private static readonly Vector2 RightCornerPosition = new(225, 0);
 
@@ -15,7 +12,7 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
     private AudioStream _disappearSound = null!;
 
     private Sprite2D _sprite = null!;
-    private ShaderMaterial _spriteMaterial = null!;
+    private Mask _spriteMask = null!;
     private GpuParticles2D _particles = null!;
     private Vector2 _initialPosition;
 
@@ -35,8 +32,8 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
         _particles.Emitting = false;
         
         _sprite = GetNode<Sprite2D>("Sprite2D");
-        _spriteMaterial = (ShaderMaterial)_sprite.Material;
-        _spriteMaterial.SetShaderParameter(ProgressMaskParam, 0f);
+        _spriteMask = Mask.Attach(_sprite).Axis(MaskAxis.Horizontal).Origin(MaskOrigin.Center);
+        _spriteMask.Progress = 0;
 
         const float yOffset = 250f;
         GlobalPosition += new Vector2(0, -yOffset);
@@ -174,7 +171,7 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
             .SetParallel()
             .SetEase(Tween.EaseType.InOut)
             .SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(_spriteMaterial, ProgressMaskShaderParam, 0f, RemoveDuration);
+        tween.TweenProperty(_spriteMask.Material, Mask.ProgressShaderParam, 0f, RemoveDuration);
         tween.TweenProperty(_glow.Sprite, ScaleProperty, new Vector2(0, 1), RemoveDuration);
 
         tween.Finished += QueueFree;
@@ -193,7 +190,7 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
             .SetParallel()
             .SetEase(Tween.EaseType.InOut)
             .SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(_spriteMaterial, ProgressMaskShaderParam, 1f, EffectDuration)
+        tween.TweenProperty(_spriteMask.Material, Mask.ProgressShaderParam, 1f, EffectDuration)
             .SetDelay(EffectStartupDuration);
         
         tween.TweenProperty(_glow.Sprite, ScaleProperty, Vector2.One, EffectDuration)

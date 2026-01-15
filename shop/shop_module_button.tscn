@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://cr37qmsjo0vr3"]
+
+[ext_resource type="Texture2D" uid="uid://b56b358ts2ban" path="res://shop/shop_module_button.png" id="1_0eck4"]
+[ext_resource type="Script" uid="uid://cdym8u3vdjp70" path="res://shop/ShopModuleButton.cs" id="1_4indb"]
+[ext_resource type="Texture2D" uid="uid://dyctv6u1nqwh8" path="res://shop/shop_module_button_hovered.png" id="2_okmpv"]
+
+[node name="ShopModuleButton" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_4indb")
+
+[node name="ButtonUnhovered" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource("1_0eck4")
+
+[node name="ButtonHovered" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource("2_okmpv")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 512.0
+offset_bottom = 192.0
+action_mode = 0
+flat = true

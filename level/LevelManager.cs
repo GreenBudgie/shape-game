@@ -88,6 +88,7 @@ public partial class LevelManager : Node
     {
         Level = GetLevelByNumber(level);
         _phase = 1;
+        _requirementsMet = false;
 
         SetSurviveProgress(0);
         SetDestroyProgress(0);
@@ -125,10 +126,18 @@ public partial class LevelManager : Node
         }
 
         var aliveEnemies = EnemyManager.Instance.GetAliveEnemies();
-        if (!aliveEnemies.Any())
+        if (aliveEnemies.Any())
         {
-            PrepareNextPhase();
+            return;
         }
+
+        if (_requirementsMet)
+        {
+            GamePhaseManager.Instance.ChangePhase(GamePhase.Shop);
+            return;
+        }
+        
+        PrepareNextPhase();
     }
 
     private void PrepareNextPhase()

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bliriv38qvb4i"]
+
+[ext_resource type="Script" uid="uid://c4kyw6msgrepp" path="res://shop/Shop.cs" id="1_r2p71"]
+
+[node name="Shop" type="Node2D"]
+script = ExtResource("1_r2p71")
+
+[node name="Modules" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
