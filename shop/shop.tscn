@@ -5,9 +5,22 @@
 [node name="Shop" type="Node2D"]
 script = ExtResource("1_r2p71")
 
-[node name="Modules" type="VBoxContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 3840.0
+offset_bottom = 2160.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Modules"]
+[node name="CenterContainer" type="CenterContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Modules" type="VBoxContainer" parent="Control/CenterContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/separation = 32
+metadata/_edit_group_ = true

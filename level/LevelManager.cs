@@ -60,6 +60,28 @@ public partial class LevelManager : Node
         }
     }
 
+    /// <summary>
+    /// Forcefully kills every remaining enemy and ends the level
+    /// </summary>
+    public void ForceEndLevel()
+    {
+        if (Level == null)
+        {
+            return;
+        }
+
+        if (!_requirementsMet)
+        {
+            SetSurviveProgress(Level.SurviveRequirement);
+            SetDestroyProgress(Level.DestroyRequirement);
+        }
+                
+        foreach (var enemy in EnemyManager.Instance.GetAliveEnemies())
+        {
+            enemy.Destroy();
+        }
+    }
+
     private void ProcessLevel(double delta, Level level)
     {
         if (_requirementsMet)

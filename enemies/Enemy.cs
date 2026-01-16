@@ -136,7 +136,7 @@ public abstract partial class Enemy : RigidBody2D
         _enemyAnimations.Play("damage");
     }
 
-    private void Destroy()
+    public void Destroy()
     {
         if (IsDestroyed)
         {

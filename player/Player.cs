@@ -54,16 +54,6 @@ public partial class Player : CharacterBody2D
         _rightBlaster = Blaster.Create(InventoryManager.Instance.RightBlasterInventory);
         AddChild(_rightBlaster);
         
-        _windowCenter = new Vector2(
-            GetViewportRect().Size.X / 2.0f,
-            GetViewportRect().Size.Y / 2.0f
-        );
-
-        PauseManager.Instance.GameUnpause += () => MoveMouseToWindowCenter(_windowCenter);
-        PauseManager.Instance.GamePause += () => MoveMouseToWindowCenter(ShapeGame.PlayableArea.GetCenter());
-        InventoryManager.Instance.InventoryClosed += () => MoveMouseToWindowCenter(_windowCenter);
-        InventoryManager.Instance.InventoryOpened += () => MoveMouseToWindowCenter(ShapeGame.PlayableArea.GetCenter());
-
         _playerCollisionDetector = GetNode<ShapeCast2D>("PlayerCollisionDetector");
         Callable.From(SetupCollisionDetector).CallDeferred();
     }
@@ -75,11 +65,7 @@ public partial class Player : CharacterBody2D
 
     public override void _Process(double delta)
     {
-        var mouseDelta = Vector2.Zero;
-        if (!InventoryManager.Instance.IsOpen)
-        {
-            mouseDelta = MoveMouseToWindowCenter(_windowCenter);
-        }
+        var mouseDelta = MouseInputManager.Instance.GetMouseDelta();
 
         _playerCollisionDetector.GlobalPosition = GlobalPosition;
 
@@ -98,7 +84,7 @@ public partial class Player : CharacterBody2D
 
     private void HandleFire()
     {
-        if (InventoryManager.Instance.IsOpen)
+        if (!MouseInputManager.Instance.IsCharacterControlEnabled)
         {
             return;
         }
@@ -147,13 +133,6 @@ public partial class Player : CharacterBody2D
                 collisionDetector.CollideWithPlayer(this);
             }
         }
-    }
-
-    private Vector2 MoveMouseToWindowCenter(Vector2 windowCenterToUse)
-    {
-        var mousePosition = GetViewport().GetMousePosition();
-        GetViewport().WarpMouse(windowCenterToUse);
-        return mousePosition - windowCenterToUse;
     }
 
     public Vector2 GetGlobalNosePosition()

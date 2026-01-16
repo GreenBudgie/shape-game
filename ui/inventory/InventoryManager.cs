@@ -224,7 +224,6 @@ public partial class InventoryManager : Control
             return;
         }
 
-        Input.MouseMode = Input.MouseModeEnum.Hidden;
         IsOpen = false;
         foreach (var child in GetChildren())
         {

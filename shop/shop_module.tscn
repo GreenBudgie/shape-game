@@ -18,8 +18,11 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tsgo1"]
 
 [node name="ShopModule" type="Control"]
+custom_minimum_size = Vector2(0, 192)
 layout_mode = 3
 anchors_preset = 0
+offset_right = 772.0
+offset_bottom = 192.0
 script = ExtResource("1_16t4l")
 _hoverSound = ExtResource("2_tsgo1")
 _clickSound = ExtResource("3_d8k3v")

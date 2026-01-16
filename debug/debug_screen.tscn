@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjmguojhwcatt"]
+
+[ext_resource type="Script" uid="uid://ce56qj2k4rwwb" path="res://debug/EndLevelButton.cs" id="1_althg"]
+[ext_resource type="Script" uid="uid://w3ta23wrh6gj" path="res://debug/DebugScreen.cs" id="1_pwcox"]
+
+[node name="DebugScreen" type="CanvasLayer"]
+script = ExtResource("1_pwcox")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/CenterContainer"]
+layout_mode = 2
+
+[node name="EndLevelButton" type="Button" parent="Control/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(512, 256)
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "End Level"
+script = ExtResource("1_althg")

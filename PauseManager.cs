@@ -26,15 +26,6 @@
     public void TogglePause()
     {
         GetTree().Paused = !IsPaused();
-        if (IsPaused())
-        {
-            Input.MouseMode = Input.MouseModeEnum.Visible;
-        }
-        else
-        {
-            Input.MouseMode = Input.MouseModeEnum.Hidden;
-        }
-        
         EmitSignal(IsPaused() ? SignalName.GamePause : SignalName.GameUnpause);
 
     }
