@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
+[ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://shop/shop.tscn" id="5_e8heu"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
 [ext_resource type="PackedScene" uid="uid://bkdy1r0hmunja" path="res://ui/stats/stats_panel.tscn" id="6_eow3j"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
@@ -16,7 +17,6 @@
 [ext_resource type="Shader" uid="uid://c8tu4dwq8epsu" path="res://util/screenshake/screen_shake.gdshader" id="12_iotsf"]
 [ext_resource type="Script" uid="uid://bd0itqdn7nlo7" path="res://systems/GamePhaseManager.cs" id="13_80cx4"]
 [ext_resource type="Script" uid="uid://cek6yfy2gipxe" path="res://util/screenshake/ScreenShake.cs" id="13_lc2xo"]
-[ext_resource type="Script" uid="uid://c4kyw6msgrepp" path="res://shop/Shop.cs" id="14_e8heu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
 size = Vector2(512, 4208)
@@ -121,7 +121,10 @@ position = Vector2(2144, 3448)
 shape = SubResource("RectangleShape2D_vef74")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
+[node name="Shop" parent="." instance=ExtResource("5_e8heu")]
+
 [node name="UI" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="InventoryManager" parent="UI" instance=ExtResource("5_hve3p")]
 offset_left = 512.0
@@ -152,9 +155,6 @@ script = ExtResource("12_7sc4i")
 
 [node name="GamePhaseManager" type="Node" parent="."]
 script = ExtResource("13_80cx4")
-
-[node name="ShopManager" type="Node" parent="."]
-script = ExtResource("14_e8heu")
 
 [node name="ExplosionEffectsLayer" type="CanvasLayer" parent="."]
 script = ExtResource("11_mfdv2")

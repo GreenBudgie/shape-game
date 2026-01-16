@@ -10,5 +10,7 @@ public partial class Module : Resource
     [Export(PropertyHint.MultilineText)] public string Description { get; private set; } = null!;
 
     [Export] public Array<ModuleStat> Stats { get; private set; } = [];
+    
+    [Export] public int Price { get; private set; }
 
 }

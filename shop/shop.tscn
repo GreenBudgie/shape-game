@@ -8,3 +8,6 @@ script = ExtResource("1_r2p71")
 [node name="Modules" type="VBoxContainer" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Modules"]
+layout_mode = 2

@@ -1,0 +1,126 @@
+[gd_scene load_steps=13 format=3 uid="uid://cr37qmsjo0vr3"]
+
+[ext_resource type="Script" uid="uid://cdym8u3vdjp70" path="res://shop/ShopModule.cs" id="1_16t4l"]
+[ext_resource type="Texture2D" uid="uid://b56b358ts2ban" path="res://shop/shop_module_button.png" id="2_lc0gu"]
+[ext_resource type="AudioStream" uid="uid://djdfrb1kcmfle" path="res://ui/inventory/slot/slot_hover.wav" id="2_tsgo1"]
+[ext_resource type="AudioStream" uid="uid://cry6gufmuccda" path="res://ui/inventory/slot/slot_click.wav" id="3_d8k3v"]
+[ext_resource type="Texture2D" uid="uid://dyctv6u1nqwh8" path="res://shop/shop_module_button_hovered.png" id="3_ejndq"]
+[ext_resource type="AudioStream" uid="uid://cpqn2k806hyjd" path="res://ui/inventory/slot/slot_button_up.wav" id="4_tpcnf"]
+[ext_resource type="Texture2D" uid="uid://c7vc2h5xg45xt" path="res://modules/types/modifier/extra_damage/extra_damage.png" id="4_tsgo1"]
+[ext_resource type="Texture2D" uid="uid://cfntiitlilkfv" path="res://ui/stats/crystal_ui.png" id="5_d8k3v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_16t4l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lc0gu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ejndq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tsgo1"]
+
+[node name="ShopModule" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_16t4l")
+_hoverSound = ExtResource("2_tsgo1")
+_clickSound = ExtResource("3_d8k3v")
+_buttonUpSound = ExtResource("4_tpcnf")
+
+[node name="ButtonGroup" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 512.0
+offset_bottom = 192.0
+pivot_offset = Vector2(256, 96)
+
+[node name="ButtonTextures" type="Control" parent="ButtonGroup"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ButtonUnhovered" type="TextureRect" parent="ButtonGroup/ButtonTextures"]
+layout_mode = 0
+offset_right = 512.0
+offset_bottom = 192.0
+mouse_filter = 2
+texture = ExtResource("2_lc0gu")
+
+[node name="ButtonHovered" type="TextureRect" parent="ButtonGroup/ButtonTextures"]
+layout_mode = 0
+offset_right = 512.0
+offset_bottom = 192.0
+mouse_filter = 2
+texture = ExtResource("3_ejndq")
+
+[node name="Button" type="Button" parent="ButtonGroup"]
+layout_mode = 0
+offset_right = 512.0
+offset_bottom = 192.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_16t4l")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_lc0gu")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ejndq")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tsgo1")
+action_mode = 0
+flat = true
+
+[node name="MarginContainer" type="MarginContainer" parent="ButtonGroup"]
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 192.0
+mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Title" type="RichTextLabel" parent="ButtonGroup/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 48
+bbcode_enabled = true
+text = "Title"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ModuleTexture" type="TextureRect" parent="ButtonGroup"]
+layout_mode = 0
+offset_left = 320.0
+offset_right = 512.0
+offset_bottom = 192.0
+mouse_filter = 2
+texture = ExtResource("4_tsgo1")
+stretch_mode = 3
+
+[node name="Price" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 537.0
+offset_right = 1102.0
+offset_bottom = 192.0
+theme_override_constants/separation = 24
+
+[node name="PriceLabel" type="RichTextLabel" parent="Price"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 48
+bbcode_enabled = true
+text = "404"
+fit_content = true
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="CrystalTextureWrapper" type="Control" parent="Price"]
+layout_mode = 2
+
+[node name="CrystalTexture" type="TextureRect" parent="Price/CrystalTextureWrapper"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -96.0
+offset_right = 69.0
+offset_bottom = 96.0
+grow_vertical = 2
+texture = ExtResource("5_d8k3v")
+expand_mode = 1
+stretch_mode = 5
