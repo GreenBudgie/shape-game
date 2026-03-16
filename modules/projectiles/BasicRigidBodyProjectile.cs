@@ -163,6 +163,12 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
         
         HandleWallHit(collisionObject2D);
         AddCollisionExceptionWith(collisionObject2D);
+
+        collisionObject2D.Connect(
+            Godot.Node.SignalName.TreeExiting,
+            Callable.From(() => HandlePiercingDetectionAreaBodyExited(collisionObject2D))
+        );
+        
         ObstaclesToPierce--;
         if (ObstaclesToPierce == 0)
         {
