@@ -1,17 +1,17 @@
-public partial class ShopManager : Node2D
+public partial class Shop : Node2D
 {
-    public static ShopManager Instance { get; private set; } = null!;
+    public static Shop Instance { get; private set; } = null!;
 
-    private HBoxContainer _modules = null!;
+    private VBoxContainer _modules = null!;
     
-    public ShopManager()
+    public Shop()
     {
         Instance = this;
     }
 
     public override void _Ready()
     {
-        _modules = GetNode<HBoxContainer>("%Modules");
+        _modules = GetNode<VBoxContainer>("%Modules");
         
         HideShop();
         GamePhaseManager.Instance.PhaseChanged += OnPhaseChanged;
