@@ -55,7 +55,7 @@ public partial class MouseInputManager : Node2D
     
     public void EnableCharacterControl()
     {
-        MoveMouseToWindowCenter(ShapeGame.PlayableArea.GetCenter());
+        MoveMouseToWindowCenter(_windowCenter);
         Input.MouseMode = Input.MouseModeEnum.Hidden;
         IsCharacterControlEnabled = true;
     }

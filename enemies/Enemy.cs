@@ -135,8 +135,10 @@ public abstract partial class Enemy : RigidBody2D
 
         _enemyAnimations.Play("damage");
     }
+    
+    
 
-    public void Destroy()
+    public void Destroy(bool dropCrystals = true)
     {
         if (IsDestroyed)
         {
@@ -151,17 +153,9 @@ public abstract partial class Enemy : RigidBody2D
         Callable.From(SpawnParticles).CallNextPhysicsFrame(GetTree());
         SoundManager.Instance.PlayPositionalSound(this, DestroySound);
 
-        for (var i = 0; i < GetCrystalsToDrop(); i++)
+        if (dropCrystals)
         {
-            var crystal = FallingCrystal.Create();
-            Callable.From(() => ShapeGame.Instance.AddChild(crystal)).CallDeferred();
-
-            crystal.GlobalPosition = GlobalPosition + AreaRect.RandomPoint();
-            var randomStrength = (float)GD.RandRange(750f, 1500f);
-            var randomAngle = GD.RandRange(5 * Pi / 4, 7 * Pi / 4);
-            var randomDirection = Vector2.FromAngle((float)randomAngle);
-            var impulse = randomDirection * randomStrength;
-            crystal.ApplyCentralImpulse(impulse);
+            DropCrystals();
         }
 
         _glow.DisablePulsing();
@@ -178,6 +172,16 @@ public abstract partial class Enemy : RigidBody2D
         _enemyAnimations.Play("destroy");
         _enemyAnimations.AnimationFinished += _ => QueueFree();
     }
+
+    private void DropCrystals()
+    {
+        for (var i = 0; i < GetCrystalsToDrop(); i++)
+        {
+            var position = GlobalPosition + AreaRect.RandomPoint();
+            FallingCrystal.Spawn(position);
+        }
+    }
+
 
     private void SpawnParticles()
     {

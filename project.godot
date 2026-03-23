@@ -45,6 +45,7 @@ naming/default_signal_callback_to_self_name="On{signal_name}"
 
 level_walls=""
 alive_enemies=""
+falling_crystals=""
 
 [gui]
 

@@ -2,7 +2,7 @@ public partial class CrystalManager : Node
 {
 
     [Signal]
-    public delegate void CrystalCollectedEventHandler();
+    public delegate void CrystalAmountChangedEventHandler();
 
     private const float MaxPitch = 3f;
     private const float PitchRandomizationDelta = 0.05f;
@@ -17,7 +17,17 @@ public partial class CrystalManager : Node
     private float _currentPitch = 1f;
     private double _timeToDecreasePitch = TimeToDecreasePitch;
 
-    public int Crystals { get; private set; }
+    private int _crystals;
+
+    public int Crystals
+    {
+        get => _crystals;
+        set
+        {
+            _crystals = value;
+            EmitSignalCrystalAmountChanged();
+        }
+    }
 
     public override void _EnterTree()
     {
@@ -50,7 +60,14 @@ public partial class CrystalManager : Node
         _timeToDecreasePitch = TimeToDecreasePitch;
 
         Crystals++;
-        EmitSignalCrystalCollected();
+    }
+
+    public void ClearFallingCrystals()
+    {
+        foreach (var crystal in GetTree().GetNodesInGroup("falling_crystals"))
+        {
+            crystal.QueueFree();
+        }
     }
 
 }

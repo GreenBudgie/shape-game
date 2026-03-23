@@ -1,33 +1,77 @@
-[gd_scene load_steps=3 format=3 uid="uid://cjmguojhwcatt"]
+[gd_scene format=3 uid="uid://cjmguojhwcatt"]
 
 [ext_resource type="Script" uid="uid://ce56qj2k4rwwb" path="res://debug/EndLevelButton.cs" id="1_althg"]
 [ext_resource type="Script" uid="uid://w3ta23wrh6gj" path="res://debug/DebugScreen.cs" id="1_pwcox"]
+[ext_resource type="Theme" uid="uid://hdiwpud1ur1q" path="res://debug/debug_theme.tres" id="2_wxt27"]
+[ext_resource type="Script" uid="uid://begifej3i0bvt" path="res://debug/SpawnEnemiesContainer.cs" id="3_hkenb"]
+[ext_resource type="Script" uid="uid://dahow1pmow0ma" path="res://debug/CrystalsContainer.cs" id="3_jlxhc"]
+[ext_resource type="Script" uid="uid://csfvrwiucijmg" path="res://debug/KillEnemiesButton.cs" id="3_met78"]
+[ext_resource type="Script" uid="uid://6fqtqpegp1lq" path="res://debug/RemoveEnemiesButton.cs" id="4_xjd1d"]
 
-[node name="DebugScreen" type="CanvasLayer"]
+[node name="DebugScreen" type="CanvasLayer" unique_id=1374611125]
 script = ExtResource("1_pwcox")
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="." unique_id=286013007]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_wxt27")
 
-[node name="CenterContainer" type="CenterContainer" parent="Control"]
+[node name="ColorRect" type="ColorRect" parent="Control" unique_id=573724240]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0, 0, 0, 0.1254902)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/CenterContainer"]
-layout_mode = 2
+[node name="MarginContainer" type="MarginContainer" parent="Control" unique_id=191985821]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 64
 
-[node name="EndLevelButton" type="Button" parent="Control/CenterContainer/HBoxContainer"]
-custom_minimum_size = Vector2(512, 256)
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer" unique_id=2129270400]
 layout_mode = 2
-theme_override_font_sizes/font_size = 64
+theme_override_constants/separation = 128
+
+[node name="SpawnEnemiesContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=1443107667]
+layout_mode = 2
+script = ExtResource("3_hkenb")
+
+[node name="Label" type="Label" parent="Control/MarginContainer/HBoxContainer/SpawnEnemiesContainer" unique_id=1281077382]
+layout_mode = 2
+text = "Spawn Enemies"
+horizontal_alignment = 1
+
+[node name="CrystalsContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=555637401]
+layout_mode = 2
+script = ExtResource("3_jlxhc")
+metadata/_edit_group_ = true
+
+[node name="OtherContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=1829825654]
+layout_mode = 2
+metadata/_edit_group_ = true
+
+[node name="EndLevelButton" type="Button" parent="Control/MarginContainer/HBoxContainer/OtherContainer" unique_id=1350265474]
+layout_mode = 2
 text = "End Level"
 script = ExtResource("1_althg")
+
+[node name="KillEnemiesButton" type="Button" parent="Control/MarginContainer/HBoxContainer/OtherContainer" unique_id=135850104]
+layout_mode = 2
+text = "Kill Enemies"
+script = ExtResource("3_met78")
+
+[node name="RemoveEnemiesButton" type="Button" parent="Control/MarginContainer/HBoxContainer/OtherContainer" unique_id=623534567]
+layout_mode = 2
+text = "Remove Enemies
+(no drops)"
+script = ExtResource("4_xjd1d")

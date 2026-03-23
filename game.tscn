@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://snfu2b1ifqye"]
+[gd_scene format=3 uid="uid://snfu2b1ifqye"]
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://player/player.tscn" id="2_eow3j"]
@@ -49,10 +49,10 @@ shader = ExtResource("12_iotsf")
 shader_parameter/strength = 0.0
 shader_parameter/magnitude = Vector2(0, 0)
 
-[node name="Game" type="Node2D"]
+[node name="Game" type="Node2D" unique_id=1682739906]
 script = ExtResource("1_ryrav")
 
-[node name="Parallax2D" type="Parallax2D" parent="."]
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1419804882]
 z_index = -2
 repeat_size = Vector2(724, 724)
 autoscroll = Vector2(0, 100)
@@ -60,116 +60,117 @@ repeat_times = 6
 follow_viewport = false
 ignore_camera_scroll = true
 
-[node name="Sprite2D" type="Sprite2D" parent="Parallax2D"]
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=1231804813]
 position = Vector2(1920, 1080)
 texture = ExtResource("10_hve3p")
 
-[node name="Player" parent="." instance=ExtResource("2_eow3j")]
+[node name="Player" parent="." unique_id=692351150 instance=ExtResource("2_eow3j")]
 position = Vector2(2174, 1930)
 
-[node name="RightWall" type="Sprite2D" parent="."]
+[node name="RightWall" type="Sprite2D" parent="." unique_id=1146620113]
 position = Vector2(3808, 1080)
 texture = ExtResource("7_eow3j")
 
-[node name="LevelWalls" type="StaticBody2D" parent="." groups=["level_walls"]]
+[node name="LevelWalls" type="StaticBody2D" parent="." unique_id=1246014687 groups=["level_walls"]]
 collision_layer = 32
 collision_mask = 0
 
-[node name="LeftWall" type="CollisionShape2D" parent="LevelWalls"]
+[node name="LeftWall" type="CollisionShape2D" parent="LevelWalls" unique_id=1024175451]
 position = Vector2(256, 1080)
 shape = SubResource("RectangleShape2D_87y3e")
 
-[node name="RightWall" type="CollisionShape2D" parent="LevelWalls"]
+[node name="RightWall" type="CollisionShape2D" parent="LevelWalls" unique_id=1028911608]
 position = Vector2(4032, 1080)
 shape = SubResource("RectangleShape2D_0lhi4")
 
-[node name="LevelCeiling" type="StaticBody2D" parent="."]
+[node name="LevelCeiling" type="StaticBody2D" parent="." unique_id=1646188548]
 collision_layer = 64
 collision_mask = 0
 
-[node name="TopWall" type="CollisionShape2D" parent="LevelCeiling"]
+[node name="TopWall" type="CollisionShape2D" parent="LevelCeiling" unique_id=467383974]
 position = Vector2(2144, -512)
 shape = SubResource("RectangleShape2D_k07pp")
 
-[node name="LevelFloor" type="StaticBody2D" parent="."]
+[node name="LevelFloor" type="StaticBody2D" parent="." unique_id=798973780]
 collision_layer = 128
 collision_mask = 0
 
-[node name="BottomWall" type="CollisionShape2D" parent="LevelFloor"]
+[node name="BottomWall" type="CollisionShape2D" parent="LevelFloor" unique_id=1878348994]
 position = Vector2(2144, 2672)
 shape = SubResource("RectangleShape2D_jkk55")
 
-[node name="LevelOutsideBoundary" type="StaticBody2D" parent="."]
+[node name="LevelOutsideBoundary" type="StaticBody2D" parent="." unique_id=345506684]
 collision_layer = 256
 collision_mask = 0
 
-[node name="TopWall" type="CollisionShape2D" parent="LevelOutsideBoundary"]
+[node name="TopWall" type="CollisionShape2D" parent="LevelOutsideBoundary" unique_id=1615479064]
 position = Vector2(2144, -1280)
 shape = SubResource("RectangleShape2D_j5wjh")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
-[node name="LeftWall" type="CollisionShape2D" parent="LevelOutsideBoundary"]
+[node name="LeftWall" type="CollisionShape2D" parent="LevelOutsideBoundary" unique_id=378929884]
 position = Vector2(-301, 1088)
 shape = SubResource("RectangleShape2D_7sc4i")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
-[node name="RightWall" type="CollisionShape2D" parent="LevelOutsideBoundary"]
+[node name="RightWall" type="CollisionShape2D" parent="LevelOutsideBoundary" unique_id=681198289]
 position = Vector2(4589, 1088)
 shape = SubResource("RectangleShape2D_80cx4")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
-[node name="BottomWall" type="CollisionShape2D" parent="LevelOutsideBoundary"]
+[node name="BottomWall" type="CollisionShape2D" parent="LevelOutsideBoundary" unique_id=188552543]
 position = Vector2(2144, 3448)
 shape = SubResource("RectangleShape2D_vef74")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
-[node name="Shop" parent="." instance=ExtResource("5_e8heu")]
+[node name="Shop" parent="." unique_id=1220203929 instance=ExtResource("5_e8heu")]
 
-[node name="DebugScreen" parent="." instance=ExtResource("6_rvswv")]
-visible = false
+[node name="UI" type="CanvasLayer" parent="." unique_id=1677117807]
 
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="InventoryManager" parent="UI" instance=ExtResource("5_hve3p")]
+[node name="InventoryManager" parent="UI" unique_id=338909771 instance=ExtResource("5_hve3p")]
 offset_left = 512.0
 offset_right = 512.0
 
-[node name="StatsPanel" parent="UI" instance=ExtResource("6_eow3j")]
+[node name="StatsPanel" parent="UI" unique_id=1113948717 instance=ExtResource("6_eow3j")]
 
-[node name="PauseMenu" parent="UI" instance=ExtResource("6_mfdv2")]
+[node name="PauseMenu" parent="UI" unique_id=1088637866 instance=ExtResource("6_mfdv2")]
 visible = false
 
-[node name="FpsCounter" type="Label" parent="UI"]
+[node name="FpsCounter" type="Label" parent="UI" unique_id=1109875423]
 offset_left = 16.41
 offset_top = 10.655
 offset_right = 56.41
 offset_bottom = 81.8217
 script = ExtResource("8_215e1")
 
-[node name="EnemyManager" type="Node" parent="."]
+[node name="DebugScreen" parent="." unique_id=2045782823 instance=ExtResource("6_rvswv")]
+process_priority = -1
+visible = false
+
+[node name="EnemyManager" type="Node" parent="." unique_id=705242850]
 script = ExtResource("8_vef74")
 
-[node name="LevelManager" type="Node" parent="."]
+[node name="LevelManager" type="Node" parent="." unique_id=1100285203]
 script = ExtResource("8_j5wjh")
 
-[node name="CrystalManager" parent="." instance=ExtResource("9_vef74")]
+[node name="CrystalManager" parent="." unique_id=624430186 instance=ExtResource("9_vef74")]
 
-[node name="ModuleManager" type="Node" parent="."]
+[node name="ModuleManager" type="Node" parent="." unique_id=823327894]
 script = ExtResource("12_7sc4i")
 
-[node name="GamePhaseManager" type="Node" parent="."]
+[node name="GamePhaseManager" type="Node" parent="." unique_id=647316605]
 script = ExtResource("13_80cx4")
 
-[node name="MouseInputManager" type="Node2D" parent="."]
-process_priority = -1
+[node name="MouseInputManager" type="Node2D" parent="." unique_id=1359638225]
+process_priority = -2
 script = ExtResource("16_boyg6")
 
-[node name="ExplosionEffectsLayer" type="CanvasLayer" parent="."]
+[node name="ExplosionEffectsLayer" type="CanvasLayer" parent="." unique_id=226302645]
 script = ExtResource("11_mfdv2")
 
-[node name="ScreenShakeLayer" type="CanvasLayer" parent="."]
+[node name="ScreenShakeLayer" type="CanvasLayer" parent="." unique_id=1986964170]
 
-[node name="ScreenShake" type="ColorRect" parent="ScreenShakeLayer"]
+[node name="ScreenShake" type="ColorRect" parent="ScreenShakeLayer" unique_id=361886656]
 material = SubResource("ShaderMaterial_lc2xo")
 anchors_preset = 15
 anchor_right = 1.0

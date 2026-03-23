@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bu4bb10k0x66d"]
+[gd_scene format=3 uid="uid://bu4bb10k0x66d"]
 
 [ext_resource type="Texture2D" uid="uid://bf4gkg13wl2b8" path="res://enemies/crystal.png" id="1_5v78r"]
 [ext_resource type="Script" uid="uid://j44h0xyk3xdr" path="res://enemies/FallingCrystal.cs" id="1_qiyar"]
@@ -192,7 +192,7 @@ _data = {
 &"collect": SubResource("Animation_gecfw")
 }
 
-[node name="FallingCrystal" type="RigidBody2D"]
+[node name="FallingCrystal" type="RigidBody2D" unique_id=484131422 groups=["falling_crystals"]]
 collision_layer = 512
 collision_mask = 304
 mass = 0.1
@@ -201,21 +201,19 @@ contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_qiyar")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1973219322]
 material = SubResource("ShaderMaterial_e1k7q")
 position = Vector2(0.5, 0.5)
 texture = ExtResource("1_5v78r")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=54834143]
 visible = false
 shape = SubResource("RectangleShape2D_e1k7q")
 
-[node name="CrystalAnimations" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_jqj6i")
-}
+[node name="CrystalAnimations" type="AnimationPlayer" parent="." unique_id=1752858511]
+libraries/ = SubResource("AnimationLibrary_jqj6i")
 
-[node name="PointerArea" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("4_pd4ca")]
+[node name="PointerArea" parent="." unique_id=444043203 node_paths=PackedStringArray("_target") instance=ExtResource("4_pd4ca")]
 _target = NodePath("..")
 _pointerColor = Color(0.95686275, 0.9098039, 0.4862745, 1)
 _showOnlyWhenMovingIn = false

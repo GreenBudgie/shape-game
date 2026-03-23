@@ -49,7 +49,7 @@
 
     public override float GetCrystalsToDrop()
     {
-        return 10;
+        return 50;
     }
 
     private void Fire()

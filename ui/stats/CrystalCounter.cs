@@ -36,10 +36,10 @@ public partial class CrystalCounter : Control
             .SetStrength(CrystalCollectGlowMinStrength)
             .SetRadius(0);
 
-        CrystalManager.Instance.CrystalCollected += OnCrystalCollected;
+        CrystalManager.Instance.CrystalAmountChanged += OnCrystalAmountChanged;
     }
 
-    private void OnCrystalCollected()
+    private void OnCrystalAmountChanged()
     {
         _label.Text = CrystalManager.Instance.Crystals.ToString();
 

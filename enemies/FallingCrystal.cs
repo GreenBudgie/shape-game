@@ -22,9 +22,19 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
     private Glow _glow = null!;
     private AnimationPlayer _crystalAnimations = null!;
 
-    public static FallingCrystal Create()
+    public static FallingCrystal Spawn(Vector2 globalPosition)
     {
-        return Scene.Instantiate<FallingCrystal>();
+        var crystal = Scene.Instantiate<FallingCrystal>();
+        ShapeGame.Instance.AddChildDeferred(crystal);
+
+        crystal.GlobalPosition = globalPosition;
+        var randomStrength = (float)GD.RandRange(750f, 1500f);
+        var randomAngle = GD.RandRange(5 * Pi / 4, 7 * Pi / 4);
+        var randomDirection = Vector2.FromAngle((float)randomAngle);
+        var impulse = randomDirection * randomStrength;
+        crystal.ApplyCentralImpulse(impulse);
+
+        return crystal;
     }
 
     public override void _Ready()
