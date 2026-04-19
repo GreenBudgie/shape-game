@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cwnco7811pl7"]
+
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow.gdshader" id="1_ut15g"]
+[ext_resource type="Texture2D" uid="uid://d0qbwccjscr4n" path="res://player/player.png" id="1_uwavy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0x8s3"]
+shader = ExtResource("1_ut15g")
+shader_parameter/glow_color = Color(0.937, 0.357, 0.357, 1)
+shader_parameter/glow_radius = 147.2110069925225
+shader_parameter/glow_strength = 5.52800026258
+shader_parameter/cull_occluded = false
+
+[node name="TestScene" type="Node2D" unique_id=1586721725]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=765298281]
+texture = ExtResource("1_uwavy")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D" unique_id=908028403]
+show_behind_parent = true
+material = SubResource("ShaderMaterial_0x8s3")
+texture = ExtResource("1_uwavy")
