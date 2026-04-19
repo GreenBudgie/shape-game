@@ -6,9 +6,8 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0x8s3"]
 shader = ExtResource("1_ut15g")
 shader_parameter/glow_color = Color(0.937, 0.357, 0.357, 1)
-shader_parameter/glow_radius = 147.2110069925225
-shader_parameter/glow_strength = 5.52800026258
-shader_parameter/cull_occluded = false
+shader_parameter/glow_radius = 12.0
+shader_parameter/glow_strength = 2.0
 
 [node name="TestScene" type="Node2D" unique_id=1586721725]
 

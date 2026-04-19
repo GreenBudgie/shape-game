@@ -4,7 +4,6 @@ render_mode unshaded;
 uniform vec4 glow_color : source_color = vec4(0.937, 0.357, 0.357, 1.0);
 uniform float glow_radius : hint_range(0, 200) = 12.0;
 uniform float glow_strength : hint_range(0, 10) = 2.0;
-uniform bool cull_occluded = true;
 
 varying vec4 vertex_color;
 varying vec2 vertex_uv;
@@ -24,7 +23,8 @@ void vertex() {
 void fragment() {
     vec2 uv = vertex_uv;
 
-    if (cull_occluded && texture(TEXTURE, uv).a > 0.95) discard;
+    // Discard только если пиксель полностью непрозрачный
+    if (texture(TEXTURE, uv).a >= 0.99 && vertex_color.a >= 0.99) discard;
 
     float glow_radius_sqrt = sqrt(glow_radius);
     int num_directions = int(clamp(glow_radius_sqrt * 3.0, 16.0, 48.0));
