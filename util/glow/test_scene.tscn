@@ -11,10 +11,10 @@ shader_parameter/glow_strength = 2.0
 
 [node name="TestScene" type="Node2D" unique_id=1586721725]
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=765298281]
-texture = ExtResource("1_0x8s3")
-
-[node name="Sprite2D2" type="Sprite2D" parent="Sprite2D" unique_id=908028403]
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=908028403]
 show_behind_parent = true
 material = SubResource("ShaderMaterial_0x8s3")
+texture = ExtResource("1_0x8s3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=765298281]
 texture = ExtResource("1_0x8s3")
