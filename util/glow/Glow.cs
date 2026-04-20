@@ -274,6 +274,11 @@ public partial class Glow : Sprite2D
         var glow = GlowScene.Instantiate<Glow>();
         glow.Texture = texture;
         node.AddChild(glow);
+        
+        if (node is Control control)
+        {
+            glow.Position = control.Size / 2f;
+        }
 
         return glow;
     }
