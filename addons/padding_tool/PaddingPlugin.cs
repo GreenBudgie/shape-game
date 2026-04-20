@@ -29,7 +29,7 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         var hasPng = false;
         foreach (var path in paths)
         {
-            if (path.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+            if (path.EndsWith(".png", System.StringComparison.OrdinalIgnoreCase))
             {
                 hasPng = true;
                 break;
@@ -38,13 +38,9 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
 
         if (!hasPng) return;
 
-        var submenu = new PopupMenu();
-        submenu.AddItem("Add Padding");
-        submenu.AddItem("Force Add Padding");
-        submenu.AddItem("Remove Padding");
-        submenu.IdPressed += id => OnMenuItemSelected((int)id, paths);
-
-        AddContextSubmenuItem("Padding", submenu);
+        AddContextMenuItem("Add Padding", Callable.From<string>((_) => OnMenuItemSelected(0, paths)));
+        AddContextMenuItem("Force Add Padding", Callable.From<string>((_) => OnMenuItemSelected(1, paths)));
+        AddContextMenuItem("Remove Padding", Callable.From<string>((_) => OnMenuItemSelected(2, paths)));
     }
 
     private void OnMenuItemSelected(int id, string[] paths)
@@ -99,14 +95,11 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
                     GD.Print($"[ok]   {path}");
                     return false;
                 }
-
                 newImage = AddPadding(image);
                 break;
 
             case PaddingMode.Force:
-                // Сначала убираем существующий padding, потом добавляем ровно Padding пикселей
-                var trimmed = TrimPadding(image);
-                newImage = AddPadding(trimmed);
+                newImage = AddPadding(TrimPadding(image));
                 break;
 
             case PaddingMode.Remove:
@@ -115,7 +108,6 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
                     GD.Print($"[ok]   {path}");
                     return false;
                 }
-
                 newImage = TrimPadding(image);
                 break;
 
@@ -123,15 +115,29 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
                 return false;
         }
 
-        newImage.SavePng(path);
+        // Сохраняем оригинал для undo
+        var originalImage = image;
+        
+        var action = new PaddingUndoRedoAction();
+        action.Init(path, newImage, originalImage);
 
+        var undoRedo = EditorInterface.Singleton.GetEditorUndoRedo();
+        undoRedo.CreateAction($"Padding: {mode} — {path.GetFile()}");
+        undoRedo.AddDoMethod(action, PaddingUndoRedoAction.MethodName.Do);
+        undoRedo.AddUndoMethod(action, PaddingUndoRedoAction.MethodName.Undo);
+        undoRedo.CommitAction();
+
+        undoRedo.CommitAction();
+
+        return true;
+    }
+
+    private void Reimport(string path)
+    {
         var fs = EditorInterface.Singleton.GetResourceFilesystem();
         fs.UpdateFile(path);
         fs.ReimportFiles([path]);
         fs.Scan();
-
-        GD.Print($"[done] {path}");
-        return true;
     }
 
     private Image AddPadding(Image image)
