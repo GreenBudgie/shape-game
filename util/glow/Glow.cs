@@ -1,20 +1,19 @@
 /// <summary>
-/// Controls a glow shader material applied directly to a CanvasItem.
+/// A component for adding a glow effect to a Sprite2D or TextureRect using a shader.
+/// The Glow node is a Sprite2D child that renders behind its parent using a glow shader.
 /// </summary>
-public partial class Glow : RefCounted
+public partial class Glow : Sprite2D
 {
-    public static readonly NodePath RadiusProperty = "Radius";
-    public static readonly NodePath StrengthProperty = "Strength";
+    public static readonly NodePath RadiusProperty = PropertyName.Radius.ToString();
+    public static readonly NodePath StrengthProperty = PropertyName.Strength.ToString();
 
     private static readonly StringName GlowColorName = "glow_color";
     private static readonly StringName GlowRadiusName = "glow_radius";
     private static readonly StringName GlowStrengthName = "glow_strength";
 
-    private static readonly Shader GlowShader = GD.Load<Shader>("uid://b5llrlesa8ji2");
+    private static readonly PackedScene GlowScene = GD.Load<PackedScene>("uid://c3qvnso7dnntg");
 
-    public CanvasItem Target { get; private set; }= null!;
-    
-    private ShaderMaterial _shaderMaterial = null!;
+    private ShaderMaterial _shaderMaterial;
 
     private bool _isPulsing;
     private float _pulseRadiusDelta;
@@ -43,31 +42,18 @@ public partial class Glow : RefCounted
         set => SetStrength(value);
     }
 
-    private void Init(CanvasItem target)
+    public Glow()
     {
-        Target = target;
-
-        if (target.Material is ShaderMaterial existing && existing.Shader == GlowShader)
-        {
-            _shaderMaterial = existing;
-        }
-        else
-        {
-            _shaderMaterial = new ShaderMaterial { Shader = GlowShader };
-            target.Material = _shaderMaterial;
-        }
-
-        _baseStrength = GetBaseStrength();
-        _baseRadius = GetBaseRadius();
-
-        target.GetTree().ProcessFrame += HandlePulsing;
-        target.TreeExiting += Remove;
+        _shaderMaterial = (ShaderMaterial)Material;
     }
 
-    /// <summary>
-    /// Must be called every frame from the node's _Process to handle pulsing.
-    /// </summary>
-    public void Process()
+    public override void _Ready()
+    {
+        _baseStrength = GetBaseStrength();
+        _baseRadius = GetBaseRadius();
+    }
+
+    public override void _Process(double delta)
     {
         HandlePulsing();
     }
@@ -75,7 +61,9 @@ public partial class Glow : RefCounted
     private void HandlePulsing()
     {
         if (!_isPulsing || (_pulseRadiusDelta == 0 && _pulseStrengthDelta == 0))
+        {
             return;
+        }
 
         var t = Time.GetTicksMsec() / 1000f;
         var pulse = 0.5f + 0.5f * Sin(t * Tau * _pulsesPerSecond);
@@ -83,41 +71,66 @@ public partial class Glow : RefCounted
         UpdateStrength(GetBaseStrength() + _pulseStrengthDelta * pulse);
     }
 
+    /// <summary>
+    /// Sets the glow color of the effect.
+    /// </summary>
     public Glow SetColor(Color color)
     {
         if (_cachedColor.HasValue && _cachedColor.Value == color)
+        {
             return this;
+        }
+
         _cachedColor = color;
         _shaderMaterial.SetShaderParameter(GlowColorName, color);
         return this;
     }
 
+    /// <summary>
+    /// Sets the blur radius of the glow effect.
+    /// </summary>
     public Glow SetRadius(float radius)
     {
-        var r = Max(radius, 0);
-        if (IsEqualApprox(GetBaseRadius(), r))
+        var positiveRadius = Max(radius, 0);
+        if (IsEqualApprox(GetBaseRadius(), positiveRadius))
+        {
             return this;
-        _baseRadius = r;
-        UpdateRadius(r);
+        }
+
+        _baseRadius = positiveRadius;
+        UpdateRadius(positiveRadius);
         return this;
     }
 
-    private void UpdateRadius(float radius) =>
+    private void UpdateRadius(float radius)
+    {
         _shaderMaterial.SetShaderParameter(GlowRadiusName, radius);
+    }
 
+    /// <summary>
+    /// Sets the overall strength (opacity) of the glow.
+    /// </summary>
     public Glow SetStrength(float strength)
     {
-        var s = Max(strength, 0);
-        if (IsEqualApprox(GetBaseStrength(), s))
+        var positiveStrength = Max(strength, 0);
+        if (IsEqualApprox(GetBaseStrength(), positiveStrength))
+        {
             return this;
-        _baseStrength = s;
-        UpdateStrength(s);
+        }
+
+        _baseStrength = positiveStrength;
+        UpdateStrength(positiveStrength);
         return this;
     }
 
-    private void UpdateStrength(float strength) =>
+    private void UpdateStrength(float strength)
+    {
         _shaderMaterial.SetShaderParameter(GlowStrengthName, strength);
+    }
 
+    /// <summary>
+    /// Sets the strength and radius of the glow to zero, turning it off.
+    /// </summary>
     public Glow TurnOff()
     {
         SetRadius(0);
@@ -126,40 +139,50 @@ public partial class Glow : RefCounted
     }
 
     /// <summary>
-    /// Removes the glow shader from the target, restoring original material.
+    /// Gets the current color used for the glow.
     /// </summary>
-    public void Remove()
-    {
-        if (Target.IsInsideTree())
-        {
-            Target.GetTree().ProcessFrame -= HandlePulsing;
-        }
-
-        Target.TreeExiting -= Remove;
-        Target.Material = null;
-    }
-
     public Color GetColor()
     {
-        if (_cachedColor.HasValue) return _cachedColor.Value;
+        if (_cachedColor.HasValue)
+        {
+            return _cachedColor.Value;
+        }
+
         _cachedColor = (Color)_shaderMaterial.GetShaderParameter(GlowColorName);
         return _cachedColor.Value;
     }
 
+    /// <summary>
+    /// Gets the current blur radius of the glow effect.
+    /// </summary>
     public float GetBaseRadius()
     {
-        if (_baseRadius.HasValue) return _baseRadius.Value;
+        if (_baseRadius.HasValue)
+        {
+            return _baseRadius.Value;
+        }
+
         _baseRadius = (float)_shaderMaterial.GetShaderParameter(GlowRadiusName);
         return _baseRadius.Value;
     }
 
+    /// <summary>
+    /// Gets the current strength (opacity multiplier) of the glow.
+    /// </summary>
     public float GetBaseStrength()
     {
-        if (_baseStrength.HasValue) return _baseStrength.Value;
+        if (_baseStrength.HasValue)
+        {
+            return _baseStrength.Value;
+        }
+
         _baseStrength = (float)_shaderMaterial.GetShaderParameter(GlowStrengthName);
         return _baseStrength.Value;
     }
 
+    /// <summary>
+    /// Enables pulsing effect.
+    /// </summary>
     public Glow EnablePulsing()
     {
         _baseStrength = GetBaseStrength();
@@ -168,6 +191,9 @@ public partial class Glow : RefCounted
         return this;
     }
 
+    /// <summary>
+    /// Disables the pulsing effect.
+    /// </summary>
     public Glow DisablePulsing()
     {
         _isPulsing = false;
@@ -176,18 +202,27 @@ public partial class Glow : RefCounted
         return this;
     }
 
+    /// <summary>
+    /// Sets how many pulses per second should occur.
+    /// </summary>
     public Glow SetPulsesPerSecond(float pulses)
     {
         _pulsesPerSecond = pulses;
         return this;
     }
 
+    /// <summary>
+    /// Sets how much the strength should vary during pulsing.
+    /// </summary>
     public Glow SetPulseStrengthDelta(float delta)
     {
         _pulseStrengthDelta = delta;
         return this;
     }
 
+    /// <summary>
+    /// Sets how much the radius should vary during pulsing.
+    /// </summary>
     public Glow SetPulseRadiusDelta(float delta)
     {
         _pulseRadiusDelta = delta;
@@ -200,12 +235,46 @@ public partial class Glow : RefCounted
     public float GetPulsesPerSecond() => _pulsesPerSecond;
 
     /// <summary>
-    /// Creates a Glow controller for any CanvasItem (Sprite2D, TextureRect, etc.)
+    /// Adds a Glow instance as a child to the given Sprite2D.
     /// </summary>
-    public static Glow AddGlow(CanvasItem target)
+    public static Glow AddGlow(Sprite2D sprite)
     {
-        var glow = new Glow();
-        glow.Init(target);
+        return AttachGlow(sprite, sprite.Texture);
+    }
+
+    /// <summary>
+    /// Adds a Glow instance as a child to the given TextureRect.
+    /// Image should be centered.
+    /// </summary>
+    public static Glow AddGlow(TextureRect textureRect)
+    {
+        return AttachGlow(textureRect, textureRect.Texture);
+    }
+
+    /// <summary>
+    /// Adds a Glow instance as a child to the given TextureButton.
+    /// Image should be centered.
+    /// </summary>
+    public static Glow AddGlow(TextureButton textureButton)
+    {
+        return AttachGlow(textureButton, textureButton.TextureNormal);
+    }
+
+    /// <summary>
+    /// Adds a Glow instance as a child to the given TextureProgressBar.
+    /// Image should be centered.
+    /// </summary>
+    public static Glow AddGlow(TextureProgressBar textureProgressBar)
+    {
+        return AttachGlow(textureProgressBar, textureProgressBar.TextureOver);
+    }
+
+    private static Glow AttachGlow(CanvasItem node, Texture2D texture)
+    {
+        var glow = GlowScene.Instantiate<Glow>();
+        glow.Texture = texture;
+        node.AddChild(glow);
+
         return glow;
     }
 }

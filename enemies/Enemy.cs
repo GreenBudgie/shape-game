@@ -159,7 +159,7 @@ public abstract partial class Enemy : RigidBody2D
         }
 
         _glow.DisablePulsing();
-        var fadeOutTween = _glow.Target.CreateTween();
+        var fadeOutTween = _glow.CreateTween();
         var setColorAction = _glow.SetColor;
         var finalGlowColor = _glow.GetColor();
         finalGlowColor.A = 0;

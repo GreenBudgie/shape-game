@@ -103,17 +103,17 @@ public class GlowTween
         return this;
     }
 
-    public GlowTween Play(Glow glow)
+    public GlowTween Play(Glow target)
     {
         // Kill any existing tween
         _tween?.Kill();
         
         // Create new tween
-        _tween = glow.Target.CreateTween().SetTrans(Tween.TransitionType.Sine);
+        _tween = target.CreateTween().SetTrans(Tween.TransitionType.Sine);
 
         // Get current values
-        var strength = glow.GetBaseStrength();
-        var radius = glow.GetBaseRadius();
+        var strength = target.GetBaseStrength();
+        var radius = target.GetBaseRadius();
 
         // Calculate target values
         var cappedStrength = Min(strength + _strengthDelta, _maxStrength);
@@ -121,14 +121,14 @@ public class GlowTween
 
         // Tween in (glow up)
         _tween.TweenProperty(
-            @object: glow,
+            @object: target,
             property: Glow.StrengthProperty,
             finalVal: cappedStrength,
             duration: _inTime
         ).SetEase(Tween.EaseType.Out);
 
         _tween.Parallel().TweenProperty(
-            @object: glow,
+            @object: target,
             property: Glow.RadiusProperty,
             finalVal: cappedRadius,
             duration: _inTime
@@ -136,14 +136,14 @@ public class GlowTween
 
         // Tween out (fade to min values)
         _tween.TweenProperty(
-            @object: glow,
+            @object: target,
             property: Glow.StrengthProperty,
             finalVal: _minStrength,
             duration: _outTime
         ).SetEase(Tween.EaseType.In);
 
         _tween.Parallel().TweenProperty(
-            @object: glow,
+            @object: target,
             property: Glow.RadiusProperty,
             finalVal: _minRadius,
             duration: _outTime
