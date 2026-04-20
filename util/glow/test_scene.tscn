@@ -5,7 +5,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0x8s3"]
 shader = ExtResource("1_ut15g")
-shader_parameter/glow_color = Color(0.937, 0.357, 0.357, 1)
+shader_parameter/glow_color = Color(0.9372549, 0.35686275, 0.35686275, 1)
 shader_parameter/glow_radius = 12.0
 shader_parameter/glow_strength = 2.0
 
@@ -17,4 +17,5 @@ material = SubResource("ShaderMaterial_0x8s3")
 texture = ExtResource("1_0x8s3")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=765298281]
+visible = false
 texture = ExtResource("1_0x8s3")
