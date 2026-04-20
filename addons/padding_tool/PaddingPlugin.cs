@@ -38,7 +38,7 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
 
         if (!hasPng) return;
 
-        AddContextMenuItem("Add Padding", Callable.From(() => OnAddPadding(paths)));
+        AddContextMenuItem("Add Padding", Callable.From<string>((_) => OnAddPadding(paths)));
     }
 
     private void OnAddPadding(string[] paths)
@@ -62,7 +62,10 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
 
     private bool ProcessPng(string path)
     {
-        var image = Image.LoadFromFile(path);
+        var texture = ResourceLoader.Load<CompressedTexture2D>(path);
+        if (texture == null) return false;
+
+        var image = texture.GetImage();
         if (image == null) return false;
 
         if (image.DetectAlpha() == Image.AlphaMode.None) return false;
@@ -87,6 +90,12 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         );
 
         newImage.SavePng(path);
+
+        var fs = EditorInterface.Singleton.GetResourceFilesystem();
+        fs.UpdateFile(path);
+        fs.ReimportFiles([path]);
+        fs.Scan();
+
         GD.Print($"[done] {path}");
         return true;
     }
