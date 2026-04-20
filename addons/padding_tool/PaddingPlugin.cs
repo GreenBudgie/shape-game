@@ -9,7 +9,7 @@ public partial class PaddingPlugin : EditorPlugin
 
     public override void _EnterTree()
     {
-        _contextMenu = new PaddingContextMenu(Padding);
+        _contextMenu = new PaddingContextMenu { Padding = Padding };
         AddContextMenuPlugin(EditorContextMenuPlugin.ContextMenuSlot.Filesystem, _contextMenu);
     }
 
@@ -22,16 +22,10 @@ public partial class PaddingPlugin : EditorPlugin
 [Tool]
 public partial class PaddingContextMenu : EditorContextMenuPlugin
 {
-    private readonly int _padding;
-
-    public PaddingContextMenu(int padding)
-    {
-        _padding = padding;
-    }
+    public int Padding { get; set; } = 8;
 
     public override void _PopupMenu(string[] paths)
     {
-        // Показываем пункт только если выбран хотя бы один PNG
         var hasPng = false;
         foreach (var path in paths)
         {
@@ -79,9 +73,9 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
             return false;
         }
 
-        var newImage = Image.Create(
-            image.GetWidth() + _padding * 2,
-            image.GetHeight() + _padding * 2,
+        var newImage = Image.CreateEmpty(
+            image.GetWidth() + Padding * 2,
+            image.GetHeight() + Padding * 2,
             false,
             Image.Format.Rgba8
         );
@@ -89,7 +83,7 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         newImage.BlitRect(
             image,
             new Rect2I(0, 0, image.GetWidth(), image.GetHeight()),
-            new Vector2I(_padding, _padding)
+            new Vector2I(Padding, Padding)
         );
 
         newImage.SavePng(path);
@@ -105,7 +99,7 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
 
         for (var x = 0; x < w; x++)
         {
-            for (var y = 0; y < _padding; y++)
+            for (var y = 0; y < Padding; y++)
             {
                 if (image.GetPixel(x, y).A > 0) return false;
                 if (image.GetPixel(x, h - 1 - y).A > 0) return false;
@@ -114,7 +108,7 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
 
         for (var y = 0; y < h; y++)
         {
-            for (var x = 0; x < _padding; x++)
+            for (var x = 0; x < Padding; x++)
             {
                 if (image.GetPixel(x, y).A > 0) return false;
                 if (image.GetPixel(w - 1 - x, y).A > 0) return false;
