@@ -51,13 +51,11 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
         CollisionLayer = 0;
         CollisionMask = 0;
         
-        _glow = Glow.AddGlow(_sprite, addChild: false);
-        _glow.Sprite.Scale = new Vector2(0, 1);
+        _glow = Glow.AddGlow(_sprite);
+        _glow.Scale = new Vector2(0, 1);
         _glow.SetColor(ColorScheme.LightBlueGreen)
             .SetStrength(1)
             .SetRadius(30);
-
-        AddChild(_glow);
 
         var player = Player.FindPlayer();
         if (player != null)
@@ -172,7 +170,7 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
             .SetEase(Tween.EaseType.InOut)
             .SetTrans(Tween.TransitionType.Quad);
         tween.TweenProperty(_spriteMask.Material, Mask.ProgressShaderParam, 0f, RemoveDuration);
-        tween.TweenProperty(_glow.Sprite, ScaleProperty, new Vector2(0, 1), RemoveDuration);
+        tween.TweenProperty(_glow, ScaleProperty, new Vector2(0, 1), RemoveDuration);
 
         tween.Finished += QueueFree;
     }
@@ -193,7 +191,7 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
         tween.TweenProperty(_spriteMask.Material, Mask.ProgressShaderParam, 1f, EffectDuration)
             .SetDelay(EffectStartupDuration);
         
-        tween.TweenProperty(_glow.Sprite, ScaleProperty, Vector2.One, EffectDuration)
+        tween.TweenProperty(_glow, ScaleProperty, Vector2.One, EffectDuration)
             .SetDelay(EffectStartupDuration);
         
         tween.Finished += OnAppear;
@@ -241,7 +239,7 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
             .SetDelay(EffectDuration)
             .SetEase(Tween.EaseType.In)
             .SetTrans(Tween.TransitionType.Quad);
-        tween.Finished += () => beam.QueueFree();
+        tween.Finished += beam.QueueFree;
         ShapeGame.Instance.AddChild(beam);
 
         return beam;

@@ -139,7 +139,6 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
         CollisionLayer = 0;
         CollisionMask = 0;
 
-        _glow.SetCullOccluded(false);
         var fadeOutTween = _glow.CreateTween();
         var setColorAction = _glow.SetColor;
         var finalGlowColor = _glow.GetColor();
