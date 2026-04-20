@@ -2,7 +2,6 @@
 
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow.gdshader" id="1_5plxl"]
 [ext_resource type="Script" uid="uid://dijyl0ejrv8c2" path="res://util/glow/Glow.cs" id="1_v14u5"]
-[ext_resource type="Texture2D" uid="uid://cngnn50r7k8a" path="res://enemies/types/rhombus/rhombus.png" id="2_e1768"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_e1768"]
 resource_local_to_scene = true
@@ -14,5 +13,4 @@ shader_parameter/glow_strength = 2.0
 [node name="Glow" type="Sprite2D" unique_id=1027220153]
 show_behind_parent = true
 material = SubResource("ShaderMaterial_e1768")
-texture = ExtResource("2_e1768")
 script = ExtResource("1_v14u5")

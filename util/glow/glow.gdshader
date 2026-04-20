@@ -20,13 +20,14 @@ void vertex() {
 void fragment() {
     vec2 expanded_scale = vec2(1.0) + 2.0 * glow_radius * TEXTURE_PIXEL_SIZE;
     vec2 uv = (UV - 0.5) * expanded_scale + 0.5;
-
-    bool inside = uv == clamp(uv, vec2(0.0), vec2(1.0));
-    vec4 original = inside ? texture(TEXTURE, uv) : vec4(0.0);
-    vec4 original_modulated = original * vertex_color;
+	
+	float base_alpha = texture(TEXTURE, uv).a * vertex_color.a;
+	if (base_alpha > 0.99) {
+	    discard;
+	}
 
     if (glow_radius < 0.5) {
-        COLOR = original_modulated;
+        COLOR = vec4(0.0);
     } else {
         float glow_radius_sqrt = sqrt(glow_radius);
         int num_directions = int(clamp(glow_radius_sqrt * 3.0, 16.0, 48.0));
@@ -60,9 +61,6 @@ void fragment() {
 
         total_weight = max(total_weight, 0.0001);
         float glow_alpha = (alpha_sum / total_weight) * glow_strength * glow_color.a * vertex_color.a;
-        vec4 glow = vec4(glow_color.rgb * vertex_color.rgb, glow_alpha);
-
-        float src_a = original_modulated.a;
-        COLOR = mix(glow, original_modulated, src_a);
+        COLOR = vec4(glow_color.rgb * vertex_color.rgb, glow_alpha);
     }
 }
