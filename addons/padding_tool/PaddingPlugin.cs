@@ -24,12 +24,25 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
 {
     public int Padding { get; set; } = 8;
 
+    private PaddingInputDialog? _dialog;
+
+    private void ShowCustomDialog(string[] paths)
+    {
+        if (_dialog == null)
+        {
+            _dialog = new PaddingInputDialog();
+            EditorInterface.Singleton.GetBaseControl().AddChild(_dialog);
+        }
+
+        _dialog.Show(value => OnMenuItemSelected(PaddingMode.AddIfNeeded, paths, value));
+    }
+
     public override void _PopupMenu(string[] paths)
     {
         var hasPng = false;
         foreach (var path in paths)
         {
-            if (path.EndsWith(".png", System.StringComparison.OrdinalIgnoreCase))
+            if (path.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
             {
                 hasPng = true;
                 break;
@@ -38,12 +51,17 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
 
         if (!hasPng) return;
 
-        AddContextMenuItem("Add Padding", Callable.From<string>((_) => OnMenuItemSelected(0, paths)));
-        AddContextMenuItem("Force Add Padding", Callable.From<string>((_) => OnMenuItemSelected(1, paths)));
-        AddContextMenuItem("Remove Padding", Callable.From<string>((_) => OnMenuItemSelected(2, paths)));
+        AddContextMenuItem($"Add Padding {Padding}px",
+            Callable.From<string>((_) => OnMenuItemSelected(PaddingMode.AddIfNeeded, paths, Padding)));
+        AddContextMenuItem($"Replace Padding {Padding}px",
+            Callable.From<string>((_) => OnMenuItemSelected(PaddingMode.Force, paths, Padding)));
+        AddContextMenuItem("Remove Padding",
+            Callable.From<string>((_) => OnMenuItemSelected(PaddingMode.Remove, paths, 0)));
+        AddContextMenuItem("Add Custom Padding",
+            Callable.From<string>((_) => ShowCustomDialog(paths)));
     }
 
-    private void OnMenuItemSelected(int id, string[] paths)
+    private void OnMenuItemSelected(PaddingMode mode, string[] paths, int padding)
     {
         var processed = 0;
         var skipped = 0;
@@ -53,16 +71,10 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
             if (!path.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            var result = id switch
-            {
-                0 => ProcessPng(path, PaddingMode.AddIfNeeded),
-                1 => ProcessPng(path, PaddingMode.Force),
-                2 => ProcessPng(path, PaddingMode.Remove),
-                _ => false
-            };
-
-            if (result) processed++;
-            else skipped++;
+            if (ProcessPng(path, mode, padding))
+                processed++;
+            else
+                skipped++;
         }
 
         GD.Print($"Done! Processed: {processed}, Skipped: {skipped}");
@@ -75,7 +87,7 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         Remove
     }
 
-    private bool ProcessPng(string path, PaddingMode mode)
+    private bool ProcessPng(string path, PaddingMode mode, int padding)
     {
         var texture = ResourceLoader.Load<CompressedTexture2D>(path);
         if (texture == null) return false;
@@ -90,16 +102,17 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         switch (mode)
         {
             case PaddingMode.AddIfNeeded:
-                if (HasEnoughPadding(image))
+                if (HasEnoughPadding(image, padding))
                 {
                     GD.Print($"[ok]   {path}");
                     return false;
                 }
-                newImage = AddPadding(image);
+
+                newImage = AddPadding(image, padding);
                 break;
 
             case PaddingMode.Force:
-                newImage = AddPadding(TrimPadding(image));
+                newImage = AddPadding(TrimPadding(image), padding);
                 break;
 
             case PaddingMode.Remove:
@@ -108,6 +121,7 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
                     GD.Print($"[ok]   {path}");
                     return false;
                 }
+
                 newImage = TrimPadding(image);
                 break;
 
@@ -115,24 +129,21 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
                 return false;
         }
 
-        // Сохраняем оригинал для undo
         var originalImage = image;
-        
+
         var action = new PaddingUndoRedoAction();
         action.Init(path, newImage, originalImage);
 
         var undoRedo = EditorInterface.Singleton.GetEditorUndoRedo();
-        undoRedo.CreateAction($"Padding: {mode} — {path.GetFile()}");
+        undoRedo.CreateAction($"Padding: {mode} {padding}px — {path.GetFile()}");
         undoRedo.AddDoMethod(action, PaddingUndoRedoAction.MethodName.Do);
         undoRedo.AddUndoMethod(action, PaddingUndoRedoAction.MethodName.Undo);
-        undoRedo.CommitAction();
-
         undoRedo.CommitAction();
 
         return true;
     }
 
-    private void Reimport(string path)
+    private static void Reimport(string path)
     {
         var fs = EditorInterface.Singleton.GetResourceFilesystem();
         fs.UpdateFile(path);
@@ -140,11 +151,11 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         fs.Scan();
     }
 
-    private Image AddPadding(Image image)
+    private static Image AddPadding(Image image, int padding)
     {
         var newImage = Image.CreateEmpty(
-            image.GetWidth() + Padding * 2,
-            image.GetHeight() + Padding * 2,
+            image.GetWidth() + padding * 2,
+            image.GetHeight() + padding * 2,
             false,
             Image.Format.Rgba8
         );
@@ -152,14 +163,13 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         newImage.BlitRect(
             image,
             new Rect2I(0, 0, image.GetWidth(), image.GetHeight()),
-            new Vector2I(Padding, Padding)
+            new Vector2I(padding, padding)
         );
 
         return newImage;
     }
 
-// Обрезает все прозрачные строки/столбцы по краям
-    private Image TrimPadding(Image image)
+    private static Image TrimPadding(Image image)
     {
         image.Convert(Image.Format.Rgba8);
         var w = image.GetWidth();
@@ -170,7 +180,6 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         var left = 0;
         var right = w - 1;
 
-        // Ищем первую непрозрачную строку сверху
         for (var y = 0; y < h; y++)
         {
             var hasPixel = false;
@@ -188,7 +197,6 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
             }
         }
 
-        // Снизу
         for (var y = h - 1; y >= 0; y--)
         {
             var hasPixel = false;
@@ -206,7 +214,6 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
             }
         }
 
-        // Слева
         for (var x = 0; x < w; x++)
         {
             var hasPixel = false;
@@ -224,7 +231,6 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
             }
         }
 
-        // Справа
         for (var x = w - 1; x >= 0; x--)
         {
             var hasPixel = false;
@@ -247,21 +253,21 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         return trimmed;
     }
 
-    private bool HasEnoughPadding(Image image)
+    private static bool HasEnoughPadding(Image image, int padding)
     {
         image.Convert(Image.Format.Rgba8);
         var w = image.GetWidth();
         var h = image.GetHeight();
 
         for (var x = 0; x < w; x++)
-        for (var y = 0; y < Padding; y++)
+        for (var y = 0; y < padding; y++)
         {
             if (image.GetPixel(x, y).A > 0) return false;
             if (image.GetPixel(x, h - 1 - y).A > 0) return false;
         }
 
         for (var y = 0; y < h; y++)
-        for (var x = 0; x < Padding; x++)
+        for (var x = 0; x < padding; x++)
         {
             if (image.GetPixel(x, y).A > 0) return false;
             if (image.GetPixel(w - 1 - x, y).A > 0) return false;
@@ -270,13 +276,12 @@ public partial class PaddingContextMenu : EditorContextMenuPlugin
         return true;
     }
 
-    private bool HasAnyPadding(Image image)
+    private static bool HasAnyPadding(Image image)
     {
         image.Convert(Image.Format.Rgba8);
         var w = image.GetWidth();
         var h = image.GetHeight();
 
-        // Есть padding если хотя бы одна крайняя строка/столбец полностью прозрачны
         var topEmpty = true;
         for (var x = 0; x < w; x++)
             if (image.GetPixel(x, 0).A > 0)
