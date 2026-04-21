@@ -7,9 +7,18 @@ uniform float glow_strength : hint_range(0, 10) = 2.0;
 
 uniform sampler2D screen_texture : hint_screen_texture, filter_linear;
 
+// Screen pixels per local pixel, computed from the canvas matrices.
+// Makes the glow radius consistent regardless of window size, stretch, or zoom.
+varying vec2 local_to_screen;
+
 float fast_exp(float x) {
     x = 1.0 + x * (1.0 + x * 0.5);
     return x * x;
+}
+
+void vertex() {
+    mat4 wv = CANVAS_MATRIX * MODEL_MATRIX;
+    local_to_screen = vec2(length(wv[0].xy), length(wv[1].xy));
 }
 
 void fragment() {
@@ -27,7 +36,7 @@ void fragment() {
         int num_steps = int(ceil(steps_scale));
         float angle_step = 6.283185 / float(num_directions);
 
-        vec2 px = SCREEN_PIXEL_SIZE;
+        vec2 px = SCREEN_PIXEL_SIZE * local_to_screen;
         float sigma_sq = glow_radius * glow_radius * 0.36;
         float inv_two_sigma_sq = 1.0 / (2.0 * sigma_sq);
         float step_size = glow_radius / float(num_steps);
@@ -52,10 +61,12 @@ void fragment() {
     total_weight = max(total_weight, 0.0001);
     float glow_alpha = (alpha_sum / total_weight) * glow_strength * glow_color.a;
 
+    // screen_texture in CanvasGroup is premultiplied, so original.rgb already == sprite.rgb * sprite.a.
+    // Don't multiply by original.a again — that would darken edges.
     float effective_glow_alpha = glow_alpha * (1.0 - original.a);
     float out_alpha = original.a + effective_glow_alpha;
     vec3 out_rgb = out_alpha > 0.0001
-        ? (original.rgb * original.a + glow_color.rgb * effective_glow_alpha) / out_alpha
+        ? (original.rgb + glow_color.rgb * effective_glow_alpha) / out_alpha
         : vec3(0.0);
 
     COLOR = vec4(out_rgb, out_alpha);

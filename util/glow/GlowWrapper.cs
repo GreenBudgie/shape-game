@@ -7,7 +7,6 @@ public partial class GlowWrapper : CanvasGroup, IGlow
     private static readonly StringName GlowColorName = "glow_color";
     private static readonly StringName GlowRadiusName = "glow_radius";
     private static readonly StringName GlowStrengthName = "glow_strength";
-    private static readonly StringName ContentScaleName = "content_scale";
 
     private ShaderMaterial _shaderMaterial;
 
@@ -137,17 +136,6 @@ public partial class GlowWrapper : CanvasGroup, IGlow
     }
 
     void IGlow.TurnOff() => TurnOff();
-
-    /// <summary>
-    /// Sets the ratio of rendered-screen-pixels per texture-pixel of the content.
-    /// Use this to match visual glow radius with the texture-space Glow shader
-    /// when the content is scaled (sprite scale, camera zoom, etc.).
-    /// </summary>
-    public GlowWrapper SetContentScale(float scale)
-    {
-        _shaderMaterial.SetShaderParameter(ContentScaleName, scale);
-        return this;
-    }
 
     /// <summary>
     /// Gets the current color used for the glow.
