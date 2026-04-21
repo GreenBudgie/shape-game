@@ -2,7 +2,7 @@
 /// A component for adding a glow effect to a Sprite2D or TextureRect using a shader.
 /// The Glow node is a Sprite2D child that renders behind its parent using a glow shader.
 /// </summary>
-public partial class Glow : Sprite2D
+public partial class GlowWrapper : CanvasGroup
 {
     public static readonly NodePath RadiusProperty = PropertyName.Radius.ToString();
     public static readonly NodePath StrengthProperty = PropertyName.Strength.ToString();
@@ -10,8 +10,6 @@ public partial class Glow : Sprite2D
     private static readonly StringName GlowColorName = "glow_color";
     private static readonly StringName GlowRadiusName = "glow_radius";
     private static readonly StringName GlowStrengthName = "glow_strength";
-
-    private static readonly PackedScene GlowScene = GD.Load<PackedScene>("uid://c3qvnso7dnntg");
 
     private ShaderMaterial _shaderMaterial;
 
@@ -42,7 +40,7 @@ public partial class Glow : Sprite2D
         set => SetStrength(value);
     }
 
-    public Glow()
+    public GlowWrapper()
     {
         _shaderMaterial = (ShaderMaterial)Material;
     }
@@ -74,7 +72,7 @@ public partial class Glow : Sprite2D
     /// <summary>
     /// Sets the glow color of the effect.
     /// </summary>
-    public Glow SetColor(Color color)
+    public GlowWrapper SetColor(Color color)
     {
         if (_cachedColor.HasValue && _cachedColor.Value == color)
         {
@@ -89,7 +87,7 @@ public partial class Glow : Sprite2D
     /// <summary>
     /// Sets the blur radius of the glow effect.
     /// </summary>
-    public Glow SetRadius(float radius)
+    public GlowWrapper SetRadius(float radius)
     {
         var positiveRadius = Max(radius, 0);
         if (IsEqualApprox(GetBaseRadius(), positiveRadius))
@@ -104,13 +102,15 @@ public partial class Glow : Sprite2D
 
     private void UpdateRadius(float radius)
     {
+        const float safeMargin = 4;
+        FitMargin = radius + safeMargin;
         _shaderMaterial.SetShaderParameter(GlowRadiusName, radius);
     }
 
     /// <summary>
     /// Sets the overall strength (opacity) of the glow.
     /// </summary>
-    public Glow SetStrength(float strength)
+    public GlowWrapper SetStrength(float strength)
     {
         var positiveStrength = Max(strength, 0);
         if (IsEqualApprox(GetBaseStrength(), positiveStrength))
@@ -131,7 +131,7 @@ public partial class Glow : Sprite2D
     /// <summary>
     /// Sets the strength and radius of the glow to zero, turning it off.
     /// </summary>
-    public Glow TurnOff()
+    public GlowWrapper TurnOff()
     {
         SetRadius(0);
         SetStrength(0);
@@ -183,7 +183,7 @@ public partial class Glow : Sprite2D
     /// <summary>
     /// Enables pulsing effect.
     /// </summary>
-    public Glow EnablePulsing()
+    public GlowWrapper EnablePulsing()
     {
         _baseStrength = GetBaseStrength();
         _baseRadius = GetBaseRadius();
@@ -194,7 +194,7 @@ public partial class Glow : Sprite2D
     /// <summary>
     /// Disables the pulsing effect.
     /// </summary>
-    public Glow DisablePulsing()
+    public GlowWrapper DisablePulsing()
     {
         _isPulsing = false;
         SetStrength(GetBaseStrength());
@@ -205,7 +205,7 @@ public partial class Glow : Sprite2D
     /// <summary>
     /// Sets how many pulses per second should occur.
     /// </summary>
-    public Glow SetPulsesPerSecond(float pulses)
+    public GlowWrapper SetPulsesPerSecond(float pulses)
     {
         _pulsesPerSecond = pulses;
         return this;
@@ -214,7 +214,7 @@ public partial class Glow : Sprite2D
     /// <summary>
     /// Sets how much the strength should vary during pulsing.
     /// </summary>
-    public Glow SetPulseStrengthDelta(float delta)
+    public GlowWrapper SetPulseStrengthDelta(float delta)
     {
         _pulseStrengthDelta = delta;
         return this;
@@ -223,7 +223,7 @@ public partial class Glow : Sprite2D
     /// <summary>
     /// Sets how much the radius should vary during pulsing.
     /// </summary>
-    public Glow SetPulseRadiusDelta(float delta)
+    public GlowWrapper SetPulseRadiusDelta(float delta)
     {
         _pulseRadiusDelta = delta;
         return this;
@@ -234,52 +234,4 @@ public partial class Glow : Sprite2D
     public float GetPulseRadiusDelta() => _pulseRadiusDelta;
     public float GetPulsesPerSecond() => _pulsesPerSecond;
 
-    /// <summary>
-    /// Adds a Glow instance as a child to the given Sprite2D.
-    /// </summary>
-    public static Glow AddGlow(Sprite2D sprite)
-    {
-        return AttachGlow(sprite, sprite.Texture);
-    }
-
-    /// <summary>
-    /// Adds a Glow instance as a child to the given TextureRect.
-    /// Image should be centered.
-    /// </summary>
-    public static Glow AddGlow(TextureRect textureRect)
-    {
-        return AttachGlow(textureRect, textureRect.Texture);
-    }
-
-    /// <summary>
-    /// Adds a Glow instance as a child to the given TextureButton.
-    /// Image should be centered.
-    /// </summary>
-    public static Glow AddGlow(TextureButton textureButton)
-    {
-        return AttachGlow(textureButton, textureButton.TextureNormal);
-    }
-
-    /// <summary>
-    /// Adds a Glow instance as a child to the given TextureProgressBar.
-    /// Image should be centered.
-    /// </summary>
-    public static Glow AddGlow(TextureProgressBar textureProgressBar)
-    {
-        return AttachGlow(textureProgressBar, textureProgressBar.TextureOver);
-    }
-
-    private static Glow AttachGlow(CanvasItem node, Texture2D texture)
-    {
-        var glow = GlowScene.Instantiate<Glow>();
-        glow.Texture = texture;
-        node.AddChild(glow);
-        
-        if (node is Control control)
-        {
-            glow.Position = control.Size / 2f;
-        }
-
-        return glow;
-    }
 }

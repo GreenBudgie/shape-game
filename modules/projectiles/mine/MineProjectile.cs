@@ -21,7 +21,7 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
 
     private ShotContext _context = null!;
     private Explosion? _explosion;
-    private Glow _glow = null!;
+    private GlowWrapper _glowWrapper = null!;
     private Sprite2D _sprite = null!;
 
     public void Prepare(ShotContext context)
@@ -34,11 +34,11 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
         BodyEntered += HandleBodyEntered;
 
-        _glow = GetNode<Glow>("Glow")
+        _glowWrapper = GetNode<GlowWrapper>("Glow")
             .SetColor(ColorScheme.Red)
             .SetStrength(2)
             .SetRadius(0);
-        _sprite = _glow.GetNode<Sprite2D>("MineSprite");
+        _sprite = _glowWrapper.GetNode<Sprite2D>("MineSprite");
     }
 
     private bool _isFused;
@@ -83,7 +83,7 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(QueueFree));
 
         CreateTween()
-            .TweenProperty(_glow, Glow.RadiusProperty, 100, fuseTime)
+            .TweenProperty(_glowWrapper, GlowWrapper.RadiusProperty, 100, fuseTime)
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.In);
 

@@ -3,15 +3,15 @@
 [ext_resource type="Texture2D" uid="uid://bf4gkg13wl2b8" path="res://enemies/crystal.png" id="1_5v78r"]
 [ext_resource type="Script" uid="uid://j44h0xyk3xdr" path="res://enemies/FallingCrystal.cs" id="1_qiyar"]
 [ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve/dissolve.gdshader" id="2_e1k7q"]
-[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow.tscn" id="2_jqj6i"]
-[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow.gdshader" id="3_ruyng"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="2_jqj6i"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="3_ruyng"]
 [ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="4_pd4ca"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e1k7q"]
 friction = 0.0
 bounce = 0.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6mllp"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jqj6i"]
 resource_local_to_scene = true
 shader = ExtResource("3_ruyng")
 shader_parameter/glow_color = Color(0.95686275, 0.9098039, 0.4862745, 1)
@@ -211,7 +211,7 @@ max_contacts_reported = 2
 script = ExtResource("1_qiyar")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("2_jqj6i")]
-material = SubResource("ShaderMaterial_6mllp")
+material = SubResource("ShaderMaterial_jqj6i")
 
 [node name="Sprite2D" type="Sprite2D" parent="Glow" unique_id=1973219322]
 material = SubResource("ShaderMaterial_e1k7q")

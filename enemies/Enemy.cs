@@ -14,7 +14,7 @@ public abstract partial class Enemy : RigidBody2D
 
     private float _health;
 
-    private Glow _glow = null!;
+    private GlowWrapper _glowWrapper = null!;
     private AnimationPlayer _enemyAnimations = null!;
 
     public bool IsDestroyed { get; private set; }
@@ -47,7 +47,7 @@ public abstract partial class Enemy : RigidBody2D
         _enemyAnimations = GetNode<AnimationPlayer>("EnemyAnimations");
         _health = GetMaxHealth();
 
-        _glow = GetNode<Glow>("Glow")
+        _glowWrapper = GetNode<GlowWrapper>("Glow")
             .SetColor(Color)
             .SetStrength(0)
             .SetRadius(0)
@@ -125,7 +125,7 @@ public abstract partial class Enemy : RigidBody2D
         var sound = SoundManager.Instance.PlayPositionalSound(this, DamageSound);
         sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
         
-        _glow
+        _glowWrapper
             .SetRadius(40f * dangerLevel)
             .SetStrength(2f * dangerLevel)
             .SetPulseRadiusDelta(20f * dangerLevel)
@@ -157,12 +157,12 @@ public abstract partial class Enemy : RigidBody2D
             DropCrystals();
         }
 
-        _glow.DisablePulsing();
-        var fadeOutTween = _glow.CreateTween();
-        var setColorAction = _glow.SetColor;
-        var finalGlowColor = _glow.GetColor();
+        _glowWrapper.DisablePulsing();
+        var fadeOutTween = _glowWrapper.CreateTween();
+        var setColorAction = _glowWrapper.SetColor;
+        var finalGlowColor = _glowWrapper.GetColor();
         finalGlowColor.A = 0;
-        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.25);
+        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glowWrapper.GetColor(), finalGlowColor, 0.25);
 
         EmitSignalDestroyed();
         EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);

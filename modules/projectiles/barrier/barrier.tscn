@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://cyhfswbha1aoo" path="res://modules/projectiles/barrier/Barrier.cs" id="1_s4g7o"]
 [ext_resource type="AudioStream" uid="uid://bsgn7q80tqsqq" path="res://modules/projectiles/barrier/appear.wav" id="2_g8n68"]
 [ext_resource type="AudioStream" uid="uid://dhbep7xupvy65" path="res://modules/projectiles/barrier/disappear.wav" id="3_y6mjq"]
-[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow.tscn" id="5_g8n68"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_g8n68"]
 [ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://modules/projectiles/barrier/barrier.png" id="5_wc1s4"]
 [ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://util/particles/textures/particle_square.png" id="6_jtdx1"]
-[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow.gdshader" id="6_y6mjq"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_y6mjq"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_s4g7o"]
 friction = 0.5

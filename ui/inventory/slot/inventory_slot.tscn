@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dilsv34jaqcrd"]
+[gd_scene format=3 uid="uid://dilsv34jaqcrd"]
 
 [ext_resource type="Texture2D" uid="uid://dp4d3xvv8pb65" path="res://ui/inventory/slot/inventory_slot.png" id="1_omldl"]
 [ext_resource type="Script" uid="uid://cd0jwii5a4nej" path="res://ui/inventory/slot/InventorySlot.cs" id="2_jj110"]
@@ -7,7 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://cry6gufmuccda" path="res://ui/inventory/slot/slot_click.wav" id="5_lioxm"]
 [ext_resource type="AudioStream" uid="uid://cpqn2k806hyjd" path="res://ui/inventory/slot/slot_button_up.wav" id="6_65l80"]
 
-[node name="InventorySlot" type="TextureButton"]
+[node name="InventorySlot" type="TextureButton" unique_id=516008038]
 offset_left = -100.0
 offset_top = -100.0
 offset_right = 100.0

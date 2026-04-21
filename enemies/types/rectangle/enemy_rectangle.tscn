@@ -6,13 +6,13 @@
 [ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://enemies/enemy_damage.wav" id="3_n54bf"]
 [ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://enemies/enemy_destroy.wav" id="4_3g2uu"]
 [ext_resource type="Material" uid="uid://ef46pfecv73h" path="res://util/dissolve/dissolve_material.tres" id="5_3y3oo"]
-[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow.tscn" id="6_86isg"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="6_86isg"]
 [ext_resource type="Texture2D" uid="uid://lb0yaaolwk6i" path="res://enemies/types/rectangle/rectangle.png" id="6_ynf1d"]
-[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow.gdshader" id="7_4becm"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="7_4becm"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://enemies/enemy_animations.tscn" id="7_ixvpt"]
 [ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="9_hx3wo"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ql20g"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_86isg"]
 resource_local_to_scene = true
 shader = ExtResource("7_4becm")
 shader_parameter/glow_color = Color(0.5411765, 0.41960785, 0.74509805, 1)
@@ -38,7 +38,7 @@ DamageSound = ExtResource("3_n54bf")
 DestroySound = ExtResource("4_3g2uu")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("6_86isg")]
-material = SubResource("ShaderMaterial_ql20g")
+material = SubResource("ShaderMaterial_86isg")
 
 [node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1360807856]
 material = ExtResource("5_3y3oo")

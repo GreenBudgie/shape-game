@@ -103,7 +103,7 @@ public class GlowTween
         return this;
     }
 
-    public GlowTween Play(Glow target)
+    public GlowTween Play(GlowWrapper target)
     {
         // Kill any existing tween
         _tween?.Kill();
@@ -122,14 +122,14 @@ public class GlowTween
         // Tween in (glow up)
         _tween.TweenProperty(
             @object: target,
-            property: Glow.StrengthProperty,
+            property: GlowWrapper.StrengthProperty,
             finalVal: cappedStrength,
             duration: _inTime
         ).SetEase(Tween.EaseType.Out);
 
         _tween.Parallel().TweenProperty(
             @object: target,
-            property: Glow.RadiusProperty,
+            property: GlowWrapper.RadiusProperty,
             finalVal: cappedRadius,
             duration: _inTime
         ).SetEase(Tween.EaseType.Out);
@@ -137,14 +137,14 @@ public class GlowTween
         // Tween out (fade to min values)
         _tween.TweenProperty(
             @object: target,
-            property: Glow.StrengthProperty,
+            property: GlowWrapper.StrengthProperty,
             finalVal: _minStrength,
             duration: _outTime
         ).SetEase(Tween.EaseType.In);
 
         _tween.Parallel().TweenProperty(
             @object: target,
-            property: Glow.RadiusProperty,
+            property: GlowWrapper.RadiusProperty,
             finalVal: _minRadius,
             duration: _outTime
         ).SetEase(Tween.EaseType.In);

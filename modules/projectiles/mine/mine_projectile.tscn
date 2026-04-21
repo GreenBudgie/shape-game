@@ -6,14 +6,14 @@
 [ext_resource type="Texture2D" uid="uid://3dvamnyph43c" path="res://modules/projectiles/mine/mine.png" id="4_h5gdj"]
 [ext_resource type="AudioStream" uid="uid://crvggub3a2u1b" path="res://modules/projectiles/mine/mine_beep.wav" id="4_jya8t"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="5_2eq07"]
-[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow.tscn" id="5_ntsej"]
-[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow.gdshader" id="6_pi1cc"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_ntsej"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_pi1cc"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
 friction = 0.5
 bounce = 0.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ryesv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ntsej"]
 resource_local_to_scene = true
 shader = ExtResource("6_pi1cc")
 shader_parameter/glow_color = Color(0.9372549, 0.35686275, 0.35686275, 1)
@@ -40,7 +40,7 @@ _wallHitSound = ExtResource("3_q3r3b")
 _beepSound = ExtResource("4_jya8t")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_ntsej")]
-material = SubResource("ShaderMaterial_ryesv")
+material = SubResource("ShaderMaterial_ntsej")
 
 [node name="MineSprite" type="Sprite2D" parent="Glow" unique_id=183249265]
 texture = ExtResource("4_h5gdj")

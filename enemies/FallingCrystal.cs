@@ -17,7 +17,7 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bu4bb10k0x66d");
 
     private bool _isCollected;
-    private Glow _glow = null!;
+    private GlowWrapper _glowWrapper = null!;
     private AnimationPlayer _crystalAnimations = null!;
 
     public static FallingCrystal Spawn(Vector2 globalPosition)
@@ -37,7 +37,7 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
 
     public override void _Ready()
     {
-        _glow = GetNode<Glow>("Glow");
+        _glowWrapper = GetNode<GlowWrapper>("Glow");
         ResetGlowToMin();
 
         _crystalAnimations = GetNode<AnimationPlayer>("CrystalAnimations");
@@ -107,14 +107,14 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
         SetGravityScale(distancePercent);
         ApplyCentralForce(forceVector);
 
-        _glow.SetStrength(Lerp(MinGlowStrength, MaxGlowStrength, distancePercent));
-        _glow.SetRadius(Lerp(MinGlowRadius, MaxGlowRadius, distancePercent));
+        _glowWrapper.SetStrength(Lerp(MinGlowStrength, MaxGlowStrength, distancePercent));
+        _glowWrapper.SetRadius(Lerp(MinGlowRadius, MaxGlowRadius, distancePercent));
     }
 
     private void ResetGlowToMin()
     {
-        _glow.SetStrength(MinGlowStrength);
-        _glow.SetRadius(MinGlowRadius);
+        _glowWrapper.SetStrength(MinGlowStrength);
+        _glowWrapper.SetRadius(MinGlowRadius);
     }
 
     private void HandleCollision(Node node)
@@ -136,11 +136,11 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
         CollisionLayer = 0;
         CollisionMask = 0;
 
-        var fadeOutTween = _glow.CreateTween();
-        var setColorAction = _glow.SetColor;
-        var finalGlowColor = _glow.GetColor();
+        var fadeOutTween = _glowWrapper.CreateTween();
+        var setColorAction = _glowWrapper.SetColor;
+        var finalGlowColor = _glowWrapper.GetColor();
         finalGlowColor.A = 0;
-        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.15);
+        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glowWrapper.GetColor(), finalGlowColor, 0.15);
 
         _crystalAnimations.Play("collect");
         _crystalAnimations.AnimationFinished += _ => QueueFree();
