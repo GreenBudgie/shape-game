@@ -18,6 +18,9 @@ void vertex() {
 }
 
 void fragment() {
+	if (glow_radius < 0.5 || glow_strength < 0.01) {
+		discard;
+	}
     vec2 expanded_scale = vec2(1.0) + 2.0 * glow_radius * TEXTURE_PIXEL_SIZE;
     vec2 uv = (UV - 0.5) * expanded_scale + 0.5;
 	
@@ -26,41 +29,37 @@ void fragment() {
 	    discard;
 	}
 
-    if (glow_radius < 0.5) {
-        COLOR = vec4(0.0);
-    } else {
-        float glow_radius_sqrt = sqrt(glow_radius);
-        int num_directions = int(clamp(glow_radius_sqrt * 3.0, 16.0, 48.0));
-        float steps_scale = clamp(glow_radius_sqrt * 1.25, 2.0, 16.0);
-        int num_steps = int(ceil(steps_scale));
-        float angle_step = 6.283185 / float(num_directions);
+    float glow_radius_sqrt = sqrt(glow_radius);
+    int num_directions = int(clamp(glow_radius_sqrt * 3.0, 16.0, 48.0));
+    float steps_scale = clamp(glow_radius_sqrt * 1.25, 2.0, 16.0);
+    int num_steps = int(ceil(steps_scale));
+    float angle_step = 6.283185 / float(num_directions);
 
-        vec2 px = 1.0 / vec2(textureSize(TEXTURE, 0));
-        float sigma_sq = glow_radius * glow_radius * 0.36;
-        float inv_two_sigma_sq = 1.0 / (2.0 * sigma_sq);
-        float step_size = glow_radius / float(num_steps);
+    vec2 px = 1.0 / vec2(textureSize(TEXTURE, 0));
+    float sigma_sq = glow_radius * glow_radius * 0.36;
+    float inv_two_sigma_sq = 1.0 / (2.0 * sigma_sq);
+    float step_size = glow_radius / float(num_steps);
 
-        float alpha_sum = 0.0;
-        float total_weight = 0.0;
+    float alpha_sum = 0.0;
+    float total_weight = 0.0;
 
-        for (int d = 0; d < num_directions; d++) {
-            float angle = float(d) * angle_step;
-            vec2 dir = vec2(cos(angle), sin(angle));
+    for (int d = 0; d < num_directions; d++) {
+        float angle = float(d) * angle_step;
+        vec2 dir = vec2(cos(angle), sin(angle));
 
-            for (int s = 1; s <= num_steps; s++) {
-                float dist = float(s) * step_size;
-                vec2 offset = dir * dist;
-                float dist_sq = dist * dist;
-                float weight = fast_exp(-dist_sq * inv_two_sigma_sq);
-                if (weight < 0.01) break;
+        for (int s = 1; s <= num_steps; s++) {
+            float dist = float(s) * step_size;
+            vec2 offset = dir * dist;
+            float dist_sq = dist * dist;
+            float weight = fast_exp(-dist_sq * inv_two_sigma_sq);
+            if (weight < 0.01) break;
 
-                alpha_sum += texture(TEXTURE, uv + offset * px).a * weight;
-                total_weight += weight;
-            }
+            alpha_sum += texture(TEXTURE, uv + offset * px).a * weight;
+            total_weight += weight;
         }
-
-        total_weight = max(total_weight, 0.0001);
-        float glow_alpha = (alpha_sum / total_weight) * glow_strength * glow_color.a * vertex_color.a;
-        COLOR = vec4(glow_color.rgb * vertex_color.rgb, glow_alpha);
     }
+
+    total_weight = max(total_weight, 0.0001);
+    float glow_alpha = (alpha_sum / total_weight) * glow_strength * glow_color.a * vertex_color.a;
+    COLOR = vec4(glow_color.rgb * vertex_color.rgb, glow_alpha);
 }

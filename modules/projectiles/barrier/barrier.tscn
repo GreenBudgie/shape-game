@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cgm0yfj1g1own"]
+[gd_scene format=3 uid="uid://cgm0yfj1g1own"]
 
 [ext_resource type="Script" uid="uid://cyhfswbha1aoo" path="res://modules/projectiles/barrier/Barrier.cs" id="1_s4g7o"]
 [ext_resource type="AudioStream" uid="uid://bsgn7q80tqsqq" path="res://modules/projectiles/barrier/appear.wav" id="2_g8n68"]
@@ -46,7 +46,7 @@ scale_max = 0.75
 scale_curve = SubResource("CurveTexture_v3vkq")
 alpha_curve = SubResource("CurveTexture_3qs30")
 
-[node name="Barrier" type="RigidBody2D"]
+[node name="Barrier" type="RigidBody2D" unique_id=1061993594]
 collision_layer = 16
 collision_mask = 1034
 mass = 10.0
@@ -60,15 +60,15 @@ script = ExtResource("1_s4g7o")
 _appearSound = ExtResource("2_g8n68")
 _disappearSound = ExtResource("3_y6mjq")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=210456309]
 texture = ExtResource("5_wc1s4")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1242324373]
 visible = false
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_468xe")
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+[node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=961573011]
 physics_interpolation_mode = 2
 modulate = Color(0.21176471, 0.94509804, 0.8039216, 1)
 show_behind_parent = true
