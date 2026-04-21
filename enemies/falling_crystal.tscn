@@ -11,12 +11,13 @@
 friction = 0.0
 bounce = 0.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jqj6i"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yadfk"]
 resource_local_to_scene = true
 shader = ExtResource("3_ruyng")
 shader_parameter/glow_color = Color(0.95686275, 0.9098039, 0.4862745, 1)
 shader_parameter/glow_radius = 12.0
 shader_parameter/glow_strength = 2.0
+shader_parameter/content_scale = 1.0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ylhy4"]
 noise_type = 4
@@ -211,7 +212,7 @@ max_contacts_reported = 2
 script = ExtResource("1_qiyar")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("2_jqj6i")]
-material = SubResource("ShaderMaterial_jqj6i")
+material = SubResource("ShaderMaterial_yadfk")
 
 [node name="Sprite2D" type="Sprite2D" parent="Glow" unique_id=1973219322]
 material = SubResource("ShaderMaterial_e1k7q")

@@ -2,16 +2,13 @@
 /// A component for adding a glow effect to a Sprite2D or TextureRect using a shader.
 /// The Glow node is a Sprite2D child that renders behind its parent using a glow shader.
 /// </summary>
-public partial class Glow : Sprite2D
+public partial class Glow : Sprite2D, IGlow
 {
-    public static readonly NodePath RadiusProperty = PropertyName.Radius.ToString();
-    public static readonly NodePath StrengthProperty = PropertyName.Strength.ToString();
-
     private static readonly StringName GlowColorName = "glow_color";
     private static readonly StringName GlowRadiusName = "glow_radius";
     private static readonly StringName GlowStrengthName = "glow_strength";
 
-    private static readonly PackedScene GlowScene = GD.Load<PackedScene>("uid://c3qvnso7dnntg");
+    private static readonly PackedScene GlowScene = GD.Load<PackedScene>("uid://b7obtbsqmue8t");
 
     private ShaderMaterial _shaderMaterial;
 
@@ -137,6 +134,8 @@ public partial class Glow : Sprite2D
         SetStrength(0);
         return this;
     }
+
+    void IGlow.TurnOff() => TurnOff();
 
     /// <summary>
     /// Gets the current color used for the glow.

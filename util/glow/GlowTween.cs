@@ -103,53 +103,24 @@ public class GlowTween
         return this;
     }
 
-    public GlowTween Play(GlowWrapper target)
+    public GlowTween Play<T>(T target) where T : Node, IGlow
     {
-        // Kill any existing tween
         _tween?.Kill();
-        
-        // Create new tween
         _tween = target.CreateTween().SetTrans(Tween.TransitionType.Sine);
 
-        // Get current values
-        var strength = target.GetBaseStrength();
-        var radius = target.GetBaseRadius();
+        var cappedStrength = Min(target.Strength + _strengthDelta, _maxStrength);
+        var cappedRadius = Min(target.Radius + _radiusDelta, _maxRadius);
 
-        // Calculate target values
-        var cappedStrength = Min(strength + _strengthDelta, _maxStrength);
-        var cappedRadius = Min(radius + _radiusDelta, _maxRadius);
+        _tween.TweenProperty(target, IGlow.StrengthPath, cappedStrength, _inTime)
+            .SetEase(Tween.EaseType.Out);
+        _tween.Parallel().TweenProperty(target, IGlow.RadiusPath, cappedRadius, _inTime)
+            .SetEase(Tween.EaseType.Out);
 
-        // Tween in (glow up)
-        _tween.TweenProperty(
-            @object: target,
-            property: GlowWrapper.StrengthProperty,
-            finalVal: cappedStrength,
-            duration: _inTime
-        ).SetEase(Tween.EaseType.Out);
-
-        _tween.Parallel().TweenProperty(
-            @object: target,
-            property: GlowWrapper.RadiusProperty,
-            finalVal: cappedRadius,
-            duration: _inTime
-        ).SetEase(Tween.EaseType.Out);
-
-        // Tween out (fade to min values)
-        _tween.TweenProperty(
-            @object: target,
-            property: GlowWrapper.StrengthProperty,
-            finalVal: _minStrength,
-            duration: _outTime
-        ).SetEase(Tween.EaseType.In);
-
-        _tween.Parallel().TweenProperty(
-            @object: target,
-            property: GlowWrapper.RadiusProperty,
-            finalVal: _minRadius,
-            duration: _outTime
-        ).SetEase(Tween.EaseType.In);
+        _tween.TweenProperty(target, IGlow.StrengthPath, _minStrength, _outTime)
+            .SetEase(Tween.EaseType.In);
+        _tween.Parallel().TweenProperty(target, IGlow.RadiusPath, _minRadius, _outTime)
+            .SetEase(Tween.EaseType.In);
 
         return this;
     }
-
 }

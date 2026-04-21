@@ -5,7 +5,7 @@ uniform vec4 glow_color : source_color = vec4(0.937, 0.357, 0.357, 1.0);
 uniform float glow_radius : hint_range(0, 200) = 12.0;
 uniform float glow_strength : hint_range(0, 10) = 2.0;
 
-uniform sampler2D screen_texture : hint_screen_texture, filter_linear_mipmap;
+uniform sampler2D screen_texture : hint_screen_texture, filter_linear;
 
 float fast_exp(float x) {
     x = 1.0 + x * (1.0 + x * 0.5);

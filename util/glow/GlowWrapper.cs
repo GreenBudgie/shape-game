@@ -2,14 +2,12 @@
 /// A component for adding a glow effect to a Sprite2D or TextureRect using a shader.
 /// The Glow node is a Sprite2D child that renders behind its parent using a glow shader.
 /// </summary>
-public partial class GlowWrapper : CanvasGroup
+public partial class GlowWrapper : CanvasGroup, IGlow
 {
-    public static readonly NodePath RadiusProperty = PropertyName.Radius.ToString();
-    public static readonly NodePath StrengthProperty = PropertyName.Strength.ToString();
-
     private static readonly StringName GlowColorName = "glow_color";
     private static readonly StringName GlowRadiusName = "glow_radius";
     private static readonly StringName GlowStrengthName = "glow_strength";
+    private static readonly StringName ContentScaleName = "content_scale";
 
     private ShaderMaterial _shaderMaterial;
 
@@ -135,6 +133,19 @@ public partial class GlowWrapper : CanvasGroup
     {
         SetRadius(0);
         SetStrength(0);
+        return this;
+    }
+
+    void IGlow.TurnOff() => TurnOff();
+
+    /// <summary>
+    /// Sets the ratio of rendered-screen-pixels per texture-pixel of the content.
+    /// Use this to match visual glow radius with the texture-space Glow shader
+    /// when the content is scaled (sprite scale, camera zoom, etc.).
+    /// </summary>
+    public GlowWrapper SetContentScale(float scale)
+    {
+        _shaderMaterial.SetShaderParameter(ContentScaleName, scale);
         return this;
     }
 

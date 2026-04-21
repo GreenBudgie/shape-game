@@ -158,7 +158,7 @@ public partial class InventorySlot : TextureButton
 
         _glowTween.TweenProperty(
             @object: _glow,
-            property: Glow.StrengthProperty,
+            property: IGlow.StrengthPath,
             finalVal: ButtonDownGlowStrength,
             duration: ButtonDownTweenDuration
         );
@@ -184,7 +184,7 @@ public partial class InventorySlot : TextureButton
 
         _glowTween.TweenProperty(
             @object: _glow,
-            property: Glow.StrengthProperty,
+            property: IGlow.StrengthPath,
             finalVal: GlowHoverStrength,
             duration: ButtonUpTweenDuration
         );
@@ -220,13 +220,13 @@ public partial class InventorySlot : TextureButton
 
         _glowTween.TweenProperty(
             @object: _glow,
-            property: Glow.StrengthProperty,
+            property: IGlow.StrengthPath,
             finalVal: GlowHoverStrength,
             duration: GlowHoverTweenDuration
         );
         _glowTween.Parallel().TweenProperty(
             @object: _glow,
-            property: Glow.RadiusProperty,
+            property: IGlow.RadiusPath,
             finalVal: GlowHoverRadius,
             duration: GlowHoverTweenDuration
         );
@@ -258,13 +258,13 @@ public partial class InventorySlot : TextureButton
 
         _glowTween.TweenProperty(
             @object: _glow,
-            property: Glow.StrengthProperty,
+            property: IGlow.StrengthPath,
             finalVal: 0,
             duration: GlowUnhoverTweenDuration
         );
         _glowTween.Parallel().TweenProperty(
             @object: _glow,
-            property: Glow.RadiusProperty,
+            property: IGlow.RadiusPath,
             finalVal: 0,
             duration: GlowUnhoverTweenDuration
         );
