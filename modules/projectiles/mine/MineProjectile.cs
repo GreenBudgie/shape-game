@@ -34,11 +34,11 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
         BodyEntered += HandleBodyEntered;
 
-        _sprite = GetNode<Sprite2D>("MineSprite");
-        _glow = Glow.AddGlow(_sprite)
+        _glow = GetNode<Glow>("Glow")
             .SetColor(ColorScheme.Red)
             .SetStrength(2)
             .SetRadius(0);
+        _sprite = _glow.GetNode<Sprite2D>("MineSprite");
     }
 
     private bool _isFused;

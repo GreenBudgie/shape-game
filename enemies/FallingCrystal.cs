@@ -16,8 +16,6 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bu4bb10k0x66d");
 
-    private static readonly Color GlowColor = ColorScheme.Yellow;
-
     private bool _isCollected;
     private Glow _glow = null!;
     private AnimationPlayer _crystalAnimations = null!;
@@ -39,8 +37,7 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
 
     public override void _Ready()
     {
-        var sprite = GetNode<Sprite2D>("Sprite2D");
-        _glow = Glow.AddGlow(sprite).SetColor(GlowColor);
+        _glow = GetNode<Glow>("Glow");
         ResetGlowToMin();
 
         _crystalAnimations = GetNode<AnimationPlayer>("CrystalAnimations");

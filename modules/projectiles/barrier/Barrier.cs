@@ -31,7 +31,7 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
         _particles.Emitting = false;
         
-        _sprite = GetNode<Sprite2D>("Sprite2D");
+        _sprite = GetNode<Sprite2D>("Glow/Sprite2D");
         _spriteMask = Mask.Attach(_sprite).Axis(MaskAxis.Horizontal).Origin(MaskOrigin.Center);
         _spriteMask.Progress = 0;
 
@@ -51,7 +51,7 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
         CollisionLayer = 0;
         CollisionMask = 0;
         
-        _glow = Glow.AddGlow(_sprite);
+        _glow = GetNode<Glow>("Glow");
         _glow.Scale = new Vector2(0, 1);
         _glow.SetColor(ColorScheme.LightBlueGreen)
             .SetStrength(1)

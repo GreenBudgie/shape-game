@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://g21wng36wpva"]
+[gd_scene format=3 uid="uid://g21wng36wpva"]
 
 [ext_resource type="Shader" uid="uid://dj5bke31qx6am" path="res://util/beam/beam.gdshader" id="1_m3urq"]
 [ext_resource type="Script" uid="uid://ct7eqei5bjpuu" path="res://util/beam/Beam.cs" id="1_qpksk"]
@@ -24,7 +24,7 @@ shader_parameter/beam_length = 1.0
 shader_parameter/fade_distance = 0.0
 shader_parameter/corner_roundness = 0.5
 
-[node name="Beam" type="ColorRect"]
+[node name="Beam" type="ColorRect" unique_id=291656469]
 material = SubResource("ShaderMaterial_qpksk")
 anchors_preset = 15
 anchor_right = 1.0

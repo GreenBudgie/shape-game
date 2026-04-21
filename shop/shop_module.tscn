@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cr37qmsjo0vr3"]
+[gd_scene format=3 uid="uid://cr37qmsjo0vr3"]
 
 [ext_resource type="Script" uid="uid://cdym8u3vdjp70" path="res://shop/ShopModule.cs" id="1_16t4l"]
 [ext_resource type="Texture2D" uid="uid://b56b358ts2ban" path="res://shop/shop_module_button.png" id="2_lc0gu"]
@@ -17,7 +17,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tsgo1"]
 
-[node name="ShopModule" type="Control"]
+[node name="ShopModule" type="Control" unique_id=2015547471]
 custom_minimum_size = Vector2(0, 192)
 layout_mode = 3
 anchors_preset = 0
@@ -28,32 +28,32 @@ _hoverSound = ExtResource("2_tsgo1")
 _clickSound = ExtResource("3_d8k3v")
 _buttonUpSound = ExtResource("4_tpcnf")
 
-[node name="ButtonGroup" type="Control" parent="."]
+[node name="ButtonGroup" type="Control" parent="." unique_id=953747225]
 anchors_preset = 0
 offset_right = 512.0
 offset_bottom = 192.0
 pivot_offset = Vector2(256, 96)
 
-[node name="ButtonTextures" type="Control" parent="ButtonGroup"]
+[node name="ButtonTextures" type="Control" parent="ButtonGroup" unique_id=1733815198]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="ButtonUnhovered" type="TextureRect" parent="ButtonGroup/ButtonTextures"]
+[node name="ButtonUnhovered" type="TextureRect" parent="ButtonGroup/ButtonTextures" unique_id=1689882511]
 layout_mode = 0
 offset_right = 512.0
 offset_bottom = 192.0
 mouse_filter = 2
 texture = ExtResource("2_lc0gu")
 
-[node name="ButtonHovered" type="TextureRect" parent="ButtonGroup/ButtonTextures"]
+[node name="ButtonHovered" type="TextureRect" parent="ButtonGroup/ButtonTextures" unique_id=152173368]
 layout_mode = 0
 offset_right = 512.0
 offset_bottom = 192.0
 mouse_filter = 2
 texture = ExtResource("3_ejndq")
 
-[node name="Button" type="Button" parent="ButtonGroup"]
+[node name="Button" type="Button" parent="ButtonGroup" unique_id=2041272976]
 layout_mode = 0
 offset_right = 512.0
 offset_bottom = 192.0
@@ -64,7 +64,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_tsgo1")
 action_mode = 0
 flat = true
 
-[node name="MarginContainer" type="MarginContainer" parent="ButtonGroup"]
+[node name="MarginContainer" type="MarginContainer" parent="ButtonGroup" unique_id=1996808019]
 layout_mode = 0
 offset_right = 320.0
 offset_bottom = 192.0
@@ -74,7 +74,7 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="Title" type="RichTextLabel" parent="ButtonGroup/MarginContainer"]
+[node name="Title" type="RichTextLabel" parent="ButtonGroup/MarginContainer" unique_id=659507034]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
@@ -85,7 +85,7 @@ fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ModuleTexture" type="TextureRect" parent="ButtonGroup"]
+[node name="ModuleTexture" type="TextureRect" parent="ButtonGroup" unique_id=2056756451]
 layout_mode = 0
 offset_left = 320.0
 offset_right = 512.0
@@ -94,14 +94,14 @@ mouse_filter = 2
 texture = ExtResource("4_tsgo1")
 stretch_mode = 3
 
-[node name="Price" type="HBoxContainer" parent="."]
+[node name="Price" type="HBoxContainer" parent="." unique_id=1612856352]
 layout_mode = 0
 offset_left = 537.0
 offset_right = 1102.0
 offset_bottom = 192.0
 theme_override_constants/separation = 24
 
-[node name="PriceLabel" type="RichTextLabel" parent="Price"]
+[node name="PriceLabel" type="RichTextLabel" parent="Price" unique_id=799938364]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
@@ -112,10 +112,10 @@ fit_content = true
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="CrystalTextureWrapper" type="Control" parent="Price"]
+[node name="CrystalTextureWrapper" type="Control" parent="Price" unique_id=733264740]
 layout_mode = 2
 
-[node name="CrystalTexture" type="TextureRect" parent="Price/CrystalTextureWrapper"]
+[node name="CrystalTexture" type="TextureRect" parent="Price/CrystalTextureWrapper" unique_id=1641438898]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5

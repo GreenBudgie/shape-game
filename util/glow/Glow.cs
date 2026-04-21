@@ -2,7 +2,7 @@
 /// A component for adding a glow effect to a Sprite2D or TextureRect using a shader.
 /// The Glow node is a Sprite2D child that renders behind its parent using a glow shader.
 /// </summary>
-public partial class Glow : Sprite2D
+public partial class Glow : CanvasGroup
 {
     public static readonly NodePath RadiusProperty = PropertyName.Radius.ToString();
     public static readonly NodePath StrengthProperty = PropertyName.Strength.ToString();
@@ -104,6 +104,8 @@ public partial class Glow : Sprite2D
 
     private void UpdateRadius(float radius)
     {
+        const float safeMargin = 4;
+        FitMargin = radius + safeMargin;
         _shaderMaterial.SetShaderParameter(GlowRadiusName, radius);
     }
 
@@ -234,52 +236,4 @@ public partial class Glow : Sprite2D
     public float GetPulseRadiusDelta() => _pulseRadiusDelta;
     public float GetPulsesPerSecond() => _pulsesPerSecond;
 
-    /// <summary>
-    /// Adds a Glow instance as a child to the given Sprite2D.
-    /// </summary>
-    public static Glow AddGlow(Sprite2D sprite)
-    {
-        return AttachGlow(sprite, sprite.Texture);
-    }
-
-    /// <summary>
-    /// Adds a Glow instance as a child to the given TextureRect.
-    /// Image should be centered.
-    /// </summary>
-    public static Glow AddGlow(TextureRect textureRect)
-    {
-        return AttachGlow(textureRect, textureRect.Texture);
-    }
-
-    /// <summary>
-    /// Adds a Glow instance as a child to the given TextureButton.
-    /// Image should be centered.
-    /// </summary>
-    public static Glow AddGlow(TextureButton textureButton)
-    {
-        return AttachGlow(textureButton, textureButton.TextureNormal);
-    }
-
-    /// <summary>
-    /// Adds a Glow instance as a child to the given TextureProgressBar.
-    /// Image should be centered.
-    /// </summary>
-    public static Glow AddGlow(TextureProgressBar textureProgressBar)
-    {
-        return AttachGlow(textureProgressBar, textureProgressBar.TextureOver);
-    }
-
-    private static Glow AttachGlow(CanvasItem node, Texture2D texture)
-    {
-        var glow = GlowScene.Instantiate<Glow>();
-        glow.Texture = texture;
-        node.AddChild(glow);
-        
-        if (node is Control control)
-        {
-            glow.Position = control.Size / 2f;
-        }
-
-        return glow;
-    }
 }

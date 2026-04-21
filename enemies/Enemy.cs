@@ -47,8 +47,7 @@ public abstract partial class Enemy : RigidBody2D
         _enemyAnimations = GetNode<AnimationPlayer>("EnemyAnimations");
         _health = GetMaxHealth();
 
-        var sprite = GetNode<Sprite2D>("Sprite");
-        _glow = Glow.AddGlow(sprite)
+        _glow = GetNode<Glow>("Glow")
             .SetColor(Color)
             .SetStrength(0)
             .SetRadius(0)

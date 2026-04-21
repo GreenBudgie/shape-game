@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://coo3tnuma02fs"]
+[gd_scene format=3 uid="uid://coo3tnuma02fs"]
 
 [ext_resource type="Script" uid="uid://cs1n2qdcpxc1v" path="res://modules/projectiles/mine/MineProjectile.cs" id="1_g34o2"]
 [ext_resource type="AudioStream" uid="uid://c8kvjf6ha8mev" path="res://modules/projectiles/mine/mine_launch.wav" id="2_jya8t"]
@@ -6,15 +6,24 @@
 [ext_resource type="Texture2D" uid="uid://3dvamnyph43c" path="res://modules/projectiles/mine/mine.png" id="4_h5gdj"]
 [ext_resource type="AudioStream" uid="uid://crvggub3a2u1b" path="res://modules/projectiles/mine/mine_beep.wav" id="4_jya8t"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://modules/components/scenes/initial_impulse_component.tscn" id="5_2eq07"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow.tscn" id="5_ntsej"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow.gdshader" id="6_pi1cc"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
 friction = 0.5
 bounce = 0.5
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ryesv"]
+resource_local_to_scene = true
+shader = ExtResource("6_pi1cc")
+shader_parameter/glow_color = Color(0.9372549, 0.35686275, 0.35686275, 1)
+shader_parameter/glow_radius = 12.0
+shader_parameter/glow_strength = 2.0
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_guu8r"]
 radius = 28.0179
 
-[node name="MineProjectile" type="RigidBody2D"]
+[node name="MineProjectile" type="RigidBody2D" unique_id=2079711396]
 collision_layer = 1024
 collision_mask = 1328
 mass = 0.2
@@ -30,11 +39,14 @@ _shotSound = ExtResource("2_jya8t")
 _wallHitSound = ExtResource("3_q3r3b")
 _beepSound = ExtResource("4_jya8t")
 
-[node name="MineSprite" type="Sprite2D" parent="."]
+[node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_ntsej")]
+material = SubResource("ShaderMaterial_ryesv")
+
+[node name="MineSprite" type="Sprite2D" parent="Glow" unique_id=183249265]
 texture = ExtResource("4_h5gdj")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1753406016]
 visible = false
 shape = SubResource("CircleShape2D_guu8r")
 
-[node name="InitialImpulseComponent" parent="." instance=ExtResource("5_2eq07")]
+[node name="InitialImpulseComponent" parent="." unique_id=1865065838 instance=ExtResource("5_2eq07")]
