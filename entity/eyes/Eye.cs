@@ -1,3 +1,5 @@
+using System;
+
 public partial class Eye : Node2D
 {
 
@@ -7,46 +9,47 @@ public partial class Eye : Node2D
 
     private const float DistanceFromCenter = EyeballSize - PupilSize - Gap;
 
-    private Node2D _entity = null!;
+    private Node2D _owner = null!;
 
     private Node2D _followTarget = null!;
     private Vector2? _lookTarget;
     
     private Sprite2D _eyeball = null!;
     private Sprite2D _pupil = null!;
+
+    [Export] private EyeTargetStrategy _targetStrategy = new PlayerEyeTargetStrategy();
+    
+    /**
+     * Where the eye should look when target hasn't been found
+     */
+    [Export] private EyeLookDirection _fallbackLookDirection = EyeLookDirection.Down;
     
     public override void _Ready()
     {
-        _entity = GetParent<Node2D>();
+        _owner = GetParent<Node2D>();
         
         Callable.From(Setup).CallDeferred();
         
         _eyeball = GetNode<Sprite2D>("Eyeball");
         _pupil = GetNode<Sprite2D>("Pupil");
 
-        _entity.TreeExiting += QueueFree;
+        _owner.TreeExiting += QueueFree;
     }
 
     private void Setup()
     {
         _followTarget = new Node2D();
-        _entity.AddChild(_followTarget);
+        _owner.AddChild(_followTarget);
         _followTarget.GlobalPosition = GlobalPosition;
 
         Reparent(ShapeGame.Instance);
-        ZIndex = _entity.ZIndex + 1;
+        ZIndex = _owner.ZIndex + 1;
     }
 
     public override void _Process(double delta)
     {
         DoFollowTarget();
-
-        var player = Player.FindPlayer();
-        if (player != null)
-        {
-            SetTarget(player.GlobalPosition);
-        }
-        
+        UpdateLookTarget();
         DoMovePupil();
     }
 
@@ -70,21 +73,29 @@ public partial class Eye : Node2D
 
     private void DoMovePupil()
     {
-        if (!_lookTarget.HasValue)
+        Vector2 direction;
+        if (_lookTarget.HasValue)
         {
-            return;
+            direction = _pupil.GlobalPosition.DirectionTo(_lookTarget.Value);
+        }
+        else
+        {
+            direction = _fallbackLookDirection switch
+            {
+                EyeLookDirection.Up => Vector2.Up,
+                EyeLookDirection.Down => Vector2.Down,
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         const float moveSpeed = 0.3f;
- 
-        var direction = _pupil.GlobalPosition.DirectionTo(_lookTarget.Value);
         var position = direction * DistanceFromCenter;
         _pupil.Position = _pupil.Position.MoveToward(position, moveSpeed);
     }
 
-    public void SetTarget(Vector2 globalPosition)
+    private void UpdateLookTarget()
     {
-        _lookTarget = globalPosition;
+        _lookTarget = _targetStrategy.GetTarget(this, _owner);
     }
     
 }
