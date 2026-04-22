@@ -47,14 +47,7 @@ public partial class Eye : Node2D
             SetTarget(player.GlobalPosition);
         }
         
-        if (!_lookTarget.HasValue)
-        {
-            return;
-        }
-
-        var direction = _pupil.GlobalPosition.DirectionTo(_lookTarget.Value);
-        var position = direction * DistanceFromCenter;
-        _pupil.Position = position;
+        DoMovePupil();
     }
 
     private float _velocity;
@@ -72,14 +65,21 @@ public partial class Eye : Node2D
         var increase = Min(maxVelocity, distance * followSpeedIncrease);
         _velocity += increase;
 
-        // if (_velocity.LengthSquared() < 1f && distance < 1f)
-        // {
-        //     GlobalPosition = _followTarget.GlobalPosition;
-        //     _velocity = Vector2.Zero;
-        //     return;
-        // }
-
         GlobalPosition = GlobalPosition.MoveToward(_followTarget.GlobalPosition, _velocity);
+    }
+
+    private void DoMovePupil()
+    {
+        if (!_lookTarget.HasValue)
+        {
+            return;
+        }
+
+        const float moveSpeed = 0.3f;
+ 
+        var direction = _pupil.GlobalPosition.DirectionTo(_lookTarget.Value);
+        var position = direction * DistanceFromCenter;
+        _pupil.Position = _pupil.Position.MoveToward(position, moveSpeed);
     }
 
     public void SetTarget(Vector2 globalPosition)
