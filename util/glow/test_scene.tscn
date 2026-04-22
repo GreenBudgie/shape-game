@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cwnco7811pl7"]
 
-[ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://enemies/types/square/enemy_square.png" id="1_0x8s3"]
+[ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://entity/enemies/types/square/enemy_square.png" id="1_0x8s3"]
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="1_ut15g"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0x8s3"]
