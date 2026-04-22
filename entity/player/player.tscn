@@ -2,28 +2,37 @@
 
 [ext_resource type="Script" uid="uid://by6dk3wis2abt" path="res://entity/player/Player.cs" id="1_3uijo"]
 [ext_resource type="Texture2D" uid="uid://d0qbwccjscr4n" path="res://entity/player/Player.png" id="2_rkbax"]
+[ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/eyes/eye.tscn" id="3_4pl66"]
 
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_rkbax"]
 points = PackedVector2Array(0, -46, -8, -42, -48, 38, -48, 48, -42, 54, 42, 54, 48, 48, 48, 38, 8, -42)
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=1343007953]
 collision_mask = 228
 motion_mode = 1
 script = ExtResource("1_3uijo")
 
-[node name="PlayerSprite" type="Sprite2D" parent="."]
+[node name="PlayerSprite" type="Sprite2D" parent="." unique_id=215823694]
 texture = ExtResource("2_rkbax")
 offset = Vector2(0, -4)
 
-[node name="PlayerCollisionShape" type="CollisionPolygon2D" parent="."]
+[node name="Eye" parent="PlayerSprite" unique_id=376233651 instance=ExtResource("3_4pl66")]
+position = Vector2(20, -15)
+
+[node name="Eye2" parent="PlayerSprite" unique_id=1404575758 instance=ExtResource("3_4pl66")]
+position = Vector2(-20, -15)
+
+[node name="PlayerCollisionShape" type="CollisionPolygon2D" parent="." unique_id=895103946]
+visible = false
 position = Vector2(0, 4)
 polygon = PackedVector2Array(0, -54, -10, -48, -52, 36, -52, 46, -44, 52, 44, 52, 52, 46, 52, 36, 10, -48)
 
-[node name="AudioListener2D" type="AudioListener2D" parent="."]
+[node name="AudioListener2D" type="AudioListener2D" parent="." unique_id=520769267]
 current = true
 
-[node name="PlayerCollisionDetector" type="ShapeCast2D" parent="."]
+[node name="PlayerCollisionDetector" type="ShapeCast2D" parent="." unique_id=1904385299]
 editor_description = "This shape will be reparented to ShapeGame on player instantiation. Thinner shape is used to make collisions with bullets more fair. Only this shape cast is used to detect collisions with player."
+visible = false
 enabled = false
 shape = SubResource("ConvexPolygonShape2D_rkbax")
 target_position = Vector2(0, 0)

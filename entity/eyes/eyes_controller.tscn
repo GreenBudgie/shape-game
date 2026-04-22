@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://bd4hml53bbpkn"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_efswb"]
+script/source = "using System.Collections.Generic;
+using System.Linq;
+
+public partial class EyesController : Node2D
+{
+
+    private Node2D _target = null!;
+    
+    public override void _Ready()
+    {
+        _target = GetParent<Node2D>();
+        
+        Reparent(ShapeGame.Instance);
+        
+        
+    }
+
+    public override void _Process(double delta)
+    {
+        var player = Player.FindPlayer();
+        if (player == null)
+        {
+            return;
+        }
+        
+        foreach (var eye in GetEyes())
+        {
+            eye.SetTarget(player.GlobalPosition);
+        }
+    }
+
+    private IEnumerable<Eye> GetEyes()
+    {
+        return GetChildren().Cast<Eye>();
+    }
+    
+}
+"
+
+[node name="EyesController" type="Node2D" unique_id=983799153]
+script = SubResource("CSharpScript_efswb")

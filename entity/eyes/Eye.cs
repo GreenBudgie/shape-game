@@ -19,16 +19,22 @@ public partial class Eye : Node2D
     {
         _entity = GetParent<Node2D>();
         
-        _followTarget = new Node2D();
-        _followTarget.GlobalPosition = GlobalPosition;
-        _entity.AddChildDeferred(_followTarget);
-        
-        Callable.From(() => Reparent(ShapeGame.Instance)).CallDeferred();
+        Callable.From(Setup).CallDeferred();
         
         _eyeball = GetNode<Sprite2D>("Eyeball");
         _pupil = GetNode<Sprite2D>("Pupil");
 
         _entity.TreeExiting += QueueFree;
+    }
+
+    private void Setup()
+    {
+        _followTarget = new Node2D();
+        _entity.AddChild(_followTarget);
+        _followTarget.GlobalPosition = GlobalPosition;
+
+        Reparent(ShapeGame.Instance);
+        ZIndex = _entity.ZIndex + 1;
     }
 
     public override void _Process(double delta)
@@ -55,28 +61,25 @@ public partial class Eye : Node2D
 
     private void DoFollowTarget()
     {
-        const float minVelocity = 1f;
-        const float velocityDecreaseFactor = 1.5f;
-        _velocity /= velocityDecreaseFactor;
+        const float velocityDecreaseFactor = 0.85f;
+        _velocity *= velocityDecreaseFactor;
 
-        const float minDistanceSq = 1f;
-        var distanceSq = GlobalPosition.DistanceSquaredTo(_followTarget.GlobalPosition);
-        
-        if (_velocity <= minVelocity)
-        {
-            _velocity = 0;
+        var distance = GlobalPosition.DistanceTo(_followTarget.GlobalPosition);
 
-            if (distanceSq <= minDistanceSq)
-            {
-                GlobalPosition = _followTarget.GlobalPosition;
-                return;
-            }
-        }
+        const float followSpeedIncrease = 0.1f;
+        const float maxVelocity = 1000;
 
-        const float followSpeedIncrease = 0.01f;
-        _velocity += followSpeedIncrease * distanceSq;
-        
-        GlobalPosition.MoveToward(_followTarget.GlobalPosition, _velocity);
+        var increase = Min(maxVelocity, distance * followSpeedIncrease);
+        _velocity += increase;
+
+        // if (_velocity.LengthSquared() < 1f && distance < 1f)
+        // {
+        //     GlobalPosition = _followTarget.GlobalPosition;
+        //     _velocity = Vector2.Zero;
+        //     return;
+        // }
+
+        GlobalPosition = GlobalPosition.MoveToward(_followTarget.GlobalPosition, _velocity);
     }
 
     public void SetTarget(Vector2 globalPosition)

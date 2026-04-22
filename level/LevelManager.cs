@@ -35,6 +35,8 @@ public partial class LevelManager : Node
     private bool _requirementsMet;
     private int _phase = 1;
 
+    private bool _spawnEnemies = false;
+
     public LevelManager()
     {
         Instance = this;
@@ -82,6 +84,12 @@ public partial class LevelManager : Node
         }
     }
 
+    public bool ToggleEnemySpawning()
+    {
+        _spawnEnemies = !_spawnEnemies;
+        return _spawnEnemies;
+    }
+
     private void ProcessLevel(double delta, Level level)
     {
         if (_requirementsMet)
@@ -96,7 +104,11 @@ public partial class LevelManager : Node
             SetSurviveProgress(Min(level.SurviveRequirement, fullSecondsProgress));
         }
 
-        _timeToNextPhase -= delta;
+        if (_spawnEnemies)
+        {
+            _timeToNextPhase -= delta;
+        }
+
         if (_timeToNextPhase < 0)
         {
             _timeToNextPhase = level.GetCurrentPhaseDuration(_phase);

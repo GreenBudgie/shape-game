@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dahow1pmow0ma" path="res://debug/CrystalsContainer.cs" id="3_jlxhc"]
 [ext_resource type="Script" uid="uid://csfvrwiucijmg" path="res://debug/KillEnemiesButton.cs" id="3_met78"]
 [ext_resource type="Script" uid="uid://6fqtqpegp1lq" path="res://debug/RemoveEnemiesButton.cs" id="4_xjd1d"]
+[ext_resource type="Script" uid="uid://dx6pfytmjj2bb" path="res://debug/StopEnemySpawnButton.cs" id="8_o5fu4"]
 
 [node name="DebugScreen" type="CanvasLayer" unique_id=1374611125]
 script = ExtResource("1_pwcox")
@@ -75,3 +76,9 @@ layout_mode = 2
 text = "Remove Enemies
 (no drops)"
 script = ExtResource("4_xjd1d")
+
+[node name="ToggleEnemySpawnButton" type="Button" parent="Control/MarginContainer/HBoxContainer/OtherContainer" unique_id=1409702954]
+layout_mode = 2
+text = "Stop Enemy
+Spawn"
+script = ExtResource("8_o5fu4")
