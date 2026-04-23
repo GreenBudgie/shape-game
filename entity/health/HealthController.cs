@@ -40,6 +40,11 @@ public partial class HealthController : Node2D
             return;
         }
 
+        if (labelPosition.HasValue)
+        {
+            DamageLabel.Create(damage, labelPosition.Value);
+        }
+
         Health = Max(Health - damage, 0);
         EmitSignalDamaged(damage);
         
