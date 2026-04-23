@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dyjd1gu15wgat"]
 
-[ext_resource type="Texture2D" uid="uid://xsye5l1evbu0" path="res://entity/eyes/eyeball.png" id="1_5uir5"]
+[ext_resource type="Texture2D" uid="uid://xsye5l1evbu0" path="res://entity/eyes/texture/eyeball.png" id="1_5uir5"]
 [ext_resource type="Script" uid="uid://b3kcaluaqsyrw" path="res://entity/eyes/Eye.cs" id="1_i4500"]
-[ext_resource type="Texture2D" uid="uid://d33v5sc3cuksx" path="res://entity/eyes/eye_pupil.png" id="2_i4500"]
+[ext_resource type="Texture2D" uid="uid://d33v5sc3cuksx" path="res://entity/eyes/texture/eye_pupil.png" id="2_i4500"]
 
 [node name="Eye" type="Node2D" unique_id=376233651]
 script = ExtResource("1_i4500")

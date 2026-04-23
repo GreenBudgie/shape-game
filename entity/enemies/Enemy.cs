@@ -41,7 +41,7 @@ public abstract partial class Enemy : RigidBody2D
         AddToGroup(EnemyManager.AliveEnemiesGroup);
 
         _enemyAnimations = GetNode<AnimationPlayer>("EnemyAnimations");
-        HealthController = HealthController.RequireHealthController(this);
+        HealthController = HealthController.GetHealthController(this);
 
         _glowWrapper = GetNode<GlowWrapper>("Glow")
             .SetColor(Color)

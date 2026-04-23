@@ -8,12 +8,12 @@ public partial class HealthController : Node2D
     
     public float Health { get; private set; }
 
-    public static HealthController? GetHealthController(Node2D owner)
+    public static HealthController? GetHealthControllerIfExists(Node2D owner)
     {
         return owner.GetNodeOrNull<HealthController>("HealthController");
     }
     
-    public static HealthController RequireHealthController(Node2D owner)
+    public static HealthController GetHealthController(Node2D owner)
     {
         return owner.GetNode<HealthController>("HealthController");
     }

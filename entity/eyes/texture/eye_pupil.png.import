@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xsye5l1evbu0"
-path="res://.godot/imported/eyeball.png-d6f30dd7fd9c9f55780415a6b9e63190.ctex"
+uid="uid://d33v5sc3cuksx"
+path="res://.godot/imported/eye_pupil.png-7e29907781fb9f0e7976dedd844ec98d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entity/eyes/eyeball.png"
-dest_files=["res://.godot/imported/eyeball.png-d6f30dd7fd9c9f55780415a6b9e63190.ctex"]
+source_file="res://entity/eyes/texture/eye_pupil.png"
+dest_files=["res://.godot/imported/eye_pupil.png-7e29907781fb9f0e7976dedd844ec98d.ctex"]
 
 [params]
 

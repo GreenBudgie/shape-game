@@ -10,6 +10,7 @@
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_ebwh1"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://entity/enemies/enemy_animations.tscn" id="7_igh3h"]
 [ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="8_kaag5"]
+[ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/eyes/eyes_controller.tscn" id="11_imqh1"]
 [ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/health/health_controller.tscn" id="12_br6ys"]
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/eyes/eye.tscn" id="12_imqh1"]
 
@@ -61,10 +62,12 @@ _target = NodePath("..")
 _pointerColor = Color(0.22352941, 0.627451, 0.92941177, 1)
 _showOnlyWhenMovingIn = false
 
-[node name="Eye" parent="." unique_id=376233651 instance=ExtResource("12_imqh1")]
+[node name="EyesController" parent="." unique_id=983799153 instance=ExtResource("11_imqh1")]
+
+[node name="Eye" parent="EyesController" unique_id=376233651 instance=ExtResource("12_imqh1")]
 position = Vector2(40, 50)
 
-[node name="Eye2" parent="." unique_id=804558170 instance=ExtResource("12_imqh1")]
+[node name="Eye2" parent="EyesController" unique_id=804558170 instance=ExtResource("12_imqh1")]
 position = Vector2(-40, 50)
 
 [node name="HealthController" parent="." unique_id=695144963 instance=ExtResource("12_br6ys")]
