@@ -59,7 +59,7 @@ public partial class EnemyRectangle : Enemy
     {
         base._Process(delta);
 
-        if (IsDestroyed)
+        if (HealthController.IsDestroyed())
         {
             return;
         }
@@ -80,11 +80,6 @@ public partial class EnemyRectangle : Enemy
         {
             ProcessAttack(delta);
         }
-    }
-
-    public override float GetMaxHealth()
-    {
-        return 12;
     }
 
     public override float GetCrystalsToDrop()

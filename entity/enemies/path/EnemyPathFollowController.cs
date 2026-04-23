@@ -27,7 +27,7 @@ public partial class EnemyPathFollowController : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (_enemy.IsDestroyed)
+        if (_enemy.HealthController.IsDestroyed())
         {
             return;
         }

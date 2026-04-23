@@ -2,9 +2,6 @@
 
 public abstract partial class Enemy : RigidBody2D
 {
-
-    [Signal]
-    public delegate void DestroyedEventHandler();
     
     [Export] public Color Color { get; private set; }
 
@@ -12,12 +9,11 @@ public abstract partial class Enemy : RigidBody2D
     [Export] protected AudioStream DamageSound = null!;
     [Export] protected AudioStream DestroySound = null!;
 
-    private float _health;
-
+    public HealthController HealthController { get; private set; } = null!;
+    
     private GlowWrapper _glowWrapper = null!;
     private AnimationPlayer _enemyAnimations = null!;
 
-    public bool IsDestroyed { get; private set; }
     /// <summary>
     /// A rectangle (in local coordinates) to use for spawning effects inside the enemy
     /// </summary>
@@ -45,7 +41,7 @@ public abstract partial class Enemy : RigidBody2D
         AddToGroup(EnemyManager.AliveEnemiesGroup);
 
         _enemyAnimations = GetNode<AnimationPlayer>("EnemyAnimations");
-        _health = GetMaxHealth();
+        HealthController = HealthController.RequireHealthController(this);
 
         _glowWrapper = GetNode<GlowWrapper>("Glow")
             .SetColor(Color)
@@ -81,8 +77,6 @@ public abstract partial class Enemy : RigidBody2D
     protected virtual void OnActivate()
     {
     }
-
-    public abstract float GetMaxHealth();
     
     public abstract float GetCrystalsToDrop();
 
@@ -106,21 +100,20 @@ public abstract partial class Enemy : RigidBody2D
     /// <param name="source">Optional damage source (usually a projectile)</param>
     public void Damage(float damage, Node2D? source = null)
     {
-        if (IsDestroyed)
+        if (HealthController.IsDestroyed())
         {
             return;
         }
         
-        DamageLabel.Create(damage, this);
-        _health -= damage;
-        if (_health <= 0)
+        var labelPosition = ToGlobal(AreaRect.RandomPoint());
+        HealthController.Damage(damage, labelPosition);
+        if (HealthController.IsDestroyed())
         {
-            Destroy();
+            ForceDestroy();
             return;
         }
-        
-        var hpRatio = Clamp(_health / GetMaxHealth(), 0f, 1f);
-        var dangerLevel = 1f - hpRatio;
+ 
+        var dangerLevel = 1f - HealthController.GetHealthRatio();
 
         var sound = SoundManager.Instance.PlayPositionalSound(this, DamageSound);
         sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
@@ -134,18 +127,18 @@ public abstract partial class Enemy : RigidBody2D
 
         _enemyAnimations.Play("damage");
     }
-    
-    
 
     public void Destroy(bool dropCrystals = true)
     {
-        if (IsDestroyed)
+        if (!HealthController.IsDestroyed())
         {
-            return;
+            ForceDestroy(dropCrystals);
         }
-        
+    }
+    
+    private void ForceDestroy(bool dropCrystals = true)
+    {
         RemoveFromGroup(EnemyManager.AliveEnemiesGroup);
-        IsDestroyed = true;
         CollisionLayer = 0;
         CollisionMask = 0;
 
@@ -164,7 +157,7 @@ public abstract partial class Enemy : RigidBody2D
         finalGlowColor.A = 0;
         fadeOutTween.TweenMethod(Callable.From(setColorAction), _glowWrapper.GetColor(), finalGlowColor, 0.25);
 
-        EmitSignalDestroyed();
+        HealthController.Destroy();
         EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);
         
         _enemyAnimations.Play("destroy");

@@ -26,12 +26,12 @@ texture = ExtResource("2_rkbax")
 offset = Vector2(0, -4)
 
 [node name="Eye" parent="PlayerSprite" unique_id=376233651 instance=ExtResource("3_4pl66")]
-position = Vector2(36, -22)
+position = Vector2(25, -20)
 _targetStrategy = SubResource("Resource_482rp")
 _fallbackLookDirection = 0
 
 [node name="Eye2" parent="PlayerSprite" unique_id=1404575758 instance=ExtResource("3_4pl66")]
-position = Vector2(-38, -22)
+position = Vector2(-25, -20)
 _targetStrategy = SubResource("Resource_bgq54")
 _fallbackLookDirection = 0
 

@@ -10,8 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://cngnn50r7k8a" path="res://entity/enemies/types/rhombus/rhombus.png" id="6_8h5ga"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://entity/enemies/enemy_animations.tscn" id="7_yi2lj"]
 [ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="8_fy1y7"]
+[ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/health/health_controller.tscn" id="11_1lmxh"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bqlvi"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6ksl2"]
 resource_local_to_scene = true
 shader = ExtResource("6_0q3mv")
 shader_parameter/glow_color = Color(0.18039216, 0.40784314, 0.8980392, 1)
@@ -37,7 +38,7 @@ DamageSound = ExtResource("3_8h5ga")
 DestroySound = ExtResource("4_yi2lj")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_bqlvi")]
-material = SubResource("ShaderMaterial_bqlvi")
+material = SubResource("ShaderMaterial_6ksl2")
 
 [node name="Sprite" type="Sprite2D" parent="Glow" unique_id=2014269221]
 material = ExtResource("5_4soo3")
@@ -64,3 +65,6 @@ position = Vector2(109, 0)
 _target = NodePath("..")
 _pointerColor = Color(0.18039216, 0.40784314, 0.8980392, 1)
 _showOnlyWhenMovingIn = false
+
+[node name="HealthController" parent="." unique_id=695144963 instance=ExtResource("11_1lmxh")]
+MaxHealth = 5.0

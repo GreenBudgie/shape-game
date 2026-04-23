@@ -5,10 +5,10 @@ public partial class DamageLabel : Label
 
     private float _damage;
     
-    public static DamageLabel Create(float damage, Enemy enemy)
+    public static DamageLabel Create(float damage, Vector2 spawnPosition)
     {
         var node = Scene.Instantiate<DamageLabel>();
-        node.GlobalPosition = enemy.ToGlobal(enemy.AreaRect.RandomPoint());
+        node.GlobalPosition = spawnPosition;
         node._damage = damage;
         ShapeGame.Instance.AddChild(node);
         return node;

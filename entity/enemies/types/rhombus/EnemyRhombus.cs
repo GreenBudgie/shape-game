@@ -27,17 +27,12 @@
     {
         base._Process(delta);
 
-        if (IsDestroyed)
+        if (HealthController.IsDestroyed())
         {
             return;
         }
 
         HandleAttack(delta);
-    }
-
-    public override float GetMaxHealth()
-    {
-        return 5;
     }
 
     public override float GetCrystalsToDrop()

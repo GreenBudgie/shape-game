@@ -11,8 +11,9 @@
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="7_4becm"]
 [ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://entity/enemies/enemy_animations.tscn" id="7_ixvpt"]
 [ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="9_hx3wo"]
+[ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/health/health_controller.tscn" id="12_os88m"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_86isg"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_svth0"]
 resource_local_to_scene = true
 shader = ExtResource("7_4becm")
 shader_parameter/glow_color = Color(0.5411765, 0.41960785, 0.74509805, 1)
@@ -38,7 +39,7 @@ DamageSound = ExtResource("3_n54bf")
 DestroySound = ExtResource("4_3g2uu")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("6_86isg")]
-material = SubResource("ShaderMaterial_86isg")
+material = SubResource("ShaderMaterial_svth0")
 
 [node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1360807856]
 material = ExtResource("5_3y3oo")
@@ -86,3 +87,6 @@ position = Vector2(132, 44)
 _target = NodePath("..")
 _pointerColor = Color(0.5411765, 0.41960785, 0.74509805, 1)
 _showOnlyWhenMovingIn = false
+
+[node name="HealthController" parent="." unique_id=695144963 instance=ExtResource("12_os88m")]
+MaxHealth = 12.0
