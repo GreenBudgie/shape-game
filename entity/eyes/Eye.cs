@@ -13,6 +13,8 @@ public partial class Eye : Node2D
     
     private Sprite2D _eyeball = null!;
     private Sprite2D _pupil = null!;
+
+    private double _textureSwitchTimer;
     
     public override void _Ready()
     {
@@ -39,12 +41,40 @@ public partial class Eye : Node2D
     {
         DoFollowTarget();
         DoMovePupil();
+        UpdateTextureChange(delta);
+    }
+
+    public void SwitchTexture(Texture2D texture)
+    {
+        const float delay = 0.5f;
+        _pupil.Hide();
+        _eyeball.Texture = texture;
+        _textureSwitchTimer = delay;
+    }
+
+    private void UpdateTextureChange(double delta)
+    {
+        if (_textureSwitchTimer <= 0)
+        {
+            return;
+        }
+        
+        _textureSwitchTimer -= delta;
+        if (_textureSwitchTimer > 0)
+        {
+            return;
+        }
+        
+        _pupil.Show();
+        _eyeball.Texture = EyeTextures.Default;
     }
 
     private float _velocity;
 
     private void DoFollowTarget()
     {
+        _eyeball.GlobalRotation = _controller.GlobalRotation;
+        
         const float velocityDecreaseFactor = 0.85f;
         _velocity *= velocityDecreaseFactor;
 
