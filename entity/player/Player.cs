@@ -34,6 +34,7 @@ public partial class Player : RigidBody2D
     private Blaster _rightBlaster = null!;
     private ShapeCast2D _playerCollisionDetector = null!;
     private Sprite2D _sprite = null!;
+    private Vector2 _prevPosition = Vector2.Zero;
 
     public static Player? FindPlayer()
     {
@@ -56,6 +57,8 @@ public partial class Player : RigidBody2D
         
         _playerCollisionDetector = GetNode<ShapeCast2D>("PlayerCollisionDetector");
         Callable.From(SetupCollisionDetector).CallDeferred();
+
+        _prevPosition = Position;
     }
 
     private void SetupCollisionDetector()
@@ -69,13 +72,13 @@ public partial class Player : RigidBody2D
 
         _playerCollisionDetector.GlobalPosition = GlobalPosition;
 
-        var prevPosition = Position;
         var force = mouseDelta * 800;
         ApplyCentralForce(force);
 
-        var positionDelta = Position - prevPosition;
+        var positionDelta = Position - _prevPosition;
         var tiltDegrees = positionDelta.X * _tiltIncreaseFactor;
         HandleTilt(delta, tiltDegrees);
+        _prevPosition = Position;
 
         RegisterPlayerCollisions();
 
