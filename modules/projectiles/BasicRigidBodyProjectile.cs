@@ -59,7 +59,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
         {
             return;
         }
-        
+
         OnLeavePierceableObject(collisionObject2D);
     }
 
@@ -160,15 +160,25 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
         {
             OnCollideWithEnemy(enemy);
         }
-        
+
         HandleWallHit(collisionObject2D);
         AddCollisionExceptionWith(collisionObject2D);
 
-        collisionObject2D.Connect(
+        var callable = Callable.From(() => HandlePiercingDetectionAreaBodyExited(collisionObject2D));
+        collisionObject2D.Connect(Godot.Node.SignalName.TreeExiting, callable);
+        Connect(
             Godot.Node.SignalName.TreeExiting,
-            Callable.From(() => HandlePiercingDetectionAreaBodyExited(collisionObject2D))
+            Callable.From(() =>
+            {
+                if (!IsInstanceValid(collisionObject2D))
+                {
+                    return;
+                }
+                
+                collisionObject2D.Disconnect(Godot.Node.SignalName.TreeExiting, callable);
+            })
         );
-        
+
         ObstaclesToPierce--;
         if (ObstaclesToPierce == 0)
         {

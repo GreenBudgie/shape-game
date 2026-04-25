@@ -127,8 +127,6 @@ public partial class Eye : Node2D
         {
             return;
         }
-        
-        _eyeball.GlobalRotation = _controller.GlobalRotation;
 
         const float velocityDecreaseFactor = 0.85f;
         _velocity *= velocityDecreaseFactor;
