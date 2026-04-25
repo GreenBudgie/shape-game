@@ -12,13 +12,32 @@ public static class DissolveEffect
     /// <param name="node">Node to free after the sprite has done dissolving</param>
     /// <param name="sprite">Sprite to apply dissolve effect</param>
     /// <param name="duration">Duration of the effect, 0.5s by default</param>
-    public static void Dissolve(Node node, Sprite2D sprite, float duration = 0.5f)
+    public static void DissolveAndRemove(Node node, Sprite2D sprite, float duration = 0.5f)
     {
-        sprite.Material = (ShaderMaterial)Resource.Duplicate();
+        if (sprite.Material?.ResourceSceneUniqueId != Resource.ResourceSceneUniqueId)
+        {
+            sprite.Material = (ShaderMaterial)Resource.Duplicate();
+        }
 
         var tween = node.CreateTween();
         tween.TweenProperty(sprite.Material, DissolveValueParam, 0, duration);
         tween.Finished += node.QueueFree;
+    }
+    
+    /// <summary>
+    /// Applies a dissolve effect to the sprite by changing its material.
+    /// </summary>
+    /// <param name="sprite">Sprite to apply dissolve effect</param>
+    /// <param name="duration">Duration of the effect, 0.5s by default</param>
+    public static void DissolveSprite(Sprite2D sprite, float duration = 0.5f)
+    {
+        if (sprite.Material?.ResourceSceneUniqueId != Resource.ResourceSceneUniqueId)
+        {
+            sprite.Material = (ShaderMaterial)Resource.Duplicate();
+        }
+
+        var tween = sprite.CreateTween();
+        tween.TweenProperty(sprite.Material, DissolveValueParam, 0, duration);
     }
 
 }

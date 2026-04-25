@@ -40,7 +40,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
 
     private void OnCollideWithEnemy(Enemy enemy)
     {
-        enemy.Damage(Context.CalculateStat<DamageStat>(), this);
+        enemy.HealthController.Damage(Context.CalculateStat<DamageStat>());
     }
 
     private void OnLeavePierceableObject(CollisionObject2D collisionObject)

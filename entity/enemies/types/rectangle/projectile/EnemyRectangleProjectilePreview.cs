@@ -41,7 +41,7 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
 
     private void Remove()
     {
-        DissolveEffect.Dissolve(this, this, 0.25f);
+        DissolveEffect.DissolveAndRemove(this, this, 0.25f);
     }
 
 }

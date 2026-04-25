@@ -6,13 +6,10 @@ public abstract partial class Enemy : RigidBody2D
     [Export] public Color Color { get; private set; }
 
     [Export] protected CollisionShape2D Area = null!;
-    [Export] protected AudioStream DamageSound = null!;
-    [Export] protected AudioStream DestroySound = null!;
 
     public HealthController HealthController { get; private set; } = null!;
     
     private GlowWrapper _glowWrapper = null!;
-    private AnimationPlayer _enemyAnimations = null!;
 
     /// <summary>
     /// A rectangle (in local coordinates) to use for spawning effects inside the enemy
@@ -26,21 +23,14 @@ public abstract partial class Enemy : RigidBody2D
 
     public override void _Ready()
     {
-        if (Area.Shape is not RectangleShape2D areaShape)
-        {
-            throw new ArgumentException(
-                $"Crystal spawn area should be a RectangleShape2D, but {Name} uses different shape"
-            );
-        }
         if (!Area.Disabled)
         {
             Area.Disabled = true;
         }
-        AreaRect = areaShape.GetRect();
+        AreaRect = Area.Shape.GetRect();
         
         AddToGroup(EnemyManager.AliveEnemiesGroup);
 
-        _enemyAnimations = GetNode<AnimationPlayer>("EnemyAnimations");
         HealthController = HealthController.GetHealthController(this);
 
         _glowWrapper = GetNode<GlowWrapper>("Glow")
@@ -51,6 +41,8 @@ public abstract partial class Enemy : RigidBody2D
 
         Deactivate();
         GetTree().CreateTimer(GetTimeToActivate()).Timeout += Activate;
+        HealthController.Destroyed += OnDestroy;
+        HealthController.DestroyAnimationFinished += QueueFree;
     }
     
     private void Deactivate()
@@ -92,76 +84,20 @@ public abstract partial class Enemy : RigidBody2D
         return 1;
     }
 
-    /// <summary>
-    /// Damages the enemy by provided amount of HP. Optionally, source of the damage can be provided
-    /// (usually a projectile).
-    /// </summary>
-    /// <param name="damage">The amount of damage in HP</param>
-    /// <param name="source">Optional damage source (usually a projectile)</param>
-    public void Damage(float damage, Node2D? source = null)
-    {
-        if (HealthController.IsDestroyed())
-        {
-            return;
-        }
-        
-        var labelPosition = ToGlobal(AreaRect.RandomPoint());
-        HealthController.Damage(damage, labelPosition);
-        if (HealthController.IsDestroyed())
-        {
-            ForceDestroy();
-            return;
-        }
- 
-        var dangerLevel = 1f - HealthController.GetHealthRatio();
-
-        var sound = SoundManager.Instance.PlayPositionalSound(this, DamageSound);
-        sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
-        
-        _glowWrapper
-            .SetRadius(40f * dangerLevel)
-            .SetStrength(2f * dangerLevel)
-            .SetPulseRadiusDelta(20f * dangerLevel)
-            .SetPulseStrengthDelta(dangerLevel)
-            .SetPulsesPerSecond(1f + dangerLevel * (3f - 1f));
-
-        _enemyAnimations.Play("damage");
-    }
-
-    public void Destroy(bool dropCrystals = true)
-    {
-        if (!HealthController.IsDestroyed())
-        {
-            ForceDestroy(dropCrystals);
-        }
-    }
-    
-    private void ForceDestroy(bool dropCrystals = true)
+    private void OnDestroy()
     {
         RemoveFromGroup(EnemyManager.AliveEnemiesGroup);
         CollisionLayer = 0;
         CollisionMask = 0;
 
         Callable.From(SpawnParticles).CallNextPhysicsFrame(GetTree());
-        SoundManager.Instance.PlayPositionalSound(this, DestroySound);
 
-        if (dropCrystals)
+        if (EnemyManager.Instance.EnemiesDropCrystals)
         {
             DropCrystals();
         }
 
-        _glowWrapper.DisablePulsing();
-        var fadeOutTween = _glowWrapper.CreateTween();
-        var setColorAction = _glowWrapper.SetColor;
-        var finalGlowColor = _glowWrapper.GetColor();
-        finalGlowColor.A = 0;
-        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glowWrapper.GetColor(), finalGlowColor, 0.25);
-
-        HealthController.Destroy();
         EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);
-        
-        _enemyAnimations.Play("destroy");
-        _enemyAnimations.AnimationFinished += _ => QueueFree();
     }
 
     private void DropCrystals()

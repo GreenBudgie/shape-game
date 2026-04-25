@@ -3,31 +3,27 @@ public partial class Player : RigidBody2D
 
     private const int CornerDistance = 28;
 
-    private static Player? _instance;
-
     /**
      * The player's tilt will never go above this value.
      */
-    [ExportGroup("Tilt")] [Export(PropertyHint.Range, "0,40,1,or_greater")]
-    private double _maxTiltDegrees = 22;
+    private const double MaxTiltDegrees = 22;
 
     /**
      * How rapidly the player will tilt when it is moved horizontally. Higher = faster.
      */
-    [Export(PropertyHint.Range, "0,1,0.01,or_greater")]
-    private double _tiltIncreaseFactor = 0.1;
+    private const double TiltIncreaseFactor = 0.1;
 
     /**
      * How fast the player's tilt will decrease over time (arbitrary number). Higher = faster.
      */
-    [Export(PropertyHint.Range, "1,20,0.1,or_greater")]
-    private double _tiltDecreaseFactor = 7;
+    private const double TiltDecreaseFactor = 7;
 
     /**
      * The lowest threshold of player's tilt in degrees. When this value is reached, the tilt is instantly set to 0.
      */
-    [Export(PropertyHint.Range, "0.1,2,0.1,or_greater")]
-    private double _rotationDegreesEpsilon = 0.3;
+    private const double RotationDegreesEpsilon = 0.3;
+    
+    private static Player? _instance;
 
     private Vector2 _windowCenter;
     private Blaster _leftBlaster = null!;
@@ -76,7 +72,7 @@ public partial class Player : RigidBody2D
         ApplyCentralForce(force);
 
         var positionDelta = Position - _prevPosition;
-        var tiltDegrees = positionDelta.X * _tiltIncreaseFactor;
+        var tiltDegrees = positionDelta.X * TiltIncreaseFactor;
         HandleTilt(delta, tiltDegrees);
 
         RegisterPlayerCollisions();
@@ -116,13 +112,13 @@ public partial class Player : RigidBody2D
 
     private void HandleTilt(double delta, double tiltDegrees)
     {
-        _sprite.RotationDegrees *= Clamp(1 - (float)(delta * _tiltDecreaseFactor), 0, 1);
+        _sprite.RotationDegrees *= Clamp(1 - (float)(delta * TiltDecreaseFactor), 0, 1);
         _sprite.RotationDegrees = (float)Clamp(
             _sprite.RotationDegrees + tiltDegrees,
-            -_maxTiltDegrees,
-            _maxTiltDegrees
+            -MaxTiltDegrees,
+            MaxTiltDegrees
         );
-        if (Abs(_sprite.RotationDegrees) <= _rotationDegreesEpsilon)
+        if (Abs(_sprite.RotationDegrees) <= RotationDegreesEpsilon)
         {
             _sprite.RotationDegrees = 0;
         }
@@ -132,7 +128,7 @@ public partial class Player : RigidBody2D
     {
         _playerCollisionDetector.Rotation = GetTilt();
         _playerCollisionDetector.Position = _prevPosition;
-        _playerCollisionDetector.TargetPosition = Position;
+        _playerCollisionDetector.TargetPosition = _playerCollisionDetector.ToLocal(GlobalPosition);
         _playerCollisionDetector.ForceShapecastUpdate();
 
         if (!_playerCollisionDetector.IsColliding())

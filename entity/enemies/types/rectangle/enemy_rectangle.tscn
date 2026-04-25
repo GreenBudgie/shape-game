@@ -3,19 +3,17 @@
 [ext_resource type="Script" uid="uid://bb76xp345m7u1" path="res://entity/enemies/types/rectangle/EnemyRectangle.cs" id="1_h54be"]
 [ext_resource type="AudioStream" uid="uid://dlhdnpa11hxfc" path="res://entity/enemies/types/rectangle/entity_rectangle_projectile_charge.wav" id="3_d47au"]
 [ext_resource type="AudioStream" uid="uid://bqtu1tw4mii2w" path="res://entity/enemies/types/rectangle/entity_rectangle_projectile_launch.wav" id="3_hx3wo"]
-[ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://entity/enemies/enemy_damage.wav" id="3_n54bf"]
-[ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://entity/enemies/enemy_destroy.wav" id="4_3g2uu"]
-[ext_resource type="Material" uid="uid://ef46pfecv73h" path="res://util/dissolve/dissolve_material.tres" id="5_3y3oo"]
 [ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="6_86isg"]
 [ext_resource type="Texture2D" uid="uid://lb0yaaolwk6i" path="res://entity/enemies/types/rectangle/rectangle.png" id="6_ynf1d"]
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="7_4becm"]
-[ext_resource type="PackedScene" uid="uid://beeu7sv30uhqb" path="res://entity/enemies/enemy_animations.tscn" id="7_ixvpt"]
 [ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="9_hx3wo"]
+[ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://entity/damage.wav" id="10_svth0"]
+[ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://entity/destroy.wav" id="11_4gdr3"]
 [ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/health/health_controller.tscn" id="12_os88m"]
 [ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/eyes/eyes_controller.tscn" id="13_4gdr3"]
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/eyes/eye.tscn" id="14_gx6kt"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6jtn6"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v1m5j"]
 resource_local_to_scene = true
 shader = ExtResource("7_4becm")
 shader_parameter/glow_color = Color(0.5411765, 0.41960785, 0.74509805, 1)
@@ -37,22 +35,16 @@ _chargeSound = ExtResource("3_d47au")
 _launchSound = ExtResource("3_hx3wo")
 Color = Color(0.541176, 0.419608, 0.745098, 1)
 Area = NodePath("Area")
-DamageSound = ExtResource("3_n54bf")
-DestroySound = ExtResource("4_3g2uu")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("6_86isg")]
-material = SubResource("ShaderMaterial_6jtn6")
+material = SubResource("ShaderMaterial_v1m5j")
 
 [node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1360807856]
-material = ExtResource("5_3y3oo")
 texture = ExtResource("6_ynf1d")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1052407478]
 visible = false
 polygon = PackedVector2Array(-190, -77, -182, -93, -165, -102, 165, -102, 182, -93, 190, -77, 190, 77, 182, 93, 165, 102, -165, 102, -182, 93, -190, 77)
-
-[node name="EnemyAnimations" parent="." unique_id=722558598 instance=ExtResource("7_ixvpt")]
-root_node = NodePath("../Glow/Sprite")
 
 [node name="Area" type="CollisionShape2D" parent="." unique_id=62449756]
 position = Vector2(0, -0.5)
@@ -90,8 +82,13 @@ _target = NodePath("..")
 _pointerColor = Color(0.5411765, 0.41960785, 0.74509805, 1)
 _showOnlyWhenMovingIn = false
 
-[node name="HealthController" parent="." unique_id=695144963 instance=ExtResource("12_os88m")]
+[node name="HealthController" parent="." unique_id=695144963 node_paths=PackedStringArray("_sprite", "_glowWrapper", "_damageLabelSpawnArea") instance=ExtResource("12_os88m")]
 MaxHealth = 12.0
+_sprite = NodePath("../Glow/Sprite")
+_glowWrapper = NodePath("../Glow")
+_damageLabelSpawnArea = NodePath("../Area")
+DamageSound = ExtResource("10_svth0")
+DestroySound = ExtResource("11_4gdr3")
 
 [node name="EyesController" parent="." unique_id=983799153 instance=ExtResource("13_4gdr3")]
 

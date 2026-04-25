@@ -35,7 +35,7 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile<MiniSphereP
         LinearDamp = 4;
         
         var sprite = GetNode<Sprite2D>("MiniSphereSprite");
-        DissolveEffect.Dissolve(this, sprite, 0.25f);
+        DissolveEffect.DissolveAndRemove(this, sprite, 0.25f);
         
         BurstParticleEffect.Create(GlobalPosition)
             .WithAmount(4, 1)

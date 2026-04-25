@@ -17,6 +17,18 @@ public partial class DebugScreen : CanvasLayer
 
     public override void _Process(double delta)
     {
+        if (Input.IsActionJustPressed("debug_timescale"))
+        {
+            if (IsEqualApprox(Engine.TimeScale, 0.2f))
+            {
+                Engine.TimeScale = 1f;
+            }
+            else
+            {
+                Engine.TimeScale = 0.2f;
+            }
+        }
+        
         if (IsOpen && (Input.IsActionJustPressed("open_debug_screen") || Input.IsActionJustPressed("ui_cancel")))
         {
             Close();

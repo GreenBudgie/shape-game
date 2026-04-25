@@ -4,7 +4,7 @@ public partial class KillEnemiesButton : Button
     {
         foreach (var enemy in EnemyManager.Instance.GetAliveEnemies())
         {
-            enemy.Destroy();
+            enemy.HealthController.Destroy();
         }
     }
 }

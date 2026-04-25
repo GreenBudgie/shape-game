@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/eyes/eye.tscn" id="3_4pl66"]
 [ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/eyes/eyes_controller.tscn" id="3_482rp"]
 [ext_resource type="Script" uid="uid://4vsmmdvy62y" path="res://entity/eyes/target/NearestEnemyEyeTargetStrategy.cs" id="4_bgq54"]
+[ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/health/health_controller.tscn" id="6_wjhpj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_482rp"]
 friction = 0.0
@@ -53,3 +54,6 @@ enabled = false
 shape = SubResource("ConvexPolygonShape2D_rkbax")
 target_position = Vector2(0, 0)
 collision_mask = 512
+
+[node name="HealthController" parent="." unique_id=695144963 instance=ExtResource("6_wjhpj")]
+MaxHealth = 100.0

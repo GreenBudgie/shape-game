@@ -24,6 +24,8 @@ public partial class EnemyManager : Node
     /// </summary>
     [Signal]
     public delegate void EnemyDestroyedEventHandler(Enemy enemy);
+    
+    public bool EnemiesDropCrystals { get; set; } = false;
 
     public EnemyManager()
     {

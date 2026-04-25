@@ -80,7 +80,7 @@ public partial class LevelManager : Node
                 
         foreach (var enemy in EnemyManager.Instance.GetAliveEnemies())
         {
-            enemy.Destroy();
+            enemy.HealthController.Destroy();
         }
     }
 
