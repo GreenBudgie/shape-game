@@ -4,12 +4,19 @@ using System.Linq;
 
 public partial class EyesController : Node2D
 {
-    public Node2D EyeOwner { get; private set; } = null!;
+    
     public Vector2? LookTarget { get; private set; }
     public HealthController? OwnerHealthController { get; private set; }
 
     private List<Eye> _eyes = null!;
 
+    [Export] public Node2D EyeOwner { get; private set; } = null!;
+    
+    /**
+     * Might be null. If not set, EyeOwner is used instead
+     */
+    [Export] public Node2D? EyeOwnerSprite { get; private set; }
+    
     [Export] public EyeTargetStrategy TargetStrategy { get; private set; } = new PlayerEyeTargetStrategy();
 
     /**
@@ -22,7 +29,6 @@ public partial class EyesController : Node2D
     {
         _eyes = GetChildren().Cast<Eye>().ToList();
 
-        EyeOwner = GetParent<Node2D>();
         OwnerHealthController = HealthController.GetHealthControllerIfExists(EyeOwner);
 
         if (OwnerHealthController != null)
@@ -62,6 +68,8 @@ public partial class EyesController : Node2D
 
     public override void _Process(double delta)
     {
+        GlobalPosition = GetEffectiveOwner().GlobalPosition;
+        GlobalRotation = GetEffectiveOwner().GlobalRotation;
         UpdateLookTarget();
     }
 
@@ -73,6 +81,16 @@ public partial class EyesController : Node2D
             EyeLookDirection.Down => Vector2.Down,
             _ => throw new ArgumentOutOfRangeException()
         };
+    }
+
+    public Node2D GetEffectiveOwner()
+    {
+        if (EyeOwnerSprite != null)
+        {
+            return EyeOwnerSprite;
+        }
+
+        return EyeOwner;
     }
     
     private void UpdateLookTarget()

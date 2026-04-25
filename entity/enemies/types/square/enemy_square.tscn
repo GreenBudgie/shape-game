@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/health/health_controller.tscn" id="12_br6ys"]
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/eyes/eye.tscn" id="12_imqh1"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_br6ys"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rxcbe"]
 resource_local_to_scene = true
 shader = ExtResource("6_ebwh1")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
@@ -33,7 +33,7 @@ Color = Color(0.223529, 0.627451, 0.929412, 1)
 Area = NodePath("Area")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_agby6")]
-material = SubResource("ShaderMaterial_br6ys")
+material = SubResource("ShaderMaterial_rxcbe")
 
 [node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1063206879]
 texture = ExtResource("3_7g7p5")
@@ -54,7 +54,9 @@ _target = NodePath("..")
 _pointerColor = Color(0.22352941, 0.627451, 0.92941177, 1)
 _showOnlyWhenMovingIn = false
 
-[node name="EyesController" parent="." unique_id=983799153 instance=ExtResource("11_imqh1")]
+[node name="EyesController" parent="." unique_id=983799153 node_paths=PackedStringArray("EyeOwner", "EyeOwnerSprite") instance=ExtResource("11_imqh1")]
+EyeOwner = NodePath("..")
+EyeOwnerSprite = NodePath("../Glow/Sprite")
 
 [node name="Eye" parent="EyesController" unique_id=376233651 instance=ExtResource("12_imqh1")]
 position = Vector2(40, 50)

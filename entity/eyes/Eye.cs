@@ -65,7 +65,7 @@ public partial class Eye : Node2D
         }
         
         _followTarget = new Node2D();
-        _controller.EyeOwner.AddChild(_followTarget);
+        _controller.GetEffectiveOwner().AddChild(_followTarget);
         _followTarget.GlobalPosition = GlobalPosition;
 
         _virtualGlobalPosition = GlobalPosition;

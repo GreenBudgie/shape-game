@@ -76,15 +76,20 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
             return;
         }
 
-        HandleWallHit(collisionObject2D);
-
-        if (collisionObject2D is Enemy enemy)
+        if (HandleWallHit(collisionObject2D))
         {
-            OnCollideWithEnemy(enemy);
+            return;
+        }
+
+        HealthController.GetHealthControllerIfExists(collisionObject2D)?.Damage(Context.CalculateStat<DamageStat>());
+
+        if (ObstaclesToPierce <= 0)
+        {
+            Remove();
         }
     }
 
-    private void HandleWallHit(CollisionObject2D collisionObject)
+    private bool HandleWallHit(CollisionObject2D collisionObject)
     {
         const float minVelocityToMakeSound = 100f;
         var isWall = collisionObject.HasCollisionLayer(CollisionLayers.LevelWalls, CollisionLayers.ProjectileBarrier);
@@ -92,6 +97,8 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
         {
             SoundManager.Instance.PlayPositionalSound(this, _wallHitSound).RandomizePitchOffset(0.1f);
         }
+
+        return isWall;
     }
 
     private void SetupPiercing()

@@ -25,13 +25,16 @@ public partial class Player : RigidBody2D
     
     private static Player? _instance;
 
+    public HealthController HealthController { get; private set; } = null!;
+
     private Vector2 _windowCenter;
     private Blaster _leftBlaster = null!;
     private Blaster _rightBlaster = null!;
     private ShapeCast2D _playerCollisionDetector = null!;
     private Sprite2D _sprite = null!;
     private Vector2 _prevPosition = Vector2.Zero;
-
+    private GlowWrapper _glowWrapper = null!;
+    
     public static Player? FindPlayer()
     {
         return _instance;
@@ -42,9 +45,15 @@ public partial class Player : RigidBody2D
         _instance = this;
     }
 
+    public override void _ExitTree()
+    {
+        _instance = null;
+    }
+
     public override void _Ready()
     {
-        _sprite = GetNode<Sprite2D>("PlayerSprite");
+        _sprite = GetNode<Sprite2D>("GlowWrapper/PlayerSprite");
+        HealthController = HealthController.GetHealthController(this);
 
         _leftBlaster = Blaster.Create(InventoryManager.Instance.LeftBlasterInventory);
         AddChild(_leftBlaster);
@@ -53,6 +62,12 @@ public partial class Player : RigidBody2D
         
         _playerCollisionDetector = GetNode<ShapeCast2D>("PlayerCollisionDetector");
         Callable.From(SetupCollisionDetector).CallDeferred();
+        
+        _glowWrapper = GetNode<GlowWrapper>("GlowWrapper")
+            .SetColor(ColorScheme.Player)
+            .SetStrength(0)
+            .SetRadius(0)
+            .EnablePulsing();
 
         _prevPosition = Position;
     }

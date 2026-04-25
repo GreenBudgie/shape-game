@@ -1,21 +1,35 @@
 [gd_scene format=3 uid="uid://bw1n7eocfhsbo"]
 
 [ext_resource type="Script" uid="uid://by6dk3wis2abt" path="res://entity/player/Player.cs" id="1_3uijo"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="2_4btn6"]
 [ext_resource type="Texture2D" uid="uid://d0qbwccjscr4n" path="res://entity/player/Player.png" id="2_rkbax"]
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/eyes/eye.tscn" id="3_4pl66"]
 [ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/eyes/eyes_controller.tscn" id="3_482rp"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="3_t2ln0"]
 [ext_resource type="Script" uid="uid://4vsmmdvy62y" path="res://entity/eyes/target/NearestEnemyEyeTargetStrategy.cs" id="4_bgq54"]
 [ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/health/health_controller.tscn" id="6_wjhpj"]
+[ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://entity/damage.wav" id="9_qa8rf"]
+[ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://entity/destroy.wav" id="10_klmji"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_482rp"]
 friction = 0.0
 
-[sub_resource type="Resource" id="Resource_wjhpj"]
-script = ExtResource("4_bgq54")
-metadata/_custom_type_script = "uid://4vsmmdvy62y"
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qa8rf"]
+resource_local_to_scene = true
+shader = ExtResource("3_t2ln0")
+shader_parameter/glow_color = Color(0.937, 0.357, 0.357, 1)
+shader_parameter/glow_radius = 12.0
+shader_parameter/glow_strength = 2.0
 
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_rkbax"]
 points = PackedVector2Array(0, -46, -8, -42, -48, 38, -48, 48, -42, 54, 42, 54, 48, 48, 48, 38, 8, -42)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_klmji"]
+size = Vector2(50, 76)
+
+[sub_resource type="Resource" id="Resource_wjhpj"]
+script = ExtResource("4_bgq54")
+metadata/_custom_type_script = "uid://4vsmmdvy62y"
 
 [node name="Player" type="RigidBody2D" unique_id=379332115]
 collision_mask = 228
@@ -26,19 +40,12 @@ lock_rotation = true
 linear_damp = 40.0
 script = ExtResource("1_3uijo")
 
-[node name="PlayerSprite" type="Sprite2D" parent="." unique_id=215823694]
+[node name="GlowWrapper" parent="." unique_id=1457896962 instance=ExtResource("2_4btn6")]
+material = SubResource("ShaderMaterial_qa8rf")
+
+[node name="PlayerSprite" type="Sprite2D" parent="GlowWrapper" unique_id=215823694]
 texture = ExtResource("2_rkbax")
 offset = Vector2(0, -4)
-
-[node name="EyesController" parent="PlayerSprite" unique_id=983799153 instance=ExtResource("3_482rp")]
-TargetStrategy = SubResource("Resource_wjhpj")
-FallbackLookDirection = 0
-
-[node name="Eye" parent="PlayerSprite/EyesController" unique_id=376233651 instance=ExtResource("3_4pl66")]
-position = Vector2(25, -20)
-
-[node name="Eye2" parent="PlayerSprite/EyesController" unique_id=1404575758 instance=ExtResource("3_4pl66")]
-position = Vector2(-25, -20)
 
 [node name="PlayerCollisionShape" type="CollisionPolygon2D" parent="." unique_id=895103946]
 visible = false
@@ -55,5 +62,27 @@ shape = SubResource("ConvexPolygonShape2D_rkbax")
 target_position = Vector2(0, 0)
 collision_mask = 512
 
-[node name="HealthController" parent="." unique_id=695144963 instance=ExtResource("6_wjhpj")]
-MaxHealth = 100.0
+[node name="HealthController" parent="." unique_id=695144963 node_paths=PackedStringArray("_sprite", "_glowWrapper", "_damageLabelSpawnArea") instance=ExtResource("6_wjhpj")]
+MaxHealth = 10.0
+_sprite = NodePath("../GlowWrapper/PlayerSprite")
+_glowWrapper = NodePath("../GlowWrapper")
+_damageLabelSpawnArea = NodePath("../DamageLabelRect")
+DamageSound = ExtResource("9_qa8rf")
+DestroySound = ExtResource("10_klmji")
+
+[node name="DamageLabelRect" type="CollisionShape2D" parent="." unique_id=2121868680]
+position = Vector2(0, 18)
+shape = SubResource("RectangleShape2D_klmji")
+disabled = true
+
+[node name="EyesController" parent="." unique_id=983799153 node_paths=PackedStringArray("EyeOwner", "EyeOwnerSprite") instance=ExtResource("3_482rp")]
+EyeOwner = NodePath("..")
+EyeOwnerSprite = NodePath("../GlowWrapper/PlayerSprite")
+TargetStrategy = SubResource("Resource_wjhpj")
+FallbackLookDirection = 0
+
+[node name="Eye" parent="EyesController" unique_id=376233651 instance=ExtResource("3_4pl66")]
+position = Vector2(25, -20)
+
+[node name="Eye2" parent="EyesController" unique_id=1404575758 instance=ExtResource("3_4pl66")]
+position = Vector2(-25, -20)

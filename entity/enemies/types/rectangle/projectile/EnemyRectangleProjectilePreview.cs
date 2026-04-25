@@ -23,7 +23,7 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
         tween.TweenProperty(this, ScaleProperty, Vector2.One, EnemyRectangle.ProjectileChargeTime);
         tween.TweenProperty(this, RotationDegreesProperty, 360, EnemyRectangle.ProjectileChargeTime);
 
-        _owner.HealthController.Connect(HealthController.SignalName.Destroyed, Callable.From(Remove));
+        _owner.HealthController.Destroyed += Remove;
     }
 
     public void Launch()
