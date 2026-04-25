@@ -52,6 +52,16 @@ public partial class Eye : Node2D
         _textureSwitchTimer = delay;
     }
 
+    private readonly ShakeTween _shakeTween = new ShakeTween()
+        .PositionShakeMagnitude(16)
+        .InTime(0.05f)
+        .OutTime(0.45f);
+
+    public void Shake()
+    {
+        _shakeTween.Play(_eyeball);
+    }
+
     private void UpdateTextureChange(double delta)
     {
         if (_textureSwitchTimer <= 0)

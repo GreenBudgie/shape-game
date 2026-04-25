@@ -47,7 +47,8 @@ public partial class EyesController : Node2D
     {
         foreach (var eye in _eyes)
         {
-            eye.SwitchTexture(EyeTextures.Dead);
+            eye.SwitchTexture(EyeTextures.Damaged);
+            eye.Shake();
         }
     }
     
