@@ -140,7 +140,9 @@ public partial class Eye : Node2D
         _velocity += increase;
 
         _virtualGlobalPosition = _virtualGlobalPosition.MoveToward(_followTarget.GlobalPosition, _velocity);
-        GlobalPosition = _virtualGlobalPosition;
+
+        GlobalRotation = 0;
+        _eyeball.GlobalRotation = _followTarget.GlobalRotation;
     }
 
     private void DoMovePupil()
