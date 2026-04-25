@@ -6,7 +6,7 @@ public partial class EyesController : Node2D
 {
     public Node2D EyeOwner { get; private set; } = null!;
     public Vector2? LookTarget { get; private set; }
-    private HealthController? _ownerHealthController;
+    public HealthController? OwnerHealthController { get; private set; }
 
     private List<Eye> _eyes = null!;
 
@@ -23,24 +23,24 @@ public partial class EyesController : Node2D
         _eyes = GetChildren().Cast<Eye>().ToList();
 
         EyeOwner = GetParent<Node2D>();
-        _ownerHealthController = HealthController.GetHealthControllerIfExists(EyeOwner);
+        OwnerHealthController = HealthController.GetHealthControllerIfExists(EyeOwner);
 
-        if (_ownerHealthController != null)
+        if (OwnerHealthController != null)
         {
-            _ownerHealthController.Damaged += OnDamage;
-            _ownerHealthController.Destroyed += OnDestroy;
+            OwnerHealthController.Damaged += OnDamage;
+            OwnerHealthController.Destroyed += OnDestroy;
         }
     }
 
     public override void _ExitTree()
     {
-        if (_ownerHealthController == null)
+        if (OwnerHealthController == null)
         {
             return;
         }
         
-        _ownerHealthController.Damaged -= OnDamage;
-        _ownerHealthController.Destroyed -= OnDestroy;
+        OwnerHealthController.Damaged -= OnDamage;
+        OwnerHealthController.Destroyed -= OnDestroy;
     }
 
     private void OnDamage(float damage)

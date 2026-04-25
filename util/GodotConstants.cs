@@ -9,6 +9,7 @@ public static class GodotConstants
     public static readonly NodePath RotationDegreesProperty = "rotation_degrees";
     public static readonly NodePath ScaleProperty = "scale";
     public static readonly NodePath ModulateProperty = "modulate";
+    public static readonly NodePath ModulateAlphaProperty = "modulate:a";
     public static readonly NodePath ValueProperty = "value";
     public static readonly NodePath OffsetProperty = "offset";
 

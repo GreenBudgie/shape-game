@@ -7,7 +7,7 @@ public partial class Eye : Node2D
 
     private const float DistanceFromCenter = EyeballSize - PupilSize - Gap;
 
-    private EyesController _controller = null!;
+    private EyesController? _controller;
 
     private Node2D _followTarget = null!;
     
@@ -24,12 +24,46 @@ public partial class Eye : Node2D
         
         _eyeball = GetNode<Sprite2D>("Eyeball");
         _pupil = GetNode<Sprite2D>("Pupil");
+    }
 
-        _controller.TreeExiting += QueueFree;
+    public override void _ExitTree()
+    {
+        if (_controller?.OwnerHealthController != null)
+        {
+            _controller.OwnerHealthController.Destroyed -= Remove;
+        }
+    }
+
+    private bool _isRemoving;
+    
+    public void Remove()
+    {
+        if (_isRemoving)
+        {
+            return;
+        }
+
+        _isRemoving = true;
+
+        var tween = CreateTween();
+        tween.TweenProperty(this, ModulateAlphaProperty, 0, 0.4);
+
+        tween.Finished += QueueFree;
     }
 
     private void Setup()
     {
+        if (_controller == null)
+        {
+            QueueFree();
+            return;
+        }
+        
+        if (_controller.OwnerHealthController != null)
+        {
+            _controller.OwnerHealthController.Destroyed += Remove;
+        }
+        
         _followTarget = new Node2D();
         _controller.EyeOwner.AddChild(_followTarget);
         _followTarget.GlobalPosition = GlobalPosition;
@@ -89,6 +123,11 @@ public partial class Eye : Node2D
 
     private void DoFollowTarget()
     {
+        if (_controller == null)
+        {
+            return;
+        }
+        
         _eyeball.GlobalRotation = _controller.GlobalRotation;
 
         const float velocityDecreaseFactor = 0.85f;
@@ -108,6 +147,11 @@ public partial class Eye : Node2D
 
     private void DoMovePupil()
     {
+        if (_controller == null)
+        {
+            return;
+        }
+        
         Vector2 direction;
         if (_controller.LookTarget.HasValue)
         {
