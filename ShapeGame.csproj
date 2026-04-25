@@ -3,22 +3,16 @@
         <TargetFramework>net8.0</TargetFramework>
         <EnableDynamicLoading>true</EnableDynamicLoading>
         <Nullable>enable</Nullable>
+        <RootNamespace/>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="**/*.tscn"
-              Exclude=".godot/**" />
-        <None Include="**/*.tres"
-              Exclude=".godot/**" />
-        <None Include="**/*.gdshader"
-              Exclude=".godot/**" />
-        <None Include="**/*.png"
-              Exclude=".godot/**" />
-        <None Include="**/*.svg"
-              Exclude=".godot/**" />
-        <None Include="**/*.import"
-              Exclude=".godot/**" />
-        <None Include="**/*.cfg"
-              Exclude=".godot/**" />
+        <None Include="**/*.tscn" Exclude=".godot/**" />
+        <None Include="**/*.tres" Exclude=".godot/**" />
+        <None Include="**/*.gdshader" Exclude=".godot/**" />
+        <None Include="**/*.png" Exclude=".godot/**" />
+        <None Include="**/*.svg" Exclude=".godot/**" />
+        <None Include="**/*.import" Exclude=".godot/**" />
+        <None Include="**/*.cfg" Exclude=".godot/**" />
         <None Include="project.godot" />
     </ItemGroup>
     <ItemGroup>

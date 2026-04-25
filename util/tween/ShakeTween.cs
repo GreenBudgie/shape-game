@@ -3,12 +3,12 @@ public class ShakeTween
     private Tween? _tween;
 
     // Configuration properties
-    private float _tiltDegDelta = 20f;
-    private float _maxTiltDeg = 45f;
-    private float _sizeDelta = 0.2f;
-    private float _maxSize = 1.6f;
-    private float _inTime = 0.08f;
-    private float _outTime = 0.2f;
+    private float _tiltDegDelta;
+    private float _maxTiltDeg;
+    private float _sizeDelta;
+    private float _maxSize;
+    private float _inTime;
+    private float _outTime;
 
     private float _positionShakeMagnitude;
     private float _sizeShakeMagnitude;
@@ -128,6 +128,17 @@ public class ShakeTween
     private ShakeTween DoPlay(CanvasItem target, Vector2 basePosition, float baseRotationDegrees, Vector2 baseScale)
     {
         _tween?.Kill();
+        _tween = null;
+
+        var animatesPosition = _positionShakeMagnitude > 0;
+        var animatesRotation = _tiltDegDelta != 0 || _rotationShakeMagnitude > 0;
+        var animatesScale = _sizeDelta != 0 || _sizeShakeMagnitude > 0;
+
+        if (!animatesPosition && !animatesRotation && !animatesScale)
+        {
+            return this;
+        }
+
         var tween = target.CreateTween().SetTrans(Tween.TransitionType.Sine);
         _tween = tween;
 
@@ -141,30 +152,47 @@ public class ShakeTween
 
         if (hasShake)
         {
-            PlayWithShake(tween, target, basePosition, baseRotationDegrees, baseScale, peakTilt, peakScaleFactor);
+            PlayWithShake(tween, target, basePosition, baseRotationDegrees, baseScale, peakTilt, peakScaleFactor,
+                animatesPosition, animatesRotation, animatesScale);
         }
         else
         {
-            PlayPunchOnly(tween, target, baseRotationDegrees, baseScale, peakTilt, peakScaleFactor);
+            PlayPunchOnly(tween, target, baseRotationDegrees, baseScale, peakTilt, peakScaleFactor,
+                animatesRotation, animatesScale);
         }
 
         return this;
     }
 
-    private void PlayPunchOnly(Tween tween, CanvasItem target, float baseRotationDegrees, Vector2 baseScale, float peakTilt, float peakScaleFactor)
+    private void PlayPunchOnly(Tween tween, CanvasItem target, float baseRotationDegrees, Vector2 baseScale, float peakTilt, float peakScaleFactor,
+        bool animatesRotation, bool animatesScale)
     {
-        tween.TweenProperty(target, RotationDegreesProperty, peakTilt, _inTime)
-            .SetEase(Tween.EaseType.In);
-        tween.Parallel().TweenProperty(target, ScaleProperty, new Vector2(peakScaleFactor, peakScaleFactor), _inTime)
-            .SetEase(Tween.EaseType.In);
+        AddPunchPhase(tween, target, _inTime, Tween.EaseType.In,
+            animatesRotation, peakTilt,
+            animatesScale, new Vector2(peakScaleFactor, peakScaleFactor));
 
-        tween.TweenProperty(target, RotationDegreesProperty, baseRotationDegrees, _outTime)
-            .SetEase(Tween.EaseType.Out);
-        tween.Parallel().TweenProperty(target, ScaleProperty, baseScale, _outTime)
-            .SetEase(Tween.EaseType.Out);
+        AddPunchPhase(tween, target, _outTime, Tween.EaseType.Out,
+            animatesRotation, baseRotationDegrees,
+            animatesScale, baseScale);
     }
 
-    private void PlayWithShake(Tween tween, CanvasItem target, Vector2 basePosition, float baseRotationDegrees, Vector2 baseScale, float peakTilt, float peakScaleFactor)
+    private static void AddPunchPhase(Tween tween, CanvasItem target, float duration, Tween.EaseType ease,
+        bool animatesRotation, float rotationVal,
+        bool animatesScale, Vector2 scaleVal)
+    {
+        var isFirst = true;
+        if (animatesRotation)
+        {
+            AddProperty(tween, ref isFirst, target, RotationDegreesProperty, rotationVal, duration).SetEase(ease);
+        }
+        if (animatesScale)
+        {
+            AddProperty(tween, ref isFirst, target, ScaleProperty, scaleVal, duration).SetEase(ease);
+        }
+    }
+
+    private void PlayWithShake(Tween tween, CanvasItem target, Vector2 basePosition, float baseRotationDegrees, Vector2 baseScale, float peakTilt, float peakScaleFactor,
+        bool animatesPosition, bool animatesRotation, bool animatesScale)
     {
         var totalDuration = _inTime + _outTime;
         var steps = Max(4, RoundToInt(totalDuration * _shakeFrequencyHz));
@@ -189,28 +217,57 @@ public class ShakeTween
             // Shake intensity fades linearly so the motion settles as the punch resolves.
             var shakeIntensity = 1f - t;
 
-            var currentRotation = Lerp(baseRotationDegrees, peakTilt, punchEnvelope);
-            var currentScaleFactor = Lerp(baseScale.X, peakScaleFactor, punchEnvelope);
+            var isFirst = true;
 
-            var positionMagnitude = _positionShakeMagnitude * shakeIntensity;
-            var positionOffset = new Vector2(
-                RandomUtils.DeltaRange(0f, positionMagnitude),
-                RandomUtils.DeltaRange(0f, positionMagnitude)
-            );
-            var scaleOffset = RandomUtils.DeltaRange(0f, _sizeShakeMagnitude * shakeIntensity);
-            var rotationOffset = RandomUtils.DeltaRange(0f, _rotationShakeMagnitude * shakeIntensity);
+            if (animatesPosition)
+            {
+                var positionMagnitude = _positionShakeMagnitude * shakeIntensity;
+                var positionOffset = new Vector2(
+                    RandomUtils.DeltaRange(0f, positionMagnitude),
+                    RandomUtils.DeltaRange(0f, positionMagnitude)
+                );
+                AddProperty(tween, ref isFirst, target, PositionProperty, basePosition + positionOffset, stepDuration);
+            }
 
-            var stepScale = currentScaleFactor + scaleOffset;
+            if (animatesRotation)
+            {
+                var currentRotation = Lerp(baseRotationDegrees, peakTilt, punchEnvelope);
+                var rotationOffset = RandomUtils.DeltaRange(0f, _rotationShakeMagnitude * shakeIntensity);
+                AddProperty(tween, ref isFirst, target, RotationDegreesProperty, currentRotation + rotationOffset, stepDuration);
+            }
 
-            tween.TweenProperty(target, PositionProperty, basePosition + positionOffset, stepDuration);
-            tween.Parallel().TweenProperty(target, RotationDegreesProperty, currentRotation + rotationOffset, stepDuration);
-            tween.Parallel().TweenProperty(target, ScaleProperty, new Vector2(stepScale, stepScale), stepDuration);
+            if (animatesScale)
+            {
+                var currentScaleFactor = Lerp(baseScale.X, peakScaleFactor, punchEnvelope);
+                var scaleOffset = RandomUtils.DeltaRange(0f, _sizeShakeMagnitude * shakeIntensity);
+                var stepScale = currentScaleFactor + scaleOffset;
+                AddProperty(tween, ref isFirst, target, ScaleProperty, new Vector2(stepScale, stepScale), stepDuration);
+            }
         }
 
         // Snap cleanly back to the base values so repeated plays don't drift.
-        tween.TweenProperty(target, PositionProperty, basePosition, stepDuration);
-        tween.Parallel().TweenProperty(target, RotationDegreesProperty, baseRotationDegrees, stepDuration);
-        tween.Parallel().TweenProperty(target, ScaleProperty, baseScale, stepDuration);
+        var snapFirst = true;
+        if (animatesPosition)
+        {
+            AddProperty(tween, ref snapFirst, target, PositionProperty, basePosition, stepDuration);
+        }
+        if (animatesRotation)
+        {
+            AddProperty(tween, ref snapFirst, target, RotationDegreesProperty, baseRotationDegrees, stepDuration);
+        }
+        if (animatesScale)
+        {
+            AddProperty(tween, ref snapFirst, target, ScaleProperty, baseScale, stepDuration);
+        }
+    }
+
+    private static PropertyTweener AddProperty(Tween tween, ref bool isFirst, GodotObject target, NodePath property, Variant finalVal, float duration)
+    {
+        var tweener = isFirst
+            ? tween.TweenProperty(target, property, finalVal, duration)
+            : tween.Parallel().TweenProperty(target, property, finalVal, duration);
+        isFirst = false;
+        return tweener;
     }
 
 }

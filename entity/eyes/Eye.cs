@@ -34,7 +34,7 @@ public partial class Eye : Node2D
         _controller.EyeOwner.AddChild(_followTarget);
         _followTarget.GlobalPosition = GlobalPosition;
 
-        Reparent(ShapeGame.Instance);
+        _virtualGlobalPosition = GlobalPosition;
     }
 
     public override void _Process(double delta)
@@ -81,14 +81,20 @@ public partial class Eye : Node2D
 
     private float _velocity;
 
+    // Tracks the eye's lagged position in global space, independent of the
+    // parent's transform. Each frame the parent's transform pulls the eye's
+    // GlobalPosition along with it; we overwrite it with this value so the
+    // lag behavior survives without reparenting (which would break draw order).
+    private Vector2 _virtualGlobalPosition;
+
     private void DoFollowTarget()
     {
         _eyeball.GlobalRotation = _controller.GlobalRotation;
-        
+
         const float velocityDecreaseFactor = 0.85f;
         _velocity *= velocityDecreaseFactor;
 
-        var distance = GlobalPosition.DistanceTo(_followTarget.GlobalPosition);
+        var distance = _virtualGlobalPosition.DistanceTo(_followTarget.GlobalPosition);
 
         const float followSpeedIncrease = 0.1f;
         const float maxVelocity = 1000;
@@ -96,7 +102,8 @@ public partial class Eye : Node2D
         var increase = Min(maxVelocity, distance * followSpeedIncrease);
         _velocity += increase;
 
-        GlobalPosition = GlobalPosition.MoveToward(_followTarget.GlobalPosition, _velocity);
+        _virtualGlobalPosition = _virtualGlobalPosition.MoveToward(_followTarget.GlobalPosition, _velocity);
+        GlobalPosition = _virtualGlobalPosition;
     }
 
     private void DoMovePupil()
