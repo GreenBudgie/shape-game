@@ -25,7 +25,7 @@ public partial class EnemyManager : Node
     [Signal]
     public delegate void EnemyDestroyedEventHandler(Enemy enemy);
     
-    public bool EnemiesDropCrystals { get; set; } = false;
+    public bool EnemiesDropCrystals { get; set; } = true;
 
     public EnemyManager()
     {

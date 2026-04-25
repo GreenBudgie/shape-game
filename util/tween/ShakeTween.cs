@@ -15,6 +15,10 @@ public class ShakeTween
     private float _rotationShakeMagnitude;
     private float _shakeFrequencyHz = 30f;
 
+    private Vector2 _initialPosition;
+    private float _initialRotationDegrees;
+    private Vector2 _initialScale;
+
     public static ShakeTween From(ShakeTween other)
     {
         return new ShakeTween
@@ -117,11 +121,25 @@ public class ShakeTween
 
     public ShakeTween Play(Node2D target)
     {
+        if (_tween != null)
+        {
+            target.Position = _initialPosition;
+            target.RotationDegrees = _initialRotationDegrees;
+            target.Scale = _initialScale;
+        }
+        
         return DoPlay(target, target.Position, target.RotationDegrees, target.Scale);
     }
 
     public ShakeTween Play(Control target)
     {
+        if (_tween != null)
+        {
+            target.Position = _initialPosition;
+            target.RotationDegrees = _initialRotationDegrees;
+            target.Scale = _initialScale;
+        }
+        
         return DoPlay(target, target.Position, target.RotationDegrees, target.Scale);
     }
 
@@ -138,6 +156,10 @@ public class ShakeTween
         {
             return this;
         }
+
+        _initialPosition = basePosition;
+        _initialRotationDegrees = baseRotationDegrees;
+        _initialScale = baseScale;
 
         var tween = target.CreateTween().SetTrans(Tween.TransitionType.Sine);
         _tween = tween;
