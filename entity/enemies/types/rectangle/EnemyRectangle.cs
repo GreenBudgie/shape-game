@@ -26,7 +26,7 @@ public partial class EnemyRectangle : Enemy
         var projectileSpawnPositionsNode = GetNode("ProjectileSpawnPositions");
         _projectileSpawns = projectileSpawnPositionsNode.GetChildren()
             .OfType<Marker2D>()
-            .Select(node => new ProjectileSpawn(node.GetPosition()))
+            .Select(node => new ProjectileSpawn(node))
             .ToList();
     }
 
@@ -134,14 +134,13 @@ public partial class EnemyRectangle : Enemy
         }
 
         var randomSpawn = availableProjectileSpawns.GetRandom();
-        var projectile = EnemyRectangleProjectilePreview.Create(this);
-        projectile.Position = randomSpawn.Position;
-        AddChild(projectile);
-        randomSpawn.ProjectilePreview = projectile;
+        var projectilePreview = EnemyRectangleProjectilePreview.Create(this);
+        randomSpawn.Node.AddChild(projectilePreview);
+        randomSpawn.ProjectilePreview = projectilePreview;
 
         var totalSpawns = _projectileSpawns.Count;
         var pitch = 1 + (totalSpawns - availableProjectileSpawns.Count) * PitchPerProjectileSpawn;
-        var sound = SoundManager.Instance.PlayPositionalSound(projectile, _chargeSound);
+        var sound = SoundManager.Instance.PlayPositionalSound(projectilePreview, _chargeSound);
         sound.PitchScale = RandomUtils.DeltaRange(pitch, 0.05f);
 
         _nextProjectileChargeTime = ProjectileChargeDelay;
@@ -187,7 +186,7 @@ public partial class EnemyRectangle : Enemy
         const float impulseStrengthDelta = 100f;
         var impulseStrength = RandomUtils.DeltaRange(midImpulseStrength, impulseStrengthDelta);
         var impulse = Vector2.FromAngle(Rotation - Pi / 2) * impulseStrength;
-        ApplyImpulse(impulse, randomSpawn.Position);
+        ApplyImpulse(impulse, randomSpawn.Node.Position);
 
         var pitch = 1 + availableProjectileSpawns.Count * PitchPerProjectileSpawn;
         var sound = SoundManager.Instance.PlayPositionalSound(projectile, _launchSound);
@@ -198,9 +197,9 @@ public partial class EnemyRectangle : Enemy
 
     private static float RandomFireDelay() => RandomUtils.DeltaRange(FireDelay, FireDelayDelta);
 
-    private class ProjectileSpawn(Vector2 position)
+    private class ProjectileSpawn(Node2D node)
     {
-        public Vector2 Position { get; } = position;
+        public Node2D Node { get; } = node;
         public EnemyRectangleProjectilePreview? ProjectilePreview { get; set; }
     }
 
