@@ -107,7 +107,7 @@ public partial class Explosion : ShapeCast2D
         }
 
         const float maxStrength = 2000f;
-        var strength = GetEffectRadiusRatio() * maxStrength;
+        var strength = Clamp(Sqrt(GetEffectRadiusRatio()), 0.1f, 1) * maxStrength;
         for (var i = 0; i < GetCollisionCount(); i++)
         {
             var collider = GetCollider(i);
@@ -119,8 +119,8 @@ public partial class Explosion : ShapeCast2D
             var bodyPosition = body.ToGlobal(body.CenterOfMass);
             var direction = GlobalPosition.DirectionTo(bodyPosition);
             var distance = GlobalPosition.DistanceTo(bodyPosition);
-            var relativeStrength = 1f - Clamp(distance / _radius, 0, 1);
-            body.ApplyCentralImpulse(direction * strength * relativeStrength);
+            var relativeStrength = 1f - Clamp(Sqrt(distance / _radius), 0.1f, 1);
+            body.ApplyCentralImpulse(direction * (strength * relativeStrength));
 
             if (body is Enemy enemy)
             {

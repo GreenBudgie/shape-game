@@ -71,4 +71,4 @@ position = Vector2(40, 50)
 position = Vector2(-40, 50)
 
 [node name="HealthController" parent="." unique_id=695144963 instance=ExtResource("12_br6ys")]
-MaxHealth = 5.0
+MaxHealth = 1000.0

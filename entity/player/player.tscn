@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/eyes/eyes_controller.tscn" id="3_482rp"]
 [ext_resource type="Script" uid="uid://4vsmmdvy62y" path="res://entity/eyes/target/NearestEnemyEyeTargetStrategy.cs" id="4_bgq54"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_482rp"]
+friction = 0.0
+
 [sub_resource type="Resource" id="Resource_wjhpj"]
 script = ExtResource("4_bgq54")
 metadata/_custom_type_script = "uid://4vsmmdvy62y"
@@ -13,9 +16,13 @@ metadata/_custom_type_script = "uid://4vsmmdvy62y"
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_rkbax"]
 points = PackedVector2Array(0, -46, -8, -42, -48, 38, -48, 48, -42, 54, 42, 54, 48, 48, 48, 38, 8, -42)
 
-[node name="Player" type="CharacterBody2D" unique_id=1343007953]
+[node name="Player" type="RigidBody2D" unique_id=379332115]
 collision_mask = 228
-motion_mode = 1
+mass = 0.2
+physics_material_override = SubResource("PhysicsMaterial_482rp")
+gravity_scale = 0.0
+lock_rotation = true
+linear_damp = 40.0
 script = ExtResource("1_3uijo")
 
 [node name="PlayerSprite" type="Sprite2D" parent="." unique_id=215823694]
@@ -38,7 +45,6 @@ position = Vector2(0, 4)
 polygon = PackedVector2Array(0, -54, -10, -48, -52, 36, -52, 46, -44, 52, 44, 52, 52, 46, 52, 36, 10, -48)
 
 [node name="AudioListener2D" type="AudioListener2D" parent="." unique_id=520769267]
-current = true
 
 [node name="PlayerCollisionDetector" type="ShapeCast2D" parent="." unique_id=1904385299]
 editor_description = "This shape will be reparented to ShapeGame on player instantiation. Thinner shape is used to make collisions with bullets more fair. Only this shape cast is used to detect collisions with player."

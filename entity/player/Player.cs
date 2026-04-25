@@ -1,4 +1,4 @@
-public partial class Player : CharacterBody2D
+public partial class Player : RigidBody2D
 {
 
     private const int CornerDistance = 28;
@@ -70,8 +70,8 @@ public partial class Player : CharacterBody2D
         _playerCollisionDetector.GlobalPosition = GlobalPosition;
 
         var prevPosition = Position;
-        Velocity = mouseDelta * (float)(1 / delta);
-        MoveAndSlide();
+        var force = mouseDelta * 800;
+        ApplyCentralForce(force);
 
         var positionDelta = Position - prevPosition;
         var tiltDegrees = positionDelta.X * _tiltIncreaseFactor;
