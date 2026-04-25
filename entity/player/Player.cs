@@ -68,9 +68,9 @@ public partial class Player : RigidBody2D
 
     public override void _Process(double delta)
     {
+        Unstuck();
+        
         var mouseDelta = MouseInputManager.Instance.GetMouseDelta();
-
-        _playerCollisionDetector.GlobalPosition = GlobalPosition;
 
         var force = mouseDelta * 800;
         ApplyCentralForce(force);
@@ -78,11 +78,22 @@ public partial class Player : RigidBody2D
         var positionDelta = Position - _prevPosition;
         var tiltDegrees = positionDelta.X * _tiltIncreaseFactor;
         HandleTilt(delta, tiltDegrees);
-        _prevPosition = Position;
 
         RegisterPlayerCollisions();
+        _prevPosition = Position;
 
         HandleFire();
+    }
+
+    private void Unstuck()
+    {
+        if (ShapeGame.PlayableArea.HasPoint(GlobalPosition))
+        {
+            return;
+        }
+
+        GlobalPosition = _prevPosition;
+        LinearVelocity = Vector2.Zero;
     }
 
     private void HandleFire()
@@ -120,7 +131,8 @@ public partial class Player : RigidBody2D
     private void RegisterPlayerCollisions()
     {
         _playerCollisionDetector.Rotation = GetTilt();
-        _playerCollisionDetector.TargetPosition = _playerCollisionDetector.ToLocal(GlobalPosition);
+        _playerCollisionDetector.Position = _prevPosition;
+        _playerCollisionDetector.TargetPosition = Position;
         _playerCollisionDetector.ForceShapecastUpdate();
 
         if (!_playerCollisionDetector.IsColliding())
