@@ -6,8 +6,14 @@
 [ext_resource type="Script" uid="uid://begifej3i0bvt" path="res://debug/SpawnEnemiesContainer.cs" id="3_hkenb"]
 [ext_resource type="Script" uid="uid://dahow1pmow0ma" path="res://debug/CrystalsContainer.cs" id="3_jlxhc"]
 [ext_resource type="Script" uid="uid://csfvrwiucijmg" path="res://debug/KillEnemiesButton.cs" id="3_met78"]
+[ext_resource type="Script" uid="uid://bky84engq1qml" path="res://debug/PlayerInvulnerableButton.cs" id="5_gpkic"]
+[ext_resource type="Script" uid="uid://lr71vo861as7" path="res://debug/PlayerFullHealButton.cs" id="5_y04nl"]
+[ext_resource type="Script" uid="uid://uc6qlsktbvo" path="res://debug/PlayerDestroyButton.cs" id="6_hgsmx"]
 [ext_resource type="Script" uid="uid://6fqtqpegp1lq" path="res://debug/RemoveEnemiesButton.cs" id="7_o5fu4"]
+[ext_resource type="Script" uid="uid://bqpqr8l2a5dhr" path="res://debug/PlayerHealContainer.cs" id="8_20jdb"]
 [ext_resource type="Script" uid="uid://dx6pfytmjj2bb" path="res://debug/StopEnemySpawnButton.cs" id="8_o5fu4"]
+[ext_resource type="Script" uid="uid://vt7okfs2ogm3" path="res://debug/PlayerDamageContainer.cs" id="9_6gkk3"]
+[ext_resource type="Script" uid="uid://dmysiou2hms64" path="res://debug/PlayerRespawnButton.cs" id="10_sx7eh"]
 
 [node name="DebugScreen" type="CanvasLayer" unique_id=1374611125]
 script = ExtResource("1_pwcox")
@@ -56,6 +62,44 @@ horizontal_alignment = 1
 layout_mode = 2
 script = ExtResource("3_jlxhc")
 metadata/_edit_group_ = true
+
+[node name="PlayerContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=1391801580]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=1372311989]
+layout_mode = 2
+text = "Player"
+horizontal_alignment = 1
+
+[node name="PlayerInvulnerableButton" type="Button" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=519562282]
+layout_mode = 2
+text = "Invulnerable: OFF"
+script = ExtResource("5_gpkic")
+
+[node name="PlayerFullHealButton" type="Button" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=394383427]
+layout_mode = 2
+text = "Full Heal"
+script = ExtResource("5_y04nl")
+
+[node name="PlayerDestroyButton" type="Button" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=474116841]
+layout_mode = 2
+text = "Destroy"
+script = ExtResource("6_hgsmx")
+
+[node name="PlayerHealContainer" type="HBoxContainer" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=1595643798]
+layout_mode = 2
+alignment = 1
+script = ExtResource("8_20jdb")
+
+[node name="PlayerDamageContainer" type="HBoxContainer" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=269927451]
+layout_mode = 2
+alignment = 1
+script = ExtResource("9_6gkk3")
+
+[node name="PlayerRespawnButton" type="Button" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=260724211]
+layout_mode = 2
+text = "Respawn"
+script = ExtResource("10_sx7eh")
 
 [node name="OtherContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=1829825654]
 layout_mode = 2

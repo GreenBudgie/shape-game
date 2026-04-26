@@ -23,7 +23,11 @@ public partial class Player : RigidBody2D
      */
     private const double RotationDegreesEpsilon = 0.3;
     
+    private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bw1n7eocfhsbo");
+    
     private static Player? _instance;
+    
+    private static int _lastIndex = -1;
 
     public HealthController HealthController { get; private set; } = null!;
 
@@ -40,6 +44,19 @@ public partial class Player : RigidBody2D
         return _instance;
     }
 
+    public static void Respawn()
+    {
+        if (_instance != null)
+        {
+            return;
+        }
+
+        var newPlayer = Scene.Instantiate<Player>();
+        newPlayer.GlobalPosition = ShapeGame.Center;
+        ShapeGame.Instance.AddChild(newPlayer);
+        ShapeGame.Instance.MoveChild(newPlayer, _lastIndex);
+    }
+
     public override void _EnterTree()
     {
         _instance = this;
@@ -47,6 +64,8 @@ public partial class Player : RigidBody2D
 
     public override void _ExitTree()
     {
+        _lastIndex = GetIndex();
+        _playerCollisionDetector.QueueFree();
         _instance = null;
     }
 
@@ -64,12 +83,14 @@ public partial class Player : RigidBody2D
         Callable.From(SetupCollisionDetector).CallDeferred();
         
         _glowWrapper = GetNode<GlowWrapper>("GlowWrapper")
-            .SetColor(ColorScheme.Player)
+            .SetColor(ColorScheme.LightBlueGreen)
             .SetStrength(0)
             .SetRadius(0)
             .EnablePulsing();
 
         _prevPosition = Position;
+
+        HealthController.DestroyAnimationFinished += QueueFree;
     }
 
     private void SetupCollisionDetector()

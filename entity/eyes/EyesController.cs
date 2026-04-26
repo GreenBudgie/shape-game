@@ -4,19 +4,19 @@ using System.Linq;
 
 public partial class EyesController : Node2D
 {
-    
     public Vector2? LookTarget { get; private set; }
     public HealthController? OwnerHealthController { get; private set; }
 
     private List<Eye> _eyes = null!;
 
     [Export] public Node2D EyeOwner { get; private set; } = null!;
-    
+
     /**
      * Might be null. If not set, EyeOwner is used instead
      */
-    [Export] public Node2D? EyeOwnerSprite { get; private set; }
-    
+    [Export]
+    public Node2D? EyeOwnerSprite { get; private set; }
+
     [Export] public EyeTargetStrategy TargetStrategy { get; private set; } = new PlayerEyeTargetStrategy();
 
     /**
@@ -33,7 +33,7 @@ public partial class EyesController : Node2D
 
         if (OwnerHealthController != null)
         {
-            OwnerHealthController.Damaged += OnDamage;
+            OwnerHealthController.HealthChanged += OnHealthChange;
             OwnerHealthController.Destroyed += OnDestroy;
         }
     }
@@ -44,20 +44,25 @@ public partial class EyesController : Node2D
         {
             return;
         }
-        
-        OwnerHealthController.Damaged -= OnDamage;
+
+        OwnerHealthController.HealthChanged -= OnHealthChange;
         OwnerHealthController.Destroyed -= OnDestroy;
     }
 
-    private void OnDamage(float damage)
+    private void OnHealthChange(float delta)
     {
+        if (delta >= 0)
+        {
+            return;
+        }
+
         foreach (var eye in _eyes)
         {
             eye.SwitchTexture(EyeTextures.Damaged);
             eye.Shake();
         }
     }
-    
+
     private void OnDestroy()
     {
         foreach (var eye in _eyes)
@@ -92,10 +97,9 @@ public partial class EyesController : Node2D
 
         return EyeOwner;
     }
-    
+
     private void UpdateLookTarget()
     {
         LookTarget = TargetStrategy.GetTarget(this);
     }
-    
 }

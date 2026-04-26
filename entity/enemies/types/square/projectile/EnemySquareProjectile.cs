@@ -35,7 +35,7 @@
 
     public void CollideWithPlayer(Player player)
     {
-        player.HealthController.Damage(2);
+        player.HealthController.ChangeHealth(2);
         QueueFree();
     }
 
