@@ -61,6 +61,27 @@ public partial class HealthController : Node2D
         ChangeHealth(MaxHealth - Health);
     }
 
+    /**
+     * Inflicts a specified amount of damage. Negative damage means healing.
+     * The same as ChangeHealth(-damage), but more convenient to use since negation is not needed.
+     */
+    public void Damage(float damage)
+    {
+        ChangeHealth(-damage);
+    }
+
+    /**
+     * Heals by specified amount. Negative healing means damage.
+     * The same as ChangeHealth(heal), but more readable in some situations.
+     */
+    public void Heal(float heal)
+    {
+        ChangeHealth(heal);
+    }
+
+    /**
+     * Changes health by delta, plays effects and sound. Negative delta is considered damage, positive - healing.
+     */
     public void ChangeHealth(float delta)
     {
         if (IsDestroyed())

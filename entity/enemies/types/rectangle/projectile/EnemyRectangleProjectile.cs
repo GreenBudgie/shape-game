@@ -45,7 +45,7 @@ public partial class EnemyRectangleProjectile : RigidBody2D, IPlayerCollisionDet
 
     public void CollideWithPlayer(Player player)
     {
-        player.HealthController.ChangeHealth(5);
+        player.HealthController.Damage(5);
         QueueFree();
     }
     

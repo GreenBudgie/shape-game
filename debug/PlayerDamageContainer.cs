@@ -32,6 +32,6 @@ public partial class PlayerDamageContainer : HBoxContainer
 
     private void Damage(float amount)
     {
-        Player.FindPlayer()?.HealthController.ChangeHealth(-amount);
+        Player.FindPlayer()?.HealthController.Damage(amount);
     }
 }

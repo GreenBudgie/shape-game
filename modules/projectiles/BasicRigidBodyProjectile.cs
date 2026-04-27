@@ -40,7 +40,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
 
     private void OnCollideWithEnemy(Enemy enemy)
     {
-        enemy.HealthController.ChangeHealth(Context.CalculateStat<DamageStat>());
+        enemy.HealthController.Damage(Context.CalculateStat<DamageStat>());
     }
 
     private void OnLeavePierceableObject(CollisionObject2D collisionObject)
@@ -81,7 +81,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjec
             return;
         }
 
-        HealthController.GetHealthControllerIfExists(collisionObject2D)?.ChangeHealth(Context.CalculateStat<DamageStat>());
+        HealthController.GetHealthControllerIfExists(collisionObject2D)?.Damage(Context.CalculateStat<DamageStat>());
 
         if (ObstaclesToPierce <= 0)
         {

@@ -69,7 +69,7 @@ public partial class EnemyRhombusProjectile : RigidBody2D, IPlayerCollisionDetec
 
     public void CollideWithPlayer(Player player)
     {
-        player.HealthController.ChangeHealth(3);
+        player.HealthController.Damage(3);
         QueueFree();
     }
 

@@ -122,7 +122,7 @@ public partial class Explosion : ShapeCast2D
             var relativeStrength = 1f - Clamp(Sqrt(distance / _radius), 0.1f, 1);
             body.ApplyCentralImpulse(direction * (strength * relativeStrength));
 
-            HealthController.GetHealthControllerIfExists(body)?.ChangeHealth(_damage);
+            HealthController.GetHealthControllerIfExists(body)?.Damage(-_damage);
         }
 
         QueueFree();
