@@ -15,9 +15,6 @@ public partial class HealthController : Node2D
     [Export] private GlowWrapper? _glowWrapper;
     [Export] private CollisionShape2D _damageLabelSpawnArea = null!;
 
-    [ExportGroup("Sounds")] [Export] protected AudioStream DamageSound = null!;
-    [Export] protected AudioStream DestroySound = null!;
-
     /// <summary>
     /// Health, always between 0 and MaxHealth
     /// </summary>
@@ -119,15 +116,14 @@ public partial class HealthController : Node2D
         }
         else
         {
-            PlayHealEffect();
+            PlayHealEffect(dangerLevel);
         }
     }
 
-    private void PlayHealEffect()
+    private void PlayHealEffect(float dangerLevel)
     {
-        // TODO heal sound
-        // var sound = SoundManager.Instance.PlayPositionalSound(this, DamageSound);
-        // sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
+        var sound = SoundManager.Instance.PlayPositionalSound(this, HealthSounds.HealSound);
+        sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
 
         if (_sprite == null)
         {
@@ -161,7 +157,7 @@ public partial class HealthController : Node2D
 
     private void PlayDamageEffect(float dangerLevel)
     {
-        var sound = SoundManager.Instance.PlayPositionalSound(this, DamageSound);
+        var sound = SoundManager.Instance.PlayPositionalSound(this, HealthSounds.DamageSound);
         sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
 
         if (_sprite == null)
@@ -206,7 +202,7 @@ public partial class HealthController : Node2D
         Health = 0;
         EmitSignalDestroyed();
 
-        SoundManager.Instance.PlayPositionalSound(this, DestroySound);
+        SoundManager.Instance.PlayPositionalSound(this, HealthSounds.DestroySound);
         const float duration = 0.4f;
 
         if (_glowWrapper != null)

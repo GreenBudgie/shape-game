@@ -8,8 +8,8 @@
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="3_t2ln0"]
 [ext_resource type="Script" uid="uid://4vsmmdvy62y" path="res://entity/eyes/target/NearestEnemyEyeTargetStrategy.cs" id="4_bgq54"]
 [ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/health/health_controller.tscn" id="6_wjhpj"]
-[ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://entity/damage.wav" id="9_qa8rf"]
-[ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://entity/destroy.wav" id="10_klmji"]
+[ext_resource type="AudioStream" uid="uid://b47qx4ugt6uvo" path="res://entity/health/sound/damage.wav" id="9_qa8rf"]
+[ext_resource type="AudioStream" uid="uid://dtoakvenjnm2h" path="res://entity/health/sound/destroy.wav" id="10_klmji"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_482rp"]
 friction = 0.0
