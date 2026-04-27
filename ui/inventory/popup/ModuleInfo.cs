@@ -51,7 +51,7 @@ public partial class ModuleInfo : Control
 
     public override void _Process(double delta)
     {
-        if (_isRemoving)
+        if (_isRemoving || !InventoryManager.Instance.IsOpen)
         {
             return;
         }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://csoad8g8f13qn"]
+[gd_scene format=3 uid="uid://csoad8g8f13qn"]
 
 [ext_resource type="Texture2D" uid="uid://bq4acwsx0reoh" path="res://modules/types/projectile/bolt/bolt_module.png" id="1_bnolh"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/UiModule.cs" id="1_hkxgl"]
@@ -10,7 +10,7 @@ shader = ExtResource("1_pprc0")
 shader_parameter/stretch_amount = 0.0
 shader_parameter/stretch_direction = Vector2(1, 0)
 
-[node name="UiModule" type="Sprite2D"]
+[node name="UiModule" type="Sprite2D" unique_id=780862339]
 material = SubResource("ShaderMaterial_mhdu2")
 texture = ExtResource("1_bnolh")
 script = ExtResource("1_hkxgl")

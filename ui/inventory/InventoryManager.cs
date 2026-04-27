@@ -200,19 +200,10 @@ public partial class InventoryManager : Control
         Input.MouseMode = Input.MouseModeEnum.Visible;
         Visible = true;
         IsOpen = true;
-        foreach (var child in GetChildren())
-        {
-            child.ProcessMode = ProcessModeEnum.Inherit;
-        }
 
         _alphaTween?.Kill();
         _alphaTween = CreateTween();
-        _alphaTween.TweenProperty(
-            @object: this,
-            property: ModulateProperty,
-            finalVal: Colors.White,
-            duration: FadeDuration
-        );
+        _alphaTween.FadeIn(this, FadeDuration);
 
         EmitSignalInventoryOpened();
     }
@@ -225,21 +216,12 @@ public partial class InventoryManager : Control
         }
 
         IsOpen = false;
-        foreach (var child in GetChildren())
-        {
-            child.ProcessMode = ProcessModeEnum.Disabled;
-        }
 
         if (Visible)
         {
             _alphaTween?.Kill();
             _alphaTween = CreateTween();
-            _alphaTween.TweenProperty(
-                @object: this,
-                property: ModulateProperty,
-                finalVal: Colors.Transparent,
-                duration: FadeDuration
-            );
+            _alphaTween.FadeOut(this, duration: FadeDuration);
             _alphaTween.Finished += FullyHide;
         }
         else

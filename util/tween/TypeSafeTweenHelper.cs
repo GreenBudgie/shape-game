@@ -58,4 +58,20 @@ public static class TypeSafeTweenHelper
         return tween.TweenProperty(node, ModulateAlphaProperty, finalVal, duration);
     }
     
+    /**
+     * Tweens alpha to 1
+     */
+    public static PropertyTweener FadeIn(this Tween tween, GodotObject node, float duration)
+    {
+        return tween.TweenAlpha(node, 1f, duration);
+    }
+    
+    /**
+     * Tweens alpha to 0
+     */
+    public static PropertyTweener FadeOut(this Tween tween, GodotObject node, float duration)
+    {
+        return tween.TweenAlpha(node, 0f, duration);
+    }
+    
 }

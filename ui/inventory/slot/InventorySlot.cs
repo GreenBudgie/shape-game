@@ -49,6 +49,12 @@ public partial class InventorySlot : TextureButton
     
     public override void _Process(double delta)
     {
+        if (!InventoryManager.Instance.IsOpen)
+        {
+            _glow.TurnOff();
+            return;
+        }
+        
         if (IsHovered() || IsPressed())
         {
             return;
@@ -158,7 +164,7 @@ public partial class InventorySlot : TextureButton
 
         _glowTween.TweenProperty(
             @object: _glow,
-            property: IGlow.StrengthPath,
+            property: IGlow.StrengthProperty,
             finalVal: ButtonDownGlowStrength,
             duration: ButtonDownTweenDuration
         );
@@ -184,7 +190,7 @@ public partial class InventorySlot : TextureButton
 
         _glowTween.TweenProperty(
             @object: _glow,
-            property: IGlow.StrengthPath,
+            property: IGlow.StrengthProperty,
             finalVal: GlowHoverStrength,
             duration: ButtonUpTweenDuration
         );
@@ -220,13 +226,13 @@ public partial class InventorySlot : TextureButton
 
         _glowTween.TweenProperty(
             @object: _glow,
-            property: IGlow.StrengthPath,
+            property: IGlow.StrengthProperty,
             finalVal: GlowHoverStrength,
             duration: GlowHoverTweenDuration
         );
         _glowTween.Parallel().TweenProperty(
             @object: _glow,
-            property: IGlow.RadiusPath,
+            property: IGlow.RadiusProperty,
             finalVal: GlowHoverRadius,
             duration: GlowHoverTweenDuration
         );
@@ -258,13 +264,13 @@ public partial class InventorySlot : TextureButton
 
         _glowTween.TweenProperty(
             @object: _glow,
-            property: IGlow.StrengthPath,
+            property: IGlow.StrengthProperty,
             finalVal: 0,
             duration: GlowUnhoverTweenDuration
         );
         _glowTween.Parallel().TweenProperty(
             @object: _glow,
-            property: IGlow.RadiusPath,
+            property: IGlow.RadiusProperty,
             finalVal: 0,
             duration: GlowUnhoverTweenDuration
         );

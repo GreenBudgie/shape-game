@@ -83,7 +83,7 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(QueueFree));
 
         CreateTween()
-            .TweenProperty(_glowWrapper, IGlow.RadiusPath, 100, fuseTime)
+            .TweenProperty(_glowWrapper, IGlow.RadiusProperty, 100, fuseTime)
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.In);
 

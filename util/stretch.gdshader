@@ -3,6 +3,12 @@ shader_type canvas_item;
 uniform float stretch_amount : hint_range(0.0, 2.0) = 0.0;
 uniform vec2 stretch_direction = vec2(1.0, 0.0);
 
+varying vec4 modulate_color;
+
+void vertex() {
+    modulate_color = COLOR;
+}
+
 void fragment() {
     // Normalize the stretch direction
     vec2 normalized_direction = normalize(stretch_direction);
@@ -32,6 +38,6 @@ void fragment() {
     if (stretched_uv.x < 0.0 || stretched_uv.x > 1.0 || stretched_uv.y < 0.0 || stretched_uv.y > 1.0) {
         COLOR = vec4(0.0, 0.0, 0.0, 0.0); // Transparent outside bounds
     } else {
-        COLOR = texture(TEXTURE, stretched_uv);
+        COLOR = texture(TEXTURE, stretched_uv) * modulate_color;
     }
 }

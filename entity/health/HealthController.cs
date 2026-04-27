@@ -139,7 +139,7 @@ public partial class HealthController : Node2D
         _healthTween.TweenScale(_sprite, 1.2f, inDuration)
             .SetEase(Tween.EaseType.Out);
         _healthTween.Parallel()
-            .TweenRotationDegrees(_sprite, 30f, inDuration)
+            .TweenRotationDegrees(_sprite, 20f, inDuration)
             .SetEase(Tween.EaseType.Out);
         _healthTween.Parallel()
             .TweenModulate(_sprite, Colors.LightGreen * 5f, inDuration)

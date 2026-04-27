@@ -4,8 +4,9 @@
 public interface IGlow
 {
     
-    public static readonly NodePath StrengthPath = "Strength";
-    public static readonly NodePath RadiusPath = "Radius";
+    public static readonly NodePath ColorProperty = "Color";
+    public static readonly NodePath StrengthProperty = "Strength";
+    public static readonly NodePath RadiusProperty = "Radius";
     
     Color Color { get; set; }
     float Radius { get; set; }

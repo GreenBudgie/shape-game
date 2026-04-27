@@ -111,14 +111,14 @@ public class GlowTween
         var cappedStrength = Min(target.Strength + _strengthDelta, _maxStrength);
         var cappedRadius = Min(target.Radius + _radiusDelta, _maxRadius);
 
-        _tween.TweenProperty(target, IGlow.StrengthPath, cappedStrength, _inTime)
+        _tween.TweenProperty(target, IGlow.StrengthProperty, cappedStrength, _inTime)
             .SetEase(Tween.EaseType.Out);
-        _tween.Parallel().TweenProperty(target, IGlow.RadiusPath, cappedRadius, _inTime)
+        _tween.Parallel().TweenProperty(target, IGlow.RadiusProperty, cappedRadius, _inTime)
             .SetEase(Tween.EaseType.Out);
 
-        _tween.TweenProperty(target, IGlow.StrengthPath, _minStrength, _outTime)
+        _tween.TweenProperty(target, IGlow.StrengthProperty, _minStrength, _outTime)
             .SetEase(Tween.EaseType.In);
-        _tween.Parallel().TweenProperty(target, IGlow.RadiusPath, _minRadius, _outTime)
+        _tween.Parallel().TweenProperty(target, IGlow.RadiusProperty, _minRadius, _outTime)
             .SetEase(Tween.EaseType.In);
 
         return this;

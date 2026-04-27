@@ -92,7 +92,7 @@ public partial class ShopModule : Control
         
         _glowTween.TweenProperty(
             @object: _glow,
-            property: IGlow.RadiusPath,
+            property: IGlow.RadiusProperty,
             finalVal: 30f,
             duration: TweenDuration
         );
@@ -126,7 +126,7 @@ public partial class ShopModule : Control
         
         _glowTween.TweenProperty(
             @object: _glow,
-            property: IGlow.RadiusPath,
+            property: IGlow.RadiusProperty,
             finalVal: 0f,
             duration: TweenDuration
         );
