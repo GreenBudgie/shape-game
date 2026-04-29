@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cw5lackk3gus7"]
+
+[ext_resource type="Script" uid="uid://gbg8imsjx4j4" path="res://entity/spawnables/static/explosion/ExplosionRadiusPreview.cs" id="1_15jhb"]
+
+[node name="ExplosionRadiusPreview" type="Node2D"]
+script = ExtResource("1_15jhb")

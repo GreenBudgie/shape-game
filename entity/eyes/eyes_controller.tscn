@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://bd4hml53bbpkn"]
-
-[ext_resource type="Script" uid="uid://c03omaee3tyov" path="res://entity/eyes/EyesController.cs" id="1_c8bwo"]
-
-[node name="EyesController" type="Node2D" unique_id=983799153]
-script = ExtResource("1_c8bwo")

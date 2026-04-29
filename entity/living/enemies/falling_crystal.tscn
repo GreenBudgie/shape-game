@@ -1,0 +1,219 @@
+[gd_scene format=3 uid="uid://bu4bb10k0x66d"]
+
+[ext_resource type="Texture2D" uid="uid://bf4gkg13wl2b8" path="res://entity/living/enemies/crystal.png" id="1_5v78r"]
+[ext_resource type="Script" uid="uid://j44h0xyk3xdr" path="res://entity/living/enemies/FallingCrystal.cs" id="1_qiyar"]
+[ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve/dissolve.gdshader" id="2_e1k7q"]
+[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="4_pd4ca"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_e1k7q"]
+friction = 0.0
+bounce = 0.5
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ylhy4"]
+noise_type = 4
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_igh3h"]
+noise = SubResource("FastNoiseLite_ylhy4")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e1k7q"]
+resource_local_to_scene = true
+shader = ExtResource("2_e1k7q")
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_igh3h")
+shader_parameter/dissolve_value = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e1k7q"]
+size = Vector2(40, 40)
+
+[sub_resource type="Animation" id="Animation_e1k7q"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:scale:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:material:shader_parameter/dissolve_value")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.1, 0, 0.1, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:modulate:r")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Sprite2D:modulate:g")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/5/type = "bezier"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Sprite2D:modulate:b")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/6/type = "bezier"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Sprite2D:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_gecfw"]
+resource_name = "collect"
+length = 0.2
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, 0, 0, 0, 0, 0.25, -0.1, 0, 0.1, 0),
+"times": PackedFloat32Array(0, 0.2)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:scale:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, 0, 0, 0, 0, 0.25, -0.1, 0, 0.1, 0),
+"times": PackedFloat32Array(0, 0.2)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:material:shader_parameter/dissolve_value")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.1, 0, 0.0333333, -0.426699, -0.000212357, -0.0987198, 0.216549, 0.1, 0),
+"times": PackedFloat32Array(0, 0.2)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:modulate:r")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Sprite2D:modulate:g")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/5/type = "bezier"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Sprite2D:modulate:b")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/6/type = "bezier"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Sprite2D:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.15, 0, 0.0666667, -0.255997, 0, -0.1, 0.0684289, 0.15, 0),
+"times": PackedFloat32Array(0, 0.2)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jqj6i"]
+_data = {
+&"RESET": SubResource("Animation_e1k7q"),
+&"collect": SubResource("Animation_gecfw")
+}
+
+[node name="FallingCrystal" type="RigidBody2D" unique_id=484131422 groups=["falling_crystals"]]
+collision_layer = 512
+collision_mask = 304
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_e1k7q")
+contact_monitor = true
+max_contacts_reported = 2
+script = ExtResource("1_qiyar")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1973219322]
+material = SubResource("ShaderMaterial_e1k7q")
+position = Vector2(0.5, 0.5)
+texture = ExtResource("1_5v78r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=54834143]
+visible = false
+shape = SubResource("RectangleShape2D_e1k7q")
+
+[node name="CrystalAnimations" type="AnimationPlayer" parent="." unique_id=1752858511]
+libraries/ = SubResource("AnimationLibrary_jqj6i")
+
+[node name="PointerArea" parent="." unique_id=444043203 node_paths=PackedStringArray("_target") instance=ExtResource("4_pd4ca")]
+_target = NodePath("..")
+_pointerColor = Color(0.95686275, 0.9098039, 0.4862745, 1)
+_showOnlyWhenMovingIn = false

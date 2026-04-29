@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://cgm0yfj1g1own"]
+
+[ext_resource type="Script" uid="uid://cyhfswbha1aoo" path="res://entity/spawnables/static/barrier/Barrier.cs" id="1_s4g7o"]
+[ext_resource type="AudioStream" uid="uid://bsgn7q80tqsqq" path="res://entity/spawnables/static/barrier/appear.wav" id="2_g8n68"]
+[ext_resource type="AudioStream" uid="uid://dhbep7xupvy65" path="res://entity/spawnables/static/barrier/disappear.wav" id="3_y6mjq"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_g8n68"]
+[ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://entity/spawnables/static/barrier/barrier.png" id="5_wc1s4"]
+[ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://util/particles/textures/particle_square.png" id="6_jtdx1"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_y6mjq"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_s4g7o"]
+friction = 0.5
+bounce = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g8n68"]
+resource_local_to_scene = true
+shader = ExtResource("6_y6mjq")
+shader_parameter/glow_color = Color(0.21176471, 0.94509804, 0.8039216, 1)
+shader_parameter/glow_radius = 12.0
+shader_parameter/glow_strength = 2.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_468xe"]
+radius = 15.0
+height = 450.0
+
+[sub_resource type="Curve" id="Curve_3nu1x"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.2105308, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_3qs30"]
+curve = SubResource("Curve_3nu1x")
+
+[sub_resource type="Curve" id="Curve_3qs30"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.46457982), -1.5534314, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_v3vkq"]
+curve = SubResource("Curve_3qs30")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3nu1x"]
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(220, 5, 1)
+angle_min = -179.99998
+angle_max = 180.00002
+spread = 180.0
+initial_velocity_min = 100.0
+initial_velocity_max = 150.0
+angular_velocity_min = -250.00002
+angular_velocity_max = 249.99998
+gravity = Vector3(0, 0, 0)
+scale_min = 0.25
+scale_max = 0.75
+scale_curve = SubResource("CurveTexture_v3vkq")
+alpha_curve = SubResource("CurveTexture_3qs30")
+
+[node name="Barrier" type="RigidBody2D" unique_id=1061993594]
+collision_layer = 16
+collision_mask = 1034
+mass = 10.0
+physics_material_override = SubResource("PhysicsMaterial_s4g7o")
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 10
+linear_damp = 5.0
+angular_damp = 3.0
+script = ExtResource("1_s4g7o")
+_appearSound = ExtResource("2_g8n68")
+_disappearSound = ExtResource("3_y6mjq")
+
+[node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_g8n68")]
+material = SubResource("ShaderMaterial_g8n68")
+
+[node name="Sprite2D" type="Sprite2D" parent="Glow" unique_id=210456309]
+texture = ExtResource("5_wc1s4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1242324373]
+visible = false
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_468xe")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=961573011]
+physics_interpolation_mode = 2
+modulate = Color(0.21176471, 0.94509804, 0.8039216, 1)
+show_behind_parent = true
+texture = ExtResource("6_jtdx1")
+lifetime = 0.5
+visibility_rect = Rect2(-225, -100, 450, 200)
+process_material = SubResource("ParticleProcessMaterial_3nu1x")

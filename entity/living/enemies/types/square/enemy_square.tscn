@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://csm3f5807x7i8"]
+
+[ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://entity/living/enemies/types/square/EnemySquare.cs" id="1_qo6cg"]
+[ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://entity/living/enemies/types/square/projectile/enemy_square_shot.wav" id="2_7g7p5"]
+[ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://entity/living/enemies/types/square/enemy_square.png" id="3_7g7p5"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_agby6"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_ebwh1"]
+[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="8_kaag5"]
+[ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/living/eyes/eyes_controller.tscn" id="11_imqh1"]
+[ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/living/health/health_controller.tscn" id="12_br6ys"]
+[ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/living/eyes/eye.tscn" id="12_imqh1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eovcw"]
+resource_local_to_scene = true
+shader = ExtResource("6_ebwh1")
+shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
+shader_parameter/glow_radius = 12.0
+shader_parameter/glow_strength = 2.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_igh3h"]
+size = Vector2(150, 150)
+
+[node name="EnemySquare" type="RigidBody2D" unique_id=288018146 node_paths=PackedStringArray("Area")]
+collision_layer = 4
+collision_mask = 291
+gravity_scale = 0.0
+linear_damp = 2.0
+script = ExtResource("1_qo6cg")
+_shotSound = ExtResource("2_7g7p5")
+Color = Color(0.223529, 0.627451, 0.929412, 1)
+Area = NodePath("Area")
+
+[node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_agby6")]
+material = SubResource("ShaderMaterial_eovcw")
+
+[node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1063206879]
+texture = ExtResource("3_7g7p5")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=790942501]
+visible = false
+polygon = PackedVector2Array(90, -68, 90, 68, 82, 82, 68, 90, -68, 90, -82, 82, -90, 68, -90, -68, -82, -82, -68, -90, 68, -90, 82, -82)
+
+[node name="Area" type="CollisionShape2D" parent="." unique_id=388238601]
+visible = false
+shape = SubResource("RectangleShape2D_igh3h")
+disabled = true
+one_way_collision_margin = 8.3
+
+[node name="Pointer" parent="." unique_id=760003558 node_paths=PackedStringArray("_target") instance=ExtResource("8_kaag5")]
+visible = false
+_target = NodePath("..")
+_pointerColor = Color(0.22352941, 0.627451, 0.92941177, 1)
+_showOnlyWhenMovingIn = false
+
+[node name="EyesController" parent="." unique_id=983799153 node_paths=PackedStringArray("EyeOwner", "EyeOwnerSprite") instance=ExtResource("11_imqh1")]
+EyeOwner = NodePath("..")
+EyeOwnerSprite = NodePath("../Glow/Sprite")
+
+[node name="Eye" parent="EyesController" unique_id=376233651 instance=ExtResource("12_imqh1")]
+position = Vector2(40, 50)
+
+[node name="Eye2" parent="EyesController" unique_id=804558170 instance=ExtResource("12_imqh1")]
+position = Vector2(-40, 50)
+
+[node name="HealthController" parent="." unique_id=695144963 node_paths=PackedStringArray("_sprite", "_glowWrapper", "_damageLabelSpawnArea") instance=ExtResource("12_br6ys")]
+MaxHealth = 10.0
+_sprite = NodePath("../Glow/Sprite")
+_glowWrapper = NodePath("../Glow")
+_damageLabelSpawnArea = NodePath("../Area")
