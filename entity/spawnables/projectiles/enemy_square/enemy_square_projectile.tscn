@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bhj8dgeytmpxx"]
+
+[ext_resource type="Script" uid="uid://r5s6weechulc" path="res://entity/spawnables/projectiles/enemy_square/EnemySquareProjectile.cs" id="1_jyvyp"]
+[ext_resource type="Texture2D" uid="uid://dklcu0esdul0h" path="res://entity/spawnables/projectiles/enemy_square/enemy_square_projectile.png" id="2_eu8a1"]
+[ext_resource type="AudioStream" uid="uid://8smltlch6lup" path="res://entity/spawnables/projectiles/enemy_square/enemy_square_projectile_hit_wall.wav" id="2_y3uyh"]
+[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="4_wxus7"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jyvyp"]
+friction = 0.5
+bounce = 0.5
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vpvkw"]
+size = Vector2(42, 42)
+
+[node name="EnemySquareProjectile" type="RigidBody2D"]
+collision_layer = 520
+collision_mask = 304
+physics_material_override = SubResource("PhysicsMaterial_jyvyp")
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 2
+script = ExtResource("1_jyvyp")
+_hitWallSound = ExtResource("2_y3uyh")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_eu8a1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_vpvkw")
+
+[node name="Pointer" parent="." node_paths=PackedStringArray("_target") instance=ExtResource("4_wxus7")]
+_target = NodePath("..")
+_pointerColor = Color(0.22352941, 0.627451, 0.92941177, 1)
+_showAbove = false

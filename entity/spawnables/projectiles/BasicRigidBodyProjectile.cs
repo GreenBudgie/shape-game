@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, IProjectile<T> where T : Node2D
+public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, ISpawnable<T> where T : Node2D
 {
     [Export] private AudioStream _wallHitSound = null!;
 
     public abstract T Node { get; }
 
-    protected ShotContext Context = null!;
+    protected SpawnableContext Context = null!;
     protected int ObstaclesToPierce;
 
     private Area2D? _piercingDetectionArea;
 
-    public void Prepare(ShotContext context)
+    public void Prepare(SpawnableContext context)
     {
         Context = context;
         ObstaclesToPierce = RoundToInt(context.CalculateStat<PiercingStat>());

@@ -75,7 +75,7 @@ public partial class ModuleInfo : Control
         return _scaleTween;
     }
 
-    private void AddStat(ModuleStat stat)
+    private void AddStat(SpawnableStat stat)
     {
         _statsContainer.AddStat(stat);
     }

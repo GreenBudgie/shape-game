@@ -1,5 +1,5 @@
 [GlobalClass, Icon(IconPath)]
-public partial class PiercingStat : ModuleStat
+public partial class PiercingStat : SpawnableStat
 {
     
     private const string IconPath = "uid://c216uw8unddjj";

@@ -1,7 +1,7 @@
-public abstract partial class ModifierModule : Module
+public abstract partial class ModifierModule : Module, ISpawnableModifier
 {
 
-    public virtual void Apply(ShotContext context)
+    public virtual void Modify(SpawnableContext context)
     {
     }
 

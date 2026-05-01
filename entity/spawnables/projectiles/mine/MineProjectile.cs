@@ -1,6 +1,6 @@
 using System.Linq;
 
-public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
+public partial class MineProjectile : RigidBody2D, ISpawnable<MineProjectile>
 {
     private static readonly Color OversaturatedWhite = new(4, 4, 4);
 
@@ -19,12 +19,12 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         return Scene.Instantiate<MineProjectile>();
     }
 
-    private ShotContext _context = null!;
+    private SpawnableContext _context = null!;
     private Explosion? _explosion;
     private GlowWrapper _glowWrapper = null!;
     private Sprite2D _sprite = null!;
 
-    public void Prepare(ShotContext context)
+    public void Prepare(SpawnableContext context)
     {
         _context = context;
     }
@@ -75,10 +75,22 @@ public partial class MineProjectile : RigidBody2D, IProjectile<MineProjectile>
         _isFused = true;
         const float fuseTime = 1f;
 
-        _explosion = Explosion.Create(this)
-            .SetDamage(_context.CalculateStat<ExplosionDamageStat>())
-            .SetRadius(_context.CalculateStat<ExplosionRadiusStat>())
-            .SetFuseTimeSeconds(fuseTime);
+        _explosion = Explosion.Create(this);
+        var explosionContext = new SpawnableContext(_explosion)
+        {
+            Position = this.GlobalPosition,
+            Source = this,
+            OriginalSource = _context.OriginalSource,
+        };
+
+        explosionContext.Stats.AddRange(_context.GetStats<ExplosionDamageStat>());
+        explosionContext.Stats.AddRange(_context.GetStats<ExplosionRadiusStat>());
+
+        var lifetimeStat = new LifetimeStat
+        {
+            Lifetime = fuseTime
+        };
+        explosionContext.Stats.Add(lifetimeStat);
 
         _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(QueueFree));
 

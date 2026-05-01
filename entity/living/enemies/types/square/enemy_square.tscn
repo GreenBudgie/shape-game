@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://csm3f5807x7i8"]
 
 [ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://entity/living/enemies/types/square/EnemySquare.cs" id="1_qo6cg"]
-[ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://entity/living/enemies/types/square/projectile/enemy_square_shot.wav" id="2_7g7p5"]
+[ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://entity/spawnables/projectiles/enemy_square/enemy_square_shot.wav" id="2_7g7p5"]
 [ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://entity/living/enemies/types/square/enemy_square.png" id="3_7g7p5"]
 [ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_agby6"]
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_ebwh1"]

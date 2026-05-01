@@ -1,4 +1,4 @@
-public partial class Barrier : RigidBody2D, IProjectile<Barrier>
+public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://cgm0yfj1g1own");
 
@@ -20,11 +20,10 @@ public partial class Barrier : RigidBody2D, IProjectile<Barrier>
 
     public static Barrier Create()
     {
-        var node = Scene.Instantiate<Barrier>();
-        return node;
+        return Scene.Instantiate<Barrier>();
     }
 
-    public void Prepare(ShotContext context)
+    public void Prepare(SpawnableContext context)
     {
         RotationDegrees = RandomUtils.DeltaRange(0, 15);
         

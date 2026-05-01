@@ -13,6 +13,7 @@
         <None Include="**/*.svg" Exclude=".godot/**" />
         <None Include="**/*.import" Exclude=".godot/**" />
         <None Include="**/*.cfg" Exclude=".godot/**" />
+        <None Include="**/*.wav" Exclude=".godot/**" />
         <None Include="project.godot" />
     </ItemGroup>
     <ItemGroup>

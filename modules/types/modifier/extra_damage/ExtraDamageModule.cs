@@ -2,14 +2,14 @@
 public partial class ExtraDamageModule : ModifierModule
 {
     
-    public override void Apply(ShotContext context)
+    public override void Modify(SpawnableContext context)
     {
         if (context.IsModifierTypeApplied<ExtraDamageModule>())
         {
             return;
         }
         
-        var projectile = context.Projectile.Node;
+        var projectile = context.Spawnable.Node;
         TrailParticles.Create(projectile)
             .WithTexture(ParticleTextures.Triangle)
             .WithScale(0.4f, 0.1f)

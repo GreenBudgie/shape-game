@@ -5,7 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://dcst5l714kycq" path="res://entity/spawnables/hit_wall.wav" id="3_q3r3b"]
 [ext_resource type="Texture2D" uid="uid://3dvamnyph43c" path="res://entity/spawnables/projectiles/mine/mine.png" id="4_h5gdj"]
 [ext_resource type="AudioStream" uid="uid://crvggub3a2u1b" path="res://entity/spawnables/projectiles/mine/mine_beep.wav" id="4_jya8t"]
-[ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://entity/spawnables/components/scenes/initial_impulse_component.tscn" id="5_2eq07"]
+[ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://entity/spawnables/components/initial_impulse/initial_impulse_component.tscn" id="5_2eq07"]
 [ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_ntsej"]
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_pi1cc"]
 

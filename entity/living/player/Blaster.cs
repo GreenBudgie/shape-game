@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class Blaster : Node
 {
@@ -53,7 +55,7 @@ public partial class Blaster : Node
                 continue;
             }
 
-            if (module is ProjectileModule projectileModule)
+            if (module is SpawnableModule projectileModule)
             {
                 ShootProjectile(modifiers, projectileModule);
                 _lastSlot = NextSlot();
@@ -64,40 +66,31 @@ public partial class Blaster : Node
         return false;
     }
 
-    private void ShootProjectile(List<ModifierModule> modifiers, ProjectileModule projectileModule)
+    private void ShootProjectile(List<ModifierModule> modifiers, SpawnableModule spawnableModule)
     {
-        var projectile = projectileModule.CreateProjectile();
-        var context = new ShotContext(projectile, projectileModule, modifiers);
-        
-        context.ApplyStats();
-        
-        // Stage 1 - prepare components
-        foreach (var component in projectile.GetComponents())
+        var player = Player.FindPlayer();
+        if (player == null)
         {
-            component.Prepare(context);
+            throw new Exception("Blaster cannot fire - player wasn't found");
         }
+        
+        var context = new SpawnableContext(spawnableModule.CreateSpawnable())
+        {
+            Position = player.GetGlobalNosePosition(),
+            Direction = Vector2.FromAngle(player.GetTilt()),
+            Source = player
+        };
+        
+        var modifierStats = modifiers.SelectMany(modifier => modifier.Stats);
+        context.Stats.AddRange(modifierStats);
 
-        // Stage 2 - apply modifiers
         foreach (var modifier in modifiers)
         {
-            modifier.Apply(context);
+            modifier.Modify(context);
             context.AppliedModifiers.Add(modifier);
         }
         
-        // Stage 3 - apply components
-        foreach (var component in projectile.GetComponents())
-        {
-            component.Apply(context);
-        }
-
-        var projectileNode = projectile.Node;
-        var spawnPosition = Player.FindPlayer()?.GetGlobalNosePosition() ?? ShapeGame.Center;
-        projectileNode.GlobalPosition = spawnPosition;
-        
-        // Stage 4 - prepare projectile
-        projectile.Prepare(context);
-        
-        ShapeGame.Instance.AddChild(projectileNode);
+        context.Spawn();
 
         var reload = context.CalculateStat<ReloadStat>();
         Delay = Max(reload, MinDelay);

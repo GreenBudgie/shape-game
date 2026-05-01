@@ -1,4 +1,4 @@
-public partial class Explosion : ShapeCast2D
+public partial class Explosion : ShapeCast2D, ISpawnable<Explosion>
 {
 
     /// <summary>
@@ -11,6 +11,8 @@ public partial class Explosion : ShapeCast2D
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b676isra84rkm");
 
+    public Explosion Node => this;
+    
     [Signal]
     public delegate void DetonatedEventHandler();
 
@@ -18,30 +20,40 @@ public partial class Explosion : ShapeCast2D
     [Export] private AudioStream _mediumExplosionSound = null!;
     [Export] private AudioStream _largeExplosionSound = null!;
 
-    private Node2D _initiator = null!;
-    private float _radius = 300;
-    private float _damage = 1;
+    private SpawnableContext _context = null!;
+    private float _radius;
+    private float _damage;
     private float _fuseTimeSeconds;
 
     public static Explosion Create(Node2D initiator)
     {
-        var explosion = Scene.Instantiate<Explosion>();
-        explosion._initiator = initiator;
-        explosion.GlobalPosition = initiator.GlobalPosition;
-        ShapeGame.Instance.AddChild(explosion);
-        return explosion;
+        return Scene.Instantiate<Explosion>();
+    }
+
+    public void Prepare(SpawnableContext context)
+    {
+        _context = context;
+    }
+
+    public void Remove()
+    {
+        Detonate();
     }
 
     public override void _Ready()
     {
         Callable.From(() => ExplosionRadiusPreview.Create(this)).CallDeferred();
+
+        _radius = _context.CalculateStat<ExplosionRadiusStat>();
+        _damage = _context.CalculateStat<ExplosionDamageStat>();
+        _fuseTimeSeconds = _context.CalculateStat<LifetimeStat>();
     }
 
     public override void _Process(double delta)
     {
-        if (IsInstanceValid(_initiator))
+        if (IsInstanceValid(_context.Source))
         {
-            GlobalPosition = _initiator.GlobalPosition;
+            GlobalPosition = _context.Source.GlobalPosition;
         }
         else
         {
@@ -62,33 +74,13 @@ public partial class Explosion : ShapeCast2D
         }
     }
 
-    public Explosion SetRadius(float radius)
-    {
-        _radius = Max(radius, 0);
-        var circleShape = (CircleShape2D)Shape;
-        circleShape.Radius = radius;
-        return this;
-    }
-
     public float GetRadius() => _radius;
-    
-    public Explosion SetDamage(float damage)
-    {
-        _damage = Max(damage, 0);
-        return this;
-    }
 
     public float GetDamage() => _damage;
+    
+    public float GetFuseTimeSeconds() => _fuseTimeSeconds;
 
     public float GetEffectRadiusRatio() => Clamp(_radius / MaxEffectRadius, 0, MaxEffectRadius);
-
-    public Explosion SetFuseTimeSeconds(float fuseTimeSeconds)
-    {
-        _fuseTimeSeconds = fuseTimeSeconds;
-        return this;
-    }
-
-    public float GetFuseTimeSeconds() => _fuseTimeSeconds;
 
     public void Detonate()
     {

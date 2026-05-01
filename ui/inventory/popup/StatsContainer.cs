@@ -1,7 +1,7 @@
 public partial class StatsContainer : GridContainer
 {
 
-    public void AddStat(ModuleStat stat)
+    public void AddStat(SpawnableStat stat)
     {
         var presentation = StatPresentation.Create(stat);
         AddChild(presentation);

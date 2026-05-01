@@ -1,5 +1,5 @@
 [GlobalClass, Icon(IconPath)]
-public partial class ReloadStat : ModuleStat
+public partial class ReloadStat : SpawnableStat
 {
 
     private const string IconPath = "uid://oxosftrf543w";

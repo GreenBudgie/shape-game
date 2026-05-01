@@ -1,5 +1,5 @@
 [GlobalClass, Icon(IconPath)]
-public partial class SpeedStat : ModuleStat
+public partial class SpeedStat : SpawnableStat
 {
     
     private const string IconPath = "uid://jen4xqupa4bn";

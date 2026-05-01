@@ -1,5 +1,5 @@
 [GlobalClass, Icon(IconPath)]
-public partial class ExplosionRadiusStat : ModuleStat
+public partial class ExplosionRadiusStat : SpawnableStat
 {
     
     private const string IconPath = "uid://bahh717wv8wh8";
