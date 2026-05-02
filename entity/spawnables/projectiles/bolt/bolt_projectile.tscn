@@ -13,7 +13,7 @@ bounce = 1.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_guu8r"]
 radius = 15.0333
 
-[node name="BoltProjectile" type="RigidBody2D"]
+[node name="BoltProjectile" type="RigidBody2D" unique_id=1832201736]
 collision_layer = 2
 collision_mask = 308
 mass = 0.1
@@ -26,11 +26,11 @@ script = ExtResource("1_uyfjk")
 _shotSound = ExtResource("2_k0ksy")
 _wallHitSound = ExtResource("3_lg5yd")
 
-[node name="BoltSprite" type="Sprite2D" parent="."]
+[node name="BoltSprite" type="Sprite2D" parent="." unique_id=1095635200]
 texture = ExtResource("2_1nglk")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=470758385]
 position = Vector2(0, 8)
 shape = SubResource("CircleShape2D_guu8r")
 
-[node name="InitialImpulseComponent" parent="." instance=ExtResource("3_1nglk")]
+[node name="InitialImpulseComponent" parent="." unique_id=729025841 instance=ExtResource("3_1nglk")]

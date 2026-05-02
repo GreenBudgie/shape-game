@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
@@ -108,6 +109,8 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
         return isWall;
     }
 
+    private List<CollisionLayers> _initialPierceableLayerMasks = [];
+
     private void SetupPiercing()
     {
         if (ObstaclesToPierce <= 0)
@@ -120,9 +123,25 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             this.DisableCollisionLayer(CollisionLayers.PlayerProjectiles);
             this.EnableCollisionLayer(CollisionLayers.PiercingPlayerProjectiles);
         }
+        
+        if (this.HasCollisionLayer(CollisionLayers.EnemyProjectiles))
+        {
+            this.DisableCollisionLayer(CollisionLayers.EnemyProjectiles);
+            this.EnableCollisionLayer(CollisionLayers.PiercingEnemyProjectiles);
+        }
 
-        this.DisableCollisionMaskLayers(CollisionObjectUtils.PierceableLayers);
+        foreach (var pierceableLayer in CollisionObjectUtils.PierceableLayers)
+        {
+            if (this.HasCollisionMask(pierceableLayer))
+            {
+                _initialPierceableLayerMasks.Add(pierceableLayer);
+                this.DisableCollisionMaskLayer(pierceableLayer);
+            }
+        }
+        
         _piercingDetectionArea = new Area2D();
+        _piercingDetectionArea.CollisionLayer = 0;
+        _piercingDetectionArea.CollisionMask = 0;
         var collisionPolygons = GetChildren().OfType<CollisionPolygon2D>();
         var collisionShapes = GetChildren().OfType<CollisionShape2D>();
         foreach (var collisionPolygon in collisionPolygons)
@@ -135,7 +154,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             _piercingDetectionArea.AddChild(collisionShape.Duplicate());
         }
 
-        _piercingDetectionArea.EnableCollisionMaskLayers(CollisionObjectUtils.PierceableLayers);
+        _piercingDetectionArea.EnableCollisionMaskLayers(_initialPierceableLayerMasks);
         _piercingDetectionArea.BodyEntered += HandlePiercingDetectionAreaCollision;
         _piercingDetectionArea.BodyExited += HandlePiercingDetectionAreaBodyExited;
 
@@ -149,8 +168,14 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             this.DisableCollisionLayer(CollisionLayers.PiercingPlayerProjectiles);
             this.EnableCollisionLayer(CollisionLayers.PlayerProjectiles);
         }
+        
+        if (this.HasCollisionLayer(CollisionLayers.PiercingEnemyProjectiles))
+        {
+            this.DisableCollisionLayer(CollisionLayers.PiercingEnemyProjectiles);
+            this.EnableCollisionLayer(CollisionLayers.EnemyProjectiles);
+        }
 
-        this.EnableCollisionMaskLayers(CollisionObjectUtils.PierceableLayers);
+        this.EnableCollisionMaskLayers(_initialPierceableLayerMasks);
     }
 
     private void HandlePiercingDetectionAreaCollision(Node body)
