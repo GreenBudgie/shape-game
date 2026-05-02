@@ -14,6 +14,11 @@
     {
         return Scene.Instantiate<EnemySquareProjectile>();
     }
+    
+    public override void Prepare(SpawnableContext context)
+    {
+        context.Stats.Add(new DamageStat {Damage = 2});
+    }
 
     private bool _torqueApplied;
     

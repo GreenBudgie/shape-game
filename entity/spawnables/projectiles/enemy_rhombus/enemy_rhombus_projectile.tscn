@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bbrbitna6fejv" path="res://entity/spawnables/projectiles/enemy_rhombus/enemy_rhombus_projectile.png" id="3_tsytn"]
 [ext_resource type="Texture2D" uid="uid://mhl34iu2fsui" path="res://entity/spawnables/projectiles/enemy_rhombus/projectile_particle.png" id="4_ve5eh"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://entity/spawnables/components/initial_impulse/initial_impulse_component.tscn" id="5_u02il"]
+[ext_resource type="PackedScene" uid="uid://6dllnllpl3my" path="res://entity/spawnables/components/lifetime/lifetime_component.tscn" id="6_e4wmv"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jyvyp"]
 friction = 0.0
@@ -76,3 +77,5 @@ lifetime = 0.25
 process_material = SubResource("ParticleProcessMaterial_wyjuq")
 
 [node name="InitialImpulseComponent" parent="." unique_id=1145233202 instance=ExtResource("5_u02il")]
+
+[node name="LifetimeComponent" parent="." unique_id=1742972924 instance=ExtResource("6_e4wmv")]

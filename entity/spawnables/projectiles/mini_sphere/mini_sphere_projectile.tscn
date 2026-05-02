@@ -5,6 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://ctepk7ljvwknw" path="res://entity/spawnables/projectiles/mini_sphere/mini_sphere_launch.wav" id="2_rw2q6"]
 [ext_resource type="AudioStream" uid="uid://dcst5l714kycq" path="res://entity/spawnables/hit_wall.wav" id="3_ctkrq"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://entity/spawnables/components/initial_impulse/initial_impulse_component.tscn" id="5_1worh"]
+[ext_resource type="PackedScene" uid="uid://6dllnllpl3my" path="res://entity/spawnables/components/lifetime/lifetime_component.tscn" id="6_sh56a"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
 friction = 0.5
@@ -13,7 +14,7 @@ bounce = 1.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_guu8r"]
 radius = 18.0
 
-[node name="MiniSphereProjectile" type="RigidBody2D"]
+[node name="MiniSphereProjectile" type="RigidBody2D" unique_id=692641055]
 collision_layer = 2
 collision_mask = 308
 mass = 0.1
@@ -27,12 +28,14 @@ script = ExtResource("1_h65vd")
 _shotSound = ExtResource("2_rw2q6")
 _wallHitSound = ExtResource("3_ctkrq")
 
-[node name="MiniSphereSprite" type="Sprite2D" parent="."]
+[node name="MiniSphereSprite" type="Sprite2D" parent="." unique_id=10465061]
 texture = ExtResource("1_2pmsr")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=999236707]
 shape = SubResource("CircleShape2D_guu8r")
 
-[node name="InitialImpulseComponent" parent="." instance=ExtResource("5_1worh")]
+[node name="InitialImpulseComponent" parent="." unique_id=1327998094 instance=ExtResource("5_1worh")]
 Spread = 30.0
 SpeedDelta = 500.0
+
+[node name="LifetimeComponent" parent="." unique_id=1742972924 instance=ExtResource("6_sh56a")]

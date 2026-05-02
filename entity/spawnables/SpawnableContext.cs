@@ -72,6 +72,11 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
 
         Spawnable.Prepare(this);
         ShapeGame.Instance.AddChild(Spawnable.Node);
+        
+        foreach (var component in Spawnable.GetComponents())
+        {
+            component.Apply(this);
+        }
     }
 
 }

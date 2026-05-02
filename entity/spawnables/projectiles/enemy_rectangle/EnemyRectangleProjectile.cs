@@ -18,6 +18,11 @@ public partial class EnemyRectangleProjectile : BasicRigidBodyProjectile<EnemyRe
 
         EnemyRectangleProjectileParticles.Create(this);
     }
+    
+    public override void Prepare(SpawnableContext context)
+    {
+        context.Stats.Add(new DamageStat {Damage = 5});
+    }
 
     private bool _torqueApplied;
 

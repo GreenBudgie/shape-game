@@ -1,7 +1,7 @@
 public partial class LifetimeComponent : Node, ISpawnableComponent
 {
 
-    public void Prepare(SpawnableContext context)
+    public void Apply(SpawnableContext context)
     {
         var spawnable = context.Spawnable;
 

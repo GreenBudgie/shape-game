@@ -6,7 +6,8 @@ public interface ISpawnable<out T> where T : Node2D
     public void Remove();
 
     /// <summary>
-    /// Called after all stats were prepared and applied, but before it is entered the tree (before _Ready is called)
+    /// Called right before a spawnable is prepared and added to the tree. No more context modifications will occur
+    /// after this call, but modifying context is still allowed at this point.
     /// </summary>
     public void Prepare(SpawnableContext context)
     {

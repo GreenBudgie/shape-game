@@ -78,19 +78,16 @@ public partial class MineProjectile : RigidBody2D, ISpawnable<MineProjectile>
         _explosion = Explosion.Create(this);
         var explosionContext = new SpawnableContext(_explosion)
         {
-            Position = this.GlobalPosition,
+            Position = GlobalPosition,
             Source = this,
             OriginalSource = _context.OriginalSource,
         };
 
         explosionContext.Stats.AddRange(_context.GetStats<ExplosionDamageStat>());
         explosionContext.Stats.AddRange(_context.GetStats<ExplosionRadiusStat>());
+        explosionContext.Stats.Add(new LifetimeStat { Lifetime = fuseTime });
 
-        var lifetimeStat = new LifetimeStat
-        {
-            Lifetime = fuseTime
-        };
-        explosionContext.Stats.Add(lifetimeStat);
+        explosionContext.Spawn();
 
         _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(QueueFree));
 

@@ -8,12 +8,13 @@
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://entity/spawnables/components/initial_impulse/initial_impulse_component.tscn" id="5_2eq07"]
 [ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_ntsej"]
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_pi1cc"]
+[ext_resource type="PackedScene" uid="uid://6dllnllpl3my" path="res://entity/spawnables/components/lifetime/lifetime_component.tscn" id="9_6cgrs"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
 friction = 0.5
 bounce = 0.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ntsej"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k1t3k"]
 resource_local_to_scene = true
 shader = ExtResource("6_pi1cc")
 shader_parameter/glow_color = Color(0.9372549, 0.35686275, 0.35686275, 1)
@@ -40,7 +41,7 @@ _wallHitSound = ExtResource("3_q3r3b")
 _beepSound = ExtResource("4_jya8t")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_ntsej")]
-material = SubResource("ShaderMaterial_ntsej")
+material = SubResource("ShaderMaterial_k1t3k")
 
 [node name="MineSprite" type="Sprite2D" parent="Glow" unique_id=183249265]
 texture = ExtResource("4_h5gdj")
@@ -50,3 +51,5 @@ visible = false
 shape = SubResource("CircleShape2D_guu8r")
 
 [node name="InitialImpulseComponent" parent="." unique_id=1865065838 instance=ExtResource("5_2eq07")]
+
+[node name="LifetimeComponent" parent="." unique_id=1742972924 instance=ExtResource("9_6cgrs")]

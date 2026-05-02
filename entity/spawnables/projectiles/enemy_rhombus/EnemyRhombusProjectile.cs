@@ -1,12 +1,11 @@
 public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhombusProjectile>
 {
-    private const double MaxLifetimeSeconds = 4;
+    private const float MaxLifetimeSeconds = 4;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://c0kcy42pxfucm");
 
     [Export] private AudioStream _hitWallSound = null!;
 
-    private double _lifetimeSeconds = MaxLifetimeSeconds;
     private bool _isDissolving;
     private GpuParticles2D _particles = null!;
     
@@ -15,6 +14,12 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhom
     public static EnemyRhombusProjectile Create()
     {
         return Scene.Instantiate<EnemyRhombusProjectile>();
+    }
+
+    public override void Prepare(SpawnableContext context)
+    {
+        context.Stats.Add(new LifetimeStat {Lifetime = MaxLifetimeSeconds});
+        context.Stats.Add(new DamageStat {Damage = 3});
     }
 
     public override void _Ready()

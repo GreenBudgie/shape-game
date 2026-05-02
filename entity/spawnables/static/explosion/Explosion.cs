@@ -45,6 +45,9 @@ public partial class Explosion : ShapeCast2D, ISpawnable<Explosion>
         Callable.From(() => ExplosionRadiusPreview.Create(this)).CallDeferred();
 
         _radius = _context.CalculateStat<ExplosionRadiusStat>();
+        var circleShape = (CircleShape2D)Shape;
+        circleShape.Radius = _radius;
+        
         _damage = _context.CalculateStat<ExplosionDamageStat>();
         _fuseTimeSeconds = _context.CalculateStat<LifetimeStat>();
     }
