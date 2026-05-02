@@ -1,36 +1,30 @@
-public partial class EnemyRectangleProjectile : RigidBody2D, IPlayerCollisionDetector
+public partial class EnemyRectangleProjectile : BasicRigidBodyProjectile<EnemyRectangleProjectile>
 {
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b1rpikysssmoh");
-
-    [Export] private AudioStream _hitWallSound = null!;
     
     private EnemyRectangle _owner = null!;
     
-    public static EnemyRectangleProjectile Create(EnemyRectangle owner)
+    public override EnemyRectangleProjectile Node => this;
+    
+    public static EnemyRectangleProjectile Create()
     {
-        var node = Scene.Instantiate<EnemyRectangleProjectile>();
-        node._owner = owner;
-        return node;
+        return Scene.Instantiate<EnemyRectangleProjectile>();
     }
 
     public override void _Ready()
     {
-        const float initialSpeed = 1500f;
-        const float initialSpeedDelta = 250f;
-        var speed = RandomUtils.DeltaRange(initialSpeed, initialSpeedDelta);
-        var direction = Vector2.FromAngle(_owner.Rotation + Pi / 2);
-        ApplyCentralImpulse(direction * speed);
+        base._Ready();
 
         EnemyRectangleProjectileParticles.Create(this);
-        
-        BodyEntered += HandleBodyEntered;
     }
 
     private bool _torqueApplied;
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
+        base._IntegrateForces(state);
+        
         if (_torqueApplied)
         {
             return;
@@ -41,40 +35,6 @@ public partial class EnemyRectangleProjectile : RigidBody2D, IPlayerCollisionDet
         var torque = RandomUtils.RandomSignedDeltaRange(initialTorque, initialTorqueDelta);
         ApplyTorqueImpulse(torque);
         _torqueApplied = true;
-    }
-
-    public void CollideWithPlayer(Player player)
-    {
-        player.HealthController.Damage(5);
-        QueueFree();
-    }
-    
-    private void HandleBodyEntered(Node body)
-    {
-        if (body is not CollisionObject2D collisionObject)
-        {
-            return;
-        }
-
-        if (collisionObject.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
-        {
-            QueueFree();
-            return;
-        }
-
-        if (!collisionObject.HasCollisionLayer(CollisionLayers.LevelWalls, CollisionLayers.ProjectileBarrier))
-        {
-            return;
-        }
-
-        var speed = LinearVelocity.Length();
-        if (speed <= 100)
-        {
-            return;
-        }
-
-        SoundManager.Instance.PlayPositionalSound(this, _hitWallSound)
-            .RandomizePitch(0.8f, 1.2f);
     }
     
 }

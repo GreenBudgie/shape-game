@@ -14,7 +14,7 @@ public partial class EnemyManager : Node
     );
 
     public static readonly List<EnemyType> EnemyTypes =
-        ResourceSearcher.FindInnerResources<EnemyType>("res://entity/enemies/types");
+        ResourceSearcher.FindInnerResources<EnemyType>("res://entity/living/enemies/types");
 
     public static EnemyManager Instance { get; private set; } = null!;
     

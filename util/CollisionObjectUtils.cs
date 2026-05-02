@@ -7,7 +7,9 @@ public static class CollisionObjectUtils
     
     public static readonly Array<CollisionLayers> PierceableLayers = [
         CollisionLayers.Enemies, 
-        CollisionLayers.ProjectileBarrier
+        CollisionLayers.ProjectileBarrier,
+        CollisionLayers.Player,
+        CollisionLayers.PlayerCollider,
     ];
     
     /// <summary>
@@ -86,6 +88,22 @@ public static class CollisionObjectUtils
     )
     {
         return collisionLayers.Any(layer => collisionObject.GetCollisionLayerValue((int)layer));
+    }
+    
+    public static bool HasCollisionMask(
+        this CollisionObject2D collisionObject,
+        IEnumerable<CollisionLayers> collisionLayers
+    )
+    {
+        return collisionLayers.Any(layer => collisionObject.GetCollisionMaskValue((int)layer));
+    }
+    
+    public static bool HasCollisionMask(
+        this CollisionObject2D collisionObject,
+        params CollisionLayers[] collisionLayers
+    )
+    {
+        return collisionLayers.Any(layer => collisionObject.GetCollisionMaskValue((int)layer));
     }
 
     public static void DisableCollisionMaskLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)

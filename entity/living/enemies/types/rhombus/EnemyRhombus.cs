@@ -122,15 +122,18 @@
         sound.PitchScale = Lerp(0.8f, 1.2f, 1f - (float)delayPercent);
     }
 
-    private void FireProjectile(Vector2 globalPosition)
+    private void FireProjectile(Vector2 spawnPosition)
     {
-        var projectile = EnemyRhombusProjectile.Create();
-        projectile.GlobalPosition = globalPosition;
-
+        var context = new SpawnableContext(EnemyRhombusProjectile.Create())
+        {
+            Position = GlobalPosition,
+            Source = this,
+            Direction = GlobalPosition.DirectionTo(spawnPosition),
+        };
+        
         const float initialSpeed = 2000f;
-        var projectileDirection = GlobalPosition.DirectionTo(globalPosition);
-        projectile.ApplyCentralImpulse(projectileDirection * initialSpeed);
-
-        ShapeGame.Instance.AddChild(projectile);
+        context.Stats.Add(new SpeedStat { Speed = initialSpeed });
+        
+        context.Spawn();
     }
 }

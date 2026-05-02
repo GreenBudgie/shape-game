@@ -1,7 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
 
-public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, ISpawnable<T> where T : Node2D
+public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
+    ISpawnable<T>,
+    IPlayerCollisionDetector 
+    where T : Node2D
 {
     [Export] private AudioStream _wallHitSound = null!;
 
@@ -11,8 +13,8 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, ISpawna
     protected int ObstaclesToPierce;
 
     private Area2D? _piercingDetectionArea;
-
-    public void Prepare(SpawnableContext context)
+ 
+    public virtual void Prepare(SpawnableContext context)
     {
         Context = context;
         ObstaclesToPierce = RoundToInt(context.CalculateStat<PiercingStat>());
@@ -38,9 +40,14 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, ISpawna
         QueueFree();
     }
 
-    private void OnCollideWithEnemy(Enemy enemy)
+    public virtual void PlayerShapeEntered(Player player)
     {
-        enemy.HealthController.Damage(Context.CalculateStat<DamageStat>());
+        HandleBodyEntered(player);
+    }
+
+    public void PlayerShapeExited(Player player)
+    {
+        HandleBodyExited(player);
     }
 
     private void OnLeavePierceableObject(CollisionObject2D collisionObject)
@@ -163,10 +170,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, ISpawna
             return;
         }
 
-        if (collisionObject2D is Enemy enemy)
-        {
-            OnCollideWithEnemy(enemy);
-        }
+        HealthController.GetHealthControllerIfExists(collisionObject2D)?.Damage(Context.CalculateStat<DamageStat>());
 
         HandleWallHit(collisionObject2D);
         AddCollisionExceptionWith(collisionObject2D);
@@ -181,7 +185,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D, ISpawna
                 {
                     return;
                 }
-                
+
                 collisionObject2D.Disconnect(Godot.Node.SignalName.TreeExiting, callable);
             })
         );

@@ -1,28 +1,26 @@
-﻿public partial class EnemySquareProjectile : RigidBody2D, IPlayerCollisionDetector
+﻿public partial class EnemySquareProjectile : BasicRigidBodyProjectile<EnemySquareProjectile>
 {
 
     private const float InitialTorque = 1500; 
     private const float InitialTorqueDelta = 500; 
     
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bhj8dgeytmpxx");
+
+    public override EnemySquareProjectile Node => this;
     
     [Export] private AudioStream _hitWallSound = null!;
 
-    public static EnemySquareProjectile Create(EnemySquare shooter)
+    public static EnemySquareProjectile Create()
     {
-        var bullet = Scene.Instantiate<EnemySquareProjectile>();
-        return bullet;
-    }
-    
-    public override void _Ready()
-    {
-        BodyEntered += HandleBodyEntered;
+        return Scene.Instantiate<EnemySquareProjectile>();
     }
 
     private bool _torqueApplied;
     
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
+        base._IntegrateForces(state);
+        
         if (_torqueApplied)
         {
             return;
@@ -33,38 +31,4 @@
         _torqueApplied = true;
     }
 
-    public void CollideWithPlayer(Player player)
-    {
-        player.HealthController.Damage(2);
-        QueueFree();
-    }
-
-    private void HandleBodyEntered(Node body)
-    {
-        if (body is not CollisionObject2D collisionObject)
-        {
-            return;
-        }
-
-        if (collisionObject.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
-        {
-            QueueFree();
-            return;
-        }
-        
-        if (!body.IsInGroup("level_walls"))
-        {
-            return;
-        }
-
-        var speed = LinearVelocity.Length();
-        if (speed <= 100)
-        {
-            return;
-        }
-
-        var pitch = speed / 1000f + 0.75f;
-        var sound = SoundManager.Instance.PlayPositionalSound(this, _hitWallSound);
-        sound.PitchScale = Clamp(pitch, 0.75f, 1.25f);
-    }
 }

@@ -33,9 +33,20 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
             return;
         }
 
-        var projectile = EnemyRectangleProjectile.Create(_owner);
-        projectile.GlobalPosition = GlobalPosition;
-        ShapeGame.Instance.AddChild(projectile);
+        var direction = Vector2.FromAngle(_owner.Rotation + Pi / 2);
+        var context = new SpawnableContext(EnemyRectangleProjectile.Create())
+        {
+            Position = GlobalPosition,
+            Source = _owner,
+            Direction = direction,
+        };
+        
+        const float initialSpeed = 1500f;
+        const float initialSpeedDelta = 250f;
+        var speed = RandomUtils.DeltaRange(initialSpeed, initialSpeedDelta);
+        context.Stats.Add(new SpeedStat { Speed = speed });
+        
+        context.Spawn();
         QueueFree();
     }
 

@@ -1,4 +1,4 @@
-public partial class EnemyRhombusProjectile : RigidBody2D, IPlayerCollisionDetector
+public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhombusProjectile>
 {
     private const double MaxLifetimeSeconds = 4;
 
@@ -9,39 +9,32 @@ public partial class EnemyRhombusProjectile : RigidBody2D, IPlayerCollisionDetec
     private double _lifetimeSeconds = MaxLifetimeSeconds;
     private bool _isDissolving;
     private GpuParticles2D _particles = null!;
+    
+    public override EnemyRhombusProjectile Node => this;
 
     public static EnemyRhombusProjectile Create()
     {
-        var node = Scene.Instantiate<EnemyRhombusProjectile>();
-        return node;
+        return Scene.Instantiate<EnemyRhombusProjectile>();
     }
 
     public override void _Ready()
     {
+        base._Ready();
+        
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
-        BodyEntered += HandleBodyEntered;
     }
 
-    public override void _Process(double delta)
+    public override void Remove()
     {
-        if (_isDissolving)
-        {
-            return;
-        }
-
-        if (_lifetimeSeconds <= 0)
-        {
-            Dissolve();
-            return;
-        }
-
-        _lifetimeSeconds -= delta;
+        Dissolve();
     }
 
     private bool _isFirstTick = true;
 
     public override void _PhysicsProcess(double delta)
     {
+        base._PhysicsProcess(delta);
+        
         var direction = LinearVelocity.Normalized();
         var angle = direction.Angle() + Pi;
         Rotation = angle;
@@ -67,12 +60,6 @@ public partial class EnemyRhombusProjectile : RigidBody2D, IPlayerCollisionDetec
         }
     }
 
-    public void CollideWithPlayer(Player player)
-    {
-        player.HealthController.Damage(3);
-        QueueFree();
-    }
-
     private void Dissolve()
     {
         if (_isDissolving)
@@ -88,31 +75,4 @@ public partial class EnemyRhombusProjectile : RigidBody2D, IPlayerCollisionDetec
         _isDissolving = true;
     }
 
-    private void HandleBodyEntered(Node body)
-    {
-        if (body is not CollisionObject2D collisionObject)
-        {
-            return;
-        }
-
-        if (collisionObject.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
-        {
-            QueueFree();
-            return;
-        }
-
-        if (!collisionObject.HasCollisionLayer(CollisionLayers.LevelWalls))
-        {
-            return;
-        }
-
-        var speed = LinearVelocity.Length();
-        if (speed <= 100)
-        {
-            return;
-        }
-
-        SoundManager.Instance.PlayPositionalSound(this, _hitWallSound)
-            .RandomizePitch(0.8f, 1.2f);
-    }
 }

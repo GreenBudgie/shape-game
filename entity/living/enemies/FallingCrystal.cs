@@ -67,9 +67,13 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
         ApplyMagnet();
     }
 
-    public void CollideWithPlayer(Player player)
+    public void PlayerShapeEntered(Player player)
     {
         Collect();
+    }
+
+    public void PlayerShapeExited(Player player)
+    {
     }
 
     private void ApplyMagnet()

@@ -6,7 +6,7 @@ public partial class SpeedStat : SpawnableStat
 
     private static readonly Texture2D StatIcon = GD.Load<Texture2D>(IconPath);
 
-    [Export] public float Speed { get; private set; }
+    [Export] public float Speed { get; set; }
     
     public override string Name => "speed";
     

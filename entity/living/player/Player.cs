@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public partial class Player : RigidBody2D
 {
 
@@ -160,6 +162,8 @@ public partial class Player : RigidBody2D
         }
     }
 
+    private List<IPlayerCollisionDetector> _playerColliders = [];
+
     private void RegisterPlayerCollisions()
     {
         _playerCollisionDetector.Rotation = GetTilt();
@@ -167,19 +171,42 @@ public partial class Player : RigidBody2D
         _playerCollisionDetector.TargetPosition = _playerCollisionDetector.ToLocal(GlobalPosition);
         _playerCollisionDetector.ForceShapecastUpdate();
 
-        if (!_playerCollisionDetector.IsColliding())
-        {
-            return;
-        }
-
+        List<IPlayerCollisionDetector> currentFrameColliders = [];
+        
+        // Register first player collisions
         for (var i = 0; i < _playerCollisionDetector.GetCollisionCount(); i++)
         {
             var collider = _playerCollisionDetector.GetCollider(i);
-            if (collider is IPlayerCollisionDetector collisionDetector)
+            if (collider is not IPlayerCollisionDetector collisionDetector)
             {
-                collisionDetector.CollideWithPlayer(this);
+                continue;
+            }
+            
+            currentFrameColliders.Add(collisionDetector);
+
+            if (!_playerColliders.Contains(collisionDetector))
+            {
+                collisionDetector.PlayerShapeEntered(this);
+                _playerColliders.Add(collisionDetector);
             }
         }
+        
+        // Unregister exited player collisions
+        foreach (var collider in _playerColliders)
+        {
+            if (!IsInstanceValid((Node)collider))
+            {
+                continue;
+            }
+            
+            if (!currentFrameColliders.Contains(collider))
+            {
+                collider.PlayerShapeExited(this);
+            }
+        }
+        
+        // Remove all colliders that exited the player shape
+        _playerColliders.RemoveAll(collider => !currentFrameColliders.Contains(collider));
     }
 
     public Vector2 GetGlobalNosePosition()
