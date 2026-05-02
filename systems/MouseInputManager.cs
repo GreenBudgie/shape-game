@@ -43,6 +43,11 @@ public partial class MouseInputManager : Node2D
 
     public Vector2 GetMouseDelta()
     {
+        if (!DisplayServer.WindowIsFocused())
+        {
+            return Vector2.Zero;
+        }
+        
         return _currentFrameMouseDelta;
     }
 

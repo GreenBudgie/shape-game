@@ -1,4 +1,4 @@
-public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
+public partial class FallingCrystal : RigidBody2D
 {
     private const float InitialTorque = 500;
     private const float InitialTorqueDelta = 200;
@@ -67,15 +67,6 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
         ApplyMagnet();
     }
 
-    public void PlayerShapeEntered(Player player)
-    {
-        Collect();
-    }
-
-    public void PlayerShapeExited(Player player)
-    {
-    }
-
     private void ApplyMagnet()
     {
         var player = Player.FindPlayer();
@@ -134,6 +125,12 @@ public partial class FallingCrystal : RigidBody2D, IPlayerCollisionDetector
         if (collisionObject.HasCollisionLayer(CollisionLayers.LevelOutsideBoundary))
         {
             QueueFree();
+            return;
+        }
+
+        if (collisionObject is Player)
+        {
+            Collect();
         }
     }
 

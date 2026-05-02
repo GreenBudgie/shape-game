@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
-    ISpawnable<T>,
-    IPlayerCollisionDetector 
+    ISpawnable<T>
     where T : Node2D
 {
     [Export] private AudioStream _wallHitSound = null!;
@@ -136,12 +135,18 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             if (this.HasCollisionMask(pierceableLayer))
             {
                 _initialPierceableLayerMasks.Add(pierceableLayer);
-                this.DisableCollisionMaskLayer(pierceableLayer);
+                this.DisableCollisionMask(pierceableLayer);
             }
         }
         
         _piercingDetectionArea = new Area2D();
+        
         _piercingDetectionArea.CollisionLayer = 0;
+        if (this.HasCollisionLayer(CollisionLayers.PlayerCollider))
+        {
+            _piercingDetectionArea.EnableCollisionLayer(CollisionLayers.PlayerCollider);
+        }
+        
         _piercingDetectionArea.CollisionMask = 0;
         var collisionPolygons = GetChildren().OfType<CollisionPolygon2D>();
         var collisionShapes = GetChildren().OfType<CollisionShape2D>();
@@ -155,7 +160,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             _piercingDetectionArea.AddChild(collisionShape.Duplicate());
         }
 
-        _piercingDetectionArea.EnableCollisionMaskLayers(_initialPierceableLayerMasks);
+        _piercingDetectionArea.EnableCollisionMasks(_initialPierceableLayerMasks);
         _piercingDetectionArea.BodyEntered += HandlePiercingDetectionAreaCollision;
         _piercingDetectionArea.BodyExited += HandlePiercingDetectionAreaBodyExited;
 
@@ -176,7 +181,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             this.EnableCollisionLayer(CollisionLayers.EnemyProjectiles);
         }
 
-        this.EnableCollisionMaskLayers(_initialPierceableLayerMasks);
+        this.EnableCollisionMasks(_initialPierceableLayerMasks);
     }
 
     private void HandlePiercingDetectionAreaCollision(Node body)

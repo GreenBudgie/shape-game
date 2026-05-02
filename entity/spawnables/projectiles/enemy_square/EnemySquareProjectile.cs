@@ -19,7 +19,6 @@
     {
         base.Prepare(context);
         context.Stats.Add(new DamageStat { Damage = 2 });
-        context.Stats.Add(new PiercingStat { Piercing = 1 });
     }
 
     private bool _torqueApplied;

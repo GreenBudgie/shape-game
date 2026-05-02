@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot.Collections;
@@ -9,7 +10,7 @@ public static class CollisionObjectUtils
         CollisionLayers.Enemies, 
         CollisionLayers.ProjectileBarrier,
         CollisionLayers.Player,
-        CollisionLayers.PlayerCollider,
+        CollisionLayers.PlayerColliderMask,
     ];
     
     /// <summary>
@@ -105,8 +106,30 @@ public static class CollisionObjectUtils
     {
         return collisionLayers.Any(layer => collisionObject.GetCollisionMaskValue((int)layer));
     }
+    
+    public static IEnumerable<CollisionLayers> GetCollisionMasks(this CollisionObject2D collisionObject)
+    {
+        foreach (var layer in Enum.GetValues<CollisionLayers>())
+        {
+            if (collisionObject.GetCollisionMaskValue((int)layer))
+            {
+                yield return layer;
+            }
+        }
+    }
 
-    public static void DisableCollisionMaskLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    public static IEnumerable<CollisionLayers> GetCollisionLayers(this CollisionObject2D collisionObject)
+    {
+        foreach (var layer in Enum.GetValues<CollisionLayers>())
+        {
+            if (collisionObject.GetCollisionLayerValue((int)layer))
+            {
+                yield return layer;
+            }
+        }
+    }
+
+    public static void DisableCollisionMask(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
     {
         var collisionLayerNumber = (int)collisionLayer;
         var bitIndex = collisionLayerNumber - 1;
@@ -114,14 +137,14 @@ public static class CollisionObjectUtils
         collisionObject.CollisionMask &= layerBit;
     }
 
-    public static void DisableCollisionMaskLayers(
+    public static void DisableCollisionMasks(
         this CollisionObject2D collisionObject,
         IEnumerable<CollisionLayers> collisionLayers
     )
     {
         foreach (var collisionLayer in collisionLayers)
         {
-            collisionObject.DisableCollisionMaskLayer(collisionLayer);   
+            collisionObject.DisableCollisionMask(collisionLayer);   
         }
     }
 
@@ -133,7 +156,7 @@ public static class CollisionObjectUtils
         collisionObject.CollisionLayer &= layerBit;
     }
 
-    public static void EnableCollisionMaskLayer(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
+    public static void EnableCollisionMask(this CollisionObject2D collisionObject, CollisionLayers collisionLayer)
     {
         var collisionLayerNumber = (int)collisionLayer;
         var bitIndex = collisionLayerNumber - 1;
@@ -141,14 +164,14 @@ public static class CollisionObjectUtils
         collisionObject.CollisionMask |= layerBit;
     }
     
-    public static void EnableCollisionMaskLayers(
+    public static void EnableCollisionMasks(
         this CollisionObject2D collisionObject, 
         IEnumerable<CollisionLayers> collisionLayers
         )
     {
         foreach (var collisionLayer in collisionLayers)
         {
-            collisionObject.EnableCollisionMaskLayer(collisionLayer);
+            collisionObject.EnableCollisionMask(collisionLayer);
         }
     }
 

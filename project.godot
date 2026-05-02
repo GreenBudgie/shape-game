@@ -134,6 +134,7 @@ debug_timescale={
 2d_physics/layer_11="background_projectiles"
 2d_physics/layer_12="piercing_player_projectiles"
 2d_physics/layer_13="piercing_enemy_projectiles"
+2d_physics/layer_14="player_collider_mask"
 
 [physics]
 

@@ -14,5 +14,6 @@ public enum CollisionLayers
     BackgroundProjectiles = 11,
     PiercingPlayerProjectiles = 12,
     PiercingEnemyProjectiles = 13,
+    PlayerColliderMask = 14,
     
 }
