@@ -2,5 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dt8sjmpxvlpp3" path="res://entity/spawnables/components/initial_impulse/InitialImpulseComponent.cs" id="1_f2at8"]
 
-[node name="InitialImpulseComponent" type="Node"]
+[node name="InitialImpulseComponent" type="Node" unique_id=327601635]
+editor_description = "Applies impulse to RigidBody spawnables. Uses speed stat to determine the impulse strength. Direction is taken from the context."
 script = ExtResource("1_f2at8")

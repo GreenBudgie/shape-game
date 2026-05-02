@@ -18,6 +18,7 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhom
 
     public override void Prepare(SpawnableContext context)
     {
+        base.Prepare(context);
         context.Stats.Add(new LifetimeStat {Lifetime = MaxLifetimeSeconds});
         context.Stats.Add(new DamageStat {Damage = 3});
     }

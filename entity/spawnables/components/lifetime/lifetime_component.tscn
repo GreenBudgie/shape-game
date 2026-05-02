@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://b1ok8rip7hnds" path="res://entity/spawnables/components/lifetime/LifetimeComponent.cs" id="1_q7gub"]
 
 [node name="LifetimeComponent" type="Node" unique_id=1742972924]
+editor_description = "Removes the spawnable (via calling Remove()) after its lifetime stat time has passed"
 script = ExtResource("1_q7gub")

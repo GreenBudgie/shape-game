@@ -18,7 +18,6 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
     public virtual void Prepare(SpawnableContext context)
     {
         Context = context;
-        ObstaclesToPierce = RoundToInt(context.CalculateStat<PiercingStat>());
     }
 
     public override void _Ready()
@@ -109,10 +108,12 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
         return isWall;
     }
 
-    private List<CollisionLayers> _initialPierceableLayerMasks = [];
+    private readonly List<CollisionLayers> _initialPierceableLayerMasks = [];
 
     private void SetupPiercing()
     {
+        ObstaclesToPierce = RoundToInt(Context.CalculateStat<PiercingStat>());
+        
         if (ObstaclesToPierce <= 0)
         {
             return;

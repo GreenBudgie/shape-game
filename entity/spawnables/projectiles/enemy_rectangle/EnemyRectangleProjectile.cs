@@ -21,6 +21,7 @@ public partial class EnemyRectangleProjectile : BasicRigidBodyProjectile<EnemyRe
     
     public override void Prepare(SpawnableContext context)
     {
+        base.Prepare(context);
         context.Stats.Add(new DamageStat {Damage = 5});
     }
 

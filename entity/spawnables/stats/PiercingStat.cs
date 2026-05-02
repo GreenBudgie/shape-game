@@ -6,7 +6,7 @@ public partial class PiercingStat : SpawnableStat
 
     private static readonly Texture2D StatIcon = GD.Load<Texture2D>(IconPath);
 
-    [Export] public int Piercing { get; private set; }
+    [Export] public int Piercing { get; set; }
     
     public override string Name => "piercing";
     

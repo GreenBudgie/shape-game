@@ -7,12 +7,13 @@
 [ext_resource type="Texture2D" uid="uid://dqwuakvopu8l8" path="res://entity/spawnables/static/barrier/barrier.png" id="5_wc1s4"]
 [ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://util/particles/textures/particle_square.png" id="6_jtdx1"]
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_y6mjq"]
+[ext_resource type="PackedScene" uid="uid://6dllnllpl3my" path="res://entity/spawnables/components/lifetime/lifetime_component.tscn" id="8_dk3do"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_s4g7o"]
 friction = 0.5
 bounce = 0.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_g8n68"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5543c"]
 resource_local_to_scene = true
 shader = ExtResource("6_y6mjq")
 shader_parameter/glow_color = Color(0.21176471, 0.94509804, 0.8039216, 1)
@@ -70,7 +71,7 @@ _appearSound = ExtResource("2_g8n68")
 _disappearSound = ExtResource("3_y6mjq")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_g8n68")]
-material = SubResource("ShaderMaterial_g8n68")
+material = SubResource("ShaderMaterial_5543c")
 
 [node name="Sprite2D" type="Sprite2D" parent="Glow" unique_id=210456309]
 texture = ExtResource("5_wc1s4")
@@ -88,3 +89,5 @@ texture = ExtResource("6_jtdx1")
 lifetime = 0.5
 visibility_rect = Rect2(-225, -100, 450, 200)
 process_material = SubResource("ParticleProcessMaterial_3nu1x")
+
+[node name="LifetimeComponent" parent="." unique_id=1742972924 instance=ExtResource("8_dk3do")]
