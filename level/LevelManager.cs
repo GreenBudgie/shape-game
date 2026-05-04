@@ -143,8 +143,9 @@ public partial class LevelManager : Node
         {
             return;
         }
-
+        
         _requirementsMet = true;
+        GamePhaseManager.Instance.ChangePhase(GamePhase.Shop);
     }
 
     private void OnEnemyDestroyed(Enemy enemy)
@@ -167,7 +168,6 @@ public partial class LevelManager : Node
 
         if (_requirementsMet)
         {
-            GamePhaseManager.Instance.ChangePhase(GamePhase.Shop);
             return;
         }
         

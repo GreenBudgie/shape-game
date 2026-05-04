@@ -132,7 +132,7 @@ public partial class Player : RigidBody2D
 
     private void HandleFire()
     {
-        if (!MouseInputManager.Instance.IsCharacterControlEnabled)
+        if (!MouseInputManager.Instance.IsAttackEnabled)
         {
             return;
         }

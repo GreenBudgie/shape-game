@@ -6,6 +6,7 @@ public partial class MouseInputManager : Node2D
     private Vector2 _windowCenter;
     private Vector2 _currentFrameMouseDelta;
     public bool IsCharacterControlEnabled { get; private set; }
+    public bool IsAttackEnabled { get; set; }
     
     public MouseInputManager()
     {

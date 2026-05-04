@@ -31,6 +31,8 @@ public partial class Shop : Node2D
 
     private void ShowShop()
     {
+        MouseInputManager.Instance.IsAttackEnabled = false;
+        
         for (var i = 0; i < 3; i++)
         {
             var module = ModuleManager.Modules.GetRandom();
@@ -43,6 +45,7 @@ public partial class Shop : Node2D
 
     private void HideShop()
     {
+        MouseInputManager.Instance.IsAttackEnabled = true;
         Visible = false;
         
         foreach (var module in _modules.GetChildren())

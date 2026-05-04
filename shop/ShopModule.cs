@@ -20,7 +20,7 @@ public partial class ShopModule : Control
     [Export] private AudioStream _clickSound = null!;
     [Export] private AudioStream _buttonUpSound = null!;
 
-    public Module? Module { get; private set; }
+    public Module Module { get; private set; } = null!;
 
     public static ShopModule Create(Module module)
     {
@@ -43,29 +43,52 @@ public partial class ShopModule : Control
             .SetRadius(0);
         
         _title = GetNode<RichTextLabel>("%Title");
-        if (Module != null)
-        {
-            _title.Text = Module.Name;
-        }
+        _title.Text = Module.Name;
         
-        _moduleTexture = GetNode<TextureRect>("ModuleTexture");
-        if (Module != null)
-        {
-            _moduleTexture.Texture = Module.Texture;
-        }
+        _moduleTexture = GetNode<TextureRect>("%ModuleTexture");
+        _moduleTexture.Texture = Module.Texture;
         
         _priceLabel = GetNode<RichTextLabel>("%PriceLabel");
-        if (Module != null)
-        {
-            _priceLabel.Text = Module.Price.ToString();
-        }
+        _priceLabel.Text = Module.Price.ToString();
         
         _buttonMask = Mask.Attach(_buttonHovered).Axis(MaskAxis.Horizontal).Origin(MaskOrigin.Left);
         _buttonMask.Progress = 0;
+    }
 
-        _button.MouseEntered += OnHover;
-        _button.MouseExited += OnUnhover;
-        _button.ButtonDown += OnClick;
+    private bool _isHovered;
+
+    public override void _Process(double delta)
+    {
+        var player = Player.FindPlayer();
+        if (player == null)
+        {
+            return;
+        }
+
+        var playerCenter = player.ToGlobal(player.CenterOfMass);
+        var buttonRect = _button.GetGlobalRect();
+
+        if (buttonRect.HasPoint(playerCenter))
+        {
+            if (!_isHovered)
+            {
+                OnHover();
+                _isHovered = true;
+            }
+        }
+        else
+        {
+            if (_isHovered)
+            {
+                OnUnhover();
+                _isHovered = false;
+            }
+        }
+
+        if (_isHovered && Input.IsActionJustPressed("inventory_left_click"))
+        {
+            OnClick();
+        }
     }
 
     private Tween? _buttonMaskTween;
