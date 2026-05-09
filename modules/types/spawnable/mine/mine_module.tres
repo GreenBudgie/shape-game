@@ -40,4 +40,5 @@ Texture = ExtResource("5_ev71l")
 Name = "Mine"
 Description = "A mine"
 Stats = Array[ExtResource("1_ex7fr")]([SubResource("Resource_2bf2o"), SubResource("Resource_ajk3t"), SubResource("Resource_itn0a"), SubResource("Resource_mm0w4"), SubResource("Resource_oetpn")])
+Price = 15
 metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

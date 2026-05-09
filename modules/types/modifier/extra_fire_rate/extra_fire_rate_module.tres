@@ -16,4 +16,5 @@ Texture = ExtResource("1_mg2yu")
 Name = "Extra Fire Rate"
 Description = "Increases fire rate"
 Stats = Array[ExtResource("1_resfs")]([SubResource("Resource_6edp1")])
+Price = 10
 metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

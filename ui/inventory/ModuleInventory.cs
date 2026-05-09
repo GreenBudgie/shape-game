@@ -20,6 +20,23 @@ public partial class ModuleInventory : Control
     {
         return _slots;
     }
+    
+    /// <summary>
+    /// Add the module to the first empty slot, or does nothing if there are no empty slots
+    /// </summary>
+    /// <param name="module">Module to add</param>
+    /// <returns>True if module was added, false otherwise</returns>
+    public bool AddModule(Module module)
+    {
+        var firstEmptySlot = _slots.FirstOrDefault(slot => !slot.HasModule());
+        if (firstEmptySlot == null)
+        {
+            return false;
+        }
+        
+        firstEmptySlot.InsertModule(UiModule.Create(module));
+        return true;
+    }
 
     private List<InventorySlot> FindSlots(Array<Node> children)
     {

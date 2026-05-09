@@ -3,6 +3,11 @@
  */
 public static class TypeSafeTweenHelper
 {
+    
+    public static PropertyTweener TweenPosition(this Tween tween, GodotObject node, Vector2 finalVal, float duration)
+    {
+        return tween.TweenProperty(node, PositionProperty, finalVal, duration);
+    }
 
     public static PropertyTweener TweenRotationDegrees(this Tween tween, GodotObject node, float finalVal, float duration)
     {

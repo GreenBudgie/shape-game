@@ -34,4 +34,5 @@ Texture = ExtResource("1_81r4k")
 Name = "Bolt"
 Description = "Fast and precise projectile. Very reliable!"
 Stats = Array[ExtResource("1_2bf2o")]([SubResource("Resource_85yfv"), SubResource("Resource_2bf2o"), SubResource("Resource_ajk3t"), SubResource("Resource_bfude")])
+Price = 5
 metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

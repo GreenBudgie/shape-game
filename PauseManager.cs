@@ -9,10 +9,14 @@
 
     public static PauseManager Instance { get; private set; } = null!;
 
+    public PauseManager()
+    {
+        Instance = this;
+    }
+    
     public override void _Ready()
     {
         ProcessMode = ProcessModeEnum.Always;
-        Instance = this;
     }
 
     public override void _Process(double delta)

@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="MiniSphereModule" format=3 uid="uid://ccuh2d7r0dhxc"]
 
+[ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://entity/spawnables/stats/SpawnableStat.cs" id="1_7jm0c"]
 [ext_resource type="Script" uid="uid://bphg4uxj331w1" path="res://modules/types/spawnable/mini_sphere/MiniSphereModule.cs" id="1_hns7l"]
 [ext_resource type="Texture2D" uid="uid://dax1am0tfnonj" path="res://modules/types/spawnable/mini_sphere/mini_sphere_module.png" id="1_j2p3u"]
 [ext_resource type="Script" uid="uid://73fwxoshnhmd" path="res://entity/spawnables/stats/DamageStat.cs" id="2_16jbp"]
@@ -33,5 +34,6 @@ script = ExtResource("1_hns7l")
 Texture = ExtResource("1_j2p3u")
 Name = "Mini Sphere"
 Description = "Many short-lived and inaccurate projectiles"
-Stats = Array[Object]([SubResource("Resource_3333m"), SubResource("Resource_pf61b"), SubResource("Resource_lrr28"), SubResource("Resource_r5ee6")])
+Stats = Array[ExtResource("1_7jm0c")]([SubResource("Resource_3333m"), SubResource("Resource_pf61b"), SubResource("Resource_lrr28"), SubResource("Resource_r5ee6")])
+Price = 5
 metadata/_custom_type_script = "uid://dbop5xnp8ac4s"

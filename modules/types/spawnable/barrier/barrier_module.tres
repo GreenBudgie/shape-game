@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="BarrierModule" format=3 uid="uid://cyfc32h4mwt7u"]
 
 [ext_resource type="Script" uid="uid://ce47cdardq6qj" path="res://modules/types/spawnable/barrier/BarrierModule.cs" id="1_kabgn"]
+[ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://entity/spawnables/stats/SpawnableStat.cs" id="1_os6ya"]
 [ext_resource type="Script" uid="uid://cmvf52kc3ad7v" path="res://entity/spawnables/stats/LifetimeStat.cs" id="1_toy40"]
 [ext_resource type="Texture2D" uid="uid://cy3pk6xi70dch" path="res://modules/types/spawnable/barrier/barrier_module.png" id="1_yjhod"]
 [ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://entity/spawnables/stats/ReloadStat.cs" id="2_rt2kj"]
@@ -20,5 +21,6 @@ script = ExtResource("1_kabgn")
 Texture = ExtResource("1_yjhod")
 Name = "Barrier"
 Description = "Generates a projectile barrier in front of the player"
-Stats = Array[Object]([SubResource("Resource_h060a"), SubResource("Resource_ke7xy")])
+Stats = Array[ExtResource("1_os6ya")]([SubResource("Resource_h060a"), SubResource("Resource_ke7xy")])
+Price = 15
 metadata/_custom_type_script = "uid://ce47cdardq6qj"

@@ -1,3 +1,5 @@
+using System.Globalization;
+
 public partial class HealthController : Node2D
 {
     [Signal]
@@ -86,7 +88,7 @@ public partial class HealthController : Node2D
             return;
         }
 
-        HealthLabel.Create(delta, ToGlobal(_damageLabelSpawnArea.Shape.GetRect().RandomPoint()));
+        CreateHealthLabel(delta);
 
         if (!IsInvulnerable || delta >= 0)
         {
@@ -118,6 +120,39 @@ public partial class HealthController : Node2D
         {
             PlayHealEffect(dangerLevel);
         }
+    }
+
+    private void CreateHealthLabel(float healthDelta)
+    {
+        var sign = healthDelta > 0 ? "+" : "";
+        var color = Sign(healthDelta) switch
+        {
+            -1 => ColorScheme.Red,
+            0 => ColorScheme.Yellow,
+            _ => ColorScheme.LightGreen
+        };
+
+        string healthToDisplay; 
+        if (Abs(healthDelta) < 1)
+        {
+            if (IsEqualApprox(healthDelta, 0f))
+            {
+                healthToDisplay = "0";
+            }
+            else
+            {
+                healthToDisplay = healthDelta.ToString("0.#", CultureInfo.InvariantCulture);
+            }
+        }
+        else
+        {
+            healthToDisplay = RoundToInt(healthDelta).ToString();
+        }
+
+        var position = ToGlobal(_damageLabelSpawnArea.Shape.GetRect().RandomPoint());
+        var text = sign + healthToDisplay;
+        
+        PopupLabel.Create(position, text).SetColor(color);
     }
 
     private void PlayHealEffect(float dangerLevel)

@@ -5,7 +5,6 @@
 [ext_resource type="AudioStream" uid="uid://djdfrb1kcmfle" path="res://ui/inventory/slot/slot_hover.wav" id="2_tsgo1"]
 [ext_resource type="AudioStream" uid="uid://cry6gufmuccda" path="res://ui/inventory/slot/slot_click.wav" id="3_d8k3v"]
 [ext_resource type="Texture2D" uid="uid://dyctv6u1nqwh8" path="res://shop/shop_module_button_hovered.png" id="3_ejndq"]
-[ext_resource type="AudioStream" uid="uid://cpqn2k806hyjd" path="res://ui/inventory/slot/slot_button_up.wav" id="4_tpcnf"]
 [ext_resource type="Texture2D" uid="uid://c7vc2h5xg45xt" path="res://modules/types/modifier/extra_damage/extra_damage.png" id="4_tsgo1"]
 [ext_resource type="Texture2D" uid="uid://cfntiitlilkfv" path="res://ui/stats/crystal_ui.png" id="5_d8k3v"]
 
@@ -18,15 +17,22 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tsgo1"]
 
 [node name="ShopModule" type="Control" unique_id=2015547471]
-custom_minimum_size = Vector2(0, 192)
+custom_minimum_size = Vector2(772, 192)
 layout_mode = 3
-anchors_preset = 0
-offset_right = 772.0
-offset_bottom = 192.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -386.0
+offset_top = -96.0
+offset_right = 386.0
+offset_bottom = 96.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_16t4l")
 _hoverSound = ExtResource("2_tsgo1")
 _clickSound = ExtResource("3_d8k3v")
-_buttonUpSound = ExtResource("4_tpcnf")
 
 [node name="ButtonGroup" type="Control" parent="." unique_id=953747225]
 anchors_preset = 0
@@ -55,8 +61,10 @@ texture = ExtResource("3_ejndq")
 
 [node name="Button" type="Button" parent="ButtonGroup" unique_id=2041272976]
 layout_mode = 0
-offset_right = 512.0
-offset_bottom = 192.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 520.0
+offset_bottom = 200.0
 theme_override_styles/normal = SubResource("StyleBoxEmpty_16t4l")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_lc0gu")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_ejndq")
@@ -66,8 +74,10 @@ flat = true
 
 [node name="MarginContainer" type="MarginContainer" parent="ButtonGroup" unique_id=1996808019]
 layout_mode = 0
-offset_right = 320.0
-offset_bottom = 192.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 328.0
+offset_bottom = 200.0
 mouse_filter = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
@@ -88,9 +98,10 @@ vertical_alignment = 1
 [node name="ModuleTexture" type="TextureRect" parent="ButtonGroup" unique_id=2056756451]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 320.0
-offset_right = 512.0
-offset_bottom = 192.0
+offset_left = 328.0
+offset_top = 8.0
+offset_right = 520.0
+offset_bottom = 200.0
 mouse_filter = 2
 texture = ExtResource("4_tsgo1")
 stretch_mode = 3
@@ -99,7 +110,7 @@ stretch_mode = 3
 layout_mode = 0
 offset_left = 537.0
 offset_right = 1102.0
-offset_bottom = 192.0
+offset_bottom = 200.0
 theme_override_constants/separation = 24
 
 [node name="PriceLabel" type="RichTextLabel" parent="Price" unique_id=799938364]

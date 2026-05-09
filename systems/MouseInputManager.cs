@@ -22,23 +22,25 @@ public partial class MouseInputManager : Node2D
             GetViewportRect().Size.Y / 2.0f
         );
 
-        PauseManager.Instance.GameUnpause += EnableCharacterControl;
-        PauseManager.Instance.GamePause += ShowCursor;
-        InventoryManager.Instance.InventoryClosed += EnableCharacterControl;
-        InventoryManager.Instance.InventoryOpened += ShowCursor;
-        DebugScreen.Instance.ScreenClosed += EnableCharacterControl;
-        DebugScreen.Instance.ScreenOpened += ShowCursor;
+        PauseManager.Instance.Connect(PauseManager.SignalName.GameUnpause, Callable.From(EnableCharacterControl));
+        PauseManager.Instance.Connect(PauseManager.SignalName.GamePause, Callable.From(ShowCursor));
+        InventoryManager.Instance.Connect(InventoryManager.SignalName.InventoryClosed, Callable.From(EnableCharacterControl));
+        InventoryManager.Instance.Connect(InventoryManager.SignalName.InventoryOpened, Callable.From(ShowCursor));
+        DebugScreen.Instance.Connect(DebugScreen.SignalName.ScreenClosed, Callable.From(EnableCharacterControl));
+        DebugScreen.Instance.Connect(DebugScreen.SignalName.ScreenOpened, Callable.From(ShowCursor));
     }
 
     public override void _Process(double delta)
     {
-        if (IsCharacterControlEnabled)
+        if (IsCharacterControlEnabled && DisplayServer.WindowIsFocused())
         {
+            Input.MouseMode = Input.MouseModeEnum.Hidden;
             _currentFrameMouseDelta = MoveMouseToWindowCenter(_windowCenter);
         }
         else
         {
             _currentFrameMouseDelta = Vector2.Zero;
+            Input.MouseMode = Input.MouseModeEnum.Visible;
         }
     }
 

@@ -18,7 +18,6 @@ public partial class ShopModule : Control
     
     [Export] private AudioStream _hoverSound = null!;
     [Export] private AudioStream _clickSound = null!;
-    [Export] private AudioStream _buttonUpSound = null!;
 
     public Module Module { get; private set; } = null!;
 
@@ -133,9 +132,6 @@ public partial class ShopModule : Control
 
     private void OnUnhover()
     {
-        var sound = SoundManager.Instance.PlaySound(_buttonUpSound);
-        sound.RandomizePitchOffset(0.2f);
-        
         _buttonMaskTween?.Kill();
         _buttonMaskTween = CreateTween()
             .SetEase(Tween.EaseType.Out)
@@ -167,7 +163,30 @@ public partial class ShopModule : Control
 
     private void OnClick()
     {
+        var crystals = CrystalManager.Instance.Crystals;
+        if (crystals < Module.Price)
+        {
+            PopupLabel.Create(GetRandomPosition(), "Not enough crystals").SetColor(ColorScheme.Red);
+            return;
+        }
+        
         var sound = SoundManager.Instance.PlaySound(_clickSound);
         sound.RandomizePitchOffset(0.2f);
+
+        var moduleAdded = PlayerInventory.Instance.AddModule(Module);
+        if (!moduleAdded)
+        {
+            PopupLabel.Create(GetRandomPosition(), "Inventory is full").SetColor(ColorScheme.Red);
+            return;
+        }
+        
+        CrystalManager.Instance.Crystals -= Module.Price;
+        
+        QueueFree();
+    }
+
+    private Vector2 GetRandomPosition()
+    {
+        return _button.GetGlobalRect().RandomPoint();
     }
 }
