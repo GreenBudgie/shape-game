@@ -194,7 +194,7 @@ _data = {
 
 [node name="FallingCrystal" type="RigidBody2D" unique_id=484131422 groups=["falling_crystals"]]
 collision_layer = 512
-collision_mask = 304
+collision_mask = 8496
 mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_e1k7q")
 contact_monitor = true
