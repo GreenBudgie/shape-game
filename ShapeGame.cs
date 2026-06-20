@@ -9,7 +9,7 @@ public partial class ShapeGame : Node2D
     public delegate void PostSetupEventHandler();
     
     public static readonly Vector2 WindowSize = new(3840, 2160);
-    public static readonly Rect2 PlayableArea = new(512, 0, 3264, 2160);
+    public static readonly Rect2 PlayableArea = new(0, 0, WindowSize.X, WindowSize.Y);
     public static readonly Vector2 Center = PlayableArea.GetCenter();
     public const float DistanceToOutsideBorder = 1024;
     

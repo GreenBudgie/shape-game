@@ -7,7 +7,8 @@
 
 [node name="InventoryManager" type="Control" unique_id=663337661 node_paths=PackedStringArray("PlayerInventory", "LeftBlasterInventory", "RightBlasterInventory")]
 layout_mode = 3
-anchor_right = 0.85
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -16,7 +17,6 @@ script = ExtResource("1_bclat")
 PlayerInventory = NodePath("PlayerInventory")
 LeftBlasterInventory = NodePath("LeftBlasterInventory")
 RightBlasterInventory = NodePath("RightBlasterInventory")
-metadata/_edit_use_anchors_ = true
 
 [node name="Overlay" type="ColorRect" parent="." unique_id=91485771]
 layout_mode = 1
