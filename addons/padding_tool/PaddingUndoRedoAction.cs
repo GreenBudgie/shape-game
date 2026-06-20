@@ -1,3 +1,4 @@
+#if TOOLS
 [Tool]
 public partial class PaddingUndoRedoAction : GodotObject
 {
@@ -34,3 +35,4 @@ public partial class PaddingUndoRedoAction : GodotObject
         fs.Scan();
     }
 }
+#endif

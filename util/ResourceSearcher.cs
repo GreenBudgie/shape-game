@@ -92,14 +92,7 @@ public static class ResourceSearcher
         }
 
         var result = new List<T>();
-        var dirAccess = DirAccess.Open(directory);
-        if (dirAccess == null)
-        {
-            GD.PushWarning($"Failed to open directory: {directory}");
-            return result;
-        }
-
-        var files = dirAccess.GetFiles().Where(fileName => fileName.EndsWith(".tres"));
+        var files = ResourceLoader.ListDirectory(directory).Where(fileName => fileName.EndsWith(".tres"));
         foreach (var file in files)
         {
             var resourcePath = Path.Combine(directory, file);
