@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://entity/living/player/player.tscn" id="2_eow3j"]
+[ext_resource type="Texture2D" uid="uid://c1ai2x8hfwt2q" path="res://environment/wall/glowing_wall.png" id="4_rvswv"]
 [ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://shop/shop.tscn" id="5_e8heu"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
@@ -76,6 +77,14 @@ shape = SubResource("RectangleShape2D_87y3e")
 [node name="RightWall" type="CollisionShape2D" parent="LevelWalls" unique_id=1028911608]
 position = Vector2(4352, 1080)
 shape = SubResource("RectangleShape2D_0lhi4")
+
+[node name="RightGlow" type="Sprite2D" parent="LevelWalls" unique_id=1241804353]
+position = Vector2(3872, 1080)
+texture = ExtResource("4_rvswv")
+
+[node name="LeftGlow" type="Sprite2D" parent="LevelWalls" unique_id=524103702]
+position = Vector2(-32, 1089)
+texture = ExtResource("4_rvswv")
 
 [node name="LevelCeiling" type="StaticBody2D" parent="." unique_id=1646188548]
 collision_layer = 64

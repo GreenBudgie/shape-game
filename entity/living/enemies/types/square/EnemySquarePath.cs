@@ -17,7 +17,7 @@ public partial class EnemySquarePath : EnemyPath
         var leftmostPoint = Curve.GetPointPosition(0);
         var rightmostPoint = Curve.GetPointPosition(pointCount - 1);
         var pathWidth = rightmostPoint.X - leftmostPoint.X;
-        var xOffset = ShapeGame.PlayableArea.GetCenter().X - pathWidth / 2f;
+        var xOffset = ShapeGame.Center.X - pathWidth / 2f;
         var yOffset = (float)GD.RandRange(MinYOffset, MaxYOffset);
         GlobalPosition = new Vector2(xOffset, yOffset);
     }

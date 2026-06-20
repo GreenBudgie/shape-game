@@ -4,14 +4,14 @@
 
 [sub_resource type="Curve2D" id="Curve2D_uovvh"]
 _data = {
-"points": PackedVector2Array(-5.41739, -8.55582, 0, 0, 0, 200, -1400, 0, 1400, 0, 1400, 400, 0, 0, 0, 0, 2800, 200, 1400, 0, -1400, 0, 1400, 0, 0, 0, 0, 0, 0, 200)
+"points": PackedVector2Array(-5.41739, -8.55582, 0, 0, 0, 200, -1600, 0, 1600, 0, 1600, 400, 0, 0, 0, 0, 3200, 200, 1400, 0, -1600, 0, 1600, 0, 0, 0, 0, 0, 0, 200)
 }
 point_count = 5
 
-[node name="EnemyRhombusPath" type="Path2D"]
+[node name="EnemyRhombusPath" type="Path2D" unique_id=119397456]
 curve = SubResource("Curve2D_uovvh")
 script = ExtResource("1_b2rc3")
 
-[node name="PathPoint" type="PathFollow2D" parent="."]
+[node name="PathPoint" type="PathFollow2D" parent="." unique_id=1066239970]
 position = Vector2(0, 200)
-rotation = 0.141897
+rotation = 1.5707964

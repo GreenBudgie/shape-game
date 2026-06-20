@@ -4,13 +4,13 @@
 
 [sub_resource type="Curve2D" id="Curve2D_uovvh"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 400, 0, 0, 0, 0, 2500, 400, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 0, 0, 0)
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 400, 0, 0, 0, 0, 3000, 400, 0, 0, 0, 0, 3000, 0, 0, 0, 0, 0, 0, 0)
 }
 point_count = 5
 
-[node name="EnemyRectanglePath" type="Path2D"]
+[node name="EnemyRectanglePath" type="Path2D" unique_id=1535777480]
 curve = SubResource("Curve2D_uovvh")
 script = ExtResource("1_rlgcd")
 
-[node name="PathPoint" type="PathFollow2D" parent="."]
-rotation = 1.5708
+[node name="PathPoint" type="PathFollow2D" parent="." unique_id=894882166]
+rotation = 1.5707964

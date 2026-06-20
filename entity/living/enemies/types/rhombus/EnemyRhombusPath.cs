@@ -5,7 +5,7 @@ public partial class EnemyRhombusPath : ClosedEnemyPath
 
     protected override float MinYOffset => 300;
     protected override float MaxYOffset => 600;
-    protected override float PathWidth => 2800;
+    protected override float PathWidth => 3200;
     protected override float Speed => 0.1f;
 
     public static EnemyRhombusPath Create()
