@@ -14,6 +14,11 @@ public partial class GamePhaseManager : Node
     
     public void ChangePhase(GamePhase newPhase)
     {
+        if (Phase == newPhase)
+        {
+            return;
+        }
+        
         Phase = newPhase;
         EmitSignalPhaseChanged(newPhase);
     }

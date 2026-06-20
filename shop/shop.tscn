@@ -1,17 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://bliriv38qvb4i"]
+[gd_scene format=3 uid="uid://bliriv38qvb4i"]
 
 [ext_resource type="Script" uid="uid://c4kyw6msgrepp" path="res://shop/Shop.cs" id="1_r2p71"]
+[ext_resource type="Texture2D" uid="uid://b56b358ts2ban" path="res://shop/shop_module_button.png" id="2_sxvro"]
+[ext_resource type="Script" uid="uid://cbpvpxnrvfekt" path="res://shop/NextLevelButton.cs" id="3_givde"]
 
-[node name="Shop" type="Node2D"]
+[node name="Shop" type="Node2D" unique_id=2086323810]
 script = ExtResource("1_r2p71")
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="." unique_id=99518352]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 3840.0
 offset_bottom = 2160.0
 
-[node name="CenterContainer" type="CenterContainer" parent="Control"]
+[node name="CenterContainer" type="CenterContainer" parent="Control" unique_id=1288932920]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,8 +21,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Modules" type="VBoxContainer" parent="Control/CenterContainer"]
+[node name="Modules" type="VBoxContainer" parent="Control/CenterContainer" unique_id=107346762]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 32
 metadata/_edit_group_ = true
+
+[node name="NextLevelButton" type="TextureRect" parent="." unique_id=167942347]
+offset_left = 1709.0
+offset_top = 1581.0
+offset_right = 2237.0
+offset_bottom = 1789.0
+texture = ExtResource("2_sxvro")
+script = ExtResource("3_givde")
+
+[node name="Label" type="Label" parent="NextLevelButton" unique_id=832214410]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Next Level"
+horizontal_alignment = 1
+vertical_alignment = 1

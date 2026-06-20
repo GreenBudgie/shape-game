@@ -118,8 +118,21 @@ public partial class LevelManager : Node
 
     private const float PhaseStartMinDuration = 0.3f;
 
+    public void StartNextLevel()
+    {
+        if (Level == null)
+        {
+            return;
+        }
+        
+        var nextLevelNumber = Level.Number + 1;
+        StartLevel(nextLevelNumber);
+    }
+    
     public void StartLevel(int level)
     {
+        GamePhaseManager.Instance.ChangePhase(GamePhase.Level);
+        
         Level = GetLevelByNumber(level);
         _phase = 1;
         _requirementsMet = false;

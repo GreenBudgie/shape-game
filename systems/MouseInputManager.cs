@@ -6,7 +6,9 @@ public partial class MouseInputManager : Node2D
     private Vector2 _windowCenter;
     private Vector2 _currentFrameMouseDelta;
     public bool IsCharacterControlEnabled { get; private set; }
-    public bool IsAttackEnabled { get; set; }
+    public bool IsAttackEnabled { get; private set; }
+
+    private bool _isAttackQueuedToEnable;
     
     public MouseInputManager()
     {
@@ -32,6 +34,12 @@ public partial class MouseInputManager : Node2D
 
     public override void _Process(double delta)
     {
+        if (_isAttackQueuedToEnable && (Input.IsActionJustPressed("inventory_left_click") 
+                                        || Input.IsActionJustReleased("inventory_left_click")))
+        {
+            IsAttackEnabled = true;
+        }
+        
         if (IsCharacterControlEnabled && DisplayServer.WindowIsFocused())
         {
             Input.MouseMode = Input.MouseModeEnum.Hidden;
@@ -42,6 +50,21 @@ public partial class MouseInputManager : Node2D
             _currentFrameMouseDelta = Vector2.Zero;
             Input.MouseMode = Input.MouseModeEnum.Visible;
         }
+    }
+
+    public void DisableAttack()
+    {
+        IsAttackEnabled = false;
+    }
+
+    public void EnableAttack()
+    {
+        if (IsAttackEnabled)
+        {
+            return;
+        }
+        
+        _isAttackQueuedToEnable = true;
     }
 
     public Vector2 GetMouseDelta()

@@ -36,5 +36,5 @@ MinPhaseDuration = 4.0
 EnemiesPerPhase = 3
 EnemiesPerPhaseInc = 0.5
 MaxEnemiesPerPhase = 6
-EnemyTypeDistributions = Array[Object]([SubResource("Resource_355h3"), SubResource("Resource_gvhn5"), SubResource("Resource_qhje5")])
+EnemyTypeDistributions = Array[ExtResource("1_qi0c8")]([SubResource("Resource_355h3"), SubResource("Resource_gvhn5"), SubResource("Resource_qhje5")])
 metadata/_custom_type_script = "uid://bkrrifxyi3ap8"

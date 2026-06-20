@@ -64,7 +64,7 @@ public partial class ShopModule : Control
             return;
         }
 
-        var playerCenter = player.ToGlobal(player.CenterOfMass);
+        var playerCenter = player.GetGlobalCenter();
         var buttonRect = _button.GetGlobalRect();
 
         if (buttonRect.HasPoint(playerCenter))

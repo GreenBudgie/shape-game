@@ -258,6 +258,11 @@ public partial class Player : RigidBody2D
     {
         return GlobalPosition + new Vector2(CornerDistance, CornerDistance).Rotated(GetTilt());
     }
+    
+    public Vector2 GetGlobalCenter()
+    {
+        return ToGlobal(CenterOfMass);
+    }
 
     public float GetTilt()
     {
