@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bq4acwsx0reoh"
-path="res://.godot/imported/bolt_module.png-118f7abf9e8baaacc0e26ecbf61f6311.ctex"
+uid="uid://4p56hm2gcdfy"
+path="res://.godot/imported/mini_sphere.png-492507ce6ca0b3be09c0b6f70226890c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://module/types/spawnable/bolt/bolt_module.png"
-dest_files=["res://.godot/imported/bolt_module.png-118f7abf9e8baaacc0e26ecbf61f6311.ctex"]
+source_file="res://module/types/spawnable/mini_sphere/mini_sphere.png"
+dest_files=["res://.godot/imported/mini_sphere.png-492507ce6ca0b3be09c0b6f70226890c.ctex"]
 
 [params]
 

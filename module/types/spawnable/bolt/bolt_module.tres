@@ -1,12 +1,17 @@
 [gd_resource type="Resource" script_class="BoltModule" format=3 uid="uid://cqjg5lcuad1hd"]
 
 [ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://entity/spawnables/stats/SpawnableStat.cs" id="1_2bf2o"]
-[ext_resource type="Texture2D" uid="uid://bq4acwsx0reoh" path="res://module/types/spawnable/bolt/bolt_module.png" id="1_81r4k"]
+[ext_resource type="Script" uid="uid://duu3tsjw77nb6" path="res://module/shape/ModuleShapeSingle.cs" id="1_uvmmu"]
 [ext_resource type="Script" uid="uid://73fwxoshnhmd" path="res://entity/spawnables/stats/DamageStat.cs" id="2_5ec5i"]
 [ext_resource type="Script" uid="uid://dbop5xnp8ac4s" path="res://module/types/spawnable/bolt/BoltModule.cs" id="2_hdm4n"]
 [ext_resource type="Script" uid="uid://dxj6bmum8pdot" path="res://entity/spawnables/stats/SpeedStat.cs" id="3_85yfv"]
 [ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://entity/spawnables/stats/ReloadStat.cs" id="4_2bf2o"]
 [ext_resource type="Script" uid="uid://cmvf52kc3ad7v" path="res://entity/spawnables/stats/LifetimeStat.cs" id="5_ajk3t"]
+[ext_resource type="Texture2D" uid="uid://d3af7qu2ct723" path="res://module/types/spawnable/bolt/bolt.png" id="6_3xp37"]
+
+[sub_resource type="Resource" id="Resource_uvmmu"]
+script = ExtResource("1_uvmmu")
+metadata/_custom_type_script = "uid://duu3tsjw77nb6"
 
 [sub_resource type="Resource" id="Resource_85yfv"]
 script = ExtResource("2_5ec5i")
@@ -30,7 +35,9 @@ metadata/_custom_type_script = "uid://cmvf52kc3ad7v"
 
 [resource]
 script = ExtResource("2_hdm4n")
-Texture = ExtResource("1_81r4k")
+Texture = ExtResource("6_3xp37")
+Shape = SubResource("Resource_uvmmu")
+Connections = null
 Name = "Bolt"
 Description = "Fast and precise projectile. Very reliable!"
 Stats = Array[ExtResource("1_2bf2o")]([SubResource("Resource_85yfv"), SubResource("Resource_2bf2o"), SubResource("Resource_ajk3t"), SubResource("Resource_bfude")])

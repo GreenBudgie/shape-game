@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dax1am0tfnonj"
-path="res://.godot/imported/mini_sphere_module.png-ce834c8df18d467d9545ff5612a7d0d2.ctex"
+uid="uid://ddbmie8cjsnsb"
+path="res://.godot/imported/shape_triple.png-27d353f599908cd419d265fb7fcecf7f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://module/types/spawnable/mini_sphere/mini_sphere_module.png"
-dest_files=["res://.godot/imported/mini_sphere_module.png-ce834c8df18d467d9545ff5612a7d0d2.ctex"]
+source_file="res://module/shape/shape_triple.png"
+dest_files=["res://.godot/imported/shape_triple.png-27d353f599908cd419d265fb7fcecf7f.ctex"]
 
 [params]
 

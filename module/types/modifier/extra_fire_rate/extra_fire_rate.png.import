@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8t5eahyf0qyr"
-path="res://.godot/imported/extra_damage.png-630960680890dce892f27ede32c96fb8.ctex"
+uid="uid://bet5sg5obim30"
+path="res://.godot/imported/extra_fire_rate.png-48cde07530f0a5e44b3040f60df24ab0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://module/types/modifier/extra_damage/extra_damage.png"
-dest_files=["res://.godot/imported/extra_damage.png-630960680890dce892f27ede32c96fb8.ctex"]
+source_file="res://module/types/modifier/extra_fire_rate/extra_fire_rate.png"
+dest_files=["res://.godot/imported/extra_fire_rate.png-48cde07530f0a5e44b3040f60df24ab0.ctex"]
 
 [params]
 

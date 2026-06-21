@@ -5,6 +5,10 @@ public partial class Module : Resource
 
     [Export] public Texture2D Texture { get; private set; } = null!;
 
+    [Export] public ModuleShape Shape { get; private set; } = null!;
+
+    [Export] public Array<ModuleConnection> Connections { get; private set; } = null!;
+
     [Export] public string Name { get; private set; } = null!;
 
     [Export(PropertyHint.MultilineText)] public string Description { get; private set; } = null!;

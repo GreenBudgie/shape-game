@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8t5eahyf0qyr"
-path="res://.godot/imported/extra_damage.png-630960680890dce892f27ede32c96fb8.ctex"
+uid="uid://cctsssm2r3hvt"
+path="res://.godot/imported/piercing.png-592927300f858a1d5f55d0f3e61ea46a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://module/types/modifier/extra_damage/extra_damage.png"
-dest_files=["res://.godot/imported/extra_damage.png-630960680890dce892f27ede32c96fb8.ctex"]
+source_file="res://module/types/modifier/piercing/piercing.png"
+dest_files=["res://.godot/imported/piercing.png-592927300f858a1d5f55d0f3e61ea46a.ctex"]
 
 [params]
 

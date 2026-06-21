@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0ulov3iql674"
-path="res://.godot/imported/piercing_module.png-92327e26d5651b26b117023d536248b4.ctex"
+uid="uid://b4uocapwodajq"
+path="res://.godot/imported/mine.png-2cd444f7dd49395cfd148e070b90f6f6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://module/types/modifier/piercing/piercing_module.png"
-dest_files=["res://.godot/imported/piercing_module.png-92327e26d5651b26b117023d536248b4.ctex"]
+source_file="res://module/types/spawnable/mine/mine.png"
+dest_files=["res://.godot/imported/mine.png-2cd444f7dd49395cfd148e070b90f6f6.ctex"]
 
 [params]
 
