@@ -1,11 +1,9 @@
 [gd_scene format=3 uid="uid://csitvuhpytc2q"]
 
 [ext_resource type="Script" uid="uid://b63f61tf6hqig" path="res://ui/inventory/InventoryManager.cs" id="1_bclat"]
-[ext_resource type="PackedScene" uid="uid://dilsv34jaqcrd" path="res://ui/inventory/slot/inventory_slot.tscn" id="1_qat6u"]
-[ext_resource type="Script" uid="uid://uk0cdv5oks15" path="res://ui/inventory/PlayerInventory.cs" id="2_sgwov"]
-[ext_resource type="Script" uid="uid://ccs8ycrls12u5" path="res://ui/inventory/BlasterInventory.cs" id="5_a1ldh"]
+[ext_resource type="Script" uid="uid://cdjjln25afl8t" path="res://ui/inventory/ModuleInventory.cs" id="2_hoddu"]
 
-[node name="InventoryManager" type="Control" unique_id=663337661 node_paths=PackedStringArray("PlayerInventory", "LeftBlasterInventory", "RightBlasterInventory")]
+[node name="InventoryManager" type="Control" unique_id=663337661 node_paths=PackedStringArray("LeftBlasterInventory", "RightBlasterInventory")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,7 +12,6 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 script = ExtResource("1_bclat")
-PlayerInventory = NodePath("PlayerInventory")
 LeftBlasterInventory = NodePath("LeftBlasterInventory")
 RightBlasterInventory = NodePath("RightBlasterInventory")
 
@@ -27,150 +24,15 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.196078)
 
-[node name="PlayerInventory" type="Control" parent="." unique_id=1333569795]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
-script = ExtResource("2_sgwov")
+[node name="LeftBlasterInventory" type="Control" parent="." unique_id=563627198]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_hoddu")
+IsLeft = true
 
-[node name="CenterContainer" type="CenterContainer" parent="PlayerInventory" unique_id=1875229872]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 353.0
-grow_horizontal = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PlayerInventory/CenterContainer" unique_id=1407408557]
-layout_mode = 2
-theme_override_constants/separation = 0
-alignment = 1
-
-[node name="InventorySlot1" parent="PlayerInventory/CenterContainer/HBoxContainer" unique_id=559048883 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-
-[node name="InventorySlot2" parent="PlayerInventory/CenterContainer/HBoxContainer" unique_id=283966419 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 1
-
-[node name="InventorySlot3" parent="PlayerInventory/CenterContainer/HBoxContainer" unique_id=1167930062 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 2
-
-[node name="InventorySlot4" parent="PlayerInventory/CenterContainer/HBoxContainer" unique_id=396907925 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 3
-
-[node name="InventorySlot5" parent="PlayerInventory/CenterContainer/HBoxContainer" unique_id=1999922484 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 4
-
-[node name="InventorySlot6" parent="PlayerInventory/CenterContainer/HBoxContainer" unique_id=1726448762 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 5
-
-[node name="LeftBlasterInventory" type="Control" parent="." unique_id=227820997]
-layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("5_a1ldh")
-
-[node name="LeftHBoxContainer" type="VBoxContainer" parent="LeftBlasterInventory" unique_id=1009037915]
-layout_mode = 0
-offset_left = -600.0
-offset_top = 646.0
-offset_right = -400.0
-offset_bottom = 1526.0
-mouse_filter = 2
-theme_override_constants/separation = 140
-metadata/_edit_group_ = true
-
-[node name="InventorySlot1" parent="LeftBlasterInventory/LeftHBoxContainer" unique_id=1893234967 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 5
-
-[node name="InventorySlot3" parent="LeftBlasterInventory/LeftHBoxContainer" unique_id=108723135 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 3
-
-[node name="InventorySlot5" parent="LeftBlasterInventory/LeftHBoxContainer" unique_id=1969598049 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 1
-
-[node name="RightHBoxContainer" type="VBoxContainer" parent="LeftBlasterInventory" unique_id=465730611]
-layout_mode = 0
-offset_left = -500.0
-offset_top = 817.0
-offset_right = -300.0
-offset_bottom = 1697.0
-mouse_filter = 2
-theme_override_constants/separation = 140
-metadata/_edit_group_ = true
-
-[node name="InventorySlot1" parent="LeftBlasterInventory/RightHBoxContainer" unique_id=1682054912 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 4
-
-[node name="InventorySlot3" parent="LeftBlasterInventory/RightHBoxContainer" unique_id=424285469 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 2
-
-[node name="InventorySlot5" parent="LeftBlasterInventory/RightHBoxContainer" unique_id=1889876033 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-
-[node name="RightBlasterInventory" type="Control" parent="." unique_id=45538032]
-layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("5_a1ldh")
-
-[node name="LeftHBoxContainer" type="VBoxContainer" parent="RightBlasterInventory" unique_id=601603906]
-layout_mode = 0
-offset_left = 400.0
-offset_top = 646.0
-offset_right = 600.0
-offset_bottom = 1526.0
-mouse_filter = 2
-theme_override_constants/separation = 140
-metadata/_edit_group_ = true
-
-[node name="InventorySlot1" parent="RightBlasterInventory/LeftHBoxContainer" unique_id=1339525358 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 5
-
-[node name="InventorySlot3" parent="RightBlasterInventory/LeftHBoxContainer" unique_id=1077399418 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 3
-
-[node name="InventorySlot5" parent="RightBlasterInventory/LeftHBoxContainer" unique_id=1992411169 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 1
-
-[node name="RightHBoxContainer" type="VBoxContainer" parent="RightBlasterInventory" unique_id=584455476]
-layout_mode = 0
-offset_left = 300.0
-offset_top = 817.0
-offset_right = 500.0
-offset_bottom = 1697.0
-mouse_filter = 2
-theme_override_constants/separation = 140
-metadata/_edit_group_ = true
-
-[node name="InventorySlot1" parent="RightBlasterInventory/RightHBoxContainer" unique_id=1436401695 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 4
-
-[node name="InventorySlot3" parent="RightBlasterInventory/RightHBoxContainer" unique_id=1068787039 instance=ExtResource("1_qat6u")]
-layout_mode = 2
-Number = 2
-
-[node name="InventorySlot5" parent="RightBlasterInventory/RightHBoxContainer" unique_id=878140390 instance=ExtResource("1_qat6u")]
-layout_mode = 2
+[node name="RightBlasterInventory" type="Control" parent="." unique_id=1837824876]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_hoddu")

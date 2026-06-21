@@ -7,12 +7,12 @@ public partial class Blaster : Node
 
     private const float MinDelay = 0.01f;
 
-    private BlasterInventory _inventory = null!;
+    private ModuleInventory _inventory = null!;
     private int _lastSlot;
 
     public float Delay { get; private set; }
 
-    public static Blaster Create(BlasterInventory inventory)
+    public static Blaster Create(ModuleInventory inventory)
     {
         return new Blaster
         {

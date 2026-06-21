@@ -22,9 +22,8 @@ public partial class InventoryManager : Control
 
     public bool IsOpen { get; private set; } = true;
 
-    [Export] public PlayerInventory PlayerInventory { get; private set; } = null!;
-    [Export] public BlasterInventory LeftBlasterInventory { get; private set; } = null!;
-    [Export] public BlasterInventory RightBlasterInventory { get; private set; } = null!;
+    [Export] public ModuleInventory LeftBlasterInventory { get; private set; } = null!;
+    [Export] public ModuleInventory RightBlasterInventory { get; private set; } = null!;
 
     private InventorySlot? _dragAndDropFrom;
     private List<InventorySlot> _slots = null!;
@@ -41,7 +40,6 @@ public partial class InventoryManager : Control
     {
         _inventories =
         [
-            PlayerInventory,
             LeftBlasterInventory,
             RightBlasterInventory
         ];
@@ -50,41 +48,9 @@ public partial class InventoryManager : Control
         Callable.From(PostSetup).CallDeferred();
     }
 
+
     private void PostSetup()
     {
-        PlayerInventory.GetSlot(0).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<BarrierModule>())
-        );
-        
-        RightBlasterInventory.GetSlot(5).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<MiniSphereModule>())
-        );
-        RightBlasterInventory.GetSlot(4).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<MineModule>())
-        );
-        RightBlasterInventory.GetSlot(3).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<ExtraDamageModule>())
-        );
-        
-        LeftBlasterInventory.GetSlot(5).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<BoltModule>())
-        );
-        LeftBlasterInventory.GetSlot(4).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
-        );
-        LeftBlasterInventory.GetSlot(3).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
-        );
-        LeftBlasterInventory.GetSlot(2).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<ExtraFireRateModule>())
-        );
-        LeftBlasterInventory.GetSlot(1).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<PiercingModule>())
-        );
-        LeftBlasterInventory.GetSlot(0).InsertModule(
-            UiModule.Create(ModuleManager.GetModule<PiercingModule>())
-        );
-        
         Close();
         Visible = false;
     }

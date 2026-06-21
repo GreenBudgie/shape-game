@@ -17,13 +17,12 @@ public partial class InventorySlot : TextureButton
     private const float ButtonDownGlowStrength = 1.5f;
     private const float ButtonDownSize = 0.9f;
     private const float HoverSize = 1.15f;
+
+    private static readonly AudioStream HoverSound = GD.Load<AudioStream>("uid://djdfrb1kcmfle");
+    private static readonly AudioStream ClickSound = GD.Load<AudioStream>("uid://cry6gufmuccda");
+    private static readonly AudioStream ButtonUpSound = GD.Load<AudioStream>("uid://cpqn2k806hyjd");
     
-    [Export] private Color _glowColor;
-    [Export] private AudioStream _hoverSound = null!;
-    [Export] private AudioStream _clickSound = null!;
-    [Export] private AudioStream _buttonUpSound = null!;
-    
-    [Export] public int Number { get; private set; }
+    public int Number { get; private set; }
 
     private Glow _glow = null!;
     private Tween? _glowTween;
@@ -32,10 +31,19 @@ public partial class InventorySlot : TextureButton
     private UiModule? _module;
     private ModuleInfo? _moduleInfo;
 
+    private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dilsv34jaqcrd");
+
+    public static InventorySlot Create(int number)
+    {
+        var node = Scene.Instantiate<InventorySlot>();
+        node.Number = number;
+        return node;
+    }
+
     public override void _Ready()
     {
         _glow = Glow.AddGlow(this)
-            .SetColor(_glowColor)
+            .SetColor(ColorScheme.LightBlue)
             .TurnOff();
 
         MouseEntered += OnMouseEnter;
@@ -49,7 +57,7 @@ public partial class InventorySlot : TextureButton
     
     public override void _Process(double delta)
     {
-        if (!InventoryManager.Instance.IsOpen)
+        if (!InventoryManager.Instance.IsOpen || IsDisabled())
         {
             _glow.TurnOff();
             return;
@@ -63,7 +71,8 @@ public partial class InventorySlot : TextureButton
         var isTweenRunning = _glowTween?.IsValid() == true && _glowTween?.IsRunning() == true;
 
         var centeredPosition = GlobalPosition + PivotOffset;
-        var distanceToMouseSq = GetGlobalMousePosition().DistanceSquaredTo(centeredPosition);
+        var distanceToMouseSq = MouseInputManager.Instance.GetCachedGlobalMousePosition()
+            .DistanceSquaredTo(centeredPosition);
         if (distanceToMouseSq > GlowStartDistanceSq)
         {
             if (!isTweenRunning)
@@ -169,7 +178,7 @@ public partial class InventorySlot : TextureButton
             duration: ButtonDownTweenDuration
         );
         
-        var sound = SoundManager.Instance.PlaySound(_clickSound);
+        var sound = SoundManager.Instance.PlaySound(ClickSound);
         sound.RandomizePitchOffset(0.2f);
     }
     
@@ -195,7 +204,7 @@ public partial class InventorySlot : TextureButton
             duration: ButtonUpTweenDuration
         );
         
-        var sound = SoundManager.Instance.PlaySound(_buttonUpSound);
+        var sound = SoundManager.Instance.PlaySound(ButtonUpSound);
         sound.RandomizePitchOffset(0.2f);
 
         if (IsHovered())
@@ -210,7 +219,7 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseEnter()
     {
-        if (IsPressed())
+        if (IsPressed() || IsDisabled())
         {
             return;
         }
@@ -218,7 +227,7 @@ public partial class InventorySlot : TextureButton
         ShowModuleInfo();
         _module?.SlotHovered();
 
-        var sound = SoundManager.Instance.PlaySound(_hoverSound);
+        var sound = SoundManager.Instance.PlaySound(HoverSound);
         sound.RandomizePitchOffset(0.2f);
 
         _glowTween?.Kill();
@@ -252,7 +261,7 @@ public partial class InventorySlot : TextureButton
     {
         HideModuleInfo();
         
-        if (IsPressed())
+        if (IsPressed() || IsDisabled())
         {
             return;
         }

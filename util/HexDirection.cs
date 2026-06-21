@@ -42,5 +42,10 @@ public static class HexDirectionExtensions
             _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
         };
     }
+
+    public static Vector2 ToVector(this HexDirection direction, float length = 1)
+    {
+        return Vector2.FromAngle(direction.Radians()) * length;
+    }
     
 }

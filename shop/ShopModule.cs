@@ -173,12 +173,13 @@ public partial class ShopModule : Control
         var sound = SoundManager.Instance.PlaySound(_clickSound);
         sound.RandomizePitchOffset(0.2f);
 
-        var moduleAdded = PlayerInventory.Instance.AddModule(Module);
-        if (!moduleAdded)
-        {
-            PopupLabel.Create(GetRandomPosition(), "Inventory is full").SetColor(ColorScheme.Red);
-            return;
-        }
+        // TODO
+        // var moduleAdded = PlayerInventory.Instance.AddModule(Module);
+        // if (!moduleAdded)
+        // {
+        //     PopupLabel.Create(GetRandomPosition(), "Inventory is full").SetColor(ColorScheme.Red);
+        //     return;
+        // }
         
         CrystalManager.Instance.Crystals -= Module.Price;
         

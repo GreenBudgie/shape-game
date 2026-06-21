@@ -9,6 +9,8 @@ public partial class MouseInputManager : Node2D
     public bool IsAttackEnabled { get; private set; }
 
     private bool _isAttackQueuedToEnable;
+
+    private Vector2 _cachedGlobalMousePosition;
     
     public MouseInputManager()
     {
@@ -34,6 +36,8 @@ public partial class MouseInputManager : Node2D
 
     public override void _Process(double delta)
     {
+        _cachedGlobalMousePosition = GetGlobalMousePosition();
+        
         if (_isAttackQueuedToEnable && (Input.IsActionJustPressed("inventory_left_click") 
                                         || Input.IsActionJustReleased("inventory_left_click")))
         {
@@ -50,6 +54,16 @@ public partial class MouseInputManager : Node2D
             _currentFrameMouseDelta = Vector2.Zero;
             Input.MouseMode = Input.MouseModeEnum.Visible;
         }
+    }
+
+    /**
+     * Getting mouse position is heavy for some reason. If many nodes call it in a single frame, the game lags.
+     * So, this calculates the mouse position once per frame and caches it. It's better to always call this method
+     * rather than getting the mouse position in other nodes again.
+     */
+    public Vector2 GetCachedGlobalMousePosition()
+    {
+        return _cachedGlobalMousePosition;
     }
 
     public void DisableAttack()
