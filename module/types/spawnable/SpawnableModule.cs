@@ -6,4 +6,5 @@ public abstract partial class SpawnableModule : Module
     /// </summary>
     public abstract ISpawnable<Node2D> CreateSpawnable();
 
+    public override Color Color => ColorScheme.Orange;
 }

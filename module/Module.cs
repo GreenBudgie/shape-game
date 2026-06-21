@@ -17,4 +17,6 @@ public partial class Module : Resource
     
     [Export] public int Price { get; private set; }
 
+    public virtual Color Color { get; } = Colors.White;
+
 }
