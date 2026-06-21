@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://73fwxoshnhmd" path="res://entity/spawnables/stats/DamageStat.cs" id="1_8kb3p"]
 [ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://entity/spawnables/stats/SpawnableStat.cs" id="1_by8ii"]
-[ext_resource type="Script" uid="uid://d1h7yrhkjx6kp" path="res://modules/types/modifier/extra_damage/ExtraDamageModule.cs" id="1_plluy"]
+[ext_resource type="Script" uid="uid://d1h7yrhkjx6kp" path="res://module/types/modifier/extra_damage/ExtraDamageModule.cs" id="1_plluy"]
 [ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://entity/spawnables/stats/ReloadStat.cs" id="2_by8ii"]
-[ext_resource type="Texture2D" uid="uid://c7vc2h5xg45xt" path="res://modules/types/modifier/extra_damage/extra_damage.png" id="2_ev3j8"]
+[ext_resource type="Texture2D" uid="uid://c7vc2h5xg45xt" path="res://module/types/modifier/extra_damage/extra_damage.png" id="2_ev3j8"]
 
 [sub_resource type="Resource" id="Resource_by8ii"]
 script = ExtResource("1_8kb3p")

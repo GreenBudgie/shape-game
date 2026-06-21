@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://p7y7lo08drw1"
-path="res://.godot/imported/mine_module.png-e78f39203150efe70962b698a2119048.ctex"
+uid="uid://c7vc2h5xg45xt"
+path="res://.godot/imported/extra_damage.png-630960680890dce892f27ede32c96fb8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://modules/types/spawnable/mine/mine_module.png"
-dest_files=["res://.godot/imported/mine_module.png-e78f39203150efe70962b698a2119048.ctex"]
+source_file="res://module/types/modifier/extra_damage/extra_damage.png"
+dest_files=["res://.godot/imported/extra_damage.png-630960680890dce892f27ede32c96fb8.ctex"]
 
 [params]
 

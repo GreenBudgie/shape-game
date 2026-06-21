@@ -7,7 +7,7 @@ public partial class ModuleManager : Node
     public static ModuleManager Instance { get; private set; } = null!;
 
     public static readonly List<Module> Modules =
-        ResourceSearcher.FindResourcesRecursively<Module>("res://modules/types");
+        ResourceSearcher.FindResourcesRecursively<Module>("res://module/types");
 
     private static readonly Dictionary<Type, Module> ModuleByType = Modules
         .GroupBy(module => module.GetType())

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8o3rn0l3fgtx"
-path="res://.godot/imported/extra_fire_rate_module.png-f6a13a158074eb8fa00e47a1d44555c8.ctex"
+uid="uid://cy3pk6xi70dch"
+path="res://.godot/imported/barrier_module.png-a76c0625b6b67250a87c9040cab74c26.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://modules/types/modifier/extra_fire_rate/extra_fire_rate_module.png"
-dest_files=["res://.godot/imported/extra_fire_rate_module.png-f6a13a158074eb8fa00e47a1d44555c8.ctex"]
+source_file="res://module/types/spawnable/barrier/barrier_module.png"
+dest_files=["res://.godot/imported/barrier_module.png-a76c0625b6b67250a87c9040cab74c26.ctex"]
 
 [params]
 

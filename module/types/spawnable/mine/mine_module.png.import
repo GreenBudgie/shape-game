@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ptdgrqellnu8"
-path="res://.godot/imported/wall.png-8ddb6ba0c004e4542e52140208eba50f.ctex"
+uid="uid://p7y7lo08drw1"
+path="res://.godot/imported/mine_module.png-697cf6a2839538f3c56e59d331d5dbbc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://environment/wall/wall.png"
-dest_files=["res://.godot/imported/wall.png-8ddb6ba0c004e4542e52140208eba50f.ctex"]
+source_file="res://module/types/spawnable/mine/mine_module.png"
+dest_files=["res://.godot/imported/mine_module.png-697cf6a2839538f3c56e59d331d5dbbc.ctex"]
 
 [params]
 

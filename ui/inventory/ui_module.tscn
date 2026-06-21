@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://csoad8g8f13qn"]
 
-[ext_resource type="Texture2D" uid="uid://bq4acwsx0reoh" path="res://modules/types/spawnable/bolt/bolt_module.png" id="1_bnolh"]
+[ext_resource type="Texture2D" uid="uid://bq4acwsx0reoh" path="res://module/types/spawnable/bolt/bolt_module.png" id="1_bnolh"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/UiModule.cs" id="1_hkxgl"]
 [ext_resource type="Shader" uid="uid://fxn8hdgq2td3" path="res://util/stretch.gdshader" id="1_pprc0"]
 

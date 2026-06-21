@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="PiercingModule" format=3 uid="uid://bcuwcgxkrjj5a"]
 
-[ext_resource type="Texture2D" uid="uid://b0ulov3iql674" path="res://modules/types/modifier/piercing/piercing_module.png" id="1_fmsru"]
+[ext_resource type="Texture2D" uid="uid://b0ulov3iql674" path="res://module/types/modifier/piercing/piercing_module.png" id="1_fmsru"]
 [ext_resource type="Script" uid="uid://b2elgisfws1do" path="res://entity/spawnables/stats/PiercingStat.cs" id="1_m7ju2"]
-[ext_resource type="Script" uid="uid://btj3q5hjomwww" path="res://modules/types/modifier/piercing/PiercingModule.cs" id="1_qqxje"]
+[ext_resource type="Script" uid="uid://btj3q5hjomwww" path="res://module/types/modifier/piercing/PiercingModule.cs" id="1_qqxje"]
 [ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://entity/spawnables/stats/SpawnableStat.cs" id="1_up2ps"]
 [ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://entity/spawnables/stats/ReloadStat.cs" id="2_6pepp"]
 

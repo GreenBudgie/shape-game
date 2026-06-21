@@ -4,10 +4,10 @@
 [ext_resource type="Script" uid="uid://dxj6bmum8pdot" path="res://entity/spawnables/stats/SpeedStat.cs" id="3_yw8eb"]
 [ext_resource type="Script" uid="uid://bxbxdwibot2kx" path="res://entity/spawnables/stats/ExplosionDamageStat.cs" id="4_ev71l"]
 [ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://entity/spawnables/stats/ReloadStat.cs" id="4_gbl8y"]
-[ext_resource type="Texture2D" uid="uid://p7y7lo08drw1" path="res://modules/types/spawnable/mine/mine_module.png" id="5_ev71l"]
+[ext_resource type="Texture2D" uid="uid://p7y7lo08drw1" path="res://module/types/spawnable/mine/mine_module.png" id="5_ev71l"]
 [ext_resource type="Script" uid="uid://bu3royqp4getk" path="res://entity/spawnables/stats/ExplosionRadiusStat.cs" id="5_itn0a"]
 [ext_resource type="Script" uid="uid://cmvf52kc3ad7v" path="res://entity/spawnables/stats/LifetimeStat.cs" id="6_mm0w4"]
-[ext_resource type="Script" uid="uid://en8gcj7aglyi" path="res://modules/types/spawnable/mine/MineModule.cs" id="7_itn0a"]
+[ext_resource type="Script" uid="uid://en8gcj7aglyi" path="res://module/types/spawnable/mine/MineModule.cs" id="7_itn0a"]
 
 [sub_resource type="Resource" id="Resource_2bf2o"]
 script = ExtResource("3_yw8eb")
