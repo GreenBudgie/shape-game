@@ -38,7 +38,6 @@ metadata/_custom_type_script = "uid://cmvf52kc3ad7v"
 script = ExtResource("1_hns7l")
 Texture = ExtResource("7_366od")
 Shape = SubResource("Resource_rvswv")
-Connections = null
 Name = "Mini Sphere"
 Description = "Many short-lived and inaccurate projectiles"
 Stats = Array[ExtResource("1_7jm0c")]([SubResource("Resource_3333m"), SubResource("Resource_pf61b"), SubResource("Resource_lrr28"), SubResource("Resource_r5ee6")])

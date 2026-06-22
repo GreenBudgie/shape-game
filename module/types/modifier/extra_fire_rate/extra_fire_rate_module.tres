@@ -2,16 +2,14 @@
 
 [ext_resource type="Script" uid="uid://b0hauski8fk7j" path="res://module/types/modifier/extra_fire_rate/ExtraFireRateModule.cs" id="1_1wrny"]
 [ext_resource type="Script" uid="uid://n2uhudi4lkv5" path="res://entity/spawnables/stats/SpawnableStat.cs" id="1_resfs"]
-[ext_resource type="Script" uid="uid://c4l7pd1s32hfi" path="res://module/ModuleConnection.cs" id="1_t6wje"]
+[ext_resource type="Script" uid="uid://cmvwqpiu2v0d2" path="res://addons/hex_selector/HexCoordinatesArray.cs" id="1_t6wje"]
 [ext_resource type="Script" uid="uid://b8imi5qbs04ev" path="res://module/shape/ModuleShapeDouble.cs" id="1_xy4r6"]
 [ext_resource type="Script" uid="uid://cd2f70s2ivisi" path="res://entity/spawnables/stats/ReloadStat.cs" id="2_nisvt"]
 [ext_resource type="Texture2D" uid="uid://bet5sg5obim30" path="res://module/types/modifier/extra_fire_rate/extra_fire_rate.png" id="3_3ipfy"]
 
-[sub_resource type="Resource" id="Resource_t6wje"]
+[sub_resource type="Resource" id="Resource_85vw4"]
 script = ExtResource("1_t6wje")
-TileNumber = 1
-Direction = 3
-metadata/_custom_type_script = "uid://c4l7pd1s32hfi"
+_vectors = Array[Vector3i]([Vector3i(2, 0, -2)])
 
 [sub_resource type="Resource" id="Resource_xy4r6"]
 script = ExtResource("1_xy4r6")
@@ -26,7 +24,7 @@ metadata/_custom_type_script = "uid://cd2f70s2ivisi"
 script = ExtResource("1_1wrny")
 Texture = ExtResource("3_3ipfy")
 Shape = SubResource("Resource_xy4r6")
-Connections = Array[Object]([SubResource("Resource_t6wje")])
+Connections = SubResource("Resource_85vw4")
 Name = "Extra Fire Rate"
 Description = "Increases fire rate"
 Stats = Array[ExtResource("1_resfs")]([SubResource("Resource_6edp1")])

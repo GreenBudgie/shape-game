@@ -2,13 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 
+public enum HexSelectorMode { Array, Resource }
+
 [Tool]
 public partial class HexSelectorProperty : EditorProperty
 {
-    private readonly HexGrid _grid;
+    private const string VectorsProperty = "_vectors";
 
-    public HexSelectorProperty(int radius)
+    private readonly HexGrid _grid;
+    private readonly HexSelectorMode _mode;
+
+    public HexSelectorProperty(int radius, HexSelectorMode mode)
     {
+        _mode = mode;
         _grid = new HexGrid(radius);
         _grid.SelectionChanged += OnSelectionChanged;
         AddChild(_grid);
@@ -18,17 +24,48 @@ public partial class HexSelectorProperty : EditorProperty
     public override void _UpdateProperty()
     {
         var value = GetEditedObject().Get(GetEditedProperty());
-        _grid.SetSelection(value.AsGodotArray<Vector3I>());
+        Godot.Collections.Array<Vector3I> items;
+
+        if (_mode == HexSelectorMode.Resource)
+        {
+            var resource = value.AsGodotObject();
+            items = resource?.Get(VectorsProperty).AsGodotArray<Vector3I>()
+                    ?? new Godot.Collections.Array<Vector3I>();
+        }
+        else
+        {
+            items = value.AsGodotArray<Vector3I>();
+        }
+
+        _grid.SetSelection(items);
     }
 
     private void OnSelectionChanged()
     {
-        var array = new Godot.Collections.Array<Vector3I>();
+        var items = new Godot.Collections.Array<Vector3I>();
         foreach (var coord in _grid.Selected)
         {
-            array.Add(coord);
+            items.Add(coord);
         }
-        EmitChanged(GetEditedProperty(), array);
+
+        if (_mode == HexSelectorMode.Resource)
+        {
+            var resource = GetEditedObject().Get(GetEditedProperty()).AsGodotObject();
+            if (resource == null)
+            {
+                var fresh = new HexCoordinatesArray { Vectors = items };
+                EmitChanged(GetEditedProperty(), fresh);
+            }
+            else
+            {
+                resource.Set(VectorsProperty, items);
+                EmitChanged(GetEditedProperty(), resource);
+            }
+        }
+        else
+        {
+            EmitChanged(GetEditedProperty(), items);
+        }
     }
 }
 
@@ -49,6 +86,7 @@ public partial class HexGrid : Control
     private static readonly Color OriginMarker = new(1f, 1f, 1f, 0.6f);
     private static readonly Color Outline = new(0f, 0f, 0f, 0.7f);
 
+    private readonly int _radius;
     private readonly Vector3I[] _allHexes;
     private readonly HashSet<Vector3I> _selected = [];
     private Vector3I? _hovered;
@@ -57,13 +95,14 @@ public partial class HexGrid : Control
 
     public HexGrid(int radius)
     {
+        _radius = radius;
         _allHexes = HexCoordinates.Spiral(radius + 1)
             .Select(c => new Vector3I(c.Q, c.R, c.S))
             .ToArray();
 
         CustomMinimumSize = new Vector2(
-            7 * Sqrt(3) * MinHexRadius + Margin * 2,
-            11 * MinHexRadius + Margin * 2);
+            (2 * radius + 1) * Sqrt(3) * MinHexRadius + Margin * 2,
+            (3 * radius + 2) * MinHexRadius + Margin * 2);
         MouseFilter = MouseFilterEnum.Stop;
     }
 
@@ -141,7 +180,7 @@ public partial class HexGrid : Control
     {
         var w = Size.X - Margin * 2;
         var h = Size.Y - Margin * 2;
-        return Min(w / (7 * Sqrt(3)), h / 11f);
+        return Min(w / ((2 * _radius + 1) * Sqrt(3)), h / (3 * _radius + 2));
     }
 
     private Vector2 HexCenter(Vector3I coord, float radius)

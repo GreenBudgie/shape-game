@@ -25,7 +25,6 @@ metadata/_custom_type_script = "uid://cd2f70s2ivisi"
 script = ExtResource("1_kabgn")
 Texture = ExtResource("4_xc2ij")
 Shape = SubResource("Resource_gi4vh")
-Connections = null
 Name = "Barrier"
 Description = "Generates a projectile barrier in front of the player"
 Stats = Array[ExtResource("1_os6ya")]([SubResource("Resource_h060a"), SubResource("Resource_ke7xy")])

@@ -43,7 +43,6 @@ metadata/_custom_type_script = "uid://cmvf52kc3ad7v"
 script = ExtResource("7_itn0a")
 Texture = ExtResource("7_edjs6")
 Shape = SubResource("Resource_rvswv")
-Connections = null
 Name = "Mine"
 Description = "A mine"
 Stats = Array[ExtResource("1_ex7fr")]([SubResource("Resource_2bf2o"), SubResource("Resource_ajk3t"), SubResource("Resource_itn0a"), SubResource("Resource_mm0w4"), SubResource("Resource_oetpn")])

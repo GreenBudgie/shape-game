@@ -37,7 +37,6 @@ metadata/_custom_type_script = "uid://cmvf52kc3ad7v"
 script = ExtResource("2_hdm4n")
 Texture = ExtResource("6_3xp37")
 Shape = SubResource("Resource_uvmmu")
-Connections = null
 Name = "Bolt"
 Description = "Fast and precise projectile. Very reliable!"
 Stats = Array[ExtResource("1_2bf2o")]([SubResource("Resource_85yfv"), SubResource("Resource_2bf2o"), SubResource("Resource_ajk3t"), SubResource("Resource_bfude")])
