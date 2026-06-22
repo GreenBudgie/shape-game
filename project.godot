@@ -44,7 +44,7 @@ naming/default_signal_callback_to_self_name="On{signal_name}"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/padding_tool/plugin.cfg", "res://addons/rider-plugin/plugin.cfg")
+enabled=PackedStringArray("res://addons/hex_selector/plugin.cfg", "res://addons/padding_tool/plugin.cfg", "res://addons/rider-plugin/plugin.cfg")
 
 [global_group]
 

@@ -109,7 +109,7 @@ public partial class InventorySlot : TextureButton
         RemoveModule();
         InventoryManager.Instance.AddChild(module);
         _module = module;
-        module.Slot = this;
+        //module.Slot = this;
         _module.MoveToSlotInstantly();
     }
 

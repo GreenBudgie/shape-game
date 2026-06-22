@@ -7,7 +7,7 @@ public partial class Module : Resource
 
     [Export] public ModuleShape Shape { get; private set; } = null!;
 
-    [Export] public Array<Vector3I> Connections { get; private set; } = null!;
+    [Export, HexSelector(Radius = 3)] public Array<Vector3I> Connections { get; private set; } = null!;
 
     [Export] public string Name { get; private set; } = null!;
 

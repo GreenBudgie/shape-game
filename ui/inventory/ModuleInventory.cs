@@ -26,31 +26,14 @@ public partial class ModuleInventory : Control
         CreateSlots(centerSlotPosition);
     }
 
-    public InventorySlot GetSlot(HexCoordinates coordinates)
+    public InventorySlot? GetSlot(HexCoordinates coordinates)
     {
-        return _slots[coordinates];
+        return _slots.GetValueOrDefault(coordinates);
     }
 
     public List<InventorySlot> GetSlots()
     {
         return _slots.Values.ToList();
-    }
-
-    /// <summary>
-    /// Add the module to the first empty slot, or does nothing if there are no empty slots
-    /// </summary>
-    /// <param name="module">Module to add</param>
-    /// <returns>True if module was added, false otherwise</returns>
-    public bool AddModule(Module module)
-    {
-        var firstEmptySlot = _slots.FirstOrDefault(slot => !slot.HasModule());
-        if (firstEmptySlot == null)
-        {
-            return false;
-        }
-
-        firstEmptySlot.InsertModule(InventoryModule.Create(module));
-        return true;
     }
 
     private void CreateSlots(Vector2 center)
