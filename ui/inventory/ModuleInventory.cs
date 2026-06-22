@@ -43,9 +43,12 @@ public partial class ModuleInventory : Control
         var coordinates = HexCoordinates.Spiral(radius);
         foreach (var hex in coordinates)
         {
+            var position = center + hex.ToVector() * DistanceBetweenSlots;
+            var correctedPosition = position - new Vector2(DistanceBetweenSlots / 2, DistanceBetweenSlots / 2);
+            
             var slot = InventorySlot.Create(hex);
-            slot.GlobalPosition = center + hex.ToVector() * DistanceBetweenSlots;
-            if (hex.Length() == radius)
+            slot.GlobalPosition = correctedPosition;
+            if (hex.Length() == radius - 1)
             {
                 slot.SetDisabled(true);
             }
