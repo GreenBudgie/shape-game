@@ -12,12 +12,6 @@ public partial class InventoryManager : Control
     [Signal]
     public delegate void InventoryClosedEventHandler();
 
-    [Signal]
-    public delegate void DragAndDropStartedEventHandler();
-    
-    [Signal]
-    public delegate void DragAndDropEndedEventHandler();
-
     public static InventoryManager Instance { get; private set; } = null!;
 
     public bool IsOpen { get; private set; } = true;
@@ -25,7 +19,6 @@ public partial class InventoryManager : Control
     [Export] public ModuleInventory LeftBlasterInventory { get; private set; } = null!;
     [Export] public ModuleInventory RightBlasterInventory { get; private set; } = null!;
 
-    private InventorySlot? _dragAndDropFrom;
     private List<InventorySlot> _slots = null!;
     private List<ModuleInventory> _inventories = null!;
     
@@ -48,6 +41,15 @@ public partial class InventoryManager : Control
         Callable.From(PostSetup).CallDeferred();
     }
 
+    public List<InventorySlot> GetAllSlots()
+    {
+        return _slots;
+    }
+    
+    public List<InventorySlot> GetActiveSlots()
+    {
+        return _slots.Where(slot => !slot.IsDisabled()).ToList();
+    }
 
     private void PostSetup()
     {
@@ -58,7 +60,6 @@ public partial class InventoryManager : Control
     public override void _Process(double delta)
     {
         HandleInventoryOpenAndClose();
-        HandleDragAndDrop();
     }
 
     private void HandleInventoryOpenAndClose()
@@ -76,84 +77,6 @@ public partial class InventoryManager : Control
         {
             Open();
         }
-    }
-
-    public bool IsDragAndDropActive()
-    {
-        return _dragAndDropFrom != null;
-    }
-
-    private void HandleDragAndDrop()
-    {
-        var leftPressed = Input.IsActionJustPressed("inventory_left_click");
-        var leftReleased = Input.IsActionJustReleased("inventory_left_click");
-        var leftReleaseHandled = false;
-        var hoveredSlot = _slots.Find(slot => slot.IsHovered());
-
-        if (hoveredSlot != null)
-        {
-            if (leftPressed)
-            {
-                StartDragAndDropFromSlot(hoveredSlot);
-            }
-
-            if (leftReleased && IsDragAndDropActive())
-            {
-                leftReleaseHandled = true;
-                StopDragAndDropSwappingModulesWithSlot(hoveredSlot);
-            }
-        }
-
-        if (leftReleased && IsDragAndDropActive() && !leftReleaseHandled)
-        {
-            CancelDragAndDrop();
-        }
-    }
-
-    private void StartDragAndDropFromSlot(InventorySlot slot)
-    {
-        var module = slot.GetModule();
-        if (module == null)
-        {
-            return;
-        }
-
-        _dragAndDropFrom = slot;
-        module.StartFollowingCursor();
-        EmitSignalDragAndDropStarted();
-    }
-
-    private void StopDragAndDropSwappingModulesWithSlot(InventorySlot slot)
-    {
-        if (_dragAndDropFrom == null)
-        {
-            return;
-        }
-        
-        if (_dragAndDropFrom == slot)
-        {
-            CancelDragAndDrop();
-            return;
-        }
-        
-        _dragAndDropFrom.GetModule()?.StopFollowingCursor();
-        
-        _dragAndDropFrom.SwapModules(slot);
-        _dragAndDropFrom = null;
-        
-        EmitSignalDragAndDropEnded();
-    }
-
-    private void CancelDragAndDrop()
-    {
-        if (_dragAndDropFrom == null)
-        {
-            return;
-        }
-        
-        _dragAndDropFrom.GetModule()?.StopFollowingCursor();
-        _dragAndDropFrom = null;
-        EmitSignalDragAndDropEnded();
     }
 
     private void Open()

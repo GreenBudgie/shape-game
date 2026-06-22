@@ -3,11 +3,11 @@ using System.Linq;
 
 public partial class ModuleInventory : Control
 {
-    private const float DistanceBetweenSlots = 200;
+    public const float DistanceBetweenSlots = 200;
 
     [Export] public bool IsLeft { get; private set; }
 
-    private readonly List<InventorySlot> _slots = [];
+    private readonly Dictionary<HexCoordinates, InventorySlot> _slots = [];
 
     public override void _Ready()
     {
@@ -26,14 +26,14 @@ public partial class ModuleInventory : Control
         CreateSlots(centerSlotPosition);
     }
 
-    public InventorySlot GetSlot(int slotIndex)
+    public InventorySlot GetSlot(HexCoordinates coordinates)
     {
-        return _slots[slotIndex];
+        return _slots[coordinates];
     }
 
     public List<InventorySlot> GetSlots()
     {
-        return _slots;
+        return _slots.Values.ToList();
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public partial class ModuleInventory : Control
             return false;
         }
 
-        firstEmptySlot.InsertModule(UiModule.Create(module));
+        firstEmptySlot.InsertModule(InventoryModule.Create(module));
         return true;
     }
 

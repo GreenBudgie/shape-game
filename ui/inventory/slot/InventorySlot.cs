@@ -22,21 +22,20 @@ public partial class InventorySlot : TextureButton
     private static readonly AudioStream ClickSound = GD.Load<AudioStream>("uid://cry6gufmuccda");
     private static readonly AudioStream ButtonUpSound = GD.Load<AudioStream>("uid://cpqn2k806hyjd");
     
-    public int Number { get; private set; }
+    public HexCoordinates Coordinates { get; private set; }
 
     private Glow _glow = null!;
     private Tween? _glowTween;
     private Tween? _transformTween;
 
-    private UiModule? _module;
-    private ModuleInfo? _moduleInfo;
+    private InventoryModule? _module;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dilsv34jaqcrd");
 
-    public static InventorySlot Create(int number)
+    public static InventorySlot Create(HexCoordinates coordinates)
     {
         var node = Scene.Instantiate<InventorySlot>();
-        node.Number = number;
+        node.Coordinates = coordinates;
         return node;
     }
 
@@ -50,9 +49,6 @@ public partial class InventorySlot : TextureButton
         MouseExited += OnMouseExit;
         ButtonDown += OnButtonDown;
         ButtonUp += OnButtonUp;
-
-        InventoryManager.Instance.DragAndDropStarted += OnDragAndDropStarted;
-        InventoryManager.Instance.DragAndDropEnded += OnDragAndDropEnded;
     }
     
     public override void _Process(double delta)
@@ -107,22 +103,8 @@ public partial class InventorySlot : TextureButton
             _glowTween?.Kill();
         }
     }
-
-    public void SwapModules(InventorySlot otherSlot)
-    {
-        (otherSlot._module, _module) = (_module, otherSlot._module);
-        if (_module != null)
-        {
-            _module.Slot = this;
-        }
-        
-        if (otherSlot._module != null)
-        {
-            otherSlot._module.Slot = otherSlot;
-        }
-    }
     
-    public void InsertModule(UiModule module)
+    public void InsertModule(InventoryModule module)
     {
         RemoveModule();
         InventoryManager.Instance.AddChild(module);
@@ -131,12 +113,12 @@ public partial class InventorySlot : TextureButton
         _module.MoveToSlotInstantly();
     }
 
-    public UiModule? GetModule()
+    public InventoryModule? GetModule()
     {
         return _module;
     }
 
-    public UiModule? RemoveModule()
+    public InventoryModule? RemoveModule()
     {
         var module = GetModule();
         if (module == null)
@@ -156,8 +138,6 @@ public partial class InventorySlot : TextureButton
 
     private void OnButtonDown()
     {
-        HideModuleInfo();
-        
         _transformTween?.Kill();
         _transformTween = CreateTween().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
 
@@ -209,7 +189,6 @@ public partial class InventorySlot : TextureButton
 
         if (IsHovered())
         {
-            ShowModuleInfo();
         }
         else
         {
@@ -223,9 +202,6 @@ public partial class InventorySlot : TextureButton
         {
             return;
         }
-        
-        ShowModuleInfo();
-        _module?.SlotHovered();
 
         var sound = SoundManager.Instance.PlaySound(HoverSound);
         sound.RandomizePitchOffset(0.2f);
@@ -259,14 +235,10 @@ public partial class InventorySlot : TextureButton
 
     private void OnMouseExit()
     {
-        HideModuleInfo();
-        
         if (IsPressed() || IsDisabled())
         {
             return;
         }
-        
-        _module?.SlotUnhovered();
 
         _glowTween?.Kill();
         _glowTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
@@ -293,36 +265,6 @@ public partial class InventorySlot : TextureButton
             finalVal: Vector2.One,
             duration: GlowHoverTweenDuration
         );
-    }
-
-    private void ShowModuleInfo()
-    {
-        if (_module == null || InventoryManager.Instance.IsDragAndDropActive())
-        {
-            return;
-        }
-        
-        _moduleInfo = ModuleInfo.Create(_module.Module);
-        InventoryManager.Instance.AddChild(_moduleInfo);
-    }
-
-    private void HideModuleInfo()
-    {
-        _moduleInfo?.Remove();
-        _moduleInfo = null;
-    }
-
-    private void OnDragAndDropStarted()
-    {
-        HideModuleInfo();
-    }
-    
-    private void OnDragAndDropEnded()
-    {
-        if (IsHovered())
-        {
-            ShowModuleInfo();
-        }
     }
 
 }

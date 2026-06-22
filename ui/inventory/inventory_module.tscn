@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://csoad8g8f13qn"]
+
+[ext_resource type="Shader" uid="uid://fxn8hdgq2td3" path="res://util/stretch.gdshader" id="1_pgwtc"]
+[ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/InventoryModule.cs" id="2_pgwtc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mhdu2"]
+resource_local_to_scene = true
+shader = ExtResource("1_pgwtc")
+shader_parameter/stretch_amount = 0.0
+shader_parameter/stretch_direction = Vector2(1, 0)
+
+[node name="InventoryModule" type="TextureButton" unique_id=1242446485]
+material = SubResource("ShaderMaterial_mhdu2")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_pgwtc")
+
+[node name="ModuleTexture" type="TextureRect" parent="." unique_id=1838289551]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2

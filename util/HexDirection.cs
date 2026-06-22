@@ -1,51 +1,47 @@
-using System;
-
 public enum HexDirection
 {
-    
-    TopLeft,
-    TopRight,
-    Left,
-    Right,
-    BottomLeft,
-    BottomRight
-    
+    Right = 0,
+    TopRight = 1,
+    TopLeft = 2,
+    Left = 3,
+    BottomLeft = 4,
+    BottomRight = 5
 }
 
 public static class HexDirectionExtensions
 {
-
     public static float Radians(this HexDirection direction)
     {
-        return direction switch
-        {
-            HexDirection.TopLeft => 2 * Pi / 3,
-            HexDirection.TopRight => Pi / 3,
-            HexDirection.Left => Pi,
-            HexDirection.Right => 0,
-            HexDirection.BottomLeft => 4 * Pi / 3,
-            HexDirection.BottomRight => 5 * Pi / 3,
-            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
-        };
-    }
-    
-    public static float Degrees(this HexDirection direction)
-    {
-        return direction switch
-        {
-            HexDirection.TopLeft => 120,
-            HexDirection.TopRight => 60,
-            HexDirection.Left => 180,
-            HexDirection.Right => 0,
-            HexDirection.BottomLeft => 240, 
-            HexDirection.BottomRight => 300,
-            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
-        };
+        return (float)direction * Pi / 3;
     }
 
-    public static Vector2 ToVector(this HexDirection direction, float length = 1)
+    public static float Degrees(this HexDirection direction)
+    {
+        return (float)direction * 60;
+    }
+    
+    public static Vector2 ToVector(this HexDirection direction)
+    {
+        return Vector2.FromAngle(direction.Radians());
+    }
+
+    public static Vector2 ToVector(this HexDirection direction, float length)
     {
         return Vector2.FromAngle(direction.Radians()) * length;
     }
-    
+
+    public static HexDirection Rotated(this HexDirection direction, int steps)
+    {
+        return (HexDirection)(((int)direction + steps % 6 + 6) % 6);
+    }
+
+    public static HexDirection Clockwise(this HexDirection direction)
+    {
+        return direction.Rotated(-1);
+    }
+
+    public static HexDirection Counterclockwise(this HexDirection direction)
+    {
+        return direction.Rotated(1);
+    }
 }
