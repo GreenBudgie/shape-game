@@ -1,4 +1,4 @@
-using Godot.Collections;
+using System.Collections.Generic;
 
 [GlobalClass]
 [Icon(TexturePath)]
@@ -9,5 +9,5 @@ public partial class ModuleShapeSingle : ModuleShape
     
     public override Texture2D Texture => GD.Load<Texture2D>(TexturePath);
     
-    public override Array<HexDirection> AdditionalTiles => [];
+    public override List<HexCoordinates> Tiles => [HexCoordinates.Zero];
 }

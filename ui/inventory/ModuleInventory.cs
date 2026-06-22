@@ -55,60 +55,20 @@ public partial class ModuleInventory : Control
 
     private void CreateSlots(Vector2 center)
     {
-        const int edgeSlots = 3;
-        const int disableSlotsEdgeDistance = 1;
-        
-        const int verticalSlots = edgeSlots * 2 - 1;
+        const int radius = 3;
 
-        var firstSlotPosition = center + HexDirection.TopLeft.ToVector(DistanceBetweenSlots * (edgeSlots - 1));
-
-        var currentVerticalPosition = firstSlotPosition;
-        var currentSlotNumber = 0;
-        for (var vertical = 0; vertical < verticalSlots; vertical++)
+        var coordinates = HexCoordinates.Spiral(radius);
+        foreach (var hex in coordinates)
         {
-            var reachedCenter = vertical >= edgeSlots - 1;
-            int horizontalSlots;
-            if (reachedCenter)
+            var slot = InventorySlot.Create(hex);
+            slot.GlobalPosition = center + hex.ToVector() * DistanceBetweenSlots;
+            if (hex.Length() == radius)
             {
-                horizontalSlots = edgeSlots * 3 - vertical - 2;
-            }
-            else
-            {
-                horizontalSlots = vertical + edgeSlots;
+                slot.SetDisabled(true);
             }
 
-            for (var horizontal = 0; horizontal < horizontalSlots; horizontal++)
-            {
-                var position = currentVerticalPosition +
-                               HexDirection.Right.ToVector(DistanceBetweenSlots * horizontal);
-                var correctedPosition = position - new Vector2(DistanceBetweenSlots / 2, DistanceBetweenSlots / 2);
-
-                var disableSlot = vertical < disableSlotsEdgeDistance ||
-                                  verticalSlots - vertical <= disableSlotsEdgeDistance ||
-                                  horizontal < disableSlotsEdgeDistance ||
-                                  horizontalSlots - horizontal <= disableSlotsEdgeDistance;
-
-                var slot = InventorySlot.Create(currentSlotNumber);
-                slot.GlobalPosition = correctedPosition;
-                if (disableSlot)
-                {
-                    slot.SetDisabled(true);
-                }
-
-                AddChild(slot);
-                _slots.Add(slot);
-                
-                currentSlotNumber++;
-            }
-
-            if (reachedCenter)
-            {
-                currentVerticalPosition += HexDirection.BottomRight.ToVector(DistanceBetweenSlots);
-            }
-            else
-            {
-                currentVerticalPosition += HexDirection.BottomLeft.ToVector(DistanceBetweenSlots);
-            }
+            AddChild(slot);
+            _slots.Add(hex, slot);
         }
     }
 }

@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using Godot.Collections;
 
 [GlobalClass]
 public abstract partial class ModuleShape : Resource
 {
     public abstract Texture2D Texture { get; }
 
-    public abstract Array<HexDirection> AdditionalTiles { get; }
+    public abstract List<HexCoordinates> Tiles { get; }
 
     private List<Vector2>? _tilePositions;
     private Vector2? _center;
@@ -18,7 +17,7 @@ public abstract partial class ModuleShape : Resource
     {
         get
         {
-            return _tilePositions ??= AdditionalTiles
+            return _tilePositions ??= Tiles
                 .Select(tile => tile.ToVector())
                 .Append(Vector2.Zero)
                 .ToList();
@@ -60,6 +59,6 @@ public abstract partial class ModuleShape : Resource
         }
     }
     
-    public int TileCount => AdditionalTiles.Count + 1;
+    public int TileCount => Tiles.Count + 1;
     
 }
