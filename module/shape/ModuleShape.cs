@@ -19,7 +19,6 @@ public abstract partial class ModuleShape : Resource
         {
             return _tilePositions ??= Tiles
                 .Select(tile => tile.ToVector())
-                .Append(Vector2.Zero)
                 .ToList();
         }
     }

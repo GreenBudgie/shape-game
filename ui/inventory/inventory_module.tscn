@@ -18,6 +18,7 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
+action_mode = 0
 stretch_mode = 3
 script = ExtResource("2_pgwtc")
 
