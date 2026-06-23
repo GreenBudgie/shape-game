@@ -35,6 +35,7 @@ public partial class InventoryModule : TextureButton
     {
         _moduleTexture = GetNode<TextureRect>("ModuleTexture");
 
+        SelfModulate = Module.Color;
         TextureNormal = Module.Shape.Texture;
         _moduleTexture.Texture = Module.Texture;
         _material = (ShaderMaterial)Material;
@@ -47,15 +48,29 @@ public partial class InventoryModule : TextureButton
 
         MouseEntered += OnMouseEnter;
         MouseExited += OnMouseExit;
+        InventoryManager.Instance.Connect(
+            InventoryManager.SignalName.InventoryOpened,
+            Callable.From(StopFollowingCursor)
+        );
     }
 
     private void OnMouseEnter()
     {
+        if (_isFollowingCursor)
+        {
+            return;
+        }
+        
         ShowModuleInfo();
     }
     
     private void OnMouseExit()
     {
+        if (_isFollowingCursor)
+        {
+            return;
+        }
+        
         HideModuleInfo();
     }
 
@@ -103,7 +118,7 @@ public partial class InventoryModule : TextureButton
                 }
             }
             
-            var allSlotsHovered = hoveredSlots.Count == Module.Shape.TileCount; 
+            var allSlotsHovered = hoveredSlots.Count == Module.Shape.Tiles.Count; 
 
             if (hoveredSlots.Count == 0)
             {
@@ -128,37 +143,60 @@ public partial class InventoryModule : TextureButton
         MoveToTargetPosition(delta);
     }
 
-    public void TryInsertIntoSlot(InventorySlot slot)
+    public bool TryInsert(InventorySlot centerSlot)
     {
-        
-    }
+        var inventory = centerSlot.Inventory;
 
-    public void MoveToSlotInstantly()
-    {
-        if (Slots.Count > 0)
+        List<InventorySlot> slots = []; 
+        foreach (var hex in Module.Shape.Tiles)
         {
-            _targetPosition = Slots.Select(slot => slot.GetGlobalRect().GetCenter()).Center();
-            GlobalPosition = _targetPosition;
+            var slot = inventory.TryGetSlot(centerSlot.Coordinates + hex);
+            if (slot == null || slot.HasModule() || slot.IsDisabled())
+            {
+                return false;
+            }
+            
+            slots.Add(slot);
         }
+
+        Slots = slots;
+        return true;
     }
 
     public void StartFollowingCursor()
     {
+        if (_isFollowingCursor)
+        {
+            return;
+        }
+        
+        HideModuleInfo();
         _isFollowingCursor = true;
         ZIndex += 1;
     }
 
     public void StopFollowingCursor()
     {
+        if (!_isFollowingCursor)
+        {
+            return;
+        }
+        
+        if (IsHovered())
+        {
+            ShowModuleInfo();
+        }
+        
         _isFollowingCursor = false;
         ZIndex -= 1;
     }
 
     private void MoveToTargetPosition(double delta)
     {
-        var position = GlobalPosition;
+        var position = this.GetCenterGlobalPosition();
         if (position.IsEqualApprox(_targetPosition))
         {
+            SetStretchAmount(0);
             return;
         }
 
@@ -177,9 +215,9 @@ public partial class InventoryModule : TextureButton
             _targetPosition.Y,
             followSpeed * (float)delta * distanceToY
         );
-        GlobalPosition = new Vector2(x, y);
+        this.SetCenterGlobalPosition(new Vector2(x, y));
 
-        var positionDelta = GlobalPosition.DistanceTo(position);
+        var positionDelta = this.GetCenterGlobalPosition().DistanceTo(position);
         var stretchAmount = Clamp(StretchAmountPerPixel * positionDelta, 0, 2);
         SetStretchAmount(stretchAmount);
     }

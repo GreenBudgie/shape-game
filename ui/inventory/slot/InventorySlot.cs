@@ -21,7 +21,8 @@ public partial class InventorySlot : TextureButton
     private static readonly AudioStream HoverSound = GD.Load<AudioStream>("uid://djdfrb1kcmfle");
     private static readonly AudioStream ClickSound = GD.Load<AudioStream>("uid://cry6gufmuccda");
     private static readonly AudioStream ButtonUpSound = GD.Load<AudioStream>("uid://cpqn2k806hyjd");
-    
+
+    public ModuleInventory Inventory { get; private set; } = null!;
     public HexCoordinates Coordinates { get; private set; }
 
     private Glow _glow = null!;
@@ -32,9 +33,10 @@ public partial class InventorySlot : TextureButton
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dilsv34jaqcrd");
 
-    public static InventorySlot Create(HexCoordinates coordinates)
+    public static InventorySlot Create(ModuleInventory inventory, HexCoordinates coordinates)
     {
         var node = Scene.Instantiate<InventorySlot>();
+        node.Inventory = inventory;
         node.Coordinates = coordinates;
         return node;
     }
@@ -102,15 +104,6 @@ public partial class InventorySlot : TextureButton
             _glow.Radius = glowRadius;
             _glowTween?.Kill();
         }
-    }
-    
-    public void InsertModule(InventoryModule module)
-    {
-        RemoveModule();
-        InventoryManager.Instance.AddChild(module);
-        _module = module;
-        //module.Slot = this;
-        _module.MoveToSlotInstantly();
     }
 
     public InventoryModule? GetModule()

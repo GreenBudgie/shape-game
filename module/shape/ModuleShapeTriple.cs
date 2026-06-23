@@ -11,6 +11,6 @@ public partial class ModuleShapeTriple : ModuleShape
     public override List<HexCoordinates> Tiles => [
         HexCoordinates.Zero, 
         HexCoordinates.Right, 
-        HexCoordinates.TopRight
+        HexCoordinates.BottomRight
     ];
 }

@@ -59,6 +59,4 @@ public abstract partial class ModuleShape : Resource
         }
     }
     
-    public int TileCount => Tiles.Count + 1;
-    
 }

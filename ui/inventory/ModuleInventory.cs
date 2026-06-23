@@ -26,9 +26,14 @@ public partial class ModuleInventory : Control
         CreateSlots(centerSlotPosition);
     }
 
-    public InventorySlot? GetSlot(HexCoordinates coordinates)
+    public InventorySlot? TryGetSlot(HexCoordinates coordinates)
     {
         return _slots.GetValueOrDefault(coordinates);
+    }
+    
+    public InventorySlot GetSlot(HexCoordinates coordinates)
+    {
+        return _slots[coordinates];
     }
 
     public List<InventorySlot> GetSlots()
@@ -46,7 +51,7 @@ public partial class ModuleInventory : Control
             var position = center + hex.ToVector() * DistanceBetweenSlots;
             var correctedPosition = position - new Vector2(DistanceBetweenSlots / 2, DistanceBetweenSlots / 2);
             
-            var slot = InventorySlot.Create(hex);
+            var slot = InventorySlot.Create(this, hex);
             slot.GlobalPosition = correctedPosition;
             if (hex.Length() == radius - 1)
             {

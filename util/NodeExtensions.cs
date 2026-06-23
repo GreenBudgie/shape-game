@@ -5,5 +5,15 @@ public static class NodeExtensions
     {
         Callable.From(() => node.AddChild(child)).CallDeferred();
     }
+
+    public static Vector2 GetCenterGlobalPosition(this Control control)
+    {
+        return control.GetGlobalRect().GetCenter();
+    }
+    
+    public static void SetCenterGlobalPosition(this Control control, Vector2 position)
+    {
+        control.GlobalPosition = position - control.GetSize() / 2;
+    }
     
 }

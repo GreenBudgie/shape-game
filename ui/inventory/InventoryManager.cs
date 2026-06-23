@@ -53,6 +53,12 @@ public partial class InventoryManager : Control
 
     private void PostSetup()
     {
+        var module = ModuleManager.GetModule<BoltModule>();
+        var inventoryModule = InventoryModule.Create(module);
+        AddChild(inventoryModule);
+        var slot = LeftBlasterInventory.GetSlot(HexCoordinates.Zero);
+        inventoryModule.TryInsert(slot);
+        
         Close();
         Visible = false;
     }
