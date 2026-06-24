@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://bd0itqdn7nlo7" path="res://systems/GamePhaseManager.cs" id="13_80cx4"]
 [ext_resource type="Script" uid="uid://cek6yfy2gipxe" path="res://util/screenshake/ScreenShake.cs" id="13_lc2xo"]
 [ext_resource type="Script" uid="uid://d04nmdt4omsif" path="res://systems/MouseInputManager.cs" id="16_boyg6"]
+[ext_resource type="Script" uid="uid://dcfyc3mh3ufim" path="res://debug/DebugDraw.cs" id="19_boyg6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
 size = Vector2(1024, 4208)
@@ -182,3 +183,11 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("13_lc2xo")
 metadata/_edit_lock_ = true
+
+[node name="DebugLayer" type="CanvasLayer" parent="." unique_id=2028777421]
+layer = 10
+
+[node name="DebugDraw" type="Node2D" parent="DebugLayer" unique_id=1202650167]
+process_mode = 3
+process_priority = 10
+script = ExtResource("19_boyg6")

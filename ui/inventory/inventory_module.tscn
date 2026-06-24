@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://csoad8g8f13qn"]
 
 [ext_resource type="Shader" uid="uid://fxn8hdgq2td3" path="res://util/stretch.gdshader" id="1_pgwtc"]
+[ext_resource type="Texture2D" uid="uid://ddbmie8cjsnsb" path="res://module/shape/shape_triple.png" id="2_b1ijn"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/InventoryModule.cs" id="2_pgwtc"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mhdu2"]
@@ -19,6 +20,7 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 action_mode = 0
+texture_normal = ExtResource("2_b1ijn")
 stretch_mode = 3
 script = ExtResource("2_pgwtc")
 

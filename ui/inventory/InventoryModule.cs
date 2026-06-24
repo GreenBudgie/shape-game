@@ -17,6 +17,8 @@ public partial class InventoryModule : TextureButton
     private ShaderMaterial _material = null!;
     private Vector2 _targetPosition;
     private ModuleInfo? _moduleInfo;
+    private int _rotation;
+    private HexCoordinates? _pivot;
     
     private TextureRect _moduleTexture = null!;
 
@@ -76,6 +78,11 @@ public partial class InventoryModule : TextureButton
 
     public override void _Process(double delta)
     {
+        if (_pivot.HasValue)
+        {
+            DebugDraw.DrawPoint(_pivot.Value.ToPixel() - Module.Shape.PixelCenter + this.GetCenterGlobalPosition());
+        }
+
         if (!_isFollowingCursor && IsHovered() && Input.IsActionJustPressed("inventory_left_click"))
         {
             StartFollowingCursor();
@@ -83,16 +90,17 @@ public partial class InventoryModule : TextureButton
         {
             if (Input.IsActionJustPressed("ui_rotate_clockwise"))
             {
-                
+                _rotation = (_rotation + 1) % HexCoordinates.HexEdges;
             }
             
             if (Input.IsActionJustPressed("ui_rotate_counter_clockwise"))
             {
-                
+                _rotation = (_rotation - 1) % HexCoordinates.HexEdges;
             }
 
             var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
-            var mouseHexPositions = Module.Shape.PixelHexPositions.ToDictionary(x => x.Key, x => mousePosition + x.Value);
+            var pivotOffset = _pivot.Value.ToPixel() - Module.Shape.PixelCenter;
+            var mouseHexPositions = Module.Shape.PixelHexPositions.ToDictionary(x => x.Key, x => mousePosition + x.Value - pivotOffset);
 
             Dictionary<HexCoordinates, InventorySlot> hoveredSlots = []; 
             foreach (var slot in InventoryManager.Instance.GetActiveSlots())
@@ -109,7 +117,7 @@ public partial class InventoryModule : TextureButton
             var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count; 
             if (hoveredSlots.Count == 0)
             {
-                _targetPosition = mousePosition;
+                _targetPosition = mousePosition - pivotOffset;
             }
             else
             {
@@ -165,6 +173,12 @@ public partial class InventoryModule : TextureButton
         
         HideModuleInfo();
         _isFollowingCursor = true;
+
+        var mousePosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
+        var closestHex = Module.Shape.PixelHexPositions
+            .MinBy(entry => (entry.Value + this.GetCenterGlobalPosition()).DistanceSquaredTo(mousePosition));
+        _pivot = closestHex.Key;
+        
         ZIndex += 1;
     }
 
@@ -181,6 +195,7 @@ public partial class InventoryModule : TextureButton
         }
         
         _isFollowingCursor = false;
+        _pivot = null;
         ZIndex -= 1;
     }
 
