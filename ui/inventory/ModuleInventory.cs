@@ -3,8 +3,6 @@ using System.Linq;
 
 public partial class ModuleInventory : Control
 {
-    public const float DistanceBetweenSlots = 200;
-
     [Export] public bool IsLeft { get; private set; }
 
     private readonly Dictionary<HexCoordinates, InventorySlot> _slots = [];
@@ -48,11 +46,10 @@ public partial class ModuleInventory : Control
         var coordinates = HexCoordinates.Spiral(radius);
         foreach (var hex in coordinates)
         {
-            var position = center + hex.ToVector() * DistanceBetweenSlots;
-            var correctedPosition = position - new Vector2(DistanceBetweenSlots / 2, DistanceBetweenSlots / 2);
+            var position = center + hex.ToPixel();
             
             var slot = InventorySlot.Create(this, hex);
-            slot.GlobalPosition = correctedPosition;
+            slot.GlobalPosition = position - slot.Size / 2;
             if (hex.Length() == radius - 1)
             {
                 slot.SetDisabled(true);

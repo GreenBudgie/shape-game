@@ -4,14 +4,15 @@ using System.Collections.Immutable;
 /**
  * Using cube coordinates for hexagons
  */
-public readonly struct HexCoordinates(int q, int r, int s)
+public readonly record struct HexCoordinates(int Q, int R, int S)
 {
 
     public const int HexEdges = 6;
-
-    public int Q => q;
-    public int R => r;
-    public int S => s;
+    
+    /// <summary>
+    /// Distance in screen pixels between centers of two hexes
+    /// </summary>
+    public const float PixelSpacing = 200;
 
     public static readonly HexCoordinates Zero = new(0, 0, 0);
 
@@ -22,7 +23,7 @@ public readonly struct HexCoordinates(int q, int r, int s)
     public static readonly HexCoordinates BottomLeft = new(-1, 1, 0);
     public static readonly HexCoordinates BottomRight = new(0, 1, -1);
 
-    private static readonly Vector2 BottomRightVector = Vector2.FromAngle(5 * Pi / 3);
+    private static readonly Vector2 BottomRightVector = Vector2.FromAngle(Pi / 3);
 
     public static readonly ImmutableList<HexCoordinates> Directions =
     [
@@ -38,6 +39,8 @@ public readonly struct HexCoordinates(int q, int r, int s)
     {
         return Q * Vector2.Right + R * BottomRightVector;
     }
+    
+    public Vector2 ToPixel() => ToVector() * PixelSpacing;
     
     public int Length()
     {

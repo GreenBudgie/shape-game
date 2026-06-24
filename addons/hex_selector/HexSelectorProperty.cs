@@ -186,8 +186,7 @@ public partial class HexGrid : Control
     private Vector2 HexCenter(Vector3I coord, float radius)
     {
         var spacing = Sqrt(3) * radius;
-        var math = new HexCoordinates(coord.X, coord.Y, coord.Z).ToVector();
-        return Size / 2f + new Vector2(math.X, -math.Y) * spacing;
+        return Size / 2f + new HexCoordinates(coord.X, coord.Y, coord.Z).ToVector() * spacing;
     }
 
     private static Vector2[] HexCorners(Vector2 center, float radius)

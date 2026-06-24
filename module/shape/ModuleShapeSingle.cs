@@ -9,5 +9,5 @@ public partial class ModuleShapeSingle : ModuleShape
     
     public override Texture2D Texture => GD.Load<Texture2D>(TexturePath);
     
-    public override List<HexCoordinates> Tiles => [HexCoordinates.Zero];
+    public override List<HexCoordinates> Hexes => [HexCoordinates.Zero];
 }

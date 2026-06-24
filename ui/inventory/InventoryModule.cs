@@ -16,13 +16,12 @@ public partial class InventoryModule : TextureButton
     private bool _isFollowingCursor;
     private ShaderMaterial _material = null!;
     private Vector2 _targetPosition;
-    private List<Vector2> _hexPositions = null!;
     private ModuleInfo? _moduleInfo;
     
     private TextureRect _moduleTexture = null!;
 
     public Module Module { get; private set; } = null!;
-    public List<InventorySlot> Slots { get; private set; } = [];
+    public Dictionary<HexCoordinates, InventorySlot> Slots { get; private set; } = [];
 
     public static InventoryModule Create(Module module)
     {
@@ -41,10 +40,6 @@ public partial class InventoryModule : TextureButton
         _material = (ShaderMaterial)Material;
 
         TextureClickMask = Module.Shape.Bitmap;
-
-        _hexPositions = Module.Shape.CenteredTilePositions
-            .Select(pos => pos * ModuleInventory.DistanceBetweenSlots)
-            .ToList();
 
         MouseEntered += OnMouseEnter;
         MouseExited += OnMouseExit;
@@ -97,39 +92,45 @@ public partial class InventoryModule : TextureButton
             }
 
             var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
-            var globalHexPositions = _hexPositions.Select(pos => mousePosition + pos).ToList();
+            var mouseHexPositions = Module.Shape.PixelHexPositions.ToDictionary(x => x.Key, x => mousePosition + x.Value);
 
-            List<InventorySlot> hoveredSlots = []; 
+            Dictionary<HexCoordinates, InventorySlot> hoveredSlots = []; 
             foreach (var slot in InventoryManager.Instance.GetActiveSlots())
             {
-                foreach (var hexPosition in globalHexPositions)
+                foreach (var hexPosition in mouseHexPositions)
                 {
-                    if (slot.GetCenterGlobalPosition().DistanceSquaredTo(hexPosition) < InventorySlot.InradiusSq)
+                    if (slot.GetCenterGlobalPosition().DistanceSquaredTo(hexPosition.Value) < InventorySlot.InradiusSq)
                     {
-                        hoveredSlots.Add(slot);
+                        hoveredSlots.Add(hexPosition.Key, slot);
                     }
                 }
             }
             
-            var allSlotsHovered = hoveredSlots.Count == Module.Shape.Tiles.Count; 
+            var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count; 
             if (hoveredSlots.Count == 0)
             {
                 _targetPosition = mousePosition;
             }
             else
             {
-                _targetPosition = hoveredSlots.Select(slot => slot.GetCenterGlobalPosition()).Center();
+                var firstHoveredSlot = hoveredSlots.First();
+                var slotPosition = firstHoveredSlot.Value.GetCenterGlobalPosition();
+                var shapeHexPosition = Module.Shape.PixelHexPositions[firstHoveredSlot.Key];
+                _targetPosition = slotPosition - shapeHexPosition;
                 
                 if (allSlotsHovered && Input.IsActionJustPressed("inventory_left_click"))
                 {
-                    Slots = hoveredSlots.ToList();
+                    Slots = hoveredSlots;
                     StopFollowingCursor();
                 }
             }
         }
         else if (Slots.Count > 0)
         {
-            _targetPosition = Slots.Select(slot => slot.GetCenterGlobalPosition()).Center();
+            var firstHoveredSlot = Slots.First();
+            var slotPosition = firstHoveredSlot.Value.GetCenterGlobalPosition();
+            var shapeHexPosition = Module.Shape.PixelHexPositions[firstHoveredSlot.Key];
+            _targetPosition = slotPosition - shapeHexPosition;
         }
 
         MoveToTargetPosition(delta);
@@ -139,8 +140,8 @@ public partial class InventoryModule : TextureButton
     {
         var inventory = centerSlot.Inventory;
 
-        List<InventorySlot> slots = []; 
-        foreach (var hex in Module.Shape.Tiles)
+        Dictionary<HexCoordinates, InventorySlot> slots = []; 
+        foreach (var hex in Module.Shape.Hexes)
         {
             var slot = inventory.TryGetSlot(centerSlot.Coordinates + hex);
             if (slot == null || slot.HasModule() || slot.IsDisabled())
@@ -148,7 +149,7 @@ public partial class InventoryModule : TextureButton
                 return false;
             }
             
-            slots.Add(slot);
+            slots.Add(hex, slot);
         }
 
         Slots = slots;

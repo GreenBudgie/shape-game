@@ -8,9 +8,9 @@ public partial class ModuleShapeTriple : ModuleShape
 
     public override Texture2D Texture => GD.Load<Texture2D>(TexturePath);
 
-    public override List<HexCoordinates> Tiles => [
-        HexCoordinates.Zero, 
-        HexCoordinates.Right, 
+    public override List<HexCoordinates> Hexes => [
+        HexCoordinates.Zero,
+        HexCoordinates.Right,
         HexCoordinates.BottomRight
     ];
 }

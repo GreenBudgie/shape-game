@@ -6,38 +6,35 @@ public abstract partial class ModuleShape : Resource
 {
     public abstract Texture2D Texture { get; }
 
-    public abstract List<HexCoordinates> Tiles { get; }
+    /// <summary>
+    /// Hexes of this figure
+    /// </summary>
+    public abstract List<HexCoordinates> Hexes { get; }
 
-    private List<Vector2>? _tilePositions;
     private Vector2? _center;
-    private List<Vector2>? _centeredTilePositions;
+    private Dictionary<HexCoordinates, Vector2>? _pixelHexPositions;
     private Bitmap? _bitmap;
 
-    public List<Vector2> TilePositions
+    /// <summary>
+    /// On-screen center of the sprite
+    /// </summary>
+    public Vector2 PixelCenter
     {
         get
         {
-            return _tilePositions ??= Tiles
-                .Select(tile => tile.ToVector())
-                .ToList();
-        }
-    }
-
-    public Vector2 Center
-    {
-        get
-        {
-            return _center ??= TilePositions.Center();
+            return _center ??= Hexes.Select(h => h.ToPixel()).BoundsCenter();
         }
     }
     
-    public List<Vector2> CenteredTilePositions
+    /// <summary>
+    /// On-screen positions of the hexes relative to the sprite center
+    /// </summary>
+    public Dictionary<HexCoordinates, Vector2> PixelHexPositions
     {
         get
         {
-            return _centeredTilePositions ??= TilePositions
-                .Select(position => position - Center)
-                .ToList();
+            return _pixelHexPositions ??= Hexes
+                .ToDictionary(hex => hex, hex => hex.ToPixel() - PixelCenter);
         }
     }
     
