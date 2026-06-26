@@ -8,6 +8,7 @@ public readonly record struct HexCoordinates(int Q, int R, int S)
 {
 
     public const int HexEdges = 6;
+    public const float RotationStep = Pi / 3;
     
     /// <summary>
     /// Distance in screen pixels between centers of two hexes
@@ -139,7 +140,7 @@ public readonly record struct HexCoordinates(int Q, int R, int S)
     public static float GetRotationAngleByStep(int step)
     {
         step = (step % HexEdges + HexEdges) % HexEdges;
-        return step * Pi / 3;
+        return step * RotationStep;
     }
     
 }

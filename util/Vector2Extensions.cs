@@ -25,4 +25,9 @@ public static class Vector2Extensions
         return new Vector2((minX + maxX) / 2f, (minY + maxY) / 2f);
     }
 
+    public static Vector2 Rotated(this Vector2 vector, Vector2 pivot, float angle)
+    {
+        return (vector - pivot).Rotated(angle) + pivot;
+    }
+
 }

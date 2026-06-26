@@ -10,8 +10,8 @@ public partial class InventoryModule : TextureButton
     private ModuleInfo? _moduleInfo;
     private int _rotation;
     private HexCoordinates? _pivot;
-    private Dictionary<HexCoordinates, HexCoordinates> _remappedCoordinates = [];
-    
+    private Dictionary<HexCoordinates, Vector2> _remappedCoordinates = [];
+
     private TextureRect _moduleTexture = null!;
 
     public Module Module { get; private set; } = null!;
@@ -32,7 +32,7 @@ public partial class InventoryModule : TextureButton
         TextureNormal = Module.Shape.Texture;
         _moduleTexture.Texture = Module.Texture;
         _material = (ShaderMaterial)Material;
-        _remappedCoordinates = Module.Shape.Hexes.ToDictionary(x => x);
+        _remappedCoordinates = Module.Shape.PixelHexPositions.ToDictionary();
 
         TextureClickMask = Module.Shape.Bitmap;
 
@@ -50,17 +50,17 @@ public partial class InventoryModule : TextureButton
         {
             return;
         }
-        
+
         ShowModuleInfo();
     }
-    
+
     private void OnMouseExit()
     {
         if (_isFollowingCursor)
         {
             return;
         }
-        
+
         HideModuleInfo();
     }
 
@@ -71,51 +71,59 @@ public partial class InventoryModule : TextureButton
 
     public override void _Process(double delta)
     {
-        Rotation = HexCoordinates.GetRotationAngleByStep(_rotation);
-        
         if (!_isFollowingCursor && IsHovered() && Input.IsActionJustPressed("inventory_left_click"))
         {
             StartFollowingCursor();
-        } else if (_isFollowingCursor && _pivot.HasValue)
+        }
+        else if (_isFollowingCursor && _pivot.HasValue)
         {
             if (Input.IsActionJustPressed("ui_rotate_clockwise"))
             {
                 _rotation = (_rotation + 1) % HexCoordinates.HexEdges;
-                _remappedCoordinates = _remappedCoordinates.ToDictionary(x => x.Key, x => x.Value.RotatedClockwise(_pivot.Value));
+                _remappedCoordinates = _remappedCoordinates.ToDictionary(
+                    x => x.Key.RotatedClockwise(_pivot.Value),
+                    x => x.Value.Rotated(HexCoordinates.RotationStep)
+                );
             }
-            
+
             if (Input.IsActionJustPressed("ui_rotate_counter_clockwise"))
             {
                 _rotation = (_rotation - 1) % HexCoordinates.HexEdges;
-                _remappedCoordinates = _remappedCoordinates.ToDictionary(x => x.Key, x => x.Value.RotatedCounterClockwise(_pivot.Value));
+                _remappedCoordinates = _remappedCoordinates.ToDictionary(
+                    x => x.Key.RotatedCounterClockwise(_pivot.Value),
+                    x => x.Value.Rotated(-HexCoordinates.RotationStep)
+                );
             }
-            
-            var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
-            var pivotOffset = _pivot.Value.ToPixel() - Module.Shape.PixelCenter;
-            var mouseHexPositions = GetRemappedPixelHexPositions().ToDictionary(x => x.Key, x => mousePosition + x.Value - pivotOffset);
 
-            Dictionary<HexCoordinates, InventorySlot> hoveredSlots = []; 
+            Rotation = HexCoordinates.GetRotationAngleByStep(_rotation);
+
+            var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
+            var pivotOffset = _remappedCoordinates[_pivot.Value];
+            var mouseHexPositions = _remappedCoordinates.ToDictionary(
+                x => x.Key,
+                x => mousePosition - pivotOffset + x.Value
+            );
+
+            Dictionary<HexCoordinates, InventorySlot> hoveredSlots = [];
             foreach (var slot in InventoryManager.Instance.GetActiveSlots())
             {
                 foreach (var hexPosition in mouseHexPositions)
                 {
-                    DebugDraw.DrawPoint(hexPosition.Value);
-                    if (slot.GetCenterGlobalPosition().DistanceSquaredTo(hexPosition.Value) < InventorySlot.InradiusSq)
+                    if (slot.GetCenterPosition().DistanceSquaredTo(hexPosition.Value) < InventorySlot.InradiusSq)
                     {
                         hoveredSlots.Add(hexPosition.Key, slot);
                     }
                 }
             }
-            
-            var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count; 
+
+            var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count;
             if (hoveredSlots.Count == 0)
             {
-                PivotOffset = pivotOffset + Size / 2;
-                Position = mousePosition - pivotOffset - Size / 2;
+                Position = mousePosition - pivotOffset;
             }
             else
             {
-                this.SetCenterGlobalPosition(GetSlotBasedPosition(hoveredSlots));
+                Position = GetSlotBasedPosition(hoveredSlots);
 
                 if (allSlotsHovered && Input.IsActionJustPressed("inventory_left_click"))
                 {
@@ -126,28 +134,23 @@ public partial class InventoryModule : TextureButton
         }
         else if (Slots.Count > 0)
         {
-            this.SetCenterGlobalPosition(GetSlotBasedPosition(Slots));
+            Position = GetSlotBasedPosition(Slots);
         }
     }
 
     private Vector2 GetSlotBasedPosition(Dictionary<HexCoordinates, InventorySlot> slots)
     {
         var firstSlot = slots.First();
-        var slotPosition = firstSlot.Value.GetCenterGlobalPosition();
-        var shapeHexPosition = GetRemappedPixelHexPositions()[firstSlot.Key];
+        var slotPosition = firstSlot.Value.GetCenterPosition();
+        var shapeHexPosition = _remappedCoordinates[firstSlot.Key];
         return slotPosition - shapeHexPosition;
-    }
-    
-    private Dictionary<HexCoordinates, Vector2> GetRemappedPixelHexPositions()
-    {
-        return Module.Shape.PixelHexPositions.ToDictionary(x => x.Key, v => _remappedCoordinates[v.Key].ToPixel() - Module.Shape.PixelCenter);
     }
 
     public bool TryInsert(InventorySlot centerSlot)
     {
         var inventory = centerSlot.Inventory;
 
-        Dictionary<HexCoordinates, InventorySlot> slots = []; 
+        Dictionary<HexCoordinates, InventorySlot> slots = [];
         foreach (var hex in Module.Shape.Hexes)
         {
             var slot = inventory.TryGetSlot(centerSlot.Coordinates + hex);
@@ -155,7 +158,7 @@ public partial class InventoryModule : TextureButton
             {
                 return false;
             }
-            
+
             slots.Add(hex, slot);
         }
 
@@ -169,15 +172,14 @@ public partial class InventoryModule : TextureButton
         {
             return;
         }
-        
+
         HideModuleInfo();
         _isFollowingCursor = true;
 
         var mousePosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
-        var closestHex = GetRemappedPixelHexPositions()
-            .MinBy(entry => (entry.Value + this.GetCenterGlobalPosition()).DistanceSquaredTo(mousePosition));
+        var closestHex = _remappedCoordinates.MinBy(entry => (entry.Value + Position).DistanceSquaredTo(mousePosition));
         _pivot = closestHex.Key;
-        
+
         ZIndex += 1;
     }
 
@@ -187,12 +189,12 @@ public partial class InventoryModule : TextureButton
         {
             return;
         }
-        
+
         if (IsHovered())
         {
             ShowModuleInfo();
         }
-        
+
         _isFollowingCursor = false;
         _pivot = null;
         ZIndex -= 1;
@@ -204,7 +206,7 @@ public partial class InventoryModule : TextureButton
         {
             return;
         }
-        
+
         _moduleInfo = ModuleInfo.Create(Module);
         InventoryManager.Instance.AddChild(_moduleInfo);
     }
@@ -214,5 +216,4 @@ public partial class InventoryModule : TextureButton
         _moduleInfo?.Remove();
         _moduleInfo = null;
     }
-
 }
