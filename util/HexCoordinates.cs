@@ -51,7 +51,34 @@ public readonly record struct HexCoordinates(int Q, int R, int S)
     {
         return (this - other).Length();
     }
-    
+
+    public HexCoordinates RotatedClockwise(int steps = 1)
+    {
+        steps = (steps % HexEdges + HexEdges) % HexEdges;
+        return steps switch
+        {
+            0 => this,
+            1 => new HexCoordinates(-R, -S, -Q),
+            2 => new HexCoordinates( S,  Q,  R),
+            3 => new HexCoordinates(-Q, -R, -S),
+            4 => new HexCoordinates( R,  S,  Q),
+            5 => new HexCoordinates(-S, -Q, -R),
+            _ => this,
+        };
+    }
+
+    public HexCoordinates RotatedCounterClockwise(int steps = 1) => RotatedClockwise(-steps);
+
+    public HexCoordinates RotatedClockwise(HexCoordinates pivot, int steps = 1)
+    {
+        return (this - pivot).RotatedClockwise(steps) + pivot;
+    }
+
+    public HexCoordinates RotatedCounterClockwise(HexCoordinates pivot, int steps = 1)
+    {
+        return (this - pivot).RotatedCounterClockwise(steps) + pivot;
+    }
+
     public static implicit operator HexCoordinates(Vector3I v) => new(v.X, v.Y, v.Z);
     
     public static implicit operator Vector3I(HexCoordinates h) => new(h.Q, h.R, h.S);
@@ -107,6 +134,12 @@ public readonly record struct HexCoordinates(int Q, int R, int S)
                 yield return ringCoordinates;
             }
         }
+    }
+
+    public static float GetRotationAngleByStep(int step)
+    {
+        step = (step % HexEdges + HexEdges) % HexEdges;
+        return step * Pi / 3;
     }
     
 }

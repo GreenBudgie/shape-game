@@ -3,22 +3,14 @@ using System.Linq;
 
 public partial class InventoryModule : TextureButton
 {
-
-    private const float StretchAmountPerPixel = 0.02f;
-    private const float TargetPositionFollowSpeed = 10f;
-    private const float CursorFollowSpeed = 30f;
-
-    private static readonly StringName StretchAmount = "stretch_amount";
-    private static readonly StringName StretchDirection = "stretch_direction";
-
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://csoad8g8f13qn");
 
     private bool _isFollowingCursor;
     private ShaderMaterial _material = null!;
-    private Vector2 _targetPosition;
     private ModuleInfo? _moduleInfo;
     private int _rotation;
     private HexCoordinates? _pivot;
+    private Dictionary<HexCoordinates, HexCoordinates> _remappedCoordinates = [];
     
     private TextureRect _moduleTexture = null!;
 
@@ -40,6 +32,7 @@ public partial class InventoryModule : TextureButton
         TextureNormal = Module.Shape.Texture;
         _moduleTexture.Texture = Module.Texture;
         _material = (ShaderMaterial)Material;
+        _remappedCoordinates = Module.Shape.Hexes.ToDictionary(x => x);
 
         TextureClickMask = Module.Shape.Bitmap;
 
@@ -78,35 +71,35 @@ public partial class InventoryModule : TextureButton
 
     public override void _Process(double delta)
     {
-        if (_pivot.HasValue)
-        {
-            DebugDraw.DrawPoint(_pivot.Value.ToPixel() - Module.Shape.PixelCenter + this.GetCenterGlobalPosition());
-        }
-
+        Rotation = HexCoordinates.GetRotationAngleByStep(_rotation);
+        
         if (!_isFollowingCursor && IsHovered() && Input.IsActionJustPressed("inventory_left_click"))
         {
             StartFollowingCursor();
-        } else if (_isFollowingCursor)
+        } else if (_isFollowingCursor && _pivot.HasValue)
         {
             if (Input.IsActionJustPressed("ui_rotate_clockwise"))
             {
                 _rotation = (_rotation + 1) % HexCoordinates.HexEdges;
+                _remappedCoordinates = _remappedCoordinates.ToDictionary(x => x.Key, x => x.Value.RotatedClockwise(_pivot.Value));
             }
             
             if (Input.IsActionJustPressed("ui_rotate_counter_clockwise"))
             {
                 _rotation = (_rotation - 1) % HexCoordinates.HexEdges;
+                _remappedCoordinates = _remappedCoordinates.ToDictionary(x => x.Key, x => x.Value.RotatedCounterClockwise(_pivot.Value));
             }
-
+            
             var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
             var pivotOffset = _pivot.Value.ToPixel() - Module.Shape.PixelCenter;
-            var mouseHexPositions = Module.Shape.PixelHexPositions.ToDictionary(x => x.Key, x => mousePosition + x.Value - pivotOffset);
+            var mouseHexPositions = GetRemappedPixelHexPositions().ToDictionary(x => x.Key, x => mousePosition + x.Value - pivotOffset);
 
             Dictionary<HexCoordinates, InventorySlot> hoveredSlots = []; 
             foreach (var slot in InventoryManager.Instance.GetActiveSlots())
             {
                 foreach (var hexPosition in mouseHexPositions)
                 {
+                    DebugDraw.DrawPoint(hexPosition.Value);
                     if (slot.GetCenterGlobalPosition().DistanceSquaredTo(hexPosition.Value) < InventorySlot.InradiusSq)
                     {
                         hoveredSlots.Add(hexPosition.Key, slot);
@@ -117,15 +110,13 @@ public partial class InventoryModule : TextureButton
             var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count; 
             if (hoveredSlots.Count == 0)
             {
-                _targetPosition = mousePosition - pivotOffset;
+                PivotOffset = pivotOffset + Size / 2;
+                Position = mousePosition - pivotOffset - Size / 2;
             }
             else
             {
-                var firstHoveredSlot = hoveredSlots.First();
-                var slotPosition = firstHoveredSlot.Value.GetCenterGlobalPosition();
-                var shapeHexPosition = Module.Shape.PixelHexPositions[firstHoveredSlot.Key];
-                _targetPosition = slotPosition - shapeHexPosition;
-                
+                this.SetCenterGlobalPosition(GetSlotBasedPosition(hoveredSlots));
+
                 if (allSlotsHovered && Input.IsActionJustPressed("inventory_left_click"))
                 {
                     Slots = hoveredSlots;
@@ -135,13 +126,21 @@ public partial class InventoryModule : TextureButton
         }
         else if (Slots.Count > 0)
         {
-            var firstHoveredSlot = Slots.First();
-            var slotPosition = firstHoveredSlot.Value.GetCenterGlobalPosition();
-            var shapeHexPosition = Module.Shape.PixelHexPositions[firstHoveredSlot.Key];
-            _targetPosition = slotPosition - shapeHexPosition;
+            this.SetCenterGlobalPosition(GetSlotBasedPosition(Slots));
         }
+    }
 
-        MoveToTargetPosition(delta);
+    private Vector2 GetSlotBasedPosition(Dictionary<HexCoordinates, InventorySlot> slots)
+    {
+        var firstSlot = slots.First();
+        var slotPosition = firstSlot.Value.GetCenterGlobalPosition();
+        var shapeHexPosition = GetRemappedPixelHexPositions()[firstSlot.Key];
+        return slotPosition - shapeHexPosition;
+    }
+    
+    private Dictionary<HexCoordinates, Vector2> GetRemappedPixelHexPositions()
+    {
+        return Module.Shape.PixelHexPositions.ToDictionary(x => x.Key, v => _remappedCoordinates[v.Key].ToPixel() - Module.Shape.PixelCenter);
     }
 
     public bool TryInsert(InventorySlot centerSlot)
@@ -175,7 +174,7 @@ public partial class InventoryModule : TextureButton
         _isFollowingCursor = true;
 
         var mousePosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
-        var closestHex = Module.Shape.PixelHexPositions
+        var closestHex = GetRemappedPixelHexPositions()
             .MinBy(entry => (entry.Value + this.GetCenterGlobalPosition()).DistanceSquaredTo(mousePosition));
         _pivot = closestHex.Key;
         
@@ -199,57 +198,6 @@ public partial class InventoryModule : TextureButton
         ZIndex -= 1;
     }
 
-    private void MoveToTargetPosition(double delta)
-    {
-        var position = this.GetCenterGlobalPosition();
-        if (position.IsEqualApprox(_targetPosition))
-        {
-            SetStretchAmount(0);
-            return;
-        }
-
-        SetStretchDirection(position.DirectionTo(_targetPosition).Rotated(Pi / 2));
-
-        var followSpeed = _isFollowingCursor ? CursorFollowSpeed : TargetPositionFollowSpeed;
-        var distanceToX = Abs(position.X - _targetPosition.X);
-        var distanceToY = Abs(position.Y - _targetPosition.Y);
-        var x = MoveToward(
-            position.X,
-            _targetPosition.X,
-            followSpeed * (float)delta * distanceToX
-        );
-        var y = MoveToward(
-            position.Y,
-            _targetPosition.Y,
-            followSpeed * (float)delta * distanceToY
-        );
-        this.SetCenterGlobalPosition(new Vector2(x, y));
-
-        var positionDelta = this.GetCenterGlobalPosition().DistanceTo(position);
-        var stretchAmount = Clamp(StretchAmountPerPixel * positionDelta, 0, 2);
-        SetStretchAmount(stretchAmount);
-    }
-
-    private void SetStretchAmount(float stretchAmount)
-    {
-        _material.SetShaderParameter(StretchAmount, stretchAmount);
-    }
-
-    private float GetStretchAmount()
-    {
-        return (float)_material.GetShaderParameter(StretchAmount);
-    }
-
-    private void SetStretchDirection(Vector2 stretchDirection)
-    {
-        _material.SetShaderParameter(StretchDirection, stretchDirection);
-    }
-
-    private Vector2 GetStretchDirection()
-    {
-        return (Vector2)_material.GetShaderParameter(StretchDirection);
-    }
-    
     private void ShowModuleInfo()
     {
         if (_isFollowingCursor)

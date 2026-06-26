@@ -27,7 +27,7 @@ public abstract partial class ModuleShape : Resource
     }
     
     /// <summary>
-    /// On-screen positions of the hexes relative to the sprite center
+    /// On-screen positions of the hexes
     /// </summary>
     public Dictionary<HexCoordinates, Vector2> PixelHexPositions
     {

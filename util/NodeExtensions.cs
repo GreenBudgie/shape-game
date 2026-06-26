@@ -13,7 +13,7 @@ public static class NodeExtensions
     
     public static void SetCenterGlobalPosition(this Control control, Vector2 position)
     {
-        control.GlobalPosition = position - control.GetSize() / 2;
+        control.Position = position - control.GetSize() / 2;
     }
     
 }
