@@ -5,8 +5,15 @@ using System.Linq;
 public abstract partial class ModuleShape : Resource
 {
 
-    public static readonly Vector2 HexSize = new(72f * Sqrt(3), 144f);
-    public static readonly Vector2 HexHalfSize = HexSize / 2f;
+    public const float TexturePadding = 8f;
+    public const float Size = 144f;
+    
+    // Exported texture has rounded corners. After applying padding in godot, the pointy-top part of the hexagon
+    // is a little shifted because of that. This factor accounts for this shift.
+    private const float HeightCorrectionFactor = 3.094f;
+
+    public static readonly Vector2 HexSize = new(Size / 2f * Sqrt(3), Size);
+    private static readonly Vector2 CornerGap = HexSize / 2f + new Vector2(TexturePadding, TexturePadding - HeightCorrectionFactor);
     
     public abstract Texture2D Texture { get; }
 
@@ -26,7 +33,7 @@ public abstract partial class ModuleShape : Resource
         get
         {
             return _pixelHexPositions ??= Hexes
-                .ToDictionary(hex => hex, hex => hex.ToPixel() + HexHalfSize);
+                .ToDictionary(hex => hex, hex => hex.ToPixel() + CornerGap);
         }
     }
     

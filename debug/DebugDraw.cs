@@ -10,7 +10,7 @@ public partial class DebugDraw : Node2D
         Instance = this;
     }
 
-    private List<Vector2> _points = [];
+    private List<DebugPoint> _points = [];
     private List<KeyValuePair<Vector2, Vector2>> _arrows = [];
     private List<string> _strings = [];
 
@@ -18,7 +18,7 @@ public partial class DebugDraw : Node2D
     {
         foreach (var point in _points)
         {
-            DrawCircle(ToLocal(point), 8, Colors.Red);
+            DrawCircle(ToLocal(point.Position), point.Size, point.Color);
         }
         
         foreach (var arrow in _arrows)
@@ -38,12 +38,24 @@ public partial class DebugDraw : Node2D
 
     public static void DrawPoint(Vector2 globalPosition)
     {
-        Instance._points.Add(globalPosition);
+        DrawPoint(globalPosition, Colors.Red);
+    }
+    
+    public static void DrawPoint(Vector2 globalPosition, float size)
+    {
+        DrawPoint(globalPosition, Colors.Red, size);
+    }
+    
+    public static void DrawPoint(Vector2 globalPosition, Color color, float size = 8)
+    {
+        Instance._points.Add(new DebugPoint(globalPosition, color, size));
     }
     
     public static void DrawArrow(Vector2 start, Vector2 end)
     {
         Instance._arrows.Add(new KeyValuePair<Vector2, Vector2>(start, end));
     }
-    
+
+    public record struct DebugPoint(Vector2 Position, Color Color, float Size);
+
 }

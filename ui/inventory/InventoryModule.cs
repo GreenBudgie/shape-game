@@ -5,11 +5,10 @@ public partial class InventoryModule : TextureButton
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://csoad8g8f13qn");
 
-    private bool _isFollowingCursor;
     private ShaderMaterial _material = null!;
     private ModuleInfo? _moduleInfo;
     private int _rotation;
-    private HexCoordinates? _pivot;
+    private HexCoordinates? _mousePivot;
     private Dictionary<HexCoordinates, Vector2> _remappedCoordinates = [];
 
     private TextureRect _moduleTexture = null!;
@@ -46,7 +45,7 @@ public partial class InventoryModule : TextureButton
 
     private void OnMouseEnter()
     {
-        if (_isFollowingCursor)
+        if (_mousePivot.HasValue)
         {
             return;
         }
@@ -56,7 +55,7 @@ public partial class InventoryModule : TextureButton
 
     private void OnMouseExit()
     {
-        if (_isFollowingCursor)
+        if (_mousePivot.HasValue)
         {
             return;
         }
@@ -71,71 +70,96 @@ public partial class InventoryModule : TextureButton
 
     public override void _Process(double delta)
     {
-        if (!_isFollowingCursor && IsHovered() && Input.IsActionJustPressed("inventory_left_click"))
+        foreach (var keyValuePair in _remappedCoordinates)
+        {
+            DebugDraw.DrawPoint(Position + keyValuePair.Value, 1);
+        }
+
+        if (_mousePivot.HasValue)
+        {
+            FollowCursor();
+            return;
+        }
+
+        if (IsHovered() && Input.IsActionJustPressed("inventory_left_click"))
         {
             StartFollowingCursor();
+            return;
         }
-        else if (_isFollowingCursor && _pivot.HasValue)
-        {
-            if (Input.IsActionJustPressed("ui_rotate_clockwise"))
-            {
-                _rotation = (_rotation + 1) % HexCoordinates.HexEdges;
-                _remappedCoordinates = _remappedCoordinates.ToDictionary(
-                    x => x.Key.RotatedClockwise(_pivot.Value),
-                    x => x.Value.Rotated(HexCoordinates.RotationStep)
-                );
-            }
 
-            if (Input.IsActionJustPressed("ui_rotate_counter_clockwise"))
-            {
-                _rotation = (_rotation - 1) % HexCoordinates.HexEdges;
-                _remappedCoordinates = _remappedCoordinates.ToDictionary(
-                    x => x.Key.RotatedCounterClockwise(_pivot.Value),
-                    x => x.Value.Rotated(-HexCoordinates.RotationStep)
-                );
-            }
-
-            Rotation = HexCoordinates.GetRotationAngleByStep(_rotation);
-
-            var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
-            var pivotOffset = _remappedCoordinates[_pivot.Value];
-            var mouseHexPositions = _remappedCoordinates.ToDictionary(
-                x => x.Key,
-                x => mousePosition - pivotOffset + x.Value
-            );
-
-            Dictionary<HexCoordinates, InventorySlot> hoveredSlots = [];
-            foreach (var slot in InventoryManager.Instance.GetActiveSlots())
-            {
-                foreach (var hexPosition in mouseHexPositions)
-                {
-                    if (slot.GetCenterPosition().DistanceSquaredTo(hexPosition.Value) < InventorySlot.InradiusSq)
-                    {
-                        hoveredSlots.Add(hexPosition.Key, slot);
-                    }
-                }
-            }
-
-            var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count;
-            if (hoveredSlots.Count == 0)
-            {
-                Position = mousePosition - pivotOffset;
-            }
-            else
-            {
-                Position = GetSlotBasedPosition(hoveredSlots);
-
-                if (allSlotsHovered && Input.IsActionJustPressed("inventory_left_click"))
-                {
-                    Slots = hoveredSlots;
-                    StopFollowingCursor();
-                }
-            }
-        }
-        else if (Slots.Count > 0)
+        if (Slots.Count > 0)
         {
             Position = GetSlotBasedPosition(Slots);
         }
+    }
+
+    private void FollowCursor()
+    {
+        if (!_mousePivot.HasValue)
+        {
+            return;
+        }
+
+        if (Input.IsActionJustPressed("ui_rotate_clockwise"))
+        {
+            Rotate(1);
+        }
+
+        if (Input.IsActionJustPressed("ui_rotate_counter_clockwise"))
+        {
+            Rotate(-1);
+        }
+
+        Rotation = HexCoordinates.GetRotationAngleByStep(_rotation);
+
+        var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
+        var pivotOffset = _remappedCoordinates[_mousePivot.Value];
+        var mouseHexPositions = _remappedCoordinates.ToDictionary(
+            x => x.Key,
+            x => mousePosition - pivotOffset + x.Value
+        );
+
+        Dictionary<HexCoordinates, InventorySlot> hoveredSlots = [];
+        foreach (var slot in InventoryManager.Instance.GetActiveSlots())
+        {
+            foreach (var hexPosition in mouseHexPositions)
+            {
+                if (slot.GetCenterPosition().DistanceSquaredTo(hexPosition.Value) < InventorySlot.InradiusSq)
+                {
+                    hoveredSlots.Add(hexPosition.Key, slot);
+                }
+            }
+        }
+
+        var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count;
+        if (hoveredSlots.Count == 0)
+        {
+            Position = mousePosition - pivotOffset;
+            return;
+        }
+
+        Position = GetSlotBasedPosition(hoveredSlots);
+
+        if (allSlotsHovered && Input.IsActionJustPressed("inventory_left_click"))
+        {
+            Slots = hoveredSlots;
+            StopFollowingCursor();
+        }
+    }
+
+    private void Rotate(int step)
+    {
+        if (!_mousePivot.HasValue)
+        {
+            GD.PrintErr("Cannot rotate inventory module while having no pivot");
+            return;
+        }
+
+        _rotation = (_rotation + step) % HexCoordinates.HexEdges;
+        _remappedCoordinates = _remappedCoordinates.ToDictionary(
+            x => x.Key.RotatedClockwise(_mousePivot.Value, step),
+            x => x.Value.Rotated(HexCoordinates.RotationStep * step)
+        );
     }
 
     private Vector2 GetSlotBasedPosition(Dictionary<HexCoordinates, InventorySlot> slots)
@@ -166,26 +190,25 @@ public partial class InventoryModule : TextureButton
         return true;
     }
 
-    public void StartFollowingCursor()
+    private void StartFollowingCursor()
     {
-        if (_isFollowingCursor)
+        if (_mousePivot.HasValue)
         {
             return;
         }
 
         HideModuleInfo();
-        _isFollowingCursor = true;
 
         var mousePosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
         var closestHex = _remappedCoordinates.MinBy(entry => (entry.Value + Position).DistanceSquaredTo(mousePosition));
-        _pivot = closestHex.Key;
+        _mousePivot = closestHex.Key;
 
         ZIndex += 1;
     }
 
-    public void StopFollowingCursor()
+    private void StopFollowingCursor()
     {
-        if (!_isFollowingCursor)
+        if (!_mousePivot.HasValue)
         {
             return;
         }
@@ -195,14 +218,13 @@ public partial class InventoryModule : TextureButton
             ShowModuleInfo();
         }
 
-        _isFollowingCursor = false;
-        _pivot = null;
+        _mousePivot = null;
         ZIndex -= 1;
     }
 
     private void ShowModuleInfo()
     {
-        if (_isFollowingCursor)
+        if (_mousePivot.HasValue)
         {
             return;
         }
