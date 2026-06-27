@@ -1,15 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class InventoryModule : TextureButton
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://csoad8g8f13qn");
 
+    /// <summary>
+    /// Emitted whenever this module is rotated
+    /// </summary>
+    [Signal]
+    public delegate void RotatedEventHandler(int direction);
+    
+    /// <summary>
+    /// Emitted whenever this module is inserted into inventory
+    /// </summary>
+    [Signal]
+    public delegate void InsertedEventHandler();
+    
+    /// <summary>
+    /// Emitted whenever this module is taken out from the inventory
+    /// </summary>
+    [Signal]
+    public delegate void TakenOutEventHandler();
+
     private ShaderMaterial _material = null!;
     private ModuleInfo? _moduleInfo;
-    private int _rotation;
     private HexCoordinates? _mousePivot;
-    private Dictionary<HexCoordinates, Vector2> _remappedCoordinates = [];
+    private Dictionary<HexCoordinates, HexData> _hexes = [];
 
     private TextureRect _moduleTexture = null!;
 
@@ -31,9 +49,35 @@ public partial class InventoryModule : TextureButton
         TextureNormal = Module.Shape.Texture;
         _moduleTexture.Texture = Module.Texture;
         _material = (ShaderMaterial)Material;
-        _remappedCoordinates = Module.Shape.PixelHexPositions.ToDictionary();
-
         TextureClickMask = Module.Shape.Bitmap;
+
+        foreach (var moduleHex in Module.Shape.PixelHexPositions)
+        {
+            _hexes.Add(moduleHex.Key, new HexData(moduleHex.Value, null));
+        }
+
+        foreach (var connectionHex in Module.Connections)
+        {
+            var source = connectionHex.FindFirstNeighbor(GetModuleHexes());
+            if (!source.HasValue)
+            {
+                throw new ArgumentException(
+                    $"Module has an incorrect connection configuration: {connectionHex} does not have a neighbor");
+            }
+
+            var connection = InventoryModuleConnection.Create(this);
+
+            _hexes.Add(
+                connectionHex,
+                new HexData(ModuleShape.GetVisualHexPosition(connectionHex), connection)
+            );
+
+            var sourcePosition = _hexes[source.Value].RealPosition;
+            var targetPosition = _hexes[connectionHex].RealPosition;
+            connection.Position = (sourcePosition + targetPosition) / 2;
+            
+            AddChild(connection);
+        }
 
         MouseEntered += OnMouseEnter;
         MouseExited += OnMouseExit;
@@ -41,6 +85,11 @@ public partial class InventoryModule : TextureButton
             InventoryManager.SignalName.InventoryClosed,
             Callable.From(StopFollowingCursor)
         );
+    }
+
+    private IEnumerable<HexCoordinates> GetModuleHexes()
+    {
+        return _hexes.Where(x => x.Value.Connection == null).Select(x => x.Key);
     }
 
     private void OnMouseEnter()
@@ -70,11 +119,6 @@ public partial class InventoryModule : TextureButton
 
     public override void _Process(double delta)
     {
-        foreach (var keyValuePair in _remappedCoordinates)
-        {
-            DebugDraw.DrawPoint(Position + keyValuePair.Value, 1);
-        }
-
         if (_mousePivot.HasValue)
         {
             FollowCursor();
@@ -110,19 +154,16 @@ public partial class InventoryModule : TextureButton
             Rotate(-1);
         }
 
-        Rotation = HexCoordinates.GetRotationAngleByStep(_rotation);
-
         var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
-        var pivotOffset = _remappedCoordinates[_mousePivot.Value];
-        var mouseHexPositions = _remappedCoordinates.ToDictionary(
-            x => x.Key,
-            x => mousePosition - pivotOffset + x.Value
-        );
+        var pivotOffset = _hexes[_mousePivot.Value].RealPosition;
+        var mouseModuleHexPositions = _hexes
+            .Where(x => x.Value.Connection == null)
+            .ToDictionary(x => x.Key, x => mousePosition - pivotOffset + x.Value.RealPosition);
 
         Dictionary<HexCoordinates, InventorySlot> hoveredSlots = [];
         foreach (var slot in InventoryManager.Instance.GetActiveSlots())
         {
-            foreach (var hexPosition in mouseHexPositions)
+            foreach (var hexPosition in mouseModuleHexPositions)
             {
                 if (slot.GetCenterPosition().DistanceSquaredTo(hexPosition.Value) < InventorySlot.InradiusSq)
                 {
@@ -147,7 +188,7 @@ public partial class InventoryModule : TextureButton
         }
     }
 
-    private void Rotate(int step)
+    private void Rotate(int direction)
     {
         if (!_mousePivot.HasValue)
         {
@@ -155,18 +196,20 @@ public partial class InventoryModule : TextureButton
             return;
         }
 
-        _rotation = (_rotation + step) % HexCoordinates.HexEdges;
-        _remappedCoordinates = _remappedCoordinates.ToDictionary(
-            x => x.Key.RotatedClockwise(_mousePivot.Value, step),
-            x => x.Value.Rotated(HexCoordinates.RotationStep * step)
+        Rotation += HexCoordinates.RotationStep * direction;
+        _hexes = _hexes.ToDictionary(
+            x => x.Key.RotatedClockwise(_mousePivot.Value, direction),
+            x => x.Value with { RealPosition = x.Value.RealPosition.Rotated(HexCoordinates.RotationStep * direction) }
         );
+        
+        EmitSignalRotated(direction);
     }
 
     private Vector2 GetSlotBasedPosition(Dictionary<HexCoordinates, InventorySlot> slots)
     {
         var firstSlot = slots.First();
         var slotPosition = firstSlot.Value.GetCenterPosition();
-        var shapeHexPosition = _remappedCoordinates[firstSlot.Key];
+        var shapeHexPosition = _hexes[firstSlot.Key].RealPosition;
         return slotPosition - shapeHexPosition;
     }
 
@@ -200,10 +243,14 @@ public partial class InventoryModule : TextureButton
         HideModuleInfo();
 
         var mousePosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
-        var closestHex = _remappedCoordinates.MinBy(entry => (entry.Value + Position).DistanceSquaredTo(mousePosition));
+        var closestHex = _hexes
+            .Where(x => x.Value.Connection == null)
+            .MinBy(entry => (entry.Value.RealPosition + Position).DistanceSquaredTo(mousePosition));
         _mousePivot = closestHex.Key;
 
         ZIndex += 1;
+        
+        EmitSignalTakenOut();
     }
 
     private void StopFollowingCursor()
@@ -220,6 +267,8 @@ public partial class InventoryModule : TextureButton
 
         _mousePivot = null;
         ZIndex -= 1;
+        
+        EmitSignalInserted();
     }
 
     private void ShowModuleInfo()
@@ -238,4 +287,6 @@ public partial class InventoryModule : TextureButton
         _moduleInfo?.Remove();
         _moduleInfo = null;
     }
+
+    private readonly record struct HexData(Vector2 RealPosition, InventoryModuleConnection? Connection);
 }

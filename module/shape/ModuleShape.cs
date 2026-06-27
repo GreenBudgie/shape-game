@@ -32,8 +32,7 @@ public abstract partial class ModuleShape : Resource
     {
         get
         {
-            return _pixelHexPositions ??= Hexes
-                .ToDictionary(hex => hex, hex => hex.ToPixel() + CornerGap);
+            return _pixelHexPositions ??= Hexes.ToDictionary(hex => hex, GetVisualHexPosition);
         }
     }
     
@@ -52,6 +51,11 @@ public abstract partial class ModuleShape : Resource
             _bitmap = bitmap;
             return bitmap;
         }
+    }
+
+    public static Vector2 GetVisualHexPosition(HexCoordinates hex)
+    {
+        return hex.ToPixel() + CornerGap;
     }
     
 }

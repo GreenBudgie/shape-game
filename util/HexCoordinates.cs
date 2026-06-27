@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 /**
  * Using cube coordinates for hexagons
@@ -80,6 +81,25 @@ public readonly record struct HexCoordinates(int Q, int R, int S)
         return (this - pivot).RotatedCounterClockwise(steps) + pivot;
     }
 
+    /// <summary>
+    /// Returns first neighboring coordinate from otherCoordinates, going counter-clockwise around using Directions,
+    /// or null if no neighbor is found.
+    /// </summary>
+    public HexCoordinates? FindFirstNeighbor(IEnumerable<HexCoordinates> otherCoordinates)
+    {
+        var otherCoordinatesSet = otherCoordinates.ToHashSet();
+        foreach (var direction in Directions)
+        {
+            var neighbor = this + direction;
+            if (otherCoordinatesSet.Contains(neighbor))
+            {
+                return neighbor;
+            }
+        }
+
+        return null;
+    }
+
     public static implicit operator HexCoordinates(Vector3I v) => new(v.X, v.Y, v.Z);
     
     public static implicit operator Vector3I(HexCoordinates h) => new(h.Q, h.R, h.S);
@@ -135,12 +155,6 @@ public readonly record struct HexCoordinates(int Q, int R, int S)
                 yield return ringCoordinates;
             }
         }
-    }
-
-    public static float GetRotationAngleByStep(int step)
-    {
-        step = (step % HexEdges + HexEdges) % HexEdges;
-        return step * RotationStep;
     }
     
 }

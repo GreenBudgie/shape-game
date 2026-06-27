@@ -51,6 +51,9 @@ public partial class InventorySlot : TextureButton
         return GetModule() != null;
     }
 
+    /// <summary>
+    /// Returns global center position of the slot
+    /// </summary>
     public Vector2 GetCenterPosition()
     {
         return GetGlobalRect().GetCenter();

@@ -16,6 +16,7 @@ LeftBlasterInventory = NodePath("LeftBlasterInventory")
 RightBlasterInventory = NodePath("RightBlasterInventory")
 
 [node name="Overlay" type="ColorRect" parent="." unique_id=91485771]
+z_index = -2
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
