@@ -23,6 +23,12 @@ public partial class InventoryModule : TextureButton
     /// </summary>
     [Signal]
     public delegate void TakenOutEventHandler();
+    
+    /// <summary>
+    /// Emitted when the module is fully shown after inventory is opened
+    /// </summary>
+    [Signal]
+    public delegate void ShowAnimationFinishedEventHandler();
 
     private ShaderMaterial _material = null!;
     private ModuleInfo? _moduleInfo;
@@ -33,6 +39,7 @@ public partial class InventoryModule : TextureButton
 
     public Module Module { get; private set; } = null!;
     public Dictionary<HexCoordinates, InventorySlot> Slots { get; private set; } = [];
+    public bool IsFollowingCursor => _mousePivot.HasValue;
 
     public static InventoryModule Create(Module module)
     {
@@ -318,6 +325,8 @@ public partial class InventoryModule : TextureButton
             .SetDelay(InventoryManager.ModuleShowDelay);
         _tween.FadeIn(this, InventoryManager.ModuleAnimationDuration)
             .SetDelay(InventoryManager.ModuleShowDelay);
+
+        _tween.Finished += EmitSignalShowAnimationFinished;
     }
     
     public void HideModule()
