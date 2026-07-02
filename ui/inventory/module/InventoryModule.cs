@@ -81,10 +81,27 @@ public partial class InventoryModule : TextureButton
 
         MouseEntered += OnMouseEnter;
         MouseExited += OnMouseExit;
+        
+        InventoryManager.Instance.Connect(
+            InventoryManager.SignalName.InventoryOpened,
+            Callable.From(OnInventoryOpened)
+        );
         InventoryManager.Instance.Connect(
             InventoryManager.SignalName.InventoryClosed,
-            Callable.From(StopFollowingCursor)
+            Callable.From(OnInventoryClosed)
         );
+        
+    }
+    
+    private void OnInventoryOpened()
+    {
+        ShowModule();
+    }
+
+    private void OnInventoryClosed()
+    {
+        HideModule();
+        StopFollowingCursor();
     }
 
     private IEnumerable<HexCoordinates> GetModuleHexes()
@@ -290,24 +307,27 @@ public partial class InventoryModule : TextureButton
     
     private Tween? _tween;
     
-    public void ShowSlot()
-    {
-        _tween?.Kill();
-        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetParallel();
-
-        _tween.TweenOffsetScaleReset(this, InventoryManager.AnimationDuration);
-        _tween.TweenOffsetRotationReset(this, InventoryManager.AnimationDuration);
-        _tween.FadeIn(this, InventoryManager.SlotAnimationDuration);
-    }
-    
-    public void HideSlot()
+    public void ShowModule()
     {
         _tween?.Kill();
         _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out).SetParallel();
+        
+        _tween.TweenOffsetScaleReset(this, InventoryManager.ModuleAnimationDuration)
+            .SetDelay(InventoryManager.ModuleShowDelay);
+        _tween.TweenOffsetRotationReset(this, InventoryManager.ModuleAnimationDuration)
+            .SetDelay(InventoryManager.ModuleShowDelay);
+        _tween.FadeIn(this, InventoryManager.ModuleAnimationDuration)
+            .SetDelay(InventoryManager.ModuleShowDelay);
+    }
+    
+    public void HideModule()
+    {
+        _tween?.Kill();
+        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
 
-        _tween.TweenOffsetScale(this, RandomUtils.DeltaRange(0.5f, 0.25f), InventoryManager.AnimationDuration);
-        _tween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, Pi / 4), InventoryManager.AnimationDuration);
-        _tween.FadeOut(this, InventoryManager.SlotAnimationDuration);
+        _tween.TweenOffsetScale(this, RandomUtils.DeltaRange(0.7f, 0.1f), InventoryManager.ModuleAnimationDuration);
+        _tween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, Pi / 8), InventoryManager.ModuleAnimationDuration);
+        _tween.FadeOut(this, InventoryManager.ModuleAnimationDuration);
     }
 
     private readonly record struct HexData(Vector2 RealPosition, InventoryModuleConnection? Connection);

@@ -4,9 +4,11 @@ using System.Linq;
 public partial class InventoryManager : Control
 {
 
-    public const float AnimationDuration = 0.2f;
-    public const float SlotAnimationDuration = AnimationDuration / 2f;
-    public const float ModuleAnimationDuration = AnimationDuration / 2f;
+    public const float AnimationDuration = 0.15f;
+    public const float SlotAnimationDuration = AnimationDuration;
+    public const float SlotHideDelay = AnimationDuration / 2f;
+    public const float ModuleShowDelay = AnimationDuration / 2f;
+    public const float ModuleAnimationDuration = AnimationDuration;
 
     [Signal]
     public delegate void InventoryOpenedEventHandler();

@@ -65,21 +65,24 @@ public partial class InventorySlot : TextureButton
     public void ShowSlot()
     {
         _tween?.Kill();
-        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetParallel();
+        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out).SetParallel();
 
-        _tween.TweenOffsetScaleReset(this, InventoryManager.AnimationDuration);
-        _tween.TweenOffsetRotationReset(this, InventoryManager.AnimationDuration);
+        _tween.TweenOffsetScaleReset(this, InventoryManager.SlotAnimationDuration);
+        _tween.TweenOffsetRotationReset(this, InventoryManager.SlotAnimationDuration);
         _tween.FadeIn(this, InventoryManager.SlotAnimationDuration);
     }
     
     public void HideSlot()
     {
         _tween?.Kill();
-        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out).SetParallel();
+        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
 
-        _tween.TweenOffsetScale(this, RandomUtils.DeltaRange(0.5f, 0.2f), InventoryManager.AnimationDuration);
-        _tween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, Pi / 4), InventoryManager.AnimationDuration);
-        _tween.FadeOut(this, InventoryManager.SlotAnimationDuration);
+        _tween.TweenOffsetScale(this, RandomUtils.DeltaRange(0.5f, 0.2f), InventoryManager.SlotAnimationDuration)
+            .SetDelay(InventoryManager.SlotHideDelay);
+        _tween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, Pi / 4), InventoryManager.SlotAnimationDuration)
+            .SetDelay(InventoryManager.SlotHideDelay);
+        _tween.FadeOut(this, InventoryManager.SlotAnimationDuration)
+            .SetDelay(InventoryManager.SlotHideDelay);
     }
 
 }
