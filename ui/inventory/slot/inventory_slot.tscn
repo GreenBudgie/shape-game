@@ -11,6 +11,7 @@ offset_top = -100.0
 offset_right = 100.0
 offset_bottom = 100.0
 pivot_offset = Vector2(100, 100)
+offset_transform_enabled = true
 keep_pressed_outside = true
 texture_normal = ExtResource("1_3rx38")
 texture_disabled = ExtResource("2_ijjr2")

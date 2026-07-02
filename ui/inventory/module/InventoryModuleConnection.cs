@@ -21,6 +21,8 @@ public partial class InventoryModuleConnection : Node2D
         _connector = GetNode<Sprite2D>("Connector");
         
         _connector.Reparent(InventoryManager.Instance);
+        _connector.Hide();
+        HideConnector();
         
         _module.Connect(InventoryModule.SignalName.Inserted, Callable.From(OnModuleInserted));
         _module.Connect(InventoryModule.SignalName.TakenOut, Callable.From(OnModuleTakenOut));
@@ -39,12 +41,32 @@ public partial class InventoryModuleConnection : Node2D
 
     private void OnModuleInserted()
     {
-        _connector.Show();
+        ShowConnector();
     }
 
     private void OnModuleTakenOut()
     {
-        _connector.Hide();
+        HideConnector();
+    }
+
+    private const float ConnectorTweenDuration = 0.15f;
+    private Tween? _connectorTween;
+    
+
+    private void ShowConnector()
+    {
+        _connectorTween?.Kill();
+        _connector.Show();
+        _connectorTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+        _connectorTween.TweenScaleReset(_connector, ConnectorTweenDuration);
+    }
+    
+    private void HideConnector()
+    {
+        _connectorTween?.Kill();
+        _connectorTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+        _connectorTween.TweenScale(_connector, new Vector2(1, 0), ConnectorTweenDuration);
+        _connectorTween.TweenCallback(Callable.From(_connector.Hide));
     }
 
 }

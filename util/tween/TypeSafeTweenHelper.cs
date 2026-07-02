@@ -79,4 +79,34 @@ public static class TypeSafeTweenHelper
         return tween.TweenAlpha(node, 0f, duration);
     }
     
+    public static PropertyTweener TweenOffsetPosition(this Tween tween, Control node, Vector2 finalVal, float duration)
+    {
+        return tween.TweenProperty(node, OffsetTransformPosition, finalVal, duration);
+    }
+    
+    public static PropertyTweener TweenOffsetPositionReset(this Tween tween, Control node, float duration)
+    {
+        return tween.TweenProperty(node, OffsetTransformPosition, Vector2.Zero, duration);
+    }
+
+    public static PropertyTweener TweenOffsetRotation(this Tween tween, Control node, float finalVal, float duration)
+    {
+        return tween.TweenProperty(node, OffsetTransformRotation, finalVal, duration);
+    }
+    
+    public static PropertyTweener TweenOffsetRotationReset(this Tween tween, Control node, float duration)
+    {
+        return tween.TweenProperty(node, OffsetTransformRotation, 0, duration);
+    }
+    
+    public static PropertyTweener TweenOffsetScale(this Tween tween, Control node, float finalVal, float duration)
+    {
+        return tween.TweenProperty(node, OffsetTransformScale, new Vector2(finalVal, finalVal), duration);
+    }
+    
+    public static PropertyTweener TweenOffsetScaleReset(this Tween tween, Control node, float duration)
+    {
+        return tween.TweenProperty(node, OffsetTransformScale, Vector2.One, duration);
+    }
+    
 }

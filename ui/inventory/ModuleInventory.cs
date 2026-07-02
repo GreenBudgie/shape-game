@@ -10,7 +10,7 @@ public partial class ModuleInventory : Control
     public override void _Ready()
     {
         var distanceFromCenter = ShapeGame.WindowCenter.X / 3;
-        
+
         Vector2 centerSlotPosition;
         if (IsLeft)
         {
@@ -22,13 +22,16 @@ public partial class ModuleInventory : Control
         }
 
         CreateSlots(centerSlotPosition);
+
+        InventoryManager.Instance.InventoryOpened += ShowSlots;
+        InventoryManager.Instance.InventoryClosed += HideSlots;
     }
 
     public InventorySlot? TryGetSlot(HexCoordinates coordinates)
     {
         return _slots.GetValueOrDefault(coordinates);
     }
-    
+
     public InventorySlot GetSlot(HexCoordinates coordinates)
     {
         return _slots[coordinates];
@@ -55,8 +58,27 @@ public partial class ModuleInventory : Control
                 slot.SetDisabled(true);
             }
 
+            slot.Modulate = slot.Modulate.AsTransparent();
             AddChild(slot);
             _slots.Add(hex, slot);
+        }
+        
+        HideSlots();
+    }
+
+    private void ShowSlots()
+    {
+        foreach (var slot in GetSlots())
+        {
+            slot.ShowSlot();
+        }
+    }
+
+    private void HideSlots()
+    {
+        foreach (var slot in GetSlots())
+        {
+            slot.HideSlot();
         }
     }
 }

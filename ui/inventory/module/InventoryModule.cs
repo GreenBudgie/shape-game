@@ -287,6 +287,28 @@ public partial class InventoryModule : TextureButton
         _moduleInfo?.Remove();
         _moduleInfo = null;
     }
+    
+    private Tween? _tween;
+    
+    public void ShowSlot()
+    {
+        _tween?.Kill();
+        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetParallel();
+
+        _tween.TweenOffsetScaleReset(this, InventoryManager.AnimationDuration);
+        _tween.TweenOffsetRotationReset(this, InventoryManager.AnimationDuration);
+        _tween.FadeIn(this, InventoryManager.SlotAnimationDuration);
+    }
+    
+    public void HideSlot()
+    {
+        _tween?.Kill();
+        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out).SetParallel();
+
+        _tween.TweenOffsetScale(this, RandomUtils.DeltaRange(0.5f, 0.25f), InventoryManager.AnimationDuration);
+        _tween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, Pi / 4), InventoryManager.AnimationDuration);
+        _tween.FadeOut(this, InventoryManager.SlotAnimationDuration);
+    }
 
     private readonly record struct HexData(Vector2 RealPosition, InventoryModuleConnection? Connection);
 }

@@ -4,7 +4,9 @@ using System.Linq;
 public partial class InventoryManager : Control
 {
 
-    private const float FadeDuration = 0.1f;
+    public const float AnimationDuration = 0.2f;
+    public const float SlotAnimationDuration = AnimationDuration / 2f;
+    public const float ModuleAnimationDuration = AnimationDuration / 2f;
 
     [Signal]
     public delegate void InventoryOpenedEventHandler();
@@ -19,6 +21,8 @@ public partial class InventoryManager : Control
     [Export] public ModuleInventory LeftBlasterInventory { get; private set; } = null!;
     [Export] public ModuleInventory RightBlasterInventory { get; private set; } = null!;
 
+    private ColorRect _overlay = null!;
+    
     private List<InventorySlot> _slots = null!;
     private List<ModuleInventory> _inventories = null!;
     
@@ -38,6 +42,8 @@ public partial class InventoryManager : Control
         ];
         _slots = _inventories.SelectMany(inventory => inventory.GetSlots()).ToList();
 
+        _overlay = GetNode<ColorRect>("Overlay");
+        
         Callable.From(PostSetup).CallDeferred();
     }
 
@@ -94,11 +100,12 @@ public partial class InventoryManager : Control
 
         Input.MouseMode = Input.MouseModeEnum.Visible;
         Visible = true;
+        MouseFilter = MouseFilterEnum.Stop;
         IsOpen = true;
 
         _alphaTween?.Kill();
-        _alphaTween = CreateTween();
-        _alphaTween.FadeIn(this, FadeDuration);
+        _alphaTween = _overlay.CreateTween();
+        _alphaTween.FadeIn(_overlay, AnimationDuration);
 
         EmitSignalInventoryOpened();
     }
@@ -115,8 +122,8 @@ public partial class InventoryManager : Control
         if (Visible)
         {
             _alphaTween?.Kill();
-            _alphaTween = CreateTween();
-            _alphaTween.FadeOut(this, duration: FadeDuration);
+            _alphaTween = _overlay.CreateTween();
+            _alphaTween.FadeOut(_overlay, duration: AnimationDuration);
             _alphaTween.Finished += FullyHide;
         }
         else
@@ -137,7 +144,7 @@ public partial class InventoryManager : Control
 
     private void FullyHide()
     {
-        Visible = false;
+        MouseFilter = MouseFilterEnum.Ignore;
     }
 
 }

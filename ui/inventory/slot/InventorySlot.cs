@@ -30,6 +30,7 @@ public partial class InventorySlot : TextureButton
     public HexCoordinates Coordinates { get; private set; }
     
     private InventoryModule? _module;
+    private Vector2 _centerOffsetPosition;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dilsv34jaqcrd");
 
@@ -57,6 +58,28 @@ public partial class InventorySlot : TextureButton
     public Vector2 GetCenterPosition()
     {
         return GetGlobalRect().GetCenter();
+    }
+
+    private Tween? _tween;
+    
+    public void ShowSlot()
+    {
+        _tween?.Kill();
+        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetParallel();
+
+        _tween.TweenOffsetScaleReset(this, InventoryManager.AnimationDuration);
+        _tween.TweenOffsetRotationReset(this, InventoryManager.AnimationDuration);
+        _tween.FadeIn(this, InventoryManager.SlotAnimationDuration);
+    }
+    
+    public void HideSlot()
+    {
+        _tween?.Kill();
+        _tween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out).SetParallel();
+
+        _tween.TweenOffsetScale(this, RandomUtils.DeltaRange(0.5f, 0.2f), InventoryManager.AnimationDuration);
+        _tween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, Pi / 4), InventoryManager.AnimationDuration);
+        _tween.FadeOut(this, InventoryManager.SlotAnimationDuration);
     }
 
 }
