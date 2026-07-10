@@ -4,6 +4,10 @@ using System.Linq;
 
 public partial class InventoryModule : TextureButton
 {
+    
+    private const float TargetPositionFollowSpeed = 10f;
+    private const float CursorFollowSpeed = 30f;
+    
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://csoad8g8f13qn");
 
     /// <summary>
@@ -34,6 +38,10 @@ public partial class InventoryModule : TextureButton
     private ModuleInfo? _moduleInfo;
     private HexCoordinates? _mousePivot;
     private Dictionary<HexCoordinates, HexData> _hexes = [];
+    private Glow _glow = null!;
+    
+    private Vector2 _targetPosition = Vector2.Zero;
+    private float _targetRotation = 0;
 
     private TextureRect _moduleTexture = null!;
 
@@ -57,6 +65,13 @@ public partial class InventoryModule : TextureButton
         _moduleTexture.Texture = Module.Texture;
         _material = (ShaderMaterial)Material;
         TextureClickMask = Module.Shape.Bitmap;
+
+        Callable.From(() =>
+            _glow = Glow.AddGlow(this)
+                .SetRadius(30)
+                .SetStrength(1)
+                .SetColor(Module.Color)
+        ).CallDeferred();
 
         foreach (var moduleHex in Module.Shape.PixelHexPositions)
         {
@@ -143,6 +158,9 @@ public partial class InventoryModule : TextureButton
 
     public override void _Process(double delta)
     {
+        RotateToTarget(delta);
+        MoveToTarget(delta);
+        
         if (_mousePivot.HasValue)
         {
             FollowCursor();
@@ -157,8 +175,55 @@ public partial class InventoryModule : TextureButton
 
         if (Slots.Count > 0)
         {
-            Position = GetSlotBasedPosition(Slots);
+            _targetPosition = GetSlotBasedPosition(Slots);
         }
+    }
+    
+    private void RotateToTarget(double delta)
+    {
+        if (IsEqualApprox(_targetRotation, Rotation))
+        {
+            return;
+        }
+
+        var followSpeed = 30f;
+        var remainingAngle = Abs(_targetRotation - Rotation);
+        var angle = MoveToward(
+            Rotation,
+            _targetRotation,
+            followSpeed * (float)delta * remainingAngle
+        );
+
+        Rotation = angle;
+    }
+
+    private void MoveToTarget(double delta)
+    {
+        if (_targetPosition.IsEqualApprox(Position))
+        {
+            return;
+        }
+        
+        var followSpeed = IsFollowingCursor ? CursorFollowSpeed : TargetPositionFollowSpeed;
+        var distanceToX = Abs(Position.X - _targetPosition.X);
+        var distanceToY = Abs(Position.Y - _targetPosition.Y);
+        var x = MoveToward(
+            Position.X,
+            _targetPosition.X,
+            followSpeed * (float)delta * distanceToX
+        );
+        var y = MoveToward(+
+            Position.Y,
+            _targetPosition.Y,
+            followSpeed * (float)delta * distanceToY
+        );
+        
+        var previousPosition = Position;
+        Position = new Vector2(x, y);
+
+        // var positionDelta = previousPosition.DistanceTo(Position);
+        // var stretchAmount = Clamp(StretchAmountPerPixel * positionDelta, 0, 2);
+        // SetStretchAmount(stretchAmount);
     }
 
     private void FollowCursor()
@@ -199,11 +264,11 @@ public partial class InventoryModule : TextureButton
         var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count;
         if (hoveredSlots.Count == 0)
         {
-            Position = mousePosition - pivotOffset;
+            _targetPosition = mousePosition - pivotOffset;
             return;
         }
 
-        Position = GetSlotBasedPosition(hoveredSlots);
+        _targetPosition = GetSlotBasedPosition(hoveredSlots);
 
         if (allSlotsHovered && Input.IsActionJustPressed("inventory_left_click"))
         {
@@ -220,7 +285,7 @@ public partial class InventoryModule : TextureButton
             return;
         }
 
-        Rotation += HexCoordinates.RotationStep * direction;
+        _targetRotation += HexCoordinates.RotationStep * direction;
         _hexes = _hexes.ToDictionary(
             x => x.Key.RotatedClockwise(_mousePivot.Value, direction),
             x => x.Value with { RealPosition = x.Value.RealPosition.Rotated(HexCoordinates.RotationStep * direction) }
