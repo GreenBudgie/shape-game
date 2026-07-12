@@ -26,6 +26,16 @@ public partial class ModuleInventory : Control
         InventoryManager.Instance.InventoryOpened += ShowSlots;
         InventoryManager.Instance.InventoryClosed += HideSlots;
     }
+    
+    public List<InventoryModule> GetModules<T>() where T : Module
+    {
+        return GetModules().Where(x => x.Module is T).ToList();
+    }
+
+    public List<InventoryModule> GetModules()
+    {
+        return GetSlots().Select(x => x.Module).OfType<InventoryModule>().Distinct().ToList();
+    }
 
     public bool TryInsertModule(InventoryModule inventoryModule)
     {
@@ -67,10 +77,10 @@ public partial class ModuleInventory : Control
             
             var slot = InventorySlot.Create(this, hex);
             slot.GlobalPosition = position - slot.Size / 2;
-            if (hex.Length() == radius - 1)
-            {
-                slot.SetDisabled(true);
-            }
+            // if (hex.Length() == radius - 1)
+            // {
+            //     slot.SetDisabled(true);
+            // }
 
             slot.Modulate = slot.Modulate.AsTransparent();
             AddChild(slot);

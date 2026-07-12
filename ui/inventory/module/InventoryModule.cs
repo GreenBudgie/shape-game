@@ -179,6 +179,45 @@ public partial class InventoryModule : TextureButton
             _targetPosition = GetSlotBasedPosition(Slots);
         }
     }
+
+    public List<InventoryModuleConnection> GetDirectIncomingConnections()
+    {
+        List<InventoryModuleConnection> incomingConnections = [];
+        foreach (var slot in Slots.Values)
+        {
+            incomingConnections.AddRange(slot.Connections);
+        }
+
+        return incomingConnections;
+    }
+    
+    /// <summary>
+    /// Returns all connections to this module, tracing them back to the last connection.
+    /// Specific order of connections is not guaranteed
+    /// </summary>
+    public List<InventoryModuleConnection> GetIncomingConnectionsChain()
+    {
+        var directConnections = GetDirectIncomingConnections();
+        if (directConnections.Count == 0)
+        {
+            return [];
+        }
+
+        return directConnections
+            .SelectMany(directConnection => directConnection.Module.GetDirectIncomingConnections())
+            .Concat(directConnections)
+            .Distinct()
+            .ToList();
+    }
+    
+    /// <summary>
+    /// Returns all modules connected to the current one, tracing them back to the last module.
+    /// Specific order of connections is not guaranteed
+    /// </summary>
+    public List<InventoryModule> GetAllIncomingConnectedModules()
+    {
+        return GetIncomingConnectionsChain().Select(x => x.Module).Distinct().ToList();
+    }
     
     private void RotateToTarget(double delta)
     {
@@ -244,9 +283,9 @@ public partial class InventoryModule : TextureButton
  
         Dictionary<HexCoordinates, InventorySlot> hoveredSlots = [];
         Dictionary<HexCoordinates, ConnectionData> hoveredConnectorSlots = [];
-        var slotsToSnap = InventoryManager.Instance.GetFreeSlots().Concat(Slots.Values).ToHashSet();
-        foreach (var slot in slotsToSnap)
+        foreach (var slot in InventoryManager.Instance.GetAllSlots())
         {
+            var isSlotAvailable = !slot.IsDisabled() && (slot.Module == null || slot.Module == this);
             foreach (var hex in _hexes)
             {
                 var mouseHexPosition = mousePosition - pivotOffset + hex.Value.RealPosition;
@@ -254,7 +293,10 @@ public partial class InventoryModule : TextureButton
                 {
                     if (hex.Value.Connection == null)
                     {
-                        hoveredSlots.Add(hex.Key, slot);
+                        if (isSlotAvailable)
+                        {
+                            hoveredSlots.Add(hex.Key, slot);
+                        }
                     }
                     else
                     {
@@ -338,30 +380,26 @@ public partial class InventoryModule : TextureButton
         foreach (var hex in _hexes)
         {
             var slot = inventory.TryGetSlot(centerSlot.Coordinates + hex.Key);
-            if (slot == null && hex.Value.Connection != null)
+            if (slot == null || (slot.Module != null && slot.Module != this) || slot.IsDisabled())
             {
-                // It is fine for connector to not have an attached slot, so skip it
-                continue;
-            }
-            
-            if (slot == null)
-            {
-                return false;
-            }
-            
-            if (slot.Module != null && slot.Module != this)
-            {
-                return false;
-            }
-
-            if (slot.IsDisabled())
-            {
+                if (hex.Value.Connection != null)
+                {
+                    connectorSlots.Add(hex.Key, new ConnectionData(slot, hex.Value.Connection));
+                    // It is fine for connection to not have an attached slot, or to attach to a disabled slot,
+                    // so just continue
+                    continue;   
+                }
+                
                 return false;
             }
 
             if (hex.Value.Connection == null)
             {
                 moduleSlots.Add(hex.Key, slot);
+            }
+            else
+            {
+                connectorSlots.Add(hex.Key, new ConnectionData(slot, hex.Value.Connection));
             }
         }
 

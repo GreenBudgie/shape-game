@@ -8,7 +8,6 @@ public partial class Blaster : Node
     private const float MinDelay = 0.01f;
 
     private ModuleInventory _inventory = null!;
-    private int _lastSlot;
 
     public float Delay { get; private set; }
 
@@ -24,7 +23,7 @@ public partial class Blaster : Node
     {
         if (Delay > 0)
         {
-            Delay -= (float)delta;
+            Delay = Max(Delay - (float)delta, 0);
         }
     }
 
@@ -35,35 +34,20 @@ public partial class Blaster : Node
             return false;
         }
 
-        var slots = _inventory.GetSlots();
-        var startSlot = _lastSlot;
-        var modifiers = new List<ModifierModule>();
-        for (var i = startSlot; NextSlot() != startSlot; i = NextSlot())
+        var spawnableModules = _inventory.GetModules<SpawnableModule>();
+        foreach (var spawnableModule in spawnableModules)
         {
-            _lastSlot = i;
-            var slot = slots[i];
-            var module = slot.Module?.Module;
+            var module = (SpawnableModule)spawnableModule.Module;
+            var modifiers = spawnableModule
+                .GetAllIncomingConnectedModules()
+                .Select(x => x.Module)
+                .OfType<ModifierModule>()
+                .ToList();
 
-            if (module == null)
-            {
-                continue;
-            }
-
-            if (module is ModifierModule modifierModule)
-            {
-                modifiers.Add(modifierModule);
-                continue;
-            }
-
-            if (module is SpawnableModule projectileModule)
-            {
-                ShootProjectile(modifiers, projectileModule);
-                _lastSlot = NextSlot();
-                return true;
-            }
+            ShootProjectile(modifiers, module);
         }
 
-        return false;
+        return true;
     }
 
     private void ShootProjectile(List<ModifierModule> modifiers, SpawnableModule spawnableModule)
@@ -95,12 +79,7 @@ public partial class Blaster : Node
         context.Spawn();
 
         var reload = context.CalculateStat<ReloadStat>();
-        Delay = Max(reload, MinDelay);
-    }
-
-    private int NextSlot()
-    {
-        return _lastSlot + 1 >= _inventory.GetSlots().Count ? 0 : _lastSlot + 1;
+        Delay += Max(reload, MinDelay);
     }
 
 }
