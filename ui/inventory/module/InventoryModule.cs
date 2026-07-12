@@ -250,7 +250,8 @@ public partial class InventoryModule : TextureButton
             .ToDictionary(x => x.Key, x => mousePosition - pivotOffset + x.Value.RealPosition);
 
         Dictionary<HexCoordinates, InventorySlot> hoveredSlots = [];
-        foreach (var slot in InventoryManager.Instance.GetActiveSlots())
+        var slotsToSnap = InventoryManager.Instance.GetFreeSlots().Concat(Slots.Values).ToHashSet();
+        foreach (var slot in slotsToSnap)
         {
             foreach (var hexPosition in mouseModuleHexPositions)
             {
@@ -262,7 +263,7 @@ public partial class InventoryModule : TextureButton
         }
 
         var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count;
-        if (hoveredSlots.Count == 0)
+        if (!IsAllSlotsAvailable(hoveredSlots.Values) || !allSlotsHovered)
         {
             _targetPosition = mousePosition - pivotOffset;
             return;
@@ -270,11 +271,35 @@ public partial class InventoryModule : TextureButton
 
         _targetPosition = GetSlotBasedPosition(hoveredSlots);
 
-        if (allSlotsHovered && Input.IsActionJustPressed("inventory_left_click"))
+        if (Input.IsActionJustPressed("inventory_left_click"))
         {
-            Slots = hoveredSlots;
+            ForceInsert(hoveredSlots);
             StopFollowingCursor();
         }
+    }
+
+    private bool IsAllSlotsAvailable(IEnumerable<InventorySlot> slots)
+    {
+        var inventorySlots = slots.ToList();
+        if (inventorySlots.Count == 0)
+        {
+            return false;
+        }
+        
+        foreach (var slot in inventorySlots)
+        {
+            if (slot.IsDisabled())
+            {
+                return false;
+            }
+
+            if (slot.Module != null && slot.Module != this)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void Rotate(int direction)
@@ -310,7 +335,17 @@ public partial class InventoryModule : TextureButton
         foreach (var hex in Module.Shape.Hexes)
         {
             var slot = inventory.TryGetSlot(centerSlot.Coordinates + hex);
-            if (slot == null || slot.HasModule() || slot.IsDisabled())
+            if (slot == null)
+            {
+                return false;
+            }
+            
+            if (slot.Module != null && slot.Module != this)
+            {
+                return false;
+            }
+
+            if (slot.IsDisabled())
             {
                 return false;
             }
@@ -318,8 +353,25 @@ public partial class InventoryModule : TextureButton
             slots.Add(hex, slot);
         }
 
-        Slots = slots;
+        ForceInsert(slots);
         return true;
+    }
+
+    private void ForceInsert(Dictionary<HexCoordinates, InventorySlot> slots)
+    {
+        if (Slots.Count != 0)
+        {
+            foreach (var slot in Slots)
+            {
+                slot.Value.Module = null;
+            }
+        }
+
+        Slots = slots;
+        foreach (var slot in Slots)
+        {
+            slot.Value.Module = this;
+        }
     }
 
     private void StartFollowingCursor()

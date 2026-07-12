@@ -27,6 +27,20 @@ public partial class ModuleInventory : Control
         InventoryManager.Instance.InventoryClosed += HideSlots;
     }
 
+    public bool TryInsertModule(InventoryModule inventoryModule)
+    {
+        foreach (var slot in GetSlots())
+        {
+            var inserted = inventoryModule.TryInsert(slot);
+            if (inserted)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public InventorySlot? TryGetSlot(HexCoordinates coordinates)
     {
         return _slots.GetValueOrDefault(coordinates);

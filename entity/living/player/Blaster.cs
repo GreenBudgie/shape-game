@@ -42,7 +42,7 @@ public partial class Blaster : Node
         {
             _lastSlot = i;
             var slot = slots[i];
-            var module = slot.GetModule()?.Module;
+            var module = slot.Module?.Module;
 
             if (module == null)
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -53,22 +54,34 @@ public partial class InventoryManager : Control
     {
         return _slots;
     }
-    
-    public List<InventorySlot> GetActiveSlots()
+
+    /// <summary>
+    /// Returns enabled slots that have no inserted module
+    /// </summary>
+    public List<InventorySlot> GetFreeSlots()
     {
-        return _slots.Where(slot => !slot.IsDisabled()).ToList();
+        return _slots.Where(slot => !slot.IsDisabled() && slot.Module == null).ToList();
     }
 
     private void PostSetup()
     {
-        var module = ModuleManager.GetModule<PiercingModule>();
-        var inventoryModule = InventoryModule.Create(module);
-        AddChild(inventoryModule);
-        var slot = LeftBlasterInventory.GetSlot(HexCoordinates.Zero);
-        inventoryModule.TryInsert(slot);
+        AddModule<BarrierModule>(LeftBlasterInventory);
+        AddModule<ExtraDamageModule>(LeftBlasterInventory);
         
         Close();
         Visible = false;
+    }
+
+    private void AddModule<T>(ModuleInventory inventory) where T : Module
+    {
+        var module = ModuleManager.GetModule<T>();
+        var inventoryModule = InventoryModule.Create(module);
+        AddChild(inventoryModule);
+        var inserted = inventory.TryInsertModule(inventoryModule);
+        if (!inserted)
+        {
+            throw new ArgumentException($"No space for module {typeof(T)}");
+        }
     }
 
     public override void _Process(double delta)

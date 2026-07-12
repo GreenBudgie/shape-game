@@ -7,7 +7,7 @@ public partial class Module : Resource
 
     [Export] public ModuleShape Shape { get; private set; } = null!;
 
-    [Export] public HexCoordinatesArray Connections { get; private set; } = null!;
+    [Export] public HexCoordinatesArray Connections { get; private set; } = [];
 
     [Export] public string Name { get; private set; } = null!;
 

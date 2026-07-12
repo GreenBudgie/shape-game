@@ -28,8 +28,8 @@ public partial class InventorySlot : TextureButton
 
     public ModuleInventory Inventory { get; private set; } = null!;
     public HexCoordinates Coordinates { get; private set; }
+    public InventoryModule? Module { get; set; }
     
-    private InventoryModule? _module;
     private Vector2 _centerOffsetPosition;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dilsv34jaqcrd");
@@ -40,16 +40,6 @@ public partial class InventorySlot : TextureButton
         node.Inventory = inventory;
         node.Coordinates = coordinates;
         return node;
-    }
-
-    public InventoryModule? GetModule()
-    {
-        return _module;
-    }
-
-    public bool HasModule()
-    {
-        return GetModule() != null;
     }
 
     /// <summary>
