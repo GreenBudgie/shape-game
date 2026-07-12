@@ -47,6 +47,7 @@ public partial class InventoryModule : TextureButton
 
     public Module Module { get; private set; } = null!;
     public Dictionary<HexCoordinates, InventorySlot> Slots { get; private set; } = [];
+    public Dictionary<HexCoordinates, InventoryModuleConnection> Connections { get; private set; } = [];
     public bool IsFollowingCursor => _mousePivot.HasValue;
 
     public static InventoryModule Create(Module module)
@@ -217,13 +218,8 @@ public partial class InventoryModule : TextureButton
             _targetPosition.Y,
             followSpeed * (float)delta * distanceToY
         );
-        
-        var previousPosition = Position;
-        Position = new Vector2(x, y);
 
-        // var positionDelta = previousPosition.DistanceTo(Position);
-        // var stretchAmount = Clamp(StretchAmountPerPixel * positionDelta, 0, 2);
-        // SetStretchAmount(stretchAmount);
+        Position = new Vector2(x, y);
     }
 
     private void FollowCursor()
@@ -245,19 +241,25 @@ public partial class InventoryModule : TextureButton
 
         var mousePosition = MouseInputManager.Instance.GetGlobalMousePosition();
         var pivotOffset = _hexes[_mousePivot.Value].RealPosition;
-        var mouseModuleHexPositions = _hexes
-            .Where(x => x.Value.Connection == null)
-            .ToDictionary(x => x.Key, x => mousePosition - pivotOffset + x.Value.RealPosition);
-
+ 
         Dictionary<HexCoordinates, InventorySlot> hoveredSlots = [];
+        Dictionary<HexCoordinates, ConnectionData> hoveredConnectorSlots = [];
         var slotsToSnap = InventoryManager.Instance.GetFreeSlots().Concat(Slots.Values).ToHashSet();
         foreach (var slot in slotsToSnap)
         {
-            foreach (var hexPosition in mouseModuleHexPositions)
+            foreach (var hex in _hexes)
             {
-                if (slot.GetCenterPosition().DistanceSquaredTo(hexPosition.Value) < InventorySlot.InradiusSq)
+                var mouseHexPosition = mousePosition - pivotOffset + hex.Value.RealPosition;
+                if (slot.GetCenterPosition().DistanceSquaredTo(mouseHexPosition) < InventorySlot.InradiusSq)
                 {
-                    hoveredSlots.Add(hexPosition.Key, slot);
+                    if (hex.Value.Connection == null)
+                    {
+                        hoveredSlots.Add(hex.Key, slot);
+                    }
+                    else
+                    {
+                        hoveredConnectorSlots.Add(hex.Key, new ConnectionData(slot, hex.Value.Connection));
+                    }
                 }
             }
         }
@@ -273,7 +275,7 @@ public partial class InventoryModule : TextureButton
 
         if (Input.IsActionJustPressed("inventory_left_click"))
         {
-            ForceInsert(hoveredSlots);
+            ForceInsert(hoveredSlots, hoveredConnectorSlots);
             StopFollowingCursor();
         }
     }
@@ -331,10 +333,17 @@ public partial class InventoryModule : TextureButton
     {
         var inventory = centerSlot.Inventory;
 
-        Dictionary<HexCoordinates, InventorySlot> slots = [];
-        foreach (var hex in Module.Shape.Hexes)
+        Dictionary<HexCoordinates, InventorySlot> moduleSlots = [];
+        Dictionary<HexCoordinates, ConnectionData> connectorSlots = [];
+        foreach (var hex in _hexes)
         {
-            var slot = inventory.TryGetSlot(centerSlot.Coordinates + hex);
+            var slot = inventory.TryGetSlot(centerSlot.Coordinates + hex.Key);
+            if (slot == null && hex.Value.Connection != null)
+            {
+                // It is fine for connector to not have an attached slot, so skip it
+                continue;
+            }
+            
             if (slot == null)
             {
                 return false;
@@ -350,15 +359,22 @@ public partial class InventoryModule : TextureButton
                 return false;
             }
 
-            slots.Add(hex, slot);
+            if (hex.Value.Connection == null)
+            {
+                moduleSlots.Add(hex.Key, slot);
+            }
         }
 
-        ForceInsert(slots);
+        ForceInsert(moduleSlots, connectorSlots);
         return true;
     }
 
-    private void ForceInsert(Dictionary<HexCoordinates, InventorySlot> slots)
+    private void ForceInsert(
+        Dictionary<HexCoordinates, InventorySlot> moduleSlots,
+        Dictionary<HexCoordinates, ConnectionData> connections
+    )
     {
+        // Clear previously occupying slots
         if (Slots.Count != 0)
         {
             foreach (var slot in Slots)
@@ -367,10 +383,28 @@ public partial class InventoryModule : TextureButton
             }
         }
 
-        Slots = slots;
+        // Clear previous connections
+        if (Connections.Count != 0)
+        {
+            foreach (var connection in Connections)
+            {
+                connection.Value.Slot?.Connections.Remove(connection.Value);
+                connection.Value.Slot = null;
+            }
+        }
+
+        Slots = moduleSlots;
+        Connections = connections.ToDictionary(x => x.Key, x => x.Value.Connection);
+        
         foreach (var slot in Slots)
         {
             slot.Value.Module = this;
+        }
+        
+        foreach (var connection in connections)
+        {
+            connection.Value.Slot?.Connections.Add(connection.Value.Connection);
+            connection.Value.Connection.Slot = connection.Value.Slot;
         }
     }
 
@@ -457,4 +491,5 @@ public partial class InventoryModule : TextureButton
     }
 
     private readonly record struct HexData(Vector2 RealPosition, InventoryModuleConnection? Connection);
+    private readonly record struct ConnectionData(InventorySlot? Slot, InventoryModuleConnection Connection);
 }

@@ -6,12 +6,13 @@ public partial class InventoryModuleConnection : Node2D
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://5kibo2t6giff");
 
-    private InventoryModule _module = null!;
+    public InventoryModule Module { get; private set; } = null!;
+    public InventorySlot? Slot { get; set; }
     
     public static InventoryModuleConnection Create(InventoryModule module)
     {
         var node = Scene.Instantiate<InventoryModuleConnection>();
-        node._module = module;
+        node.Module = module;
         return node;
     }
     
@@ -25,9 +26,9 @@ public partial class InventoryModuleConnection : Node2D
         Hide();
         HideConnector(true);
 
-        _module.Connect(InventoryModule.SignalName.Inserted, Callable.From(ShowConnector));
-        _module.Connect(InventoryModule.SignalName.ShowAnimationFinished, Callable.From(ShowConnector));
-        _module.Connect(InventoryModule.SignalName.TakenOut, Callable.From(() => HideConnector(false)));
+        Module.Connect(InventoryModule.SignalName.Inserted, Callable.From(ShowConnector));
+        Module.Connect(InventoryModule.SignalName.ShowAnimationFinished, Callable.From(ShowConnector));
+        Module.Connect(InventoryModule.SignalName.TakenOut, Callable.From(() => HideConnector(false)));
         InventoryManager.Instance.Connect(
             InventoryManager.SignalName.InventoryClosed,
             Callable.From(() => HideConnector(true))
@@ -49,7 +50,7 @@ public partial class InventoryModuleConnection : Node2D
         _arrow.GlobalPosition = GlobalPosition;
         _arrow.GlobalRotation = GlobalRotation;
 
-        if (_module.IsFollowingCursor)
+        if (Module.IsFollowingCursor)
         {
             return;
         }

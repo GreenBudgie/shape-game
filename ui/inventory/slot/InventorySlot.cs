@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public partial class InventorySlot : TextureButton
 {
 
@@ -29,6 +31,7 @@ public partial class InventorySlot : TextureButton
     public ModuleInventory Inventory { get; private set; } = null!;
     public HexCoordinates Coordinates { get; private set; }
     public InventoryModule? Module { get; set; }
+    public List<InventoryModuleConnection> Connections { get; private set; } = [];
     
     private Vector2 _centerOffsetPosition;
 
