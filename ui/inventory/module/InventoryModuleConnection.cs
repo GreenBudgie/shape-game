@@ -72,13 +72,21 @@ public partial class InventoryModuleConnection : Node2D
         
         _connectorTween?.Kill();
         
-        _connector.Show();
         _arrow.Show();
-        
+
+        if (IsConnectedToValidSlot)
+        {
+            _connector.Show();
+        }
+
         _connectorTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out).SetParallel();
-        _connectorTween.TweenScaleReset(_connector, ConnectorTweenDuration);
-        _connectorTween.FadeIn(_connector, ConnectorTweenDuration / 2);
         _connectorTween.FadeIn(_arrow, ConnectorTweenDuration / 2);
+        
+        if (IsConnectedToValidSlot)
+        {
+            _connectorTween.TweenScaleReset(_connector, ConnectorTweenDuration);
+            _connectorTween.FadeIn(_connector, ConnectorTweenDuration / 2);
+        }
     }
     
     private void HideConnector(bool hideArrow)
@@ -96,5 +104,7 @@ public partial class InventoryModuleConnection : Node2D
         
         _connectorTween.Finished += _connector.Hide;
     }
+
+    private bool IsConnectedToValidSlot => Slot != null && !Slot.IsDisabled();
 
 }
