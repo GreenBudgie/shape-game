@@ -204,7 +204,7 @@ public partial class InventoryModule : TextureButton
         }
 
         return directConnections
-            .SelectMany(directConnection => directConnection.Module.GetDirectIncomingConnections())
+            .SelectMany(directConnection => directConnection.Module.GetIncomingConnectionsChain())
             .Concat(directConnections)
             .Distinct()
             .ToList();
