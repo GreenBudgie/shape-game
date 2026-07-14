@@ -1,5 +1,10 @@
 public static class TypeSafeGlowTweenHelper
 {
+    
+    public static PropertyTweener TweenGlowColor(this Tween tween, IGlow node, Color color, float duration)
+    {
+        return tween.TweenProperty((GodotObject)node, IGlow.ColorProperty, color, duration);
+    }
 
     public static PropertyTweener TweenGlowStrength(this Tween tween, IGlow node, float finalVal, float duration)
     {

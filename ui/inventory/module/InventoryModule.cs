@@ -141,7 +141,7 @@ public partial class InventoryModule : TextureButton
 
     private void OnMouseEnter()
     {
-        if (_mousePivot.HasValue || !InventoryManager.Instance.IsOpen)
+        if (_mousePivot.HasValue || !InventoryManager.Instance.IsOpen || InventoryManager.Instance.IsDraggingModule)
         {
             return;
         }
@@ -212,10 +212,16 @@ public partial class InventoryModule : TextureButton
 
     public List<InventoryModuleConnection> GetDirectIncomingConnections()
     {
+        return GetDirectIncomingConnections(Slots.Values);
+    }
+    
+    private List<InventoryModuleConnection> GetDirectIncomingConnections(IEnumerable<InventorySlot> slots)
+    {
         List<InventoryModuleConnection> incomingConnections = [];
-        foreach (var slot in Slots.Values)
+        foreach (var slot in slots)
         {
-            incomingConnections.AddRange(slot.Connections);
+            var notSelfConnections = slot.Connections.Where(connection => connection.Module != this);
+            incomingConnections.AddRange(notSelfConnections);
         }
 
         return incomingConnections;
@@ -227,7 +233,12 @@ public partial class InventoryModule : TextureButton
     /// </summary>
     public List<InventoryModuleConnection> GetIncomingConnectionsChain()
     {
-        var directConnections = GetDirectIncomingConnections();
+        return GetIncomingConnectionsChain(Slots.Values);
+    }
+    
+    private List<InventoryModuleConnection> GetIncomingConnectionsChain(IEnumerable<InventorySlot> slots)
+    {
+        var directConnections = GetDirectIncomingConnections(slots);
         if (directConnections.Count == 0)
         {
             return [];
@@ -246,7 +257,12 @@ public partial class InventoryModule : TextureButton
     /// </summary>
     public List<InventoryModule> GetAllIncomingConnectedModules()
     {
-        return GetIncomingConnectionsChain().Select(x => x.Module).Distinct().ToList();
+        return GetAllIncomingConnectedModules(Slots.Values);
+    }
+    
+    private List<InventoryModule> GetAllIncomingConnectedModules(IEnumerable<InventorySlot> slots)
+    {
+        return GetIncomingConnectionsChain(slots).Select(x => x.Module).Distinct().ToList();
     }
     
     private void RotateToTarget(double delta)
@@ -290,6 +306,9 @@ public partial class InventoryModule : TextureButton
 
         Position = new Vector2(x, y);
     }
+    
+    private Dictionary<HexCoordinates, InventorySlot> _hoveredSlots = [];
+    private Dictionary<HexCoordinates, ConnectionData> _hoveredConnectorSlots = [];
 
     private void FollowCursor()
     {
@@ -337,19 +356,37 @@ public partial class InventoryModule : TextureButton
         }
 
         var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count;
-        if (!IsAllSlotsAvailable(hoveredSlots.Values) || !allSlotsHovered)
+        if (!allSlotsHovered || !IsAllSlotsAvailable(hoveredSlots.Values))
         {
+            ResetHoveredSlots();
             _targetPosition = mousePosition - pivotOffset;
             return;
         }
-
-        _targetPosition = GetSlotBasedPosition(hoveredSlots);
-
-        if (Input.IsActionJustPressed("inventory_left_click"))
+        
+        if (hoveredSlots != _hoveredSlots || hoveredConnectorSlots != _hoveredConnectorSlots)
         {
-            ForceInsert(hoveredSlots, hoveredConnectorSlots);
-            StopFollowingCursor();
+            SlotsUnhovered(_hoveredSlots, _hoveredConnectorSlots);
+            
+            _hoveredSlots = hoveredSlots;
+            _hoveredConnectorSlots = hoveredConnectorSlots;
+            
+            SlotsHovered(_hoveredSlots, _hoveredConnectorSlots);
         }
+        
+        ProcessHoveredSlots(hoveredSlots, hoveredConnectorSlots);
+    }
+
+    private void ResetHoveredSlots()
+    {
+        if (_hoveredSlots.Count == 0 && _hoveredConnectorSlots.Count == 0)
+        {
+            return;
+        }
+        
+        SlotsUnhovered(_hoveredSlots, _hoveredConnectorSlots);
+            
+        _hoveredSlots.Clear();
+        _hoveredConnectorSlots.Clear();
     }
 
     private bool IsAllSlotsAvailable(IEnumerable<InventorySlot> slots)
@@ -374,6 +411,96 @@ public partial class InventoryModule : TextureButton
         }
 
         return true;
+    }
+
+    private void SlotsHovered(
+        Dictionary<HexCoordinates, InventorySlot> slots,
+        Dictionary<HexCoordinates, ConnectionData> connectorSlots
+    )
+    {
+        var slotsValues = slots.Values;
+        foreach (var slot in slotsValues)
+        {
+            slot.SetHoveredState();
+        }
+
+        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values);
+        var outgoingConnectedModules = connectorSlots
+            .Select(slot => slot.Value.Slot?.Module)
+            .OfType<InventoryModule>()
+            .ToHashSet();
+
+        if (incomingConnectedModules.Count == 0 && outgoingConnectedModules.Count == 0)
+        {
+            return;
+        }
+        
+        var incomingConnectionSlots = incomingConnectedModules
+            .SelectMany(module => module.Slots.Values);
+        var outgoingConnectionSlots = outgoingConnectedModules
+            .SelectMany(module => module.Slots.Values);
+        var allConnectionSlots = incomingConnectionSlots.Concat(outgoingConnectionSlots).Distinct();
+        
+        var hasCycle = outgoingConnectedModules.Any(incomingConnectedModules.Contains);
+        foreach (var slot in allConnectionSlots)
+        {
+            if (hasCycle)
+            {
+                slot.SetShowsCycleState();
+            }
+            else
+            {
+                slot.SetShowsConnectionsState();
+            }
+        }
+    }
+    
+    private void ProcessHoveredSlots(
+        Dictionary<HexCoordinates, InventorySlot> slots,
+        Dictionary<HexCoordinates, ConnectionData> connectorSlots
+    )
+    {
+        _targetPosition = GetSlotBasedPosition(slots);
+        
+        if (Input.IsActionJustPressed("inventory_left_click"))
+        {
+            ForceInsert(slots, connectorSlots);
+            StopFollowingCursor();
+        }
+    }
+    
+    private void SlotsUnhovered(
+        Dictionary<HexCoordinates, InventorySlot> slots,
+        Dictionary<HexCoordinates, ConnectionData> connectorSlots
+    )
+    {
+        var slotsValues = slots.Values;
+        foreach (var slot in slotsValues)
+        {
+            slot.SetIdleState();
+        }
+
+        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values);
+        var outgoingConnectedModules = connectorSlots
+            .Select(slot => slot.Value.Slot?.Module)
+            .OfType<InventoryModule>()
+            .ToHashSet();
+
+        if (incomingConnectedModules.Count == 0 && outgoingConnectedModules.Count == 0)
+        {
+            return;
+        }
+        
+        var incomingConnectionSlots = incomingConnectedModules
+            .SelectMany(module => module.Slots.Values);
+        var outgoingConnectionSlots = outgoingConnectedModules
+            .SelectMany(module => module.Slots.Values);
+        var allConnectionSlots = incomingConnectionSlots.Concat(outgoingConnectionSlots).Distinct();
+
+        foreach (var slot in allConnectionSlots)
+        {
+            slot.SetIdleState();
+        }
     }
 
     private void Rotate(int direction)
@@ -484,6 +611,7 @@ public partial class InventoryModule : TextureButton
         }
 
         HideModuleInfo();
+        InventoryManager.Instance.IsDraggingModule = true;
 
         var mousePosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
         var closestHex = _hexes
@@ -502,6 +630,9 @@ public partial class InventoryModule : TextureButton
         {
             return;
         }
+        
+        InventoryManager.Instance.IsDraggingModule = false;
+        ResetHoveredSlots();
 
         if (IsHovered())
         {

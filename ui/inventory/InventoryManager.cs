@@ -20,6 +20,7 @@ public partial class InventoryManager : Control
     public static InventoryManager Instance { get; private set; } = null!;
 
     public bool IsOpen { get; private set; } = true;
+    public bool IsDraggingModule { get; set; }
 
     [Export] public ModuleInventory LeftBlasterInventory { get; private set; } = null!;
     [Export] public ModuleInventory RightBlasterInventory { get; private set; } = null!;

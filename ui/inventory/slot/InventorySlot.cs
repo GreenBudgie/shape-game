@@ -7,33 +7,13 @@ public partial class InventorySlot : TextureButton
     public const float InradiusSq = Inradius * Inradius;
     public const float Circumradius = 97;
 
-    private const float GlowStartDistance = 600f;
-    private const float GlowStopDistance = 100f;
-    private const float GlowStartDistanceSq = GlowStartDistance * GlowStartDistance;
-    private const float GlowMinStrength = 0.6f;
-    private const float GlowMaxStrength = 1f;
-    private const float GlowMaxRadius = 50f;
-
-    private const float GlowHoverStrength = 1.5f;
-    private const float GlowHoverRadius = 80f;
-    private const float GlowHoverTweenDuration = 0.1f;
-    private const float GlowUnhoverTweenDuration = 0.4f;
-    private const float ButtonDownTweenDuration = 0.1f;
-    private const float ButtonUpTweenDuration = 0.1f;
-    private const float ButtonDownGlowStrength = 1.5f;
-    private const float ButtonDownSize = 0.9f;
-    private const float HoverSize = 1.15f;
-
-    private static readonly AudioStream HoverSound = GD.Load<AudioStream>("uid://djdfrb1kcmfle");
-    private static readonly AudioStream ClickSound = GD.Load<AudioStream>("uid://cry6gufmuccda");
-    private static readonly AudioStream ButtonUpSound = GD.Load<AudioStream>("uid://cpqn2k806hyjd");
-
     public ModuleInventory Inventory { get; private set; } = null!;
     public HexCoordinates Coordinates { get; private set; }
     public InventoryModule? Module { get; set; }
     public List<InventoryModuleConnection> Connections { get; private set; } = [];
     
     private Vector2 _centerOffsetPosition;
+    private Glow _glow = null!;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dilsv34jaqcrd");
 
@@ -43,6 +23,99 @@ public partial class InventorySlot : TextureButton
         node.Inventory = inventory;
         node.Coordinates = coordinates;
         return node;
+    }
+
+    public override void _Ready()
+    {
+        _glow = Glow.AddGlow(this)
+            .SetColor(ColorScheme.LightBlue)
+            .SetStrength(1)
+            .SetRadius(0);
+
+        InventoryManager.Instance.Connect(InventoryManager.SignalName.InventoryClosed, Callable.From(SetIdleState));
+    }
+
+    private enum State
+    {
+        Idle,
+        Hovered,
+        ShowsConnections,
+        ShowsCycle
+    }
+
+    private const float StateChangeDuration = 0.15f;
+    private const float GlowRadius = 50f;
+    private const float StateScale = 1.025f;
+    
+    private State _state = State.Idle;
+    private Tween? _stateTween;
+
+    public void SetIdleState()
+    {
+        if (_state == State.Idle)
+        {
+            return;
+        }
+
+        _state = State.Idle;
+        
+        _stateTween?.Kill();
+        _stateTween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+
+        _stateTween.TweenOffsetScaleReset(this, StateChangeDuration);
+        _stateTween.TweenGlowColor(_glow, ColorScheme.LightBlue, StateChangeDuration);
+        _stateTween.TweenGlowRadius(_glow, 0, StateChangeDuration);
+    }
+    
+    public void SetHoveredState()
+    {
+        if (_state == State.Hovered)
+        {
+            return;
+        }
+
+        _state = State.Hovered;
+        
+        _stateTween?.Kill();
+        _stateTween = CreateTween().SetParallel().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+
+        _stateTween.TweenOffsetScale(this, StateScale, StateChangeDuration);
+        _stateTween.TweenGlowColor(_glow, ColorScheme.LightBlue, StateChangeDuration);
+        _stateTween.TweenGlowRadius(_glow, GlowRadius, StateChangeDuration);
+    }
+    
+    public void SetShowsCycleState()
+    {
+        if (_state == State.ShowsCycle)
+        {
+            return;
+        }
+
+        _state = State.ShowsCycle;
+        
+        _stateTween?.Kill();
+        _stateTween = CreateTween().SetParallel().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+
+        _stateTween.TweenOffsetScale(this, StateScale, StateChangeDuration);
+        _stateTween.TweenGlowColor(_glow, ColorScheme.Red, StateChangeDuration);
+        _stateTween.TweenGlowRadius(_glow, GlowRadius, StateChangeDuration);
+    }
+    
+    public void SetShowsConnectionsState()
+    {
+        if (_state == State.ShowsConnections)
+        {
+            return;
+        }
+
+        _state = State.ShowsConnections;
+        
+        _stateTween?.Kill();
+        _stateTween = CreateTween().SetParallel().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+
+        _stateTween.TweenOffsetScale(this, StateScale, StateChangeDuration);
+        _stateTween.TweenGlowColor(_glow, ColorScheme.Yellow, StateChangeDuration);
+        _stateTween.TweenGlowRadius(_glow, GlowRadius, StateChangeDuration);
     }
 
     /// <summary>

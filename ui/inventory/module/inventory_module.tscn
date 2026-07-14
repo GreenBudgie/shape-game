@@ -28,6 +28,7 @@ stretch_mode = 3
 script = ExtResource("2_i2u6u")
 
 [node name="ModuleTexture" type="TextureRect" parent="." unique_id=1838289551]
+use_parent_material = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
