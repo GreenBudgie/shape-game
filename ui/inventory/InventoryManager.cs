@@ -16,6 +16,9 @@ public partial class InventoryManager : Control
 
     [Signal]
     public delegate void InventoryClosedEventHandler();
+    
+    [Signal]
+    public delegate void SlotsStateResetEventHandler();
 
     public static InventoryManager Instance { get; private set; } = null!;
 

@@ -210,6 +210,42 @@ public partial class InventoryModule : TextureButton
         }
     }
 
+    private IEnumerable<InventorySlot> GetOutgoingConnectionsSlots()
+    {
+        return Connections.Values.Select(connection => connection.Slot).OfType<InventorySlot>();
+    }
+    
+    public HashSet<InventoryModule> GetDirectOutgoingConnectedModules()
+    {
+        return GetDirectOutgoingConnectedModules(GetOutgoingConnectionsSlots());
+    }
+    
+    private HashSet<InventoryModule> GetDirectOutgoingConnectedModules(
+        IEnumerable<InventorySlot> outgoingConnectionSlots
+    )
+    {
+        return outgoingConnectionSlots.Select(slot => slot.Module).OfType<InventoryModule>().ToHashSet();
+    }
+    
+    public HashSet<InventoryModule> GetAllOutgoingConnectedModules()
+    {
+        return GetAllOutgoingConnectedModules(GetOutgoingConnectionsSlots());
+    }
+
+    private HashSet<InventoryModule> GetAllOutgoingConnectedModules(IEnumerable<InventorySlot> outgoingConnectionSlots)
+    {
+        var directModules = GetDirectOutgoingConnectedModules(outgoingConnectionSlots);
+        if (directModules.Count == 0)
+        {
+            return [];
+        }
+        
+        // This logic does not reflect complex chains with more than 3 modules, some of which might be incoming, some outgoing
+
+        return directModules.SelectMany(module => module.GetAllOutgoingConnectedModules())
+            .ToHashSet();
+    }
+
     public List<InventoryModuleConnection> GetDirectIncomingConnections()
     {
         return GetDirectIncomingConnections(Slots.Values);
@@ -424,22 +460,22 @@ public partial class InventoryModule : TextureButton
             slot.SetHoveredState();
         }
 
-        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values);
-        var outgoingConnectedModules = connectorSlots
-            .Select(slot => slot.Value.Slot?.Module)
-            .OfType<InventoryModule>()
+        var outgoingConnectionDirectSlots = connectorSlots
+            .Select(slot => slot.Value.Slot)
+            .OfType<InventorySlot>()
             .ToHashSet();
-
-        if (incomingConnectedModules.Count == 0 && outgoingConnectedModules.Count == 0)
-        {
-            return;
-        }
+        
+        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values);
+        var outgoingConnectedModules = GetAllOutgoingConnectedModules(outgoingConnectionDirectSlots);
         
         var incomingConnectionSlots = incomingConnectedModules
             .SelectMany(module => module.Slots.Values);
         var outgoingConnectionSlots = outgoingConnectedModules
             .SelectMany(module => module.Slots.Values);
-        var allConnectionSlots = incomingConnectionSlots.Concat(outgoingConnectionSlots).Distinct();
+        var allConnectionSlots = incomingConnectionSlots
+            .Concat(outgoingConnectionSlots)
+            .Concat(outgoingConnectionDirectSlots)
+            .Distinct();
         
         var hasCycle = outgoingConnectedModules.Any(incomingConnectedModules.Contains);
         foreach (var slot in allConnectionSlots)
@@ -474,33 +510,7 @@ public partial class InventoryModule : TextureButton
         Dictionary<HexCoordinates, ConnectionData> connectorSlots
     )
     {
-        var slotsValues = slots.Values;
-        foreach (var slot in slotsValues)
-        {
-            slot.SetIdleState();
-        }
-
-        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values);
-        var outgoingConnectedModules = connectorSlots
-            .Select(slot => slot.Value.Slot?.Module)
-            .OfType<InventoryModule>()
-            .ToHashSet();
-
-        if (incomingConnectedModules.Count == 0 && outgoingConnectedModules.Count == 0)
-        {
-            return;
-        }
-        
-        var incomingConnectionSlots = incomingConnectedModules
-            .SelectMany(module => module.Slots.Values);
-        var outgoingConnectionSlots = outgoingConnectedModules
-            .SelectMany(module => module.Slots.Values);
-        var allConnectionSlots = incomingConnectionSlots.Concat(outgoingConnectionSlots).Distinct();
-
-        foreach (var slot in allConnectionSlots)
-        {
-            slot.SetIdleState();
-        }
+        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.SlotsStateReset);
     }
 
     private void Rotate(int direction)
@@ -588,7 +598,7 @@ public partial class InventoryModule : TextureButton
             }
         }
 
-        Slots = moduleSlots;
+        Slots = moduleSlots.ToDictionary();
         Connections = connections.ToDictionary(x => x.Key, x => x.Value.Connection);
         
         foreach (var slot in Slots)

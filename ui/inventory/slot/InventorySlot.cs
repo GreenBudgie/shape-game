@@ -33,6 +33,7 @@ public partial class InventorySlot : TextureButton
             .SetRadius(0);
 
         InventoryManager.Instance.Connect(InventoryManager.SignalName.InventoryClosed, Callable.From(SetIdleState));
+        InventoryManager.Instance.Connect(InventoryManager.SignalName.SlotsStateReset, Callable.From(SetIdleState));
     }
 
     private enum State
