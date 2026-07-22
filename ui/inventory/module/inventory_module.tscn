@@ -3,8 +3,8 @@
 [ext_resource type="Shader" uid="uid://fxn8hdgq2td3" path="res://util/stretch.gdshader" id="1_ckxha"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/module/InventoryModule.cs" id="2_i2u6u"]
 [ext_resource type="AudioStream" uid="uid://dflh2js551drg" path="res://ui/inventory/module/sound/hover.wav" id="3_i2u6u"]
-[ext_resource type="AudioStream" uid="uid://q57evejtgj27" path="res://ui/inventory/module/sound/insert_with_connection.wav" id="4_dif38"]
-[ext_resource type="AudioStream" uid="uid://ce6eylbtga7pd" path="res://ui/inventory/module/sound/grab.wav" id="4_tfbd0"]
+[ext_resource type="AudioStream" uid="uid://cbjyijpqmj1gd" path="res://ui/inventory/module/sound/insert.wav" id="4_dif38"]
+[ext_resource type="AudioStream" uid="uid://1tqj0buhkef8" path="res://ui/inventory/module/sound/grab.wav" id="4_tfbd0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mhdu2"]
 resource_local_to_scene = true
