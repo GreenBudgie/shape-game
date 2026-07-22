@@ -11,6 +11,9 @@ public partial class InventoryManager : Control
     public const float ModuleShowDelay = AnimationDuration / 2f;
     public const float ModuleAnimationDuration = AnimationDuration;
 
+    [Export] private AudioStream _openSound = null!;
+    [Export] private AudioStream _closeSound = null!;
+    
     [Signal]
     public delegate void InventoryOpenedEventHandler();
 
@@ -74,8 +77,8 @@ public partial class InventoryManager : Control
         AddModule<ExtraFireRateModule>(LeftBlasterInventory);
         AddModule<ExtraDamageModule>(LeftBlasterInventory);
         AddModule<BoltModule>(LeftBlasterInventory);
-        
-        Close();
+
+        Close(playSound: false);
         Visible = false;
     }
 
@@ -129,10 +132,11 @@ public partial class InventoryManager : Control
         _alphaTween = _overlay.CreateTween();
         _alphaTween.FadeIn(_overlay, AnimationDuration);
 
+        SoundManager.Instance.PlaySound(_openSound).RandomizePitchOffset(0.05f);
         EmitSignalInventoryOpened();
     }
 
-    private void Close()
+    private void Close(bool playSound = true)
     {
         if (!IsOpen)
         {
@@ -151,6 +155,11 @@ public partial class InventoryManager : Control
         else
         {
             Modulate = Colors.Transparent;
+        }
+
+        if (playSound)
+        {
+            SoundManager.Instance.PlaySound(_closeSound).RandomizePitchOffset(0.05f);
         }
 
         EmitSignalInventoryClosed();

@@ -3,6 +3,7 @@
 [ext_resource type="Shader" uid="uid://fxn8hdgq2td3" path="res://util/stretch.gdshader" id="1_ckxha"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/module/InventoryModule.cs" id="2_i2u6u"]
 [ext_resource type="AudioStream" uid="uid://dflh2js551drg" path="res://ui/inventory/module/sound/hover.wav" id="3_i2u6u"]
+[ext_resource type="AudioStream" uid="uid://q57evejtgj27" path="res://ui/inventory/module/sound/insert_with_connection.wav" id="4_dif38"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mhdu2"]
 resource_local_to_scene = true
@@ -29,7 +30,7 @@ stretch_mode = 3
 script = ExtResource("2_i2u6u")
 _hoverSound = ExtResource("3_i2u6u")
 _grabSound = ExtResource("3_i2u6u")
-_insertSound = ExtResource("3_i2u6u")
+_insertSound = ExtResource("4_dif38")
 _rotateSound = ExtResource("3_i2u6u")
 _slotSnapSound = ExtResource("3_i2u6u")
 _connectionCycleSound = ExtResource("3_i2u6u")

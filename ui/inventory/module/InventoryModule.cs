@@ -462,6 +462,8 @@ public partial class InventoryModule : TextureButton
         Dictionary<HexCoordinates, ConnectionData> connectorSlots
     )
     {
+        SoundManager.Instance.PlaySound(_slotSnapSound).RandomizePitchOffset();
+        
         var slotsValues = slots.Values;
         foreach (var slot in slotsValues)
         {
@@ -495,7 +497,6 @@ public partial class InventoryModule : TextureButton
             }
             else
             {
-                SoundManager.Instance.PlaySound(_slotSnapSound).RandomizePitchOffset();
                 slot.SetShowsConnectionsState();
             }
         }

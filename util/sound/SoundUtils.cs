@@ -7,7 +7,7 @@ public static class SoundUtils
         return audio;
     }
     
-    public static AudioStreamPlayer RandomizePitchOffset(this AudioStreamPlayer audio, float minMaxAmount = 0.2f)
+    public static AudioStreamPlayer RandomizePitchOffset(this AudioStreamPlayer audio, float minMaxAmount = 0.1f)
     {
         audio.PitchScale = (float)GD.RandRange(audio.PitchScale - minMaxAmount, audio.PitchScale + minMaxAmount);
         return audio;

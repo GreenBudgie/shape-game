@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://b63f61tf6hqig" path="res://ui/inventory/InventoryManager.cs" id="1_bclat"]
 [ext_resource type="Script" uid="uid://cdjjln25afl8t" path="res://ui/inventory/ModuleInventory.cs" id="2_hoddu"]
+[ext_resource type="AudioStream" uid="uid://gc3kfmibiica" path="res://ui/inventory/inventory_open.wav" id="2_sqcpx"]
+[ext_resource type="AudioStream" uid="uid://c1bt8e82wi1gr" path="res://ui/inventory/inventory_close.wav" id="3_s40lw"]
 
 [node name="InventoryManager" type="Control" unique_id=663337661 node_paths=PackedStringArray("LeftBlasterInventory", "RightBlasterInventory")]
 layout_mode = 3
@@ -12,6 +14,8 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 script = ExtResource("1_bclat")
+_openSound = ExtResource("2_sqcpx")
+_closeSound = ExtResource("3_s40lw")
 LeftBlasterInventory = NodePath("LeftBlasterInventory")
 RightBlasterInventory = NodePath("RightBlasterInventory")
 
