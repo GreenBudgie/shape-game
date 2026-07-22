@@ -141,10 +141,10 @@ public partial class InventoryModule : TextureButton
         return _hexes.Where(x => x.Value.Connection == null).Select(x => x.Key);
     }
 
-    private const float HoverTweenDuration = 0.125f;
+    private const float AnimationTweenDuration = 0.125f;
 
     private Tween? _appearTween;
-    private Tween? _hoverTween;
+    private Tween? _animationTween;
 
     private void OnMouseEnter()
     {
@@ -159,14 +159,14 @@ public partial class InventoryModule : TextureButton
         _appearTween?.Kill();
         FullyShow();
         
-        _hoverTween?.Kill();
-        _hoverTween = CreateTween().SetParallel().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetParallel().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
 
-        _hoverTween.TweenOffsetScale(this, 1.04f, HoverTweenDuration);
+        _animationTween.TweenOffsetScale(this, 1.04f, AnimationTweenDuration);
 
         if (_glow != null)
         {
-            _hoverTween.TweenGlowRadius(_glow, 30, HoverTweenDuration);
+            _animationTween.TweenGlowRadius(_glow, 30, AnimationTweenDuration);
         }
     }
 
@@ -179,14 +179,15 @@ public partial class InventoryModule : TextureButton
             return;
         }
         
-        _hoverTween?.Kill();
-        _hoverTween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
 
-        _hoverTween.TweenOffsetScaleReset(this, HoverTweenDuration);
+        _animationTween.TweenOffsetScaleReset(this, AnimationTweenDuration);
+        _animationTween.TweenOffsetRotationReset(this, AnimationTweenDuration);
 
         if (_glow != null)
         {
-            _hoverTween.TweenGlowRadius(_glow, 0, HoverTweenDuration);
+            _animationTween.TweenGlowRadius(_glow, 0, AnimationTweenDuration);
         }
     }
 
@@ -353,6 +354,7 @@ public partial class InventoryModule : TextureButton
     
     private Dictionary<HexCoordinates, InventorySlot> _hoveredSlots = [];
     private Dictionary<HexCoordinates, ConnectionData> _hoveredConnectorSlots = [];
+    private bool _isJustGrabbed;
 
     private void FollowCursor()
     {
@@ -404,6 +406,7 @@ public partial class InventoryModule : TextureButton
         {
             ResetHoveredSlots();
             _targetPosition = mousePosition - pivotOffset;
+            _isJustGrabbed = false;
             return;
         }
         
@@ -418,6 +421,8 @@ public partial class InventoryModule : TextureButton
         }
         
         ProcessHoveredSlots(hoveredSlots, hoveredConnectorSlots);
+        
+        _isJustGrabbed = false;
     }
 
     private void ResetHoveredSlots()
@@ -462,8 +467,11 @@ public partial class InventoryModule : TextureButton
         Dictionary<HexCoordinates, ConnectionData> connectorSlots
     )
     {
-        SoundManager.Instance.PlaySound(_slotSnapSound).RandomizePitchOffset();
-        
+        if (!_isJustGrabbed)
+        {
+            SoundManager.Instance.PlaySound(_slotSnapSound).RandomizePitchOffset();
+        }
+
         var slotsValues = slots.Values;
         foreach (var slot in slotsValues)
         {
@@ -633,6 +641,7 @@ public partial class InventoryModule : TextureButton
             return;
         }
 
+        _isJustGrabbed = true;
         HideModuleInfo();
         InventoryManager.Instance.IsDraggingModule = true;
 
@@ -643,6 +652,17 @@ public partial class InventoryModule : TextureButton
         _mousePivot = closestHex.Key;
 
         ZIndex += 1;
+
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad);
+
+        _animationTween.TweenOffsetScale(this, 0.9f, AnimationTweenDuration).SetEase(Tween.EaseType.Out);
+        _animationTween.Parallel()
+            .TweenOffsetRotation(this, RandomUtils.RandomSignedDeltaRange(Pi / 16, Pi / 32), AnimationTweenDuration)
+            .SetEase(Tween.EaseType.Out);
+
+        _animationTween.TweenOffsetScaleReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
+        _animationTween.Parallel().TweenOffsetRotationReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
         
         SoundManager.Instance.PlaySound(_grabSound).RandomizePitchOffset();
         EmitSignalTakenOut();
@@ -665,6 +685,17 @@ public partial class InventoryModule : TextureButton
 
         _mousePivot = null;
         ZIndex -= 1;
+ 
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad);
+
+        _animationTween.TweenOffsetScale(this, 0.9f, AnimationTweenDuration).SetEase(Tween.EaseType.Out);
+        _animationTween.Parallel()
+            .TweenOffsetRotation(this, RandomUtils.RandomSignedDeltaRange(Pi / 16, Pi / 32), AnimationTweenDuration)
+            .SetEase(Tween.EaseType.Out);
+
+        _animationTween.TweenOffsetScaleReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
+        _animationTween.Parallel().TweenOffsetRotationReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
         
         EmitSignalInserted();
     }
@@ -709,7 +740,7 @@ public partial class InventoryModule : TextureButton
     
     public void HideModule()
     {
-        _hoverTween?.Kill();
+        _animationTween?.Kill();
         _appearTween?.Kill();
         _appearTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
 
