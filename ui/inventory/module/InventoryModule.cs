@@ -10,6 +10,13 @@ public partial class InventoryModule : TextureButton
     
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://csoad8g8f13qn");
 
+    [Export] private AudioStream _hoverSound = null!;
+    [Export] private AudioStream _grabSound = null!;
+    [Export] private AudioStream _insertSound = null!;
+    [Export] private AudioStream _rotateSound = null!;
+    [Export] private AudioStream _slotSnapSound = null!;
+    [Export] private AudioStream _connectionCycleSound = null!;
+    
     /// <summary>
     /// Emitted whenever this module is rotated
     /// </summary>
@@ -146,6 +153,7 @@ public partial class InventoryModule : TextureButton
             return;
         }
 
+        SoundManager.Instance.PlaySound(_hoverSound).RandomizePitchOffset();
         ShowModuleInfo();
         
         _appearTween?.Kill();
@@ -399,7 +407,7 @@ public partial class InventoryModule : TextureButton
             return;
         }
         
-        if (hoveredSlots != _hoveredSlots || hoveredConnectorSlots != _hoveredConnectorSlots)
+        if (!hoveredSlots.ContentEqual(_hoveredSlots) || !hoveredConnectorSlots.ContentEqual(_hoveredConnectorSlots))
         {
             SlotsUnhovered(_hoveredSlots, _hoveredConnectorSlots);
             
@@ -482,10 +490,12 @@ public partial class InventoryModule : TextureButton
         {
             if (hasCycle)
             {
+                SoundManager.Instance.PlaySound(_connectionCycleSound).RandomizePitchOffset();
                 slot.SetShowsCycleState();
             }
             else
             {
+                SoundManager.Instance.PlaySound(_slotSnapSound).RandomizePitchOffset();
                 slot.SetShowsConnectionsState();
             }
         }
@@ -500,6 +510,7 @@ public partial class InventoryModule : TextureButton
         
         if (Input.IsActionJustPressed("inventory_left_click"))
         {
+            SoundManager.Instance.PlaySound(_insertSound).RandomizePitchOffset();
             ForceInsert(slots, connectorSlots);
             StopFollowingCursor();
         }
@@ -526,7 +537,8 @@ public partial class InventoryModule : TextureButton
             x => x.Key.RotatedClockwise(_mousePivot.Value, direction),
             x => x.Value with { RealPosition = x.Value.RealPosition.Rotated(HexCoordinates.RotationStep * direction) }
         );
-        
+
+        SoundManager.Instance.PlaySound(_rotateSound).RandomizePitchOffset();
         EmitSignalRotated(direction);
     }
 
@@ -631,6 +643,7 @@ public partial class InventoryModule : TextureButton
 
         ZIndex += 1;
         
+        SoundManager.Instance.PlaySound(_grabSound).RandomizePitchOffset();
         EmitSignalTakenOut();
     }
 

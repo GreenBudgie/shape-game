@@ -28,6 +28,11 @@ public partial class ShapeGame : Node2D
         EmitSignalPostSetup();
     }
 
+    public static bool IsDebugButtonJustPressed()
+    {
+        return Input.IsActionJustPressed("debug_button");
+    }
+
     public override void _Process(double delta)
     {
         if (Input.IsActionJustPressed("restart"))
