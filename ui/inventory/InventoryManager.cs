@@ -72,11 +72,12 @@ public partial class InventoryManager : Control
 
     private void PostSetup()
     {
-        AddModule<ExtraFireRateModule>(LeftBlasterInventory);
-        AddModule<ExtraFireRateModule>(LeftBlasterInventory);
-        AddModule<ExtraFireRateModule>(LeftBlasterInventory);
-        AddModule<ExtraDamageModule>(LeftBlasterInventory);
-        AddModule<BoltModule>(LeftBlasterInventory);
+        AddModule<MineModule>(LeftBlasterInventory);
+        AddModule<BarrierModule>(LeftBlasterInventory);
+        AddModule<PiercingModule>(RightBlasterInventory);
+        AddModule<ExtraFireRateModule>(RightBlasterInventory);
+        AddModule<ExtraDamageModule>(RightBlasterInventory);
+        AddModule<BoltModule>(RightBlasterInventory);
 
         Close(playSound: false);
         Visible = false;

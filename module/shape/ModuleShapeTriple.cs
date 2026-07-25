@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Icon(TexturePath)]
 public partial class ModuleShapeTriple : ModuleShape
 {
-    private const string TexturePath = "uid://ddbmie8cjsnsb";
+    private const string TexturePath = "uid://c5it6ohqr4fyg";
 
     public override Texture2D Texture => GD.Load<Texture2D>(TexturePath);
 
