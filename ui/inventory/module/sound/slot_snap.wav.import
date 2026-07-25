@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://rhtanjk7dh2m"
-path="res://.godot/imported/module_slot_snap.wav-9c800b64d446013761e87b8d5f448606.sample"
+path="res://.godot/imported/slot_snap.wav-d825de8ea8abb33ee8a3a5c19dd08a77.sample"
 
 [deps]
 
-source_file="res://ui/inventory/module/sound/module_slot_snap.wav"
-dest_files=["res://.godot/imported/module_slot_snap.wav-9c800b64d446013761e87b8d5f448606.sample"]
+source_file="res://ui/inventory/module/sound/slot_snap.wav"
+dest_files=["res://.godot/imported/slot_snap.wav-d825de8ea8abb33ee8a3a5c19dd08a77.sample"]
 
 [params]
 

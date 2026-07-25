@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://c63obyhomapk8"
-path="res://.godot/imported/module_rotate.wav-3c41f0ffbdca8f45ac96c3648cb7fa10.sample"
+path="res://.godot/imported/rotate.wav-03bc9f19ba73767fb9a21543ad032118.sample"
 
 [deps]
 
-source_file="res://ui/inventory/module/sound/module_rotate.wav"
-dest_files=["res://.godot/imported/module_rotate.wav-3c41f0ffbdca8f45ac96c3648cb7fa10.sample"]
+source_file="res://ui/inventory/module/sound/rotate.wav"
+dest_files=["res://.godot/imported/rotate.wav-03bc9f19ba73767fb9a21543ad032118.sample"]
 
 [params]
 

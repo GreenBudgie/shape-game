@@ -3,11 +3,11 @@
 [ext_resource type="Shader" uid="uid://fxn8hdgq2td3" path="res://util/stretch.gdshader" id="1_ckxha"]
 [ext_resource type="Script" uid="uid://b4t1bfaohwx17" path="res://ui/inventory/module/InventoryModule.cs" id="2_i2u6u"]
 [ext_resource type="AudioStream" uid="uid://cnmvbkmeuhr5h" path="res://ui/inventory/module/sound/hover.wav" id="3_tfbd0"]
-[ext_resource type="AudioStream" uid="uid://ctcao7um8bdgj" path="res://ui/inventory/module/sound/module_grab.wav" id="4_pp8pi"]
-[ext_resource type="AudioStream" uid="uid://xvsoi3qm24dg" path="res://ui/inventory/module/sound/module_insert.wav" id="5_tfbd0"]
-[ext_resource type="AudioStream" uid="uid://c63obyhomapk8" path="res://ui/inventory/module/sound/module_rotate.wav" id="6_pp8pi"]
-[ext_resource type="AudioStream" uid="uid://rhtanjk7dh2m" path="res://ui/inventory/module/sound/module_slot_snap.wav" id="7_c0wyj"]
-[ext_resource type="AudioStream" uid="uid://7fx812xbw2ni" path="res://ui/inventory/module/sound/module_cycle.wav" id="8_dgvtt"]
+[ext_resource type="AudioStream" uid="uid://ctcao7um8bdgj" path="res://ui/inventory/module/sound/grab.wav" id="4_pp8pi"]
+[ext_resource type="AudioStream" uid="uid://xvsoi3qm24dg" path="res://ui/inventory/module/sound/insert.wav" id="5_tfbd0"]
+[ext_resource type="AudioStream" uid="uid://c63obyhomapk8" path="res://ui/inventory/module/sound/rotate.wav" id="6_pp8pi"]
+[ext_resource type="AudioStream" uid="uid://rhtanjk7dh2m" path="res://ui/inventory/module/sound/slot_snap.wav" id="7_c0wyj"]
+[ext_resource type="AudioStream" uid="uid://7fx812xbw2ni" path="res://ui/inventory/module/sound/cycle.wav" id="8_dgvtt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mhdu2"]
 resource_local_to_scene = true
