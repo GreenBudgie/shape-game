@@ -252,6 +252,7 @@ public partial class InventoryModule : TextureButton
         // This logic does not reflect complex chains with more than 3 modules, some of which might be incoming, some outgoing
 
         return directModules.SelectMany(module => module.GetAllOutgoingConnectedModules())
+            .Concat(directModules)
             .ToHashSet();
     }
 
@@ -467,11 +468,6 @@ public partial class InventoryModule : TextureButton
         Dictionary<HexCoordinates, ConnectionData> connectorSlots
     )
     {
-        if (!_isJustGrabbed)
-        {
-            SoundManager.Instance.PlaySound(_slotSnapSound).RandomizePitchOffset();
-        }
-
         var slotsValues = slots.Values;
         foreach (var slot in slotsValues)
         {
@@ -500,13 +496,26 @@ public partial class InventoryModule : TextureButton
         {
             if (hasCycle)
             {
-                SoundManager.Instance.PlaySound(_connectionCycleSound).RandomizePitchOffset();
                 slot.SetShowsCycleState();
             }
             else
             {
                 slot.SetShowsConnectionsState();
             }
+        }
+
+        if (_isJustGrabbed)
+        {
+            return;
+        }
+        
+        if (hasCycle)
+        {
+            SoundManager.Instance.PlaySound(_connectionCycleSound).RandomizePitchOffset();
+        }
+        else
+        {
+            SoundManager.Instance.PlaySound(_slotSnapSound).RandomizePitchOffset();
         }
     }
     
@@ -519,6 +528,42 @@ public partial class InventoryModule : TextureButton
         
         if (Input.IsActionJustPressed("inventory_left_click"))
         {
+            var outgoingConnectionDirectSlots = connectorSlots
+                .Select(slot => slot.Value.Slot)
+                .OfType<InventorySlot>()
+                .ToHashSet();
+        
+            var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values);
+            var outgoingConnectedModules = GetAllOutgoingConnectedModules(outgoingConnectionDirectSlots);
+        
+            var incomingConnectionSlots = incomingConnectedModules
+                .SelectMany(module => module.Slots.Values);
+            var outgoingConnectionSlots = outgoingConnectedModules
+                .SelectMany(module => module.Slots.Values);
+            var allConnectionSlots = incomingConnectionSlots
+                .Concat(outgoingConnectionSlots)
+                .Concat(outgoingConnectionDirectSlots)
+                .Distinct();
+        
+            var hasCycle = outgoingConnectedModules.Any(incomingConnectedModules.Contains);
+
+            if (hasCycle)
+            {
+                SoundManager.Instance.PlaySound(_connectionCycleSound).RandomizePitchOffset();
+                
+                _animationTween?.Kill();
+                _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad);
+                
+                _animationTween.TweenOffsetRotation(this, 0.1f, AnimationTweenDuration / 3)
+                    .SetEase(Tween.EaseType.Out);
+
+                _animationTween.TweenOffsetRotation(this, -0.1f, AnimationTweenDuration / 3);
+                
+                _animationTween.TweenOffsetRotationReset(this, AnimationTweenDuration / 3);
+                
+                return;
+            }
+            
             SoundManager.Instance.PlaySound(_insertSound).RandomizePitchOffset();
             ForceInsert(slots, connectorSlots);
             StopFollowingCursor();
@@ -656,9 +701,9 @@ public partial class InventoryModule : TextureButton
         _animationTween?.Kill();
         _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad);
 
-        _animationTween.TweenOffsetScale(this, 0.9f, AnimationTweenDuration).SetEase(Tween.EaseType.Out);
+        _animationTween.TweenOffsetScale(this, 1.15f, AnimationTweenDuration).SetEase(Tween.EaseType.Out);
         _animationTween.Parallel()
-            .TweenOffsetRotation(this, RandomUtils.RandomSignedDeltaRange(Pi / 16, Pi / 32), AnimationTweenDuration)
+            .TweenOffsetRotation(this, RandomUtils.RandomSignedDeltaRange(0.1f, 0.05f), AnimationTweenDuration)
             .SetEase(Tween.EaseType.Out);
 
         _animationTween.TweenOffsetScaleReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
@@ -691,7 +736,7 @@ public partial class InventoryModule : TextureButton
 
         _animationTween.TweenOffsetScale(this, 0.9f, AnimationTweenDuration).SetEase(Tween.EaseType.Out);
         _animationTween.Parallel()
-            .TweenOffsetRotation(this, RandomUtils.RandomSignedDeltaRange(Pi / 16, Pi / 32), AnimationTweenDuration)
+            .TweenOffsetRotation(this, RandomUtils.RandomSignedDeltaRange(0.1f, 0.05f), AnimationTweenDuration)
             .SetEase(Tween.EaseType.Out);
 
         _animationTween.TweenOffsetScaleReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
@@ -770,4 +815,5 @@ public partial class InventoryModule : TextureButton
 
     private readonly record struct HexData(Vector2 RealPosition, InventoryModuleConnection? Connection);
     private readonly record struct ConnectionData(InventorySlot? Slot, InventoryModuleConnection Connection);
+    private readonly record struct NewConnectionData(InventorySlot? Slot, InventoryModuleConnection Connection);
 }

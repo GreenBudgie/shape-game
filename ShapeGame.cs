@@ -32,6 +32,11 @@ public partial class ShapeGame : Node2D
     {
         return Input.IsActionJustPressed("debug_button");
     }
+    
+    public static bool IsDebugButtonPressed()
+    {
+        return Input.IsActionPressed("debug_button");
+    }
 
     public override void _Process(double delta)
     {
