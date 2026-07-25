@@ -219,96 +219,86 @@ public partial class InventoryModule : TextureButton
         }
     }
 
+    // Outgoing connections logic
+    
     private IEnumerable<InventorySlot> GetOutgoingConnectionsSlots()
     {
         return Connections.Values.Select(connection => connection.Slot).OfType<InventorySlot>();
     }
     
-    public HashSet<InventoryModule> GetDirectOutgoingConnectedModules()
-    {
-        return GetDirectOutgoingConnectedModules(GetOutgoingConnectionsSlots());
-    }
-    
     private HashSet<InventoryModule> GetDirectOutgoingConnectedModules(
-        IEnumerable<InventorySlot> outgoingConnectionSlots
+        IEnumerable<InventorySlot> outgoingConnectionSlots,
+        InventoryModule ignoredModule
     )
     {
-        return outgoingConnectionSlots.Select(slot => slot.Module).OfType<InventoryModule>().ToHashSet();
+        return outgoingConnectionSlots.Select(slot => slot.Module)
+            .OfType<InventoryModule>()
+            .Where(module => module != this && module != ignoredModule)
+            .ToHashSet();
     }
     
-    public HashSet<InventoryModule> GetAllOutgoingConnectedModules()
+    public HashSet<InventoryModule> GetAllOutgoingConnectedModules(InventoryModule ignoredModule)
     {
-        return GetAllOutgoingConnectedModules(GetOutgoingConnectionsSlots());
+        return GetAllOutgoingConnectedModules(GetOutgoingConnectionsSlots(), ignoredModule);
     }
 
-    private HashSet<InventoryModule> GetAllOutgoingConnectedModules(IEnumerable<InventorySlot> outgoingConnectionSlots)
+    private HashSet<InventoryModule> GetAllOutgoingConnectedModules(
+        IEnumerable<InventorySlot> outgoingConnectionSlots,
+        InventoryModule ignoredModule
+    )
     {
-        var directModules = GetDirectOutgoingConnectedModules(outgoingConnectionSlots);
+        var directModules = GetDirectOutgoingConnectedModules(outgoingConnectionSlots, ignoredModule);
         if (directModules.Count == 0)
         {
             return [];
         }
         
-        // This logic does not reflect complex chains with more than 3 modules, some of which might be incoming, some outgoing
-
-        return directModules.SelectMany(module => module.GetAllOutgoingConnectedModules())
+        // This logic does not reflect complex chains with more than 3 modules,
+        // some of which might be incoming, some outgoing. But it's fine for now
+        return directModules.SelectMany(module => module.GetAllOutgoingConnectedModules(ignoredModule))
             .Concat(directModules)
             .ToHashSet();
     }
+    
+    // Incoming connections logic
 
-    public List<InventoryModuleConnection> GetDirectIncomingConnections()
+    private HashSet<InventoryModule> GetDirectIncomingConnectedModules(
+        IEnumerable<InventorySlot> slots,
+        InventoryModule ignoredModule
+    )
     {
-        return GetDirectIncomingConnections(Slots.Values);
+        return slots.SelectMany(slot => slot.Connections)
+            .Select(connection => connection.Module)
+            .Where(module => module != this && module != ignoredModule)
+            .ToHashSet();
     }
     
-    private List<InventoryModuleConnection> GetDirectIncomingConnections(IEnumerable<InventorySlot> slots)
+    public HashSet<InventoryModule> GetAllIncomingConnectedModules()
     {
-        List<InventoryModuleConnection> incomingConnections = [];
-        foreach (var slot in slots)
-        {
-            var notSelfConnections = slot.Connections.Where(connection => connection.Module != this);
-            incomingConnections.AddRange(notSelfConnections);
-        }
-
-        return incomingConnections;
+        return GetAllIncomingConnectedModules(Slots.Values, this);
     }
     
-    /// <summary>
-    /// Returns all connections to this module, tracing them back to the last connection.
-    /// Specific order of connections is not guaranteed
-    /// </summary>
-    public List<InventoryModuleConnection> GetIncomingConnectionsChain()
+    private HashSet<InventoryModule> GetAllIncomingConnectedModules(InventoryModule ignoredModule)
     {
-        return GetIncomingConnectionsChain(Slots.Values);
+        return GetAllIncomingConnectedModules(Slots.Values, ignoredModule);
     }
     
-    private List<InventoryModuleConnection> GetIncomingConnectionsChain(IEnumerable<InventorySlot> slots)
+    private HashSet<InventoryModule> GetAllIncomingConnectedModules(
+        IEnumerable<InventorySlot> slots,
+        InventoryModule ignoredModule
+    )
     {
-        var directConnections = GetDirectIncomingConnections(slots);
-        if (directConnections.Count == 0)
+        var directModules = GetDirectIncomingConnectedModules(slots, ignoredModule);
+        if (directModules.Count == 0)
         {
             return [];
         }
-
-        return directConnections
-            .SelectMany(directConnection => directConnection.Module.GetIncomingConnectionsChain())
-            .Concat(directConnections)
-            .Distinct()
-            .ToList();
-    }
-    
-    /// <summary>
-    /// Returns all modules connected to the current one, tracing them back to the last module.
-    /// Specific order of connections is not guaranteed
-    /// </summary>
-    public List<InventoryModule> GetAllIncomingConnectedModules()
-    {
-        return GetAllIncomingConnectedModules(Slots.Values);
-    }
-    
-    private List<InventoryModule> GetAllIncomingConnectedModules(IEnumerable<InventorySlot> slots)
-    {
-        return GetIncomingConnectionsChain(slots).Select(x => x.Module).Distinct().ToList();
+        
+        // This logic does not reflect complex chains with more than 3 modules,
+        // some of which might be incoming, some outgoing. But it's fine for now
+        return directModules.SelectMany(module => module.GetAllIncomingConnectedModules(ignoredModule))
+            .Concat(directModules)
+            .ToHashSet();
     }
     
     private void RotateToTarget(double delta)
@@ -479,8 +469,8 @@ public partial class InventoryModule : TextureButton
             .OfType<InventorySlot>()
             .ToHashSet();
         
-        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values);
-        var outgoingConnectedModules = GetAllOutgoingConnectedModules(outgoingConnectionDirectSlots);
+        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values, this);
+        var outgoingConnectedModules = GetAllOutgoingConnectedModules(outgoingConnectionDirectSlots, this);
         
         var incomingConnectionSlots = incomingConnectedModules
             .SelectMany(module => module.Slots.Values);
@@ -533,18 +523,9 @@ public partial class InventoryModule : TextureButton
                 .OfType<InventorySlot>()
                 .ToHashSet();
         
-            var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values);
-            var outgoingConnectedModules = GetAllOutgoingConnectedModules(outgoingConnectionDirectSlots);
-        
-            var incomingConnectionSlots = incomingConnectedModules
-                .SelectMany(module => module.Slots.Values);
-            var outgoingConnectionSlots = outgoingConnectedModules
-                .SelectMany(module => module.Slots.Values);
-            var allConnectionSlots = incomingConnectionSlots
-                .Concat(outgoingConnectionSlots)
-                .Concat(outgoingConnectionDirectSlots)
-                .Distinct();
-        
+            var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values, this);
+            var outgoingConnectedModules = GetAllOutgoingConnectedModules(outgoingConnectionDirectSlots, this);
+
             var hasCycle = outgoingConnectedModules.Any(incomingConnectedModules.Contains);
 
             if (hasCycle)
