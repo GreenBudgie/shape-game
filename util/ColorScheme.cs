@@ -6,6 +6,7 @@ public static class ColorScheme
     public static readonly Color LightBlue = new("#39A0ED");
     public static readonly Color LightBlueGreen = new("#36F1CD");
     public static readonly Color Orange = new("#FF9F4F");
+    public static readonly Color DarkOrange = new("#2A1F17");
     public static readonly Color Yellow = new("#F4E87C");
     
 }

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dm3v02c87i440"
-path="res://.godot/imported/shape_double.png-124e9577a83e6595323ddbed8ccafe18.ctex"
+uid="uid://camgoa2syw3u1"
+path="res://.godot/imported/shape_triple_outline.png-c609951595810fd1dc1bcb07af25c915.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://module/shape/shape_double.png"
-dest_files=["res://.godot/imported/shape_double.png-124e9577a83e6595323ddbed8ccafe18.ctex"]
+source_file="res://module/shape/shape_triple_outline.png"
+dest_files=["res://.godot/imported/shape_triple_outline.png-c609951595810fd1dc1bcb07af25c915.ctex"]
 
 [params]
 

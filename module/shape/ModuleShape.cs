@@ -15,7 +15,8 @@ public abstract partial class ModuleShape : Resource
     public static readonly Vector2 HexSize = new(Size / 2f * Sqrt(3), Size);
     private static readonly Vector2 CornerGap = HexSize / 2f + new Vector2(TexturePadding, TexturePadding - HeightCorrectionFactor);
     
-    public abstract Texture2D Texture { get; }
+    public abstract Texture2D OutlineTexture { get; }
+    public abstract Texture2D FillTexture { get; }
 
     /// <summary>
     /// Hexes of this figure. For now, expects the zero hex to be present at the top-left.
@@ -46,7 +47,7 @@ public abstract partial class ModuleShape : Resource
             }
 
             var bitmap = new Bitmap();
-            bitmap.CreateFromImageAlpha(Texture.GetImage());
+            bitmap.CreateFromImageAlpha(FillTexture.GetImage());
             
             _bitmap = bitmap;
             return bitmap;

@@ -53,6 +53,7 @@ public partial class InventoryModule : TextureButton
     private float _targetRotation;
 
     private TextureRect _moduleTexture = null!;
+    private TextureRect _outline = null!;
 
     public Module Module { get; private set; } = null!;
     public Dictionary<HexCoordinates, InventorySlot> Slots { get; private set; } = [];
@@ -69,9 +70,13 @@ public partial class InventoryModule : TextureButton
     public override void _Ready()
     {
         _moduleTexture = GetNode<TextureRect>("ModuleTexture");
+        _outline = GetNode<TextureRect>("Outline");
 
-        SelfModulate = Module.Color;
-        TextureNormal = Module.Shape.Texture;
+        _outline.Texture = Module.Shape.OutlineTexture;
+        _outline.Modulate = Module.Color;
+
+        SelfModulate = ColorScheme.DarkOrange;
+        TextureNormal = Module.Shape.FillTexture;
         _moduleTexture.Texture = Module.Texture;
         _material = (ShaderMaterial)Material;
         TextureClickMask = Module.Shape.Bitmap;
