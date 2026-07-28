@@ -19,10 +19,6 @@ public partial class YinYang : Node2D, ISpawnable<YinYang>
     private float _speed;
     private float _rotationSpeed;
 
-    private const float BeamAnimationDuration = 0.15f;
-    private Tween? _beamAnimationTween;
-    private Beam _beam = null!;
-
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://cfienje1goost");
 
     public static YinYang Create()
@@ -56,22 +52,6 @@ public partial class YinYang : Node2D, ISpawnable<YinYang>
 
         SpawnSphere(_yinSphere, _yinFollowTarget);
         SpawnSphere(_yangSphere, _yangFollowTarget);
-
-        _beam = Beam.Create()
-            .SetFromTo(_yinSphere.GlobalPosition, _yangSphere.GlobalPosition)
-            .SetEnergy(2)
-            .SetProgress(0)
-            .SetOutlineThickness(5)
-            .SetThickness(20)
-            .SetBeamCount(3)
-            .SetOutlineColor(ColorScheme.Yellow)
-            .SetBeamColor(ColorScheme.Yellow.Lightened(0.5f));
-        
-        ShapeGame.Instance.AddChild(_beam);
-        
-        _beamAnimationTween = _beam.CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-        _beamAnimationTween
-            .TweenProperty(_beam.ShaderMaterial, Beam.ProgressShaderParam, 1, BeamAnimationDuration);
     }
 
     private void SpawnSphere(YinYangSphere sphere, Node2D followTarget)
@@ -97,11 +77,6 @@ public partial class YinYang : Node2D, ISpawnable<YinYang>
         _yangFollowTarget.Position = Vector2.FromAngle(_yangRotation) * PathRadius;
 
         GlobalPosition += (float)delta * _speed * _direction;
-
-        if (IsInstanceValid(_yinSphere) && IsInstanceValid(_yangSphere))
-        {
-            _beam.SetFromTo(_yinSphere.GlobalPosition, _yangSphere.GlobalPosition);
-        }
     }
 
     private bool _isRemoving;
@@ -118,17 +93,6 @@ public partial class YinYang : Node2D, ISpawnable<YinYang>
         _yinSphere.Detach();
         _yangSphere.Detach();
         
-        _beamAnimationTween?.Kill();
-        _beamAnimationTween = _beam.CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-        _beamAnimationTween
-            .TweenProperty(_beam.ShaderMaterial, Beam.ProgressShaderParam, 0, BeamAnimationDuration);
-     
-        _beamAnimationTween.Finished += FullyRemove;
-    }
-
-    private void FullyRemove()
-    {
         QueueFree();
-        _beam.QueueFree();
     }
 }
