@@ -34,7 +34,14 @@ public partial class TrailParticles : ParticleBuilder<TrailParticles>
     private void Remove()
     {
         Emitting = false;
-        GetTree().CreateTimer(Lifetime).Timeout += QueueFree;
+        if (IsInsideTree())
+        {
+            GetTree().CreateTimer(Lifetime).Timeout += QueueFree;
+        }
+        else
+        {
+            QueueFree();
+        }
     }
     
 }

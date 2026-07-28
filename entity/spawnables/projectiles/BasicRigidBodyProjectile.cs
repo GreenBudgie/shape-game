@@ -28,10 +28,15 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
 
     public override void _Process(double delta)
     {
-        if (this.IsOutsidePlayableArea())
+        if (ShouldRemoveWhenOutsidePlayableArea() && this.IsOutsidePlayableArea())
         {
             Remove();
         }
+    }
+
+    protected virtual bool ShouldRemoveWhenOutsidePlayableArea()
+    {
+        return true;
     }
 
     public virtual void Remove()
@@ -82,8 +87,10 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             return;
         }
 
-        if (HandleWallHit(collisionObject2D))
+        var isWall = collisionObject2D.HasCollisionLayer(CollisionLayers.LevelWalls, CollisionLayers.ProjectileBarrier);
+        if (isWall)
         {
+            OnWallHit(collisionObject2D);
             return;
         }
 
@@ -95,16 +102,16 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
         }
     }
 
-    private bool HandleWallHit(CollisionObject2D collisionObject)
+    /// <summary>
+    /// What happens when a projectile hits a wall. By default, it just makes a sound
+    /// </summary>
+    protected virtual void OnWallHit(CollisionObject2D collisionObject)
     {
         const float minVelocityToMakeSound = 100f;
-        var isWall = collisionObject.HasCollisionLayer(CollisionLayers.LevelWalls, CollisionLayers.ProjectileBarrier);
-        if (isWall && LinearVelocity.Length() > minVelocityToMakeSound)
+        if (LinearVelocity.Length() > minVelocityToMakeSound)
         {
             SoundManager.Instance.PlayPositionalSound(this, _wallHitSound).RandomizePitchOffset(0.1f);
         }
-
-        return isWall;
     }
 
     private readonly List<CollisionLayers> _initialPierceableLayerMasks = [];
@@ -203,7 +210,7 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
 
         HealthController.GetHealthControllerIfExists(collisionObject2D)?.Damage(Context.CalculateStat<DamageStat>());
 
-        HandleWallHit(collisionObject2D);
+        OnWallHit(collisionObject2D);
         AddCollisionExceptionWith(collisionObject2D);
 
         var callable = Callable.From(() => HandlePiercingDetectionAreaBodyExited(collisionObject2D));

@@ -2,6 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dtxua27qef0xu" path="res://entity/spawnables/projectiles/yin_yang/YinYangSphere.cs" id="1_eulnx"]
 [ext_resource type="Texture2D" uid="uid://dndyopr6137m3" path="res://entity/spawnables/projectiles/yin_yang/yin.png" id="2_eulnx"]
+[ext_resource type="PackedScene" uid="uid://6dllnllpl3my" path="res://entity/spawnables/components/lifetime/lifetime_component.tscn" id="3_l4ilm"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_l4ilm"]
+friction = 0.0
+bounce = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8vif8"]
 radius = 32.0
@@ -10,7 +15,11 @@ radius = 32.0
 collision_layer = 2
 collision_mask = 308
 mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_l4ilm")
 gravity_scale = 0.0
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 5
 linear_damp = 10.0
 script = ExtResource("1_eulnx")
 
@@ -19,3 +28,5 @@ texture = ExtResource("2_eulnx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1708453766]
 shape = SubResource("CircleShape2D_8vif8")
+
+[node name="LifetimeComponent" parent="." unique_id=1742972924 instance=ExtResource("3_l4ilm")]
