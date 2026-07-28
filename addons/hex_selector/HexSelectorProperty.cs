@@ -12,6 +12,11 @@ public partial class HexSelectorProperty : EditorProperty
     private readonly HexGrid _grid;
     private readonly HexSelectorMode _mode;
 
+    // Parameterless constructor required by Godot for editor script-class introspection.
+    public HexSelectorProperty() : this(3, HexSelectorMode.Resource)
+    {
+    }
+
     public HexSelectorProperty(int radius, HexSelectorMode mode)
     {
         _mode = mode;
@@ -92,6 +97,11 @@ public partial class HexGrid : Control
     private Vector3I? _hovered;
 
     public IEnumerable<Vector3I> Selected => _selected;
+
+    // Parameterless constructor required by Godot for editor script-class introspection.
+    public HexGrid() : this(3)
+    {
+    }
 
     public HexGrid(int radius)
     {
