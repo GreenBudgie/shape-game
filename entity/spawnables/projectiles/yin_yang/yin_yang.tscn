@@ -1,14 +1,10 @@
 [gd_scene format=3 uid="uid://cfienje1goost"]
 
-[ext_resource type="Texture2D" uid="uid://dq3r18gmsyghf" path="res://entity/spawnables/projectiles/yin_yang/path.png" id="1_3yo0u"]
 [ext_resource type="Script" uid="uid://b438vb4o6s5dr" path="res://entity/spawnables/projectiles/yin_yang/YinYang.cs" id="1_uv4ql"]
 [ext_resource type="PackedScene" uid="uid://6dllnllpl3my" path="res://entity/spawnables/components/lifetime/lifetime_component.tscn" id="5_ho2b6"]
 
 [node name="YinYang" type="Node2D" unique_id=1489639196]
 script = ExtResource("1_uv4ql")
-
-[node name="Path" type="Sprite2D" parent="." unique_id=815863739]
-texture = ExtResource("1_3yo0u")
 
 [node name="YinFollowTarget" type="Marker2D" parent="." unique_id=898930536]
 position = Vector2(128, 0)
