@@ -34,6 +34,8 @@ public abstract class SpawnableStat
     /// </summary>
     public float ValueDelta { get; set; }
 
+    public bool IsAdditive => Value != 0;
+
     public float Calculate(float currentValue)
     {
         var result = currentValue;

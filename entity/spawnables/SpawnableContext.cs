@@ -77,14 +77,25 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
     
     public float CalculateStat<TStat>() where TStat : SpawnableStat
     {
-        return Stats.OfType<TStat>().Sum(stat => RandomUtils.DeltaRange(stat.Value, stat.ValueDelta));
+        var statsOfType = Stats.OfType<TStat>().ToList();
+        var additiveStats = statsOfType.Where(stat => stat.IsAdditive);
+        var multiplicativeStats = statsOfType.Where(stat => !stat.IsAdditive);
+
+        var result = 0f;
+        
+        foreach (var additiveStat in additiveStats)
+        {
+            result = additiveStat.Calculate(result);
+        }
+    
+        foreach (var multiplicativeStat in multiplicativeStats)
+        {
+            result = multiplicativeStat.Calculate(result);
+        }
+
+        return result;
     }
 
-    public bool HasStat<TStat>() where TStat : SpawnableStat
-    {
-        return Stats.OfType<TStat>().Any();
-    }
-    
     public bool IsModifierTypeApplied<T>() where T : ISpawnableModifier
     {
         return AppliedModifiers.Any(modifier => modifier.GetType() == typeof(T));

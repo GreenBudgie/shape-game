@@ -72,7 +72,7 @@ public partial class InventoryManager : Control
 
     private void PostSetup()
     {
-        AddModule(ModuleRegistry.YinYangModule, LeftBlasterInventory);
+        AddModule(ModuleRegistry.BoltModule, LeftBlasterInventory);
         AddModule(ModuleRegistry.ExtraFireRateModule, LeftBlasterInventory);
         AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
         AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);

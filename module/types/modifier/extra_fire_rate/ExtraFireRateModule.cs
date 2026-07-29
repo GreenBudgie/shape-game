@@ -14,7 +14,7 @@ public class ExtraFireRateModule : ModifierModule
     public override int Price => 10;
 
     public override List<SpawnableStat> Stats => [
-        new ReloadStat { ValuePercent = -20f },
+        new ReloadStat { ValuePercent = -50f },
     ];
     
     public override HashSet<HexCoordinates> Connections => [HexCoordinates.Right * 2];
