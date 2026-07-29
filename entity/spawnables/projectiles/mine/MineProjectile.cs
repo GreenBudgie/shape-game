@@ -85,7 +85,7 @@ public partial class MineProjectile : RigidBody2D, ISpawnable<MineProjectile>
 
         explosionContext.Stats.AddRange(_context.GetStats<ExplosionDamageStat>());
         explosionContext.Stats.AddRange(_context.GetStats<ExplosionRadiusStat>());
-        explosionContext.Stats.Add(new LifetimeStat { Lifetime = fuseTime });
+        explosionContext.Stats.Add(new LifetimeStat { Value = fuseTime });
 
         explosionContext.Spawn();
 

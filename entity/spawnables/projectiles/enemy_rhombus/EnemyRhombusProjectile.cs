@@ -8,7 +8,7 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhom
 
     private bool _isDissolving;
     private GpuParticles2D _particles = null!;
-    
+
     public override EnemyRhombusProjectile Node => this;
 
     public static EnemyRhombusProjectile Create()
@@ -19,14 +19,14 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhom
     public override void Prepare(SpawnableContext context)
     {
         base.Prepare(context);
-        context.Stats.Add(new LifetimeStat {Lifetime = MaxLifetimeSeconds});
-        context.Stats.Add(new DamageStat {Damage = 3});
+        context.Stats.Add(new LifetimeStat { Value = MaxLifetimeSeconds });
+        context.Stats.Add(new DamageStat { Value = 3 });
     }
 
     public override void _Ready()
     {
         base._Ready();
-        
+
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
     }
 
@@ -40,7 +40,7 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhom
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-        
+
         var direction = LinearVelocity.Normalized();
         var angle = direction.Angle() + Pi;
         Rotation = angle;
@@ -80,5 +80,4 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhom
         DissolveEffect.DissolveAndRemove(this, GetNode<Sprite2D>("Sprite2D"));
         _isDissolving = true;
     }
-
 }

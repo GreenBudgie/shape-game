@@ -35,7 +35,7 @@ public partial class Shop : Node2D
     {
         MouseInputManager.Instance.DisableAttack();
 
-        var allModulesCopy = ModuleManager.Modules.ToList();
+        var allModulesCopy = ModuleRegistry.Modules.ToList();
         for (var i = 0; i < 3; i++)
         {
             var module = allModulesCopy.GetRandom();

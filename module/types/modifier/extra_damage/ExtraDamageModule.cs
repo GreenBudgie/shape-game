@@ -1,7 +1,25 @@
-[GlobalClass]
-public partial class ExtraDamageModule : ModifierModule
+using System.Collections.Generic;
+
+public class ExtraDamageModule : ModifierModule
 {
+
+    public override Texture2D Texture => GD.Load<Texture2D>("uid://b8t5eahyf0qyr");
+
+    public override ModuleShape Shape => ModuleShapeRegistry.Single;
     
+    public override string Name => "Extra Damage";
+
+    public override string Description => "Provides additional damage at the cost of reload time";
+
+    public override int Price => 8;
+
+    public override List<SpawnableStat> Stats => [
+        new DamageStat { Value = 1 },
+        new ReloadStat { Value = 0.1f },
+    ];
+
+    public override HashSet<HexCoordinates> Connections => [HexCoordinates.Right];
+
     public override void Modify(SpawnableContext context)
     {
         if (context.IsModifierTypeApplied<ExtraDamageModule>())
@@ -16,5 +34,5 @@ public partial class ExtraDamageModule : ModifierModule
             .Color(ColorScheme.Red)
             .Spawn();
     }
-    
+
 }

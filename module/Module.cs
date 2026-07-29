@@ -1,24 +1,28 @@
 using System.Collections.Generic;
-using Godot.Collections;
 
-public partial class Module : IStatsAware
+public abstract class Module : IStatsAware
 {
 
-    [Export] public Texture2D Texture { get; private set; } = null!;
+    public Module()
+    {
+        ModuleRegistry.Modules.Add(this);
+    }
 
-    [Export] public ModuleShape Shape { get; private set; } = null!;
+    public abstract Texture2D Texture { get; }
 
-    [Export] public HexCoordinatesArray Connections { get; private set; } = [];
-
-    [Export] public string Name { get; private set; } = null!;
-
-    [Export(PropertyHint.MultilineText)] public string Description { get; private set; } = null!;
-
-    [Export] public Array<SpawnableStat> Stats { get; private set; } = [];
+    public abstract ModuleShape Shape { get; }
     
-    [Export] public int Price { get; private set; }
+    public abstract string Name { get; }
 
-    public virtual Color Color { get; } = Colors.White;
+    public abstract string Description { get; }
+    
+    public abstract int Price { get; }
+    
+    public abstract Color Color { get; }
+    
+    public virtual HashSet<HexCoordinates> Connections { get; } = [];
+
+    public virtual List<SpawnableStat> Stats { get; } = [];
     
     IEnumerable<SpawnableStat> IStatsAware.Stats => Stats;
 

@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-public abstract partial class ModifierModule : Module, ISpawnableModifier
+public abstract class ModifierModule : Module, ISpawnableModifier
 {
     public virtual void Modify(SpawnableContext context)
     {

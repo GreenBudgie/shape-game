@@ -8,31 +8,31 @@ public abstract class SpawnableStat
     
     public abstract Texture2D Icon { get; }
     
-    public virtual string Postfix => "";
+    public virtual string ValuePostfix => "";
 
     /// <summary>
     /// Plain additive stat value, +N or -N 
     /// </summary>
-    public float Value { get; private set; }
+    public float Value { get; set; }
     
     /// <summary>
     /// Percentage stat value, +N% or -N%
     /// </summary>
-    public float ValuePercent { get; private set; }
+    public float ValuePercent { get; set; }
 
     /// <summary>
     /// Multiplicative stat value, xN.
     ///
     /// 1 by default
     /// </summary>
-    public float ValueMult { get; private set; } = 1;
+    public float ValueMult { get; set; } = 1;
 
     /// <summary>
     /// Introduces additive randomness to the stat.
     ///
     /// If set to more than 0, value can deviate in this delta range, +N or -N
     /// </summary>
-    public float ValueDelta { get; private set; }
+    public float ValueDelta { get; set; }
 
     public float Calculate(float currentValue)
     {
@@ -64,14 +64,14 @@ public abstract class SpawnableStat
             result.Append(FormatValue(ValuePercent)).Append('%');
         }
         
-        if (ValueMult != 0)
+        if (!IsEqualApprox(ValueMult, 1))
         {
             result.Append('x').Append(FormatValue(ValueMult));
         }
 
-        if (Postfix != "")
+        if (Value != 0 && ValuePostfix != "")
         {
-            result.Append(' ').Append(Postfix);
+            result.Append(' ').Append(ValuePostfix);
         }
 
         return result.ToString();

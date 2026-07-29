@@ -8,5 +8,5 @@ public class LifetimeStat : SpawnableStat
 
     public override Texture2D Icon => StatIcon;
 
-    public override string Postfix => "sec";
+    public override string ValuePostfix => "sec";
 }

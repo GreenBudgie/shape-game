@@ -61,7 +61,7 @@
             Direction = impulse.Normalized(),
         };
  
-        context.Stats.Add(new SpeedStat { Speed = impulseLength });
+        context.Stats.Add(new SpeedStat { Value = impulseLength });
         
         context.Spawn();
 

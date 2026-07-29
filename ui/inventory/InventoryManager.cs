@@ -72,26 +72,23 @@ public partial class InventoryManager : Control
 
     private void PostSetup()
     {
-        AddModule<YinYangModule>(LeftBlasterInventory);
-        // AddModule<BarrierModule>(LeftBlasterInventory);
-        AddModule<PiercingModule>(RightBlasterInventory);
-        AddModule<ExtraFireRateModule>(RightBlasterInventory);
-        AddModule<ExtraDamageModule>(RightBlasterInventory);
-        AddModule<BoltModule>(RightBlasterInventory);
+        AddModule(ModuleRegistry.YinYangModule, LeftBlasterInventory);
+        AddModule(ModuleRegistry.ExtraFireRateModule, LeftBlasterInventory);
+        AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
+        AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
 
         Close(playSound: false);
         Visible = false;
     }
 
-    private void AddModule<T>(ModuleInventory inventory) where T : Module
+    private void AddModule(Module module, ModuleInventory inventory)
     {
-        var module = ModuleManager.GetModule<T>();
         var inventoryModule = InventoryModule.Create(module);
         AddChild(inventoryModule);
         var inserted = inventory.TryInsertModule(inventoryModule);
         if (!inserted)
         {
-            throw new ArgumentException($"No space for module {typeof(T)}");
+            throw new ArgumentException($"No space for module {module.Name}");
         }
     }
 

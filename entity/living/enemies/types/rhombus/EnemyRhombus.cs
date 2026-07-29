@@ -132,7 +132,7 @@
         };
         
         const float initialSpeed = 2000f;
-        context.Stats.Add(new SpeedStat { Speed = initialSpeed });
+        context.Stats.Add(new SpeedStat { Value = initialSpeed });
         
         context.Spawn();
     }
