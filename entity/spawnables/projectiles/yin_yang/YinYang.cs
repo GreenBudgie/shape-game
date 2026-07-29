@@ -56,14 +56,10 @@ public partial class YinYang : Node2D, ISpawnable<YinYang>
 
     private void SpawnSphere(YinYangSphere sphere, Node2D followTarget)
     {
-        var context = new SpawnableContext(sphere)
-        {
-            Position = followTarget.GlobalPosition,
-            Source = this,
-            OriginalSource = _context.OriginalSource
-        };
-
-        context.Stats.AddRange(_context.Stats);
+        var context = new SpawnableContext(sphere);
+        
+        context.InheritFrom(_context);
+        context.Position = followTarget.GlobalPosition;
 
         context.Spawn();
     }

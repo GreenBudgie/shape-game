@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using Godot.Collections;
 
-public partial class Module : Resource
+public partial class Module : Resource, IStatsAware
 {
 
     [Export] public Texture2D Texture { get; private set; } = null!;
@@ -18,5 +19,7 @@ public partial class Module : Resource
     [Export] public int Price { get; private set; }
 
     public virtual Color Color { get; } = Colors.White;
+    
+    IEnumerable<SpawnableStat> IStatsAware.Stats => Stats;
 
 }

@@ -4,6 +4,29 @@ using System.Linq;
 public class SpawnableContext(ISpawnable<Node2D> spawnable)
 {
 
+    /// <summary>
+    /// Context that this context was inherited from.
+    /// </summary>
+    public SpawnableContext? ParentContext { get; set; }
+
+    /// <summary>
+    /// Contexts that inherited from this context
+    /// </summary>
+    public List<SpawnableContext> ChildContexts { get; } = [];
+
+    /// <summary>
+    /// Recursively collects all child contexts (children of children, and so on) and returns them as well as the
+    /// current context.
+    ///
+    /// Useful when needed to perform operations on all inherited contexts like they are one spawnable.
+    /// </summary>
+    public List<SpawnableContext> GetContextChain()
+    {
+        return ChildContexts.SelectMany(childContext => childContext.GetContextChain())
+            .Prepend(this)
+            .ToList();
+    }
+    
     public ISpawnable<Node2D> Spawnable { get; } = spawnable;
 
     /// <summary>
@@ -35,7 +58,16 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
         set => _originalSource = value;
     }
 
-    public List<SpawnableStat> Stats { get; } = [];
+    public List<SpawnableStat> Stats { get; private set; } = [];
+    
+    /// <summary>
+    /// Modifiers that are about to be applied to this module when it spawns
+    /// </summary>
+    public IEnumerable<ISpawnableModifier> Modifiers { get; set; } = [];
+    
+    /// <summary>
+    /// Modifiers that were already applied
+    /// </summary>
     public List<ISpawnableModifier> AppliedModifiers { get; } = [];
     
     public List<TStat> GetStats<TStat>() where TStat : SpawnableStat
@@ -63,6 +95,8 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
     /// </summary>
     public void Spawn()
     {
+        ApplyModifiers();
+        
         foreach (var component in Spawnable.GetComponents())
         {
             component.Prepare(this);
@@ -77,6 +111,36 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
         {
             component.Apply(this);
         }
+    }
+
+    private void ApplyModifiers()
+    {
+        var modifierStats = Modifiers.SelectMany(modifier => modifier.Stats);
+        Stats.AddRange(modifierStats);
+
+        foreach (var modifier in Modifiers)
+        {
+            modifier.Modify(this);
+            AppliedModifiers.Add(modifier);
+        }
+    }
+    
+    /// <summary>
+    /// Inherits ALL parameters from the parent context. Used when a spawnable is created by another spawnable and
+    /// SHOULD inherit its stats and modifiers, like it was created directly. Useful for proxy-like spawnables.
+    /// </summary>
+    /// <param name="parentContext">Context to inherit from</param>
+    public void InheritFrom(SpawnableContext parentContext)
+    {
+        ParentContext = parentContext;
+        parentContext.ChildContexts.Add(this);
+        
+        Position = parentContext.Position;
+        Direction = parentContext.Direction;
+        Source = parentContext.Source;
+        OriginalSource = parentContext.OriginalSource;
+        Stats = parentContext.Stats.ToList();
+        Modifiers = parentContext.Modifiers.ToList();
     }
 
 }

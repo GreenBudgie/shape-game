@@ -1,4 +1,6 @@
-public interface ISpawnableModifier
+using System.Collections.Generic;
+
+public interface ISpawnableModifier : IStatsAware
 {
 
     /// <summary>

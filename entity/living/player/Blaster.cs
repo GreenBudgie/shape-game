@@ -62,19 +62,11 @@ public partial class Blaster : Node
         {
             Position = player.GetGlobalNosePosition(),
             Direction = Vector2.FromAngle(player.GetTilt() - Pi / 2),
-            Source = player
+            Source = player,
+            Modifiers = modifiers
         };
         
-        var modifierStats = modifiers.SelectMany(modifier => modifier.Stats);
-        context.Stats.AddRange(modifierStats);
-        
         context.Stats.AddRange(spawnableModule.Stats);
-
-        foreach (var modifier in modifiers)
-        {
-            modifier.Modify(context);
-            context.AppliedModifiers.Add(modifier);
-        }
         
         context.Spawn();
 
