@@ -1,20 +1,85 @@
-[GlobalClass]
-public abstract partial class SpawnableStat : Resource
+using System.Globalization;
+using System.Text;
+
+public abstract class SpawnableStat
 {
 
     public abstract string Name { get; }
-
-    public abstract float Value { get; }
+    
+    public abstract Texture2D Icon { get; }
+    
+    public virtual string Postfix => "";
 
     /// <summary>
-    /// Introduces randomness to the stat.
-    ///
-    /// If set to more than 0, value can deviate in this delta range.
+    /// Plain additive stat value, +N or -N 
     /// </summary>
-    public virtual float ValueDelta => 0;
+    public float Value { get; private set; }
+    
+    /// <summary>
+    /// Percentage stat value, +N% or -N%
+    /// </summary>
+    public float ValuePercent { get; private set; }
 
-    public abstract Texture2D Icon { get; }
+    /// <summary>
+    /// Multiplicative stat value, xN.
+    ///
+    /// 1 by default
+    /// </summary>
+    public float ValueMult { get; private set; } = 1;
 
-    public virtual string FormattedValue => Value.FormatStat();
+    /// <summary>
+    /// Introduces additive randomness to the stat.
+    ///
+    /// If set to more than 0, value can deviate in this delta range, +N or -N
+    /// </summary>
+    public float ValueDelta { get; private set; }
 
+    public float Calculate(float currentValue)
+    {
+        var result = currentValue;
+        
+        // Written in three operations for clarity
+        result += Value;
+        result *= 1 + ValuePercent * 0.01f;
+        result *= ValueMult;
+
+        if (ValueDelta != 0)
+        {
+            result = RandomUtils.DeltaRange(result, ValueDelta);
+        }
+
+        return result;
+    }
+
+    public string Formatted()
+    {
+        var result = new StringBuilder();
+        if (Value != 0)
+        {
+            result.Append(FormatValue(Value));
+        }
+        
+        if (ValuePercent != 0)
+        {
+            result.Append(FormatValue(ValuePercent)).Append('%');
+        }
+        
+        if (ValueMult != 0)
+        {
+            result.Append('x').Append(FormatValue(ValueMult));
+        }
+
+        if (Postfix != "")
+        {
+            result.Append(' ').Append(Postfix);
+        }
+
+        return result.ToString();
+    }
+    
+    private static string FormatValue(float number)
+    {
+        return number.ToString("0.##", CultureInfo.InvariantCulture);
+    }
+    
 }

@@ -1,16 +1,11 @@
-[GlobalClass, Icon(IconPath)]
-public partial class SpeedStat : SpawnableStat
+public class SpeedStat : SpawnableStat
 {
     
     private const string IconPath = "uid://jen4xqupa4bn";
 
     private static readonly Texture2D StatIcon = GD.Load<Texture2D>(IconPath);
 
-    [Export] public float Speed { get; set; }
-    
     public override string Name => "speed";
-    
-    public override float Value => Speed;
     
     public override Texture2D Icon => StatIcon;
 

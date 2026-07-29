@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Godot.Collections;
 
-public partial class Module : Resource, IStatsAware
+public partial class Module : IStatsAware
 {
 
     [Export] public Texture2D Texture { get; private set; } = null!;

@@ -6,7 +6,7 @@ public partial class StatValue : Label
     public static StatValue Create(SpawnableStat stat)
     {
         var node = Scene.Instantiate<StatValue>();
-        node.Text = stat.FormattedValue;
+        node.Text = stat.Formatted();
         return node;
     }
     
