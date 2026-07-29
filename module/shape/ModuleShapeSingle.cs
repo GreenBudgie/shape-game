@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 
-[GlobalClass]
-[Icon(OutlineTexturePath)]
-public partial class ModuleShapeSingle : ModuleShape
+public class ModuleShapeSingle : ModuleShape
 {
     
     private const string OutlineTexturePath = "uid://bwxthnwovlmpr";

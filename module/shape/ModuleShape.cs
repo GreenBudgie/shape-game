@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-[GlobalClass]
-public abstract partial class ModuleShape : Resource
+public abstract class ModuleShape
 {
 
     public const float TexturePadding = 8f;
