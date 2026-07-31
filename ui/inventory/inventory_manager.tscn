@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://cdjjln25afl8t" path="res://ui/inventory/ModuleInventory.cs" id="2_hoddu"]
 [ext_resource type="AudioStream" uid="uid://gc3kfmibiica" path="res://ui/inventory/inventory_open.wav" id="2_sqcpx"]
 [ext_resource type="AudioStream" uid="uid://c1bt8e82wi1gr" path="res://ui/inventory/inventory_close.wav" id="3_s40lw"]
+[ext_resource type="Texture2D" uid="uid://b21h1bakwsfo" path="res://ui/inventory/drop_area.png" id="5_75iye"]
+[ext_resource type="Script" uid="uid://ktfjkw727cel" path="res://ui/inventory/DropArea.cs" id="6_wjoi5"]
 
 [node name="InventoryManager" type="Control" unique_id=663337661 node_paths=PackedStringArray("LeftBlasterInventory", "RightBlasterInventory")]
 layout_mode = 3
@@ -41,3 +43,17 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("2_hoddu")
+
+[node name="DropArea" type="TextureButton" parent="." unique_id=2142290928]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -260.0
+offset_top = 128.0
+offset_right = 260.0
+offset_bottom = 488.0
+grow_horizontal = 2
+offset_transform_enabled = true
+texture_normal = ExtResource("5_75iye")
+script = ExtResource("6_wjoi5")

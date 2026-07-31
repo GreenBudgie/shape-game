@@ -24,6 +24,7 @@ public abstract class ModuleShape
 
     private Dictionary<HexCoordinates, Vector2>? _pixelHexPositions;
     private Bitmap? _bitmap;
+    private Vector2? _pixelSize;
     
     /// <summary>
     /// On-screen positions of the hexes, relative to the top-left corner of the texture
@@ -50,6 +51,27 @@ public abstract class ModuleShape
             
             _bitmap = bitmap;
             return bitmap;
+        }
+    }
+
+    /// <summary>
+    /// Returns the size (in pixels) of this shape as a bounding box
+    /// </summary>
+    public Vector2 PixelSize
+    {
+        get
+        {
+            if (_pixelSize.HasValue)
+            {
+                return _pixelSize.Value;
+            }
+
+            var positions = PixelHexPositions.Values;
+            var min = new Vector2(positions.Min(p => p.X), positions.Min(p => p.Y));
+            var max = new Vector2(positions.Max(p => p.X), positions.Max(p => p.Y));
+
+            _pixelSize = max - min + HexSize;
+            return _pixelSize.Value;
         }
     }
 

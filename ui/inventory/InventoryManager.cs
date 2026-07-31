@@ -22,11 +22,20 @@ public partial class InventoryManager : Control
     
     [Signal]
     public delegate void SlotsStateResetEventHandler();
+    
+    [Signal]
+    public delegate void ModuleGrabbedEventHandler(InventoryModule module);
+    
+    [Signal]
+    public delegate void ModuleInsertedEventHandler(InventoryModule module);
+    
+    [Signal]
+    public delegate void ModuleDroppingEventHandler(InventoryModule module);
 
     public static InventoryManager Instance { get; private set; } = null!;
 
     public bool IsOpen { get; private set; } = true;
-    public bool IsDraggingModule { get; set; }
+    public InventoryModule? DraggingModule { get; set; }
 
     [Export] public ModuleInventory LeftBlasterInventory { get; private set; } = null!;
     [Export] public ModuleInventory RightBlasterInventory { get; private set; } = null!;
@@ -74,6 +83,7 @@ public partial class InventoryManager : Control
     {
         AddModule(ModuleRegistry.BoltModule, LeftBlasterInventory);
         AddModule(ModuleRegistry.ExtraFireRateModule, LeftBlasterInventory);
+        AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
         AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
         AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
 

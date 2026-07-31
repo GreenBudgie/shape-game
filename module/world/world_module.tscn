@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://d2oibytyvv11i"]
+
+[ext_resource type="Script" uid="uid://vttr4qdxbyil" path="res://module/world/WorldModule.cs" id="1_ooccc"]
+[ext_resource type="Shader" uid="uid://bdeyj40otutpn" path="res://module/world/world_module.gdshader" id="2_s7n3m"]
+[ext_resource type="Texture2D" uid="uid://bwxthnwovlmpr" path="res://module/shape/shape_single_outline.png" id="3_f71yx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ooccc"]
+shader = ExtResource("2_s7n3m")
+shader_parameter/deformation = Vector2(0, 0)
+shader_parameter/sideWaysDeformationFactor = 0.0
+shader_parameter/knockbackFactor = 0.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8vif8"]
+
+[node name="WorldModule" type="RigidBody2D" unique_id=1753094142]
+script = ExtResource("1_ooccc")
+
+[node name="FillSprite" type="Sprite2D" parent="." unique_id=1276745907]
+material = SubResource("ShaderMaterial_ooccc")
+texture = ExtResource("3_f71yx")
+
+[node name="OutlineSprite" type="Sprite2D" parent="." unique_id=2110803323]
+
+[node name="ModuleSprite" type="Sprite2D" parent="." unique_id=1265285975]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=2063979520]
+shape = SubResource("RectangleShape2D_8vif8")

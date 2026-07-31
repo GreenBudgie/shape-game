@@ -9,6 +9,8 @@ public partial class InventoryModuleConnection : Node2D
 
     public InventoryModule Module { get; private set; } = null!;
     public InventorySlot? Slot { get; set; }
+
+    private bool _isRemoving;
     
     public static InventoryModuleConnection Create(InventoryModule module)
     {
@@ -37,6 +39,7 @@ public partial class InventoryModuleConnection : Node2D
         Module.Connect(InventoryModule.SignalName.Inserted, Callable.From(OnModuleInserted));
         Module.Connect(InventoryModule.SignalName.ShowAnimationFinished, Callable.From(ShowConnector));
         Module.Connect(InventoryModule.SignalName.TakenOut, Callable.From(() => HideConnector(false)));
+        Module.Connect(InventoryModule.SignalName.Dropping, Callable.From(RemoveConnector));
         InventoryManager.Instance.Connect(
             InventoryManager.SignalName.InventoryClosed,
             Callable.From(() => HideConnector(true))
@@ -45,6 +48,11 @@ public partial class InventoryModuleConnection : Node2D
 
     private void OnModuleInserted()
     {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
         SetIdleState();
         ShowConnector();
     }
@@ -52,10 +60,16 @@ public partial class InventoryModuleConnection : Node2D
     public override void _ExitTree()
     {
         _connector.QueueFree();
+        _arrow.QueueFree();
     }
 
     public override void _Process(double delta)
     {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
         if (!InventoryManager.Instance.IsOpen)
         {
             return;
@@ -145,6 +159,11 @@ public partial class InventoryModuleConnection : Node2D
 
     private void ShowConnector()
     {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
         if (!InventoryManager.Instance.IsOpen)
         {
             return;
@@ -171,6 +190,11 @@ public partial class InventoryModuleConnection : Node2D
     
     private void HideConnector(bool hideArrow)
     {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
         _connectorTween?.Kill();
         _connectorTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
         _connectorTween.TweenScale(_connector, new Vector2(1, 0.1f), ConnectorTweenDuration);
@@ -183,6 +207,25 @@ public partial class InventoryModuleConnection : Node2D
         }
         
         _connectorTween.Finished += _connector.Hide;
+    }
+    
+    private void RemoveConnector()
+    {
+        if (_isRemoving)
+        {
+            return;
+        }
+
+        _isRemoving = true;
+
+        const float duration = 0.1f;
+        
+        _connectorTween?.Kill();
+        _connectorTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
+        _connectorTween.TweenScale(_connector, new Vector2(1, 0.1f), duration);
+        _connectorTween.FadeOut(_connector, duration);
+        _connectorTween.FadeOut(_arrow, duration);
+        _connectorTween.Finished += QueueFree;
     }
 
     private bool IsConnectedToValidSlot => Slot != null && !Slot.IsDisabled();

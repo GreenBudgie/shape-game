@@ -40,6 +40,12 @@ public partial class InventoryModule : TextureButton
     /// </summary>
     [Signal]
     public delegate void ShowAnimationFinishedEventHandler();
+    
+    /// <summary>
+    /// Emitted when module dropping animation has started
+    /// </summary>
+    [Signal]
+    public delegate void DroppingEventHandler();
 
     private ShaderMaterial _material = null!;
     private ModuleInfo? _moduleInfo;
@@ -59,6 +65,11 @@ public partial class InventoryModule : TextureButton
     public Dictionary<HexCoordinates, InventorySlot> Slots { get; private set; } = [];
     public Dictionary<HexCoordinates, InventoryModuleConnection> Connections { get; private set; } = [];
     public bool IsFollowingCursor => _mousePivot.HasValue;
+    
+    private const float AnimationTweenDuration = 0.125f;
+
+    private Tween? _appearTween;
+    private Tween? _animationTween;
 
     public static InventoryModule Create(Module module)
     {
@@ -127,16 +138,119 @@ public partial class InventoryModule : TextureButton
             InventoryManager.SignalName.InventoryClosed,
             Callable.From(OnInventoryClosed)
         );
-        
+
+        DropArea.Instance.Connect(DropArea.SignalName.Hovered, Callable.From(OnDropAreaHovered));
+        DropArea.Instance.Connect(DropArea.SignalName.Unhovered, Callable.From(OnDropAreaUnhovered));
     }
     
+    private void BeforeRemove()
+    {
+        InventoryManager.Instance.DraggingModule = null;
+        ResetHoveredSlots();
+        
+        // Clear occupying slots
+        if (Slots.Count != 0)
+        {
+            foreach (var slot in Slots)
+            {
+                slot.Value.Module = null;
+            }
+        }
+
+        // Clear connections
+        if (Connections.Count != 0)
+        {
+            foreach (var connection in Connections)
+            {
+                connection.Value.Slot?.Connections.Remove(connection.Value);
+                connection.Value.Slot = null;
+            }
+        }
+    }
+
+    private void OnDropAreaHovered()
+    {
+        if (_isDropping || !IsFollowingCursor)
+        {
+            return;
+        }
+        
+        _animationTween?.Kill();
+        _animationTween = CreateTween()
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.Out)
+            .SetParallel();
+
+        _animationTween.TweenOffsetScale(this, 0.9f, AnimationTweenDuration);
+        _animationTween.TweenOffsetRotation(this, RandomUtils.RandomSign(0.1f), AnimationTweenDuration);
+    }
+    
+    private void OnDropAreaUnhovered()
+    {
+        if (_isDropping || !IsFollowingCursor)
+        {
+            return;
+        }
+        
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+
+        _animationTween.TweenOffsetScaleReset(this, AnimationTweenDuration);
+        _animationTween.TweenOffsetRotationReset(this, AnimationTweenDuration);
+    }
+
+    private bool _isDropping;
+
+    public void Drop()
+    {
+        if (_isDropping)
+        {
+            return;
+        }
+
+        _isDropping = true;
+        
+        BeforeRemove();
+        
+        var worldModule = WorldModule.Create(Module);
+        ShapeGame.Instance.AddChild(worldModule);
+        
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+
+        _animationTween.TweenOffsetScale(this, 0.5f, AnimationTweenDuration);
+        _animationTween.TweenOffsetRotation(this, RandomUtils.RandomSign(0.3f), AnimationTweenDuration);
+        _animationTween.FadeOut(this, AnimationTweenDuration);
+        
+        if (_glow != null)
+        {
+            _animationTween.TweenGlowColor(_glow, _glow.Color.AsTransparent(), AnimationTweenDuration / 3);
+            _animationTween.TweenGlowRadius(_glow, 0, AnimationTweenDuration / 3);
+        }
+
+        _animationTween.Finished += QueueFree;
+        
+        EmitSignalDropping();
+        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleDropping, this);
+    }
+
     private void OnInventoryOpened()
     {
+        if (_isDropping)
+        {
+            return;
+        }
+        
         ShowModule();
     }
 
     private void OnInventoryClosed()
     {
+        if (_isDropping)
+        {
+            return;
+        }
+        
         HideModule();
         StopFollowingCursor();
     }
@@ -146,14 +260,14 @@ public partial class InventoryModule : TextureButton
         return _hexes.Where(x => x.Value.Connection == null).Select(x => x.Key);
     }
 
-    private const float AnimationTweenDuration = 0.125f;
-
-    private Tween? _appearTween;
-    private Tween? _animationTween;
-
     private void OnMouseEnter()
     {
-        if (_mousePivot.HasValue || !InventoryManager.Instance.IsOpen || InventoryManager.Instance.IsDraggingModule)
+        if (_isDropping)
+        {
+            return;
+        }
+        
+        if (_mousePivot.HasValue || !InventoryManager.Instance.IsOpen || InventoryManager.Instance.DraggingModule != null)
         {
             return;
         }
@@ -177,6 +291,11 @@ public partial class InventoryModule : TextureButton
 
     private void OnMouseExit()
     {
+        if (_isDropping)
+        {
+            return;
+        }
+        
         HideModuleInfo();
         
         if (_mousePivot.HasValue || !InventoryManager.Instance.IsOpen)
@@ -203,6 +322,11 @@ public partial class InventoryModule : TextureButton
 
     public override void _Process(double delta)
     {
+        if (_isDropping)
+        {
+            return;
+        }
+        
         RotateToTarget(delta);
         MoveToTarget(delta);
         
@@ -674,7 +798,8 @@ public partial class InventoryModule : TextureButton
 
         _isJustGrabbed = true;
         HideModuleInfo();
-        InventoryManager.Instance.IsDraggingModule = true;
+        InventoryManager.Instance.DraggingModule = this;
+        MouseFilter = MouseFilterEnum.Ignore;
 
         var mousePosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
         var closestHex = _hexes
@@ -696,7 +821,9 @@ public partial class InventoryModule : TextureButton
         _animationTween.Parallel().TweenOffsetRotationReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
         
         SoundManager.Instance.PlaySound(_grabSound).RandomizePitchOffset();
+        
         EmitSignalTakenOut();
+        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleGrabbed, this);
     }
 
     private void StopFollowingCursor()
@@ -706,8 +833,9 @@ public partial class InventoryModule : TextureButton
             return;
         }
         
-        InventoryManager.Instance.IsDraggingModule = false;
+        InventoryManager.Instance.DraggingModule = null;
         ResetHoveredSlots();
+        MouseFilter = MouseFilterEnum.Stop;
 
         if (IsHovered())
         {
@@ -729,6 +857,7 @@ public partial class InventoryModule : TextureButton
         _animationTween.Parallel().TweenOffsetRotationReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
         
         EmitSignalInserted();
+        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleInserted, this);
     }
 
     private void ShowModuleInfo()
@@ -801,5 +930,4 @@ public partial class InventoryModule : TextureButton
 
     private readonly record struct HexData(Vector2 RealPosition, InventoryModuleConnection? Connection);
     private readonly record struct ConnectionData(InventorySlot? Slot, InventoryModuleConnection Connection);
-    private readonly record struct NewConnectionData(InventorySlot? Slot, InventoryModuleConnection Connection);
 }

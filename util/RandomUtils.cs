@@ -11,6 +11,14 @@ public static class RandomUtils
     {
         return GD.Randf() > 0.5f ? -1 : 1;
     }
+    
+    /// <summary>
+    /// Multiplies the given number by a random sign 1, or -1.
+    /// </summary>
+    public static float RandomSign(float value)
+    {
+        return value * RandomSign();
+    }
 
     /// <summary>
     /// Generates a random float within a range centered around the specified value.
