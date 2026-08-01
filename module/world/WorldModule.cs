@@ -14,6 +14,16 @@ public partial class WorldModule : RigidBody2D
 
     public override void _Ready()
     {
+        var player = Player.FindPlayer();
+        if (player != null)
+        {
+            GlobalPosition = player.GlobalPosition;
+        }
+        else
+        {
+            GlobalPosition = ShapeGame.Center;
+        }
+        
         var fillSprite = GetNode<Sprite2D>("FillSprite");
         fillSprite.Texture = Module.Shape.FillTexture;
         fillSprite.Modulate = ColorScheme.DarkOrange;

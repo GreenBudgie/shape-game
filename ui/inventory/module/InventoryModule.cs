@@ -214,18 +214,21 @@ public partial class InventoryModule : TextureButton
         
         var worldModule = WorldModule.Create(Module);
         ShapeGame.Instance.AddChild(worldModule);
+
+        const float duration = 0.2f;
         
         _animationTween?.Kill();
         _animationTween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
 
-        _animationTween.TweenOffsetScale(this, 0.5f, AnimationTweenDuration);
-        _animationTween.TweenOffsetRotation(this, RandomUtils.RandomSign(0.3f), AnimationTweenDuration);
-        _animationTween.FadeOut(this, AnimationTweenDuration);
+        _animationTween.TweenOffsetScale(this, 0.5f, duration);
+        _animationTween.TweenOffsetPosition(this, new Vector2(0, 80), duration);
+        _animationTween.TweenOffsetRotation(this, RandomUtils.RandomSign(0.3f), duration);
+        _animationTween.FadeOut(this, duration);
         
         if (_glow != null)
         {
-            _animationTween.TweenGlowColor(_glow, _glow.Color.AsTransparent(), AnimationTweenDuration / 3);
-            _animationTween.TweenGlowRadius(_glow, 0, AnimationTweenDuration / 3);
+            _animationTween.TweenGlowColor(_glow, _glow.Color.AsTransparent(), duration / 3);
+            _animationTween.TweenGlowRadius(_glow, 0, duration / 3);
         }
 
         _animationTween.Finished += QueueFree;
