@@ -145,6 +145,7 @@ public partial class InventoryModule : TextureButton
     
     private void BeforeRemove()
     {
+        HideModuleInfo();
         InventoryManager.Instance.DraggingModule = null;
         ResetHoveredSlots();
         
@@ -338,6 +339,12 @@ public partial class InventoryModule : TextureButton
             FollowCursor();
             return;
         }
+        
+        if (IsHovered() && Input.IsActionJustPressed("drop_module"))
+        {
+            Drop();
+            return;
+        }
 
         if (IsHovered() && Input.IsActionJustPressed("inventory_left_click"))
         {
@@ -483,6 +490,12 @@ public partial class InventoryModule : TextureButton
     {
         if (!_mousePivot.HasValue)
         {
+            return;
+        }
+        
+        if (Input.IsActionJustPressed("drop_module"))
+        {
+            Drop();
             return;
         }
 

@@ -23,17 +23,32 @@ public abstract class ModuleShape
     public abstract List<HexCoordinates> Hexes { get; }
 
     private Dictionary<HexCoordinates, Vector2>? _pixelHexPositions;
+    private Dictionary<HexCoordinates, Vector2>? _centeredPixelHexPositions;
     private Bitmap? _bitmap;
     private Vector2? _pixelSize;
     
     /// <summary>
-    /// On-screen positions of the hexes, relative to the top-left corner of the texture
+    /// On-screen positions of the hexes, relative to the top-left corner of the texture (useful for control nodes)
     /// </summary>
     public Dictionary<HexCoordinates, Vector2> PixelHexPositions
     {
         get
         {
             return _pixelHexPositions ??= Hexes.ToDictionary(hex => hex, GetVisualHexPosition);
+        }
+    }
+    
+    /// <summary>
+    /// On-screen positions of hex centers, relative to the center of the texture (useful for sprite nodes)
+    /// </summary>
+    public Dictionary<HexCoordinates, Vector2> CenteredPixelHexPositions
+    {
+        get
+        {
+            return _centeredPixelHexPositions ??= Hexes.ToDictionary(
+                hex => hex, 
+                hex => GetVisualHexPosition(hex) - FillTexture.GetSize() / 2f
+            );
         }
     }
     

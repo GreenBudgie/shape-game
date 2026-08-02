@@ -86,6 +86,7 @@ public partial class InventoryManager : Control
         AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
         AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
         AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
+        AddModule(ModuleRegistry.MineModule, RightBlasterInventory);
 
         Close(playSound: false);
         Visible = false;

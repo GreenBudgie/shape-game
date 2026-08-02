@@ -1,0 +1,4 @@
+[gd_scene format=3 uid="uid://cqy7bjj6axtb2"]
+
+[node name="HexCollisionPolygon" type="CollisionPolygon2D" unique_id=1953928439]
+polygon = PackedVector2Array(0, -72, 62, -36, 62, 36, 0, 72, -62, 36, -62, -36)

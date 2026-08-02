@@ -101,7 +101,7 @@ public partial class Explosion : ShapeCast2D, ISpawnable<Explosion>
             return;
         }
 
-        const float maxStrength = 2000f;
+        const float maxStrength = 6000f;
         var strength = Clamp(Sqrt(GetEffectRadiusRatio()), 0.1f, 1) * maxStrength;
         for (var i = 0; i < GetCollisionCount(); i++)
         {
