@@ -63,6 +63,10 @@ public partial class WorldModule : RigidBody2D
                 AddChild(connectionShape);
             }
         }
+
+        Modulate = Colors.Transparent;
+        Scale = new Vector2(1.2f, 1.2f);
+        PlayDropAnimation();
     }
     
     private bool _impulsesApplied;
@@ -86,5 +90,17 @@ public partial class WorldModule : RigidBody2D
         var impulse = Vector2.FromAngle(impulseDirection) * impulseStrength;
         ApplyCentralImpulse(impulse);
     }
-    
+
+    private Tween? _animationTween;
+
+    private void PlayDropAnimation()
+    {
+        const float duration = 0.2f;
+        
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+        _animationTween.FadeIn(this, duration);
+        _animationTween.TweenScaleReset(this, duration);
+    }
+
 }
