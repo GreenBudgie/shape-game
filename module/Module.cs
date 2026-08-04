@@ -20,7 +20,15 @@ public abstract class Module : IStatsAware
     
     public abstract Color Color { get; }
     
-    public virtual HashSet<HexCoordinates> Connections { get; } = [];
+    public virtual HashSet<HexCoordinates> OutgoingConnections { get; } = [];
+    
+    public virtual HashSet<HexCoordinates> IncomingConnections { get; } = [];
+
+    /// <summary>
+    /// Whether this module as an intermediate connection and splits the chain of connections in two.
+    /// Usually it's only possible when module has both incoming and outgoing connections
+    /// </summary>
+    public virtual bool BreaksConnectionCycle { get; } = false;
 
     public virtual List<SpawnableStat> Stats { get; } = [];
     

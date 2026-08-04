@@ -9,13 +9,15 @@ public partial class InventoryModuleConnection : Node2D
 
     public InventoryModule Module { get; private set; } = null!;
     public InventorySlot? Slot { get; set; }
+    public ConnectionType Type { get; private set; }
 
     private bool _isRemoving;
     
-    public static InventoryModuleConnection Create(InventoryModule module)
+    public static InventoryModuleConnection Create(InventoryModule module, ConnectionType type)
     {
         var node = Scene.Instantiate<InventoryModuleConnection>();
         node.Module = module;
+        node.Type = type;
         return node;
     }
     
@@ -25,6 +27,16 @@ public partial class InventoryModuleConnection : Node2D
         _connector = GetNode<Sprite2D>("Connector");
 
         _arrow.Modulate = Module.Module.Color;
+
+        if (Type == ConnectionType.Incoming)
+        {
+            _arrow.Scale = new Vector2(-1, 1);
+            _arrow.Modulate = ColorScheme.Orange;
+        }
+        else
+        {
+            _arrow.Modulate = ColorScheme.Yellow;
+        }
         
         _arrow.Reparent(InventoryManager.Instance);
         _connector.Reparent(InventoryManager.Instance);

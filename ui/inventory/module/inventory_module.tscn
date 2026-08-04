@@ -7,7 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://xvsoi3qm24dg" path="res://ui/inventory/module/sound/insert.wav" id="5_tfbd0"]
 [ext_resource type="AudioStream" uid="uid://c63obyhomapk8" path="res://ui/inventory/module/sound/rotate.wav" id="6_pp8pi"]
 [ext_resource type="AudioStream" uid="uid://rhtanjk7dh2m" path="res://ui/inventory/module/sound/slot_snap.wav" id="7_c0wyj"]
-[ext_resource type="AudioStream" uid="uid://7fx812xbw2ni" path="res://ui/inventory/module/sound/cycle.wav" id="8_dgvtt"]
+[ext_resource type="AudioStream" uid="uid://7fx812xbw2ni" path="res://ui/inventory/module/sound/invalid_connection.wav" id="8_dgvtt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mhdu2"]
 resource_local_to_scene = true
@@ -38,7 +38,7 @@ _grabSound = ExtResource("4_pp8pi")
 _insertSound = ExtResource("5_tfbd0")
 _rotateSound = ExtResource("6_pp8pi")
 _slotSnapSound = ExtResource("7_c0wyj")
-_connectionCycleSound = ExtResource("8_dgvtt")
+_invalidConnectionSound = ExtResource("8_dgvtt")
 
 [node name="ModuleTexture" type="TextureRect" parent="." unique_id=1838289551]
 layout_mode = 1

@@ -15,7 +15,7 @@ public partial class InventoryModule : TextureButton
     [Export] private AudioStream _insertSound = null!;
     [Export] private AudioStream _rotateSound = null!;
     [Export] private AudioStream _slotSnapSound = null!;
-    [Export] private AudioStream _connectionCycleSound = null!;
+    [Export] private AudioStream _invalidConnectionSound = null!;
     
     /// <summary>
     /// Emitted whenever this module is rotated
@@ -106,27 +106,14 @@ public partial class InventoryModule : TextureButton
             _hexes.Add(moduleHex.Key, new HexData(moduleHex.Value, null));
         }
 
-        foreach (var connectionHex in Module.Connections)
+        foreach (var connectionHex in Module.OutgoingConnections)
         {
-            var source = connectionHex.FindFirstNeighbor(GetModuleHexes());
-            if (!source.HasValue)
-            {
-                throw new ArgumentException(
-                    $"Module ${Module.Name} has an incorrect connection configuration: {connectionHex} does not have a neighbor");
-            }
-
-            var connection = InventoryModuleConnection.Create(this);
-
-            _hexes.Add(
-                connectionHex,
-                new HexData(ModuleShape.GetVisualHexPosition(connectionHex), connection)
-            );
-
-            var sourcePosition = _hexes[source.Value].RealPosition;
-            var targetPosition = _hexes[connectionHex].RealPosition;
-            connection.Position = (sourcePosition + targetPosition) / 2;
-            
-            AddChild(connection);
+            AddConnection(connectionHex, ConnectionType.Outgoing);
+        }
+        
+        foreach (var connectionHex in Module.IncomingConnections)
+        {
+            AddConnection(connectionHex, ConnectionType.Incoming);
         }
 
         MouseEntered += OnMouseEnter;
@@ -144,7 +131,30 @@ public partial class InventoryModule : TextureButton
         DropArea.Instance.Connect(DropArea.SignalName.Hovered, Callable.From(OnDropAreaHovered));
         DropArea.Instance.Connect(DropArea.SignalName.Unhovered, Callable.From(OnDropAreaUnhovered));
     }
-    
+
+    private void AddConnection(HexCoordinates connectionHex, ConnectionType type)
+    {
+        var source = connectionHex.FindFirstNeighbor(GetModuleHexes());
+        if (!source.HasValue)
+        {
+            throw new ArgumentException(
+                $"Module {Module.Name} has an incorrect connection configuration: {connectionHex} does not have a neighbor");
+        }
+
+        var connection = InventoryModuleConnection.Create(this, type);
+
+        _hexes.Add(
+            connectionHex,
+            new HexData(ModuleShape.GetVisualHexPosition(connectionHex), connection)
+        );
+
+        var sourcePosition = _hexes[source.Value].RealPosition;
+        var targetPosition = _hexes[connectionHex].RealPosition;
+        connection.Position = (sourcePosition + targetPosition) / 2;
+            
+        AddChild(connection);
+    }
+
     private void BeforeRemove()
     {
         HideModuleInfo();
@@ -364,31 +374,58 @@ public partial class InventoryModule : TextureButton
     
     private IEnumerable<InventorySlot> GetOutgoingConnectionsSlots()
     {
-        return Connections.Values.Select(connection => connection.Slot).OfType<InventorySlot>();
+        return Connections.Values
+            .Where(connection => connection.Type == ConnectionType.Outgoing)
+            .Select(connection => connection.Slot)
+            .OfType<InventorySlot>();
     }
     
     private HashSet<InventoryModule> GetDirectOutgoingConnectedModules(
+        IEnumerable<InventorySlot> slots,
+        IEnumerable<InventorySlot> outgoingConnectionSlots,
+        InventoryModule ignoredModule
+    )
+    {
+        return GetOwnDirectOutgoingConnectedModules(outgoingConnectionSlots, ignoredModule)
+            .Concat(GetExternalDirectOutgoingConnectedModules(slots, ignoredModule))
+            .ToHashSet();
+    }
+
+    private IEnumerable<InventoryModule> GetOwnDirectOutgoingConnectedModules(
         IEnumerable<InventorySlot> outgoingConnectionSlots,
         InventoryModule ignoredModule
     )
     {
         return outgoingConnectionSlots.Select(slot => slot.Module)
             .OfType<InventoryModule>()
-            .Where(module => module != this && module != ignoredModule)
-            .ToHashSet();
+            .Where(module => module != this && module != ignoredModule);
     }
-    
+
+    private IEnumerable<InventoryModule> GetExternalDirectOutgoingConnectedModules(
+        IEnumerable<InventorySlot> slots,
+        InventoryModule ignoredModule
+    )
+    {
+        return slots
+            .SelectMany(slot => slot.Connections)
+            .Where(connection => connection.Type == ConnectionType.Incoming)
+            .Select(connection => connection.Slot?.Module)
+            .OfType<InventoryModule>()
+            .Where(module => module != this && module != ignoredModule);
+    }
+
     public HashSet<InventoryModule> GetAllOutgoingConnectedModules(InventoryModule ignoredModule)
     {
-        return GetAllOutgoingConnectedModules(GetOutgoingConnectionsSlots(), ignoredModule);
+        return GetAllOutgoingConnectedModules(Slots.Values, GetOutgoingConnectionsSlots(), ignoredModule);
     }
 
     private HashSet<InventoryModule> GetAllOutgoingConnectedModules(
+        IEnumerable<InventorySlot> slots,
         IEnumerable<InventorySlot> outgoingConnectionSlots,
         InventoryModule ignoredModule
     )
     {
-        var directModules = GetDirectOutgoingConnectedModules(outgoingConnectionSlots, ignoredModule);
+        var directModules = GetDirectOutgoingConnectedModules(slots, outgoingConnectionSlots, ignoredModule);
         if (directModules.Count == 0)
         {
             return [];
@@ -402,34 +439,62 @@ public partial class InventoryModule : TextureButton
     }
     
     // Incoming connections logic
+    
+    private IEnumerable<InventorySlot> GetIncomingConnectionsSlots()
+    {
+        return Connections.Values
+            .Where(connection => connection.Type == ConnectionType.Incoming)
+            .Select(connection => connection.Slot)
+            .OfType<InventorySlot>();
+    }
 
     private HashSet<InventoryModule> GetDirectIncomingConnectedModules(
+        IEnumerable<InventorySlot> slots,
+        IEnumerable<InventorySlot> incomingConnectionSlots,
+        InventoryModule ignoredModule
+    )
+    {
+        return GetExternalDirectIncomingConnectedModules(slots, ignoredModule)
+            .Concat(GetOwnDirectIncomingConnectedModules(incomingConnectionSlots, ignoredModule))
+            .ToHashSet();
+    }
+
+    private IEnumerable<InventoryModule> GetExternalDirectIncomingConnectedModules(
         IEnumerable<InventorySlot> slots,
         InventoryModule ignoredModule
     )
     {
         return slots.SelectMany(slot => slot.Connections)
             .Select(connection => connection.Module)
-            .Where(module => module != this && module != ignoredModule)
-            .ToHashSet();
+            .Where(module => module != this && module != ignoredModule);
     }
-    
+
+    private IEnumerable<InventoryModule> GetOwnDirectIncomingConnectedModules(
+        IEnumerable<InventorySlot> incomingConnectionSlots,
+        InventoryModule ignoredModule)
+    {
+        return incomingConnectionSlots.Select(slot => slot.Module)
+            .OfType<InventoryModule>()
+            .Where(module => module != this && module != ignoredModule);
+    }
+
     public HashSet<InventoryModule> GetAllIncomingConnectedModules()
     {
-        return GetAllIncomingConnectedModules(Slots.Values, this);
+        return GetAllIncomingConnectedModules(Slots.Values, GetIncomingConnectionsSlots(), this);
     }
     
     private HashSet<InventoryModule> GetAllIncomingConnectedModules(InventoryModule ignoredModule)
     {
-        return GetAllIncomingConnectedModules(Slots.Values, ignoredModule);
+        return GetAllIncomingConnectedModules(Slots.Values, GetIncomingConnectionsSlots(), ignoredModule);
     }
     
     private HashSet<InventoryModule> GetAllIncomingConnectedModules(
         IEnumerable<InventorySlot> slots,
+        IEnumerable<InventorySlot> incomingConnectionSlots,
         InventoryModule ignoredModule
     )
     {
-        var directModules = GetDirectIncomingConnectedModules(slots, ignoredModule);
+        var directModules = GetDirectIncomingConnectedModules(slots, incomingConnectionSlots, ignoredModule);
         if (directModules.Count == 0)
         {
             return [];
@@ -627,27 +692,21 @@ public partial class InventoryModule : TextureButton
             slot.SetHoveredState();
         }
 
-        var outgoingConnectionDirectSlots = connectorSlots
-            .Select(slot => slot.Value.Slot)
-            .OfType<InventorySlot>()
-            .ToHashSet();
+        var validationResult = ValidateConnection(slots, connectorSlots);
         
-        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values, this);
-        var outgoingConnectedModules = GetAllOutgoingConnectedModules(outgoingConnectionDirectSlots, this);
-        
-        var incomingConnectionSlots = incomingConnectedModules
+        var incomingConnectionSlots = validationResult.IncomingConnectedModules
             .SelectMany(module => module.Slots.Values);
-        var outgoingConnectionSlots = outgoingConnectedModules
+        var outgoingConnectionSlots = validationResult.OutgoingConnectedModules
             .SelectMany(module => module.Slots.Values);
         var allConnectionSlots = incomingConnectionSlots
             .Concat(outgoingConnectionSlots)
-            .Concat(outgoingConnectionDirectSlots)
+            .Concat(validationResult.IncomingConnectionDirectSlots)
+            .Concat(validationResult.OutgoingConnectionDirectSlots)
             .Distinct();
         
-        var hasCycle = outgoingConnectedModules.Any(incomingConnectedModules.Contains);
         foreach (var slot in allConnectionSlots)
         {
-            if (hasCycle)
+            if (!validationResult.IsValid)
             {
                 slot.SetShowsCycleState();
             }
@@ -662,15 +721,51 @@ public partial class InventoryModule : TextureButton
             return;
         }
         
-        if (hasCycle)
+        if (!validationResult.IsValid)
         {
-            SoundManager.Instance.PlaySound(_connectionCycleSound).RandomizePitchOffset();
+            SoundManager.Instance.PlaySound(_invalidConnectionSound).RandomizePitchOffset();
         }
         else
         {
             SoundManager.Instance.PlaySound(_slotSnapSound).RandomizePitchOffset();
         }
     }
+
+    private ConnectionValidationResult ValidateConnection(
+        Dictionary<HexCoordinates, InventorySlot> slots,
+        Dictionary<HexCoordinates, ConnectionData> connectorSlots)
+    {
+        var incomingConnectionDirectSlots = connectorSlots
+            .Where(slot => slot.Value.Connection.Type == ConnectionType.Incoming)
+            .Select(slot => slot.Value.Slot)
+            .OfType<InventorySlot>()
+            .ToHashSet();
+        var outgoingConnectionDirectSlots = connectorSlots
+            .Where(slot => slot.Value.Connection.Type == ConnectionType.Outgoing)
+            .Select(slot => slot.Value.Slot)
+            .OfType<InventorySlot>()
+            .ToHashSet();
+        
+        var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values, incomingConnectionDirectSlots, this);
+        var outgoingConnectedModules = GetAllOutgoingConnectedModules(slots.Values, outgoingConnectionDirectSlots, this);
+        
+        var hasCycle = outgoingConnectedModules.Any(incomingConnectedModules.Contains);
+        return new ConnectionValidationResult(
+            incomingConnectionDirectSlots,
+            outgoingConnectionDirectSlots,
+            incomingConnectedModules,
+            outgoingConnectedModules,
+            !hasCycle
+        );
+    }
+
+    private readonly record struct ConnectionValidationResult(
+        HashSet<InventorySlot> IncomingConnectionDirectSlots,
+        HashSet<InventorySlot> OutgoingConnectionDirectSlots,
+        HashSet<InventoryModule> IncomingConnectedModules,
+        HashSet<InventoryModule> OutgoingConnectedModules,
+        bool IsValid
+    );
     
     private void ProcessHoveredSlots(
         Dictionary<HexCoordinates, InventorySlot> slots,
@@ -678,40 +773,34 @@ public partial class InventoryModule : TextureButton
     )
     {
         _targetPosition = GetSlotBasedPosition(slots);
-        
-        if (Input.IsActionJustPressed("inventory_left_click"))
+
+        if (!Input.IsActionJustPressed("inventory_left_click"))
         {
-            var outgoingConnectionDirectSlots = connectorSlots
-                .Select(slot => slot.Value.Slot)
-                .OfType<InventorySlot>()
-                .ToHashSet();
-        
-            var incomingConnectedModules = GetAllIncomingConnectedModules(slots.Values, this);
-            var outgoingConnectedModules = GetAllOutgoingConnectedModules(outgoingConnectionDirectSlots, this);
-
-            var hasCycle = outgoingConnectedModules.Any(incomingConnectedModules.Contains);
-
-            if (hasCycle)
-            {
-                SoundManager.Instance.PlaySound(_connectionCycleSound).RandomizePitchOffset();
-                
-                _animationTween?.Kill();
-                _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad);
-                
-                _animationTween.TweenOffsetRotation(this, 0.1f, AnimationTweenDuration / 3)
-                    .SetEase(Tween.EaseType.Out);
-
-                _animationTween.TweenOffsetRotation(this, -0.1f, AnimationTweenDuration / 3);
-                
-                _animationTween.TweenOffsetRotationReset(this, AnimationTweenDuration / 3);
-                
-                return;
-            }
-            
-            SoundManager.Instance.PlaySound(_insertSound).RandomizePitchOffset();
-            ForceInsert(slots, connectorSlots);
-            StopFollowingCursor();
+            return;
         }
+        
+        var validationResult = ValidateConnection(slots, connectorSlots);
+
+        if (!validationResult.IsValid)
+        {
+            SoundManager.Instance.PlaySound(_invalidConnectionSound).RandomizePitchOffset();
+                
+            _animationTween?.Kill();
+            _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad);
+                
+            _animationTween.TweenOffsetRotation(this, 0.1f, AnimationTweenDuration / 3)
+                .SetEase(Tween.EaseType.Out);
+
+            _animationTween.TweenOffsetRotation(this, -0.1f, AnimationTweenDuration / 3);
+                
+            _animationTween.TweenOffsetRotationReset(this, AnimationTweenDuration / 3);
+                
+            return;
+        }
+            
+        SoundManager.Instance.PlaySound(_insertSound).RandomizePitchOffset();
+        ForceInsert(slots, connectorSlots);
+        StopFollowingCursor();
     }
     
     private void SlotsUnhovered(

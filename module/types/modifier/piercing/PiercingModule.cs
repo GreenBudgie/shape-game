@@ -19,7 +19,7 @@ public class PiercingModule : ModifierModule
         new ReloadStat { Value = 0.2f },
     ];
     
-    public override HashSet<HexCoordinates> Connections => [HexCoordinates.Right * 2];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right * 2];
 
     public override void Modify(SpawnableContext context)
     {

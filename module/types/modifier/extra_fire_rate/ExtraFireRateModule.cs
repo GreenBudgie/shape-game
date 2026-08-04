@@ -17,6 +17,6 @@ public class ExtraFireRateModule : ModifierModule
         new ReloadStat { ValuePercent = -50f },
     ];
     
-    public override HashSet<HexCoordinates> Connections => [HexCoordinates.Right * 2];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right * 2];
 
 }

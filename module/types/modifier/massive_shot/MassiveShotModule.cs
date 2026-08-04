@@ -21,7 +21,7 @@ public class MassiveShotModule : ModifierModule
         new DamageStat { ValuePercent = 40f },
     ];
     
-    public override HashSet<HexCoordinates> Connections => [HexCoordinates.Right];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right];
 
     public override void Modify(SpawnableContext context)
     {

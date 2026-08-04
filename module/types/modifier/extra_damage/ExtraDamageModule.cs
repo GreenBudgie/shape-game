@@ -19,7 +19,7 @@ public class ExtraDamageModule : ModifierModule
         new ReloadStat { Value = 0.1f },
     ];
 
-    public override HashSet<HexCoordinates> Connections => [HexCoordinates.Right];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right];
 
     public override void Modify(SpawnableContext context)
     {
