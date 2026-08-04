@@ -459,10 +459,20 @@ public partial class InventoryModule : TextureButton
         Rotation = angle;
     }
 
+    private bool _isFirstFrame = true;
+
     private void MoveToTarget(double delta)
     {
         if (_targetPosition.IsEqualApprox(Position))
         {
+            return;
+        }
+
+        if (_isFirstFrame)
+        {
+            // Move immediately on first frame
+            Position = _targetPosition;
+            _isFirstFrame = false;
             return;
         }
         
@@ -481,12 +491,6 @@ public partial class InventoryModule : TextureButton
         );
 
         Position = new Vector2(x, y);
-    }
-    
-    private void MoveAndRotateToTargetImmediately()
-    {
-        Position = _targetPosition;
-        Rotation = _targetRotation;
     }
     
     private Dictionary<HexCoordinates, InventorySlot> _hoveredSlots = [];
@@ -813,10 +817,10 @@ public partial class InventoryModule : TextureButton
 
         if (!_isFirstInsert)
         {
-            _isFirstInsert = false;
             return;
         }
 
+        _isFirstInsert = false;
         if (InventoryManager.Instance.IsOpen)
         {
             ShowModule();
@@ -826,8 +830,8 @@ public partial class InventoryModule : TextureButton
             Modulate = Modulate.AsTransparent();
             HideModule();
         }
-        
-        MoveAndRotateToTargetImmediately();
+
+        _targetPosition = GetSlotBasedPosition(Slots);
     }
 
     public void StartFollowingCursor()

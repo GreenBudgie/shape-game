@@ -5,6 +5,7 @@ public interface IGlow
 {
     
     public static readonly NodePath ColorProperty = "Color";
+    public static readonly NodePath ColorAlphaProperty = "Color:a";
     public static readonly NodePath StrengthProperty = "Strength";
     public static readonly NodePath RadiusProperty = "Radius";
     

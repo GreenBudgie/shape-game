@@ -2,6 +2,8 @@ using System.Linq;
 
 public partial class WorldModule : RigidBody2D
 {
+
+    private const float AlphaTweenDuration = 0.2f;
     
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://d2oibytyvv11i");
     private static readonly PackedScene ConnectionShapeScene = GD.Load<PackedScene>("uid://do5oc5gogcakt");
@@ -61,7 +63,7 @@ public partial class WorldModule : RigidBody2D
         _playerDetectionArea.BodyExited += OnPlayerUnhovered;
         
         _glow = Glow.AddGlow(fillSprite)
-            .SetColor(Module.Color)
+            .SetColor(Module.Color.AsTransparent())
             .SetRadius(0)
             .SetStrength(1);
 
@@ -154,7 +156,13 @@ public partial class WorldModule : RigidBody2D
         _animationTween?.Kill();
         _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
         _animationTween.TweenScale(_spritesNode, 1.1f, duration);
-        _animationTween.TweenGlowRadius(_glow, 30, duration / 2).SetDelay(duration / 2);
+        _animationTween.TweenGlowRadius(_glow, 30, duration);
+        
+        var glowFadeInTweener = _animationTween.TweenGlowFadeIn(_glow, duration);
+        if (_alphaTween != null && _alphaTween.IsRunning())
+        {
+            glowFadeInTweener.SetDelay(AlphaTweenDuration - _alphaTween.GetTotalElapsedTime());
+        }
     }
     
     public void OnDeselect()
@@ -172,6 +180,7 @@ public partial class WorldModule : RigidBody2D
         _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
         _animationTween.TweenScaleReset(_spritesNode, duration);
         _animationTween.TweenGlowRadius(_glow, 0, duration);
+        _animationTween.TweenGlowFadeOut(_glow, duration);
     }
     
     private bool _isFirstPhysicsFrame = true;
@@ -231,7 +240,7 @@ public partial class WorldModule : RigidBody2D
         
         _alphaTween?.Kill();
         _alphaTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-        _alphaTween.FadeIn(this, duration);
+        _alphaTween.FadeIn(this, AlphaTweenDuration);
     }
     
     private void Remove()
@@ -251,10 +260,11 @@ public partial class WorldModule : RigidBody2D
         _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
         _animationTween.TweenScale(_spritesNode, 1.2f, duration);
         _animationTween.TweenGlowRadius(_glow, 0, duration / 4);
+        _animationTween.TweenGlowFadeOut(_glow, duration / 4);
         
         _alphaTween?.Kill();
         _alphaTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-        _alphaTween.FadeOut(this, duration);
+        _alphaTween.FadeOut(this, AlphaTweenDuration);
 
         _alphaTween.Finished += QueueFree;
     }

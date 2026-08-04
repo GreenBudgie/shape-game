@@ -15,5 +15,15 @@ public static class TypeSafeGlowTweenHelper
     {
         return tween.TweenProperty((GodotObject)node, IGlow.RadiusProperty, finalVal, duration);
     }
+    
+    public static PropertyTweener TweenGlowFadeOut(this Tween tween, IGlow node, float duration)
+    {
+        return tween.TweenProperty((GodotObject)node, IGlow.ColorAlphaProperty, 0, duration);
+    }
+    
+    public static PropertyTweener TweenGlowFadeIn(this Tween tween, IGlow node, float duration)
+    {
+        return tween.TweenProperty((GodotObject)node, IGlow.ColorAlphaProperty, 1, duration);
+    }
 
 }
