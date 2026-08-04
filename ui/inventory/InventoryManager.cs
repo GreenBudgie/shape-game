@@ -92,6 +92,25 @@ public partial class InventoryManager : Control
         Visible = false;
     }
 
+    public InsertResult TryAddModule(Module module)
+    {
+        var inventoryModule = InventoryModule.Create(module);
+        AddChild(inventoryModule);
+        
+        foreach (var inventory in _inventories)
+        {
+            var inserted = inventory.TryInsertModule(inventoryModule);
+            if (inserted)
+            {
+                return new InsertResult(inventoryModule, true);
+            }
+        }
+
+        return new InsertResult(inventoryModule, false);
+    }
+
+    public readonly record struct InsertResult(InventoryModule InventoryModule, bool Success);
+
     private void AddModule(Module module, ModuleInventory inventory)
     {
         var inventoryModule = InventoryModule.Create(module);
@@ -103,18 +122,13 @@ public partial class InventoryManager : Control
         }
     }
 
-    public override void _Process(double delta)
+    public override void _UnhandledInput(InputEvent @event)
     {
-        HandleInventoryOpenAndClose();
-    }
-
-    private void HandleInventoryOpenAndClose()
-    {
-        if (!Input.IsActionJustPressed("inventory"))
+        if (!@event.IsActionPressed("inventory"))
         {
             return;
         }
-
+        
         if (IsOpen)
         {
             Close();
@@ -125,7 +139,7 @@ public partial class InventoryManager : Control
         }
     }
 
-    private void Open()
+    public void Open()
     {
         if (IsOpen)
         {

@@ -9,7 +9,16 @@ public partial class WorldModule : RigidBody2D
 
     public Module Module { get; private set; } = null!;
 
-    private Sprite2D _fillSprite = null!;
+    private Node2D _spritesNode = null!;
+    private Glow _glow = null!;
+    private Area2D _playerDetectionArea = null!;
+
+    private bool _isHovered;
+    private bool _isSelected;
+    private bool _isRemoving;
+    
+    private Tween? _animationTween;
+    private Tween? _alphaTween;
     
     public static WorldModule Create(Module module)
     {
@@ -33,16 +42,28 @@ public partial class WorldModule : RigidBody2D
 
     public override void _Ready()
     {
-        _fillSprite = GetNode<Sprite2D>("FillSprite");
-        _fillSprite.Texture = Module.Shape.FillTexture;
-        _fillSprite.Modulate = ColorScheme.DarkOrange;
         
-        var outlineSprite = GetNode<Sprite2D>("OutlineSprite");
+        _spritesNode = GetNode<Node2D>("Sprites");
+        
+        var fillSprite = _spritesNode.GetNode<Sprite2D>("FillSprite");
+        fillSprite.Texture = Module.Shape.FillTexture;
+        fillSprite.SelfModulate = ColorScheme.DarkOrange;
+        
+        var outlineSprite = _spritesNode.GetNode<Sprite2D>("OutlineSprite");
         outlineSprite.Texture = Module.Shape.OutlineTexture;
-        outlineSprite.Modulate = Module.Color;
+        outlineSprite.SelfModulate = Module.Color;
         
-        var moduleSprite = GetNode<Sprite2D>("ModuleSprite");
+        var moduleSprite = _spritesNode.GetNode<Sprite2D>("ModuleSprite");
         moduleSprite.Texture = Module.Texture;
+        
+        _playerDetectionArea = GetNode<Area2D>("PlayerDetectionArea");
+        _playerDetectionArea.BodyEntered += OnPlayerHovered;
+        _playerDetectionArea.BodyExited += OnPlayerUnhovered;
+        
+        _glow = Glow.AddGlow(fillSprite)
+            .SetColor(Module.Color)
+            .SetRadius(0)
+            .SetStrength(1);
 
         var hexPositions = Module.Shape.CenteredPixelHexPositions;
         foreach (var hex in hexPositions)
@@ -50,6 +71,7 @@ public partial class WorldModule : RigidBody2D
             var hexShape = HexShapeScene.Instantiate<CollisionPolygon2D>();
             hexShape.Position = hex.Value;
             AddChild(hexShape);
+            _playerDetectionArea.AddChild(hexShape.Duplicate());
         }
 
         var positions = hexPositions.Values.ToList();
@@ -61,6 +83,7 @@ public partial class WorldModule : RigidBody2D
                 connectionShape.Position = (positions[i] + positions[j]) / 2;
                 connectionShape.Rotation = (positions[j] - positions[i]).Angle();
                 AddChild(connectionShape);
+                _playerDetectionArea.AddChild(connectionShape.Duplicate());
             }
         }
 
@@ -68,19 +91,101 @@ public partial class WorldModule : RigidBody2D
         Scale = new Vector2(1.2f, 1.2f);
         PlayDropAnimation();
     }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
+        if (InventoryManager.Instance.IsOpen)
+        {
+            return;
+        }
+        
+        if (!_isSelected)
+        {
+            return;
+        }
+        
+        if (!@event.IsActionPressed("use"))
+        {
+            return;
+        }
+        
+        PickUp();
+        GetViewport().SetInputAsHandled();
+    }
+
+    private void OnPlayerHovered(Node2D _)
+    {
+        if (_isRemoving)
+        {
+            return;
+        }
+
+        _isHovered = true;
+        WorldModuleManager.Instance.ModuleHovered(this);
+    }
     
-    private bool _impulsesApplied;
+    private void OnPlayerUnhovered(Node2D _)
+    {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
+        _isHovered = false;
+        WorldModuleManager.Instance.ModuleUnhovered(this);
+    }
+    
+    public void OnSelect()
+    {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
+        _isSelected = true;
+        
+        const float duration = 0.1f;
+        
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+        _animationTween.TweenScale(_spritesNode, 1.1f, duration);
+        _animationTween.TweenGlowRadius(_glow, 30, duration / 2).SetDelay(duration / 2);
+    }
+    
+    public void OnDeselect()
+    {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
+        _isSelected = false;
+        
+        const float duration = 0.1f;
+        
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+        _animationTween.TweenScaleReset(_spritesNode, duration);
+        _animationTween.TweenGlowRadius(_glow, 0, duration);
+    }
+    
+    private bool _isFirstPhysicsFrame = true;
     
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
         base._IntegrateForces(state);
 
-        if (_impulsesApplied)
+        if (!_isFirstPhysicsFrame)
         {
             return;
         }
         
-        _impulsesApplied = true;
+        _isFirstPhysicsFrame = false;
 
         var torque = RandomUtils.RandomSignedDeltaRange(20000, 5000);
         ApplyTorqueImpulse(torque);
@@ -91,16 +196,67 @@ public partial class WorldModule : RigidBody2D
         ApplyCentralImpulse(impulse);
     }
 
-    private Tween? _animationTween;
+    public bool IsHovered()
+    {
+        return _isHovered && !_isRemoving;
+    }
+
+    private void PickUp()
+    {
+        var result = InventoryManager.Instance.TryAddModule(Module);
+        if (result.Success)
+        {
+            Remove();
+            return;
+        }
+        
+        InventoryManager.Instance.Open();
+        result.InventoryModule.GlobalPosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
+        result.InventoryModule.StartFollowingCursor();
+        Remove();
+    }
 
     private void PlayDropAnimation()
     {
+        if (_isRemoving)
+        {
+            return;
+        }
+        
         const float duration = 0.2f;
         
         _animationTween?.Kill();
         _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-        _animationTween.FadeIn(this, duration);
-        _animationTween.TweenScaleReset(this, duration);
+        _animationTween.TweenScaleReset(_spritesNode, duration);
+        
+        _alphaTween?.Kill();
+        _alphaTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+        _alphaTween.FadeIn(this, duration);
+    }
+    
+    private void Remove()
+    {
+        if (_isRemoving)
+        {
+            return;
+        }
+
+        _isRemoving = true;
+
+        WorldModuleManager.Instance.OnModuleRemoved(this);
+
+        const float duration = 0.2f;
+        
+        _animationTween?.Kill();
+        _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+        _animationTween.TweenScale(_spritesNode, 1.2f, duration);
+        _animationTween.TweenGlowRadius(_glow, 0, duration / 4);
+        
+        _alphaTween?.Kill();
+        _alphaTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+        _alphaTween.FadeOut(this, duration);
+
+        _alphaTween.Finished += QueueFree;
     }
 
 }

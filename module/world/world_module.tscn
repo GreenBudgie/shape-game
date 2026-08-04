@@ -18,10 +18,16 @@ linear_damp = 2.0
 angular_damp = 2.0
 script = ExtResource("1_ooccc")
 
-[node name="FillSprite" type="Sprite2D" parent="." unique_id=1276745907]
+[node name="Sprites" type="Node2D" parent="." unique_id=1182223580]
+
+[node name="FillSprite" type="Sprite2D" parent="Sprites" unique_id=1276745907]
 texture = ExtResource("3_q5y2o")
 
-[node name="OutlineSprite" type="Sprite2D" parent="." unique_id=2110803323]
+[node name="OutlineSprite" type="Sprite2D" parent="Sprites" unique_id=2110803323]
 texture = ExtResource("3_f71yx")
 
-[node name="ModuleSprite" type="Sprite2D" parent="." unique_id=1265285975]
+[node name="ModuleSprite" type="Sprite2D" parent="Sprites" unique_id=1265285975]
+
+[node name="PlayerDetectionArea" type="Area2D" parent="." unique_id=1350748351]
+collision_layer = 0
+monitorable = false

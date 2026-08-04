@@ -28,6 +28,8 @@ public partial class InventoryModuleConnection : Node2D
         
         _arrow.Reparent(InventoryManager.Instance);
         _connector.Reparent(InventoryManager.Instance);
+        _arrow.Hide();
+        _connector.Hide();
         Hide();
         HideConnector(true);
 
@@ -48,7 +50,7 @@ public partial class InventoryModuleConnection : Node2D
 
     private void OnModuleInserted()
     {
-        if (_isRemoving)
+        if (_isRemoving || !InventoryManager.Instance.IsOpen)
         {
             return;
         }

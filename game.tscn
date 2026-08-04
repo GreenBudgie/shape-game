@@ -16,6 +16,7 @@
 [ext_resource type="Shader" uid="uid://c8tu4dwq8epsu" path="res://util/screenshake/screen_shake.gdshader" id="12_iotsf"]
 [ext_resource type="Script" uid="uid://bd0itqdn7nlo7" path="res://systems/GamePhaseManager.cs" id="13_80cx4"]
 [ext_resource type="Script" uid="uid://cek6yfy2gipxe" path="res://util/screenshake/ScreenShake.cs" id="13_lc2xo"]
+[ext_resource type="Script" uid="uid://di80l6kh6f4gs" path="res://module/world/WorldModuleManager.cs" id="14_boyg6"]
 [ext_resource type="Script" uid="uid://d04nmdt4omsif" path="res://systems/MouseInputManager.cs" id="16_boyg6"]
 [ext_resource type="Script" uid="uid://dcfyc3mh3ufim" path="res://debug/DebugDraw.cs" id="19_boyg6"]
 
@@ -158,6 +159,10 @@ script = ExtResource("8_j5wjh")
 
 [node name="GamePhaseManager" type="Node" parent="." unique_id=647316605]
 script = ExtResource("13_80cx4")
+
+[node name="WorldModuleManager" type="Node" parent="." unique_id=1892052256]
+process_priority = -1
+script = ExtResource("14_boyg6")
 
 [node name="MouseInputManager" type="Node2D" parent="." unique_id=1359638225]
 process_mode = 3

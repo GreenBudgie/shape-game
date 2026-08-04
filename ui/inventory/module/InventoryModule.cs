@@ -51,6 +51,7 @@ public partial class InventoryModule : TextureButton
     private ModuleInfo? _moduleInfo;
     private HexCoordinates? _mousePivot;
     private Dictionary<HexCoordinates, HexData> _hexes = [];
+    private bool _isFirstInsert = true;
     
     // Nullable since it uses a deferred call 
     private Glow? _glow;
@@ -214,7 +215,7 @@ public partial class InventoryModule : TextureButton
         BeforeRemove();
         
         var worldModule = WorldModule.Create(Module);
-        ShapeGame.Instance.AddChild(worldModule);
+        WorldModuleManager.Instance.SpawnModule(worldModule);
 
         const float duration = 0.2f;
         
@@ -480,6 +481,12 @@ public partial class InventoryModule : TextureButton
         );
 
         Position = new Vector2(x, y);
+    }
+    
+    private void MoveAndRotateToTargetImmediately()
+    {
+        Position = _targetPosition;
+        Rotation = _targetRotation;
     }
     
     private Dictionary<HexCoordinates, InventorySlot> _hoveredSlots = [];
@@ -803,9 +810,27 @@ public partial class InventoryModule : TextureButton
             connection.Value.Slot?.Connections.Add(connection.Value.Connection);
             connection.Value.Connection.Slot = connection.Value.Slot;
         }
+
+        if (!_isFirstInsert)
+        {
+            _isFirstInsert = false;
+            return;
+        }
+
+        if (InventoryManager.Instance.IsOpen)
+        {
+            ShowModule();
+        }
+        else
+        {
+            Modulate = Modulate.AsTransparent();
+            HideModule();
+        }
+        
+        MoveAndRotateToTargetImmediately();
     }
 
-    private void StartFollowingCursor()
+    public void StartFollowingCursor()
     {
         if (_mousePivot.HasValue)
         {
