@@ -212,16 +212,7 @@ public partial class WorldModule : RigidBody2D
 
     private void PickUp()
     {
-        var result = InventoryManager.Instance.TryAddModule(Module);
-        if (result.Success)
-        {
-            Remove();
-            return;
-        }
-        
-        InventoryManager.Instance.Open();
-        result.InventoryModule.GlobalPosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
-        result.InventoryModule.StartFollowingCursor();
+        InventoryManager.Instance.AddModule(Module);
         Remove();
     }
 

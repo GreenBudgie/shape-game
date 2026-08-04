@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class InventoryManager : Control
+public partial class InventoryManager : Control, IScreen
 {
 
     public const float AnimationDuration = 0.15f;
@@ -64,6 +64,8 @@ public partial class InventoryManager : Control
         _overlay = GetNode<ColorRect>("Overlay");
         
         Callable.From(PostSetup).CallDeferred();
+        
+        ScreenManager.Instance.RegisterScreen(this);
     }
 
     public List<InventorySlot> GetAllSlots()
@@ -90,6 +92,23 @@ public partial class InventoryManager : Control
 
         Close(playSound: false);
         Visible = false;
+    }
+    
+    /// <summary>
+    /// Adds module either directly to the inventory, if it has space, or opens the inventory while holding the module
+    /// at cursor
+    /// </summary>
+    public void AddModule(Module module)
+    {
+        var result = TryAddModule(module);
+        if (result.Success)
+        {
+            return;
+        }
+        
+        Open();
+        result.InventoryModule.GlobalPosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
+        result.InventoryModule.StartFollowingCursor();
     }
 
     public InsertResult TryAddModule(Module module)

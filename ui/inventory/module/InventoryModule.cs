@@ -881,14 +881,20 @@ public partial class InventoryModule : TextureButton
         InventoryManager.Instance.DraggingModule = null;
         ResetHoveredSlots();
         MouseFilter = MouseFilterEnum.Stop;
+        _mousePivot = null;
+        ZIndex -= 1;
+
+        var isInserted = Slots.Count != 0;
+        if (!isInserted)
+        {
+            Drop();
+            return;
+        }
 
         if (IsHovered())
         {
             ShowModuleInfo();
         }
-
-        _mousePivot = null;
-        ZIndex -= 1;
  
         _animationTween?.Kill();
         _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad);

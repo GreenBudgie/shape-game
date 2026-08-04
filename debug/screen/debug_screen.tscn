@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://dx6pfytmjj2bb" path="res://debug/screen/StopEnemySpawnButton.cs" id="8_o5fu4"]
 [ext_resource type="Script" uid="uid://vt7okfs2ogm3" path="res://debug/screen/PlayerDamageContainer.cs" id="9_6gkk3"]
 [ext_resource type="Script" uid="uid://dmysiou2hms64" path="res://debug/screen/PlayerRespawnButton.cs" id="10_sx7eh"]
+[ext_resource type="Script" uid="uid://ba20msfvljxu5" path="res://debug/screen/ModuleSelector.cs" id="15_0q8tp"]
 
 [node name="DebugScreen" type="CanvasLayer" unique_id=1374611125]
 script = ExtResource("1_pwcox")
@@ -36,7 +37,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.1254902)
 
-[node name="MarginContainer" type="MarginContainer" parent="Control" unique_id=191985821]
+[node name="MainContainer" type="MarginContainer" parent="Control" unique_id=191985821]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -45,84 +46,102 @@ theme_override_constants/margin_top = 64
 theme_override_constants/margin_right = 64
 theme_override_constants/margin_bottom = 64
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer" unique_id=2129270400]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MainContainer" unique_id=2129270400]
 layout_mode = 2
 theme_override_constants/separation = 128
 
-[node name="SpawnEnemiesContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=1443107667]
+[node name="SpawnEnemiesContainer" type="VBoxContainer" parent="Control/MainContainer/HBoxContainer" unique_id=1443107667]
 layout_mode = 2
 script = ExtResource("3_hkenb")
 
-[node name="Label" type="Label" parent="Control/MarginContainer/HBoxContainer/SpawnEnemiesContainer" unique_id=1281077382]
+[node name="Label" type="Label" parent="Control/MainContainer/HBoxContainer/SpawnEnemiesContainer" unique_id=1281077382]
 layout_mode = 2
 text = "Spawn Enemies"
 horizontal_alignment = 1
 
-[node name="CrystalsContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=555637401]
+[node name="CrystalsContainer" type="VBoxContainer" parent="Control/MainContainer/HBoxContainer" unique_id=555637401]
 layout_mode = 2
 script = ExtResource("3_jlxhc")
 metadata/_edit_group_ = true
 
-[node name="PlayerContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=1391801580]
+[node name="PlayerContainer" type="VBoxContainer" parent="Control/MainContainer/HBoxContainer" unique_id=1391801580]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=1372311989]
+[node name="Label" type="Label" parent="Control/MainContainer/HBoxContainer/PlayerContainer" unique_id=1372311989]
 layout_mode = 2
 text = "Player"
 horizontal_alignment = 1
 
-[node name="PlayerInvulnerableButton" type="Button" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=519562282]
+[node name="PlayerInvulnerableButton" type="Button" parent="Control/MainContainer/HBoxContainer/PlayerContainer" unique_id=519562282]
 layout_mode = 2
 text = "Invulnerable: OFF"
 script = ExtResource("5_gpkic")
 
-[node name="PlayerFullHealButton" type="Button" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=394383427]
+[node name="PlayerFullHealButton" type="Button" parent="Control/MainContainer/HBoxContainer/PlayerContainer" unique_id=394383427]
 layout_mode = 2
 text = "Full Heal"
 script = ExtResource("5_y04nl")
 
-[node name="PlayerDestroyButton" type="Button" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=474116841]
+[node name="PlayerDestroyButton" type="Button" parent="Control/MainContainer/HBoxContainer/PlayerContainer" unique_id=474116841]
 layout_mode = 2
 text = "Destroy"
 script = ExtResource("6_hgsmx")
 
-[node name="PlayerHealContainer" type="HBoxContainer" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=1595643798]
+[node name="PlayerHealContainer" type="HBoxContainer" parent="Control/MainContainer/HBoxContainer/PlayerContainer" unique_id=1595643798]
 layout_mode = 2
 alignment = 1
 script = ExtResource("8_20jdb")
 
-[node name="PlayerDamageContainer" type="HBoxContainer" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=269927451]
+[node name="PlayerDamageContainer" type="HBoxContainer" parent="Control/MainContainer/HBoxContainer/PlayerContainer" unique_id=269927451]
 layout_mode = 2
 alignment = 1
 script = ExtResource("9_6gkk3")
 
-[node name="PlayerRespawnButton" type="Button" parent="Control/MarginContainer/HBoxContainer/PlayerContainer" unique_id=260724211]
+[node name="PlayerRespawnButton" type="Button" parent="Control/MainContainer/HBoxContainer/PlayerContainer" unique_id=260724211]
 layout_mode = 2
 text = "Respawn"
 script = ExtResource("10_sx7eh")
 
-[node name="OtherContainer" type="VBoxContainer" parent="Control/MarginContainer/HBoxContainer" unique_id=1829825654]
+[node name="OtherContainer" type="VBoxContainer" parent="Control/MainContainer/HBoxContainer" unique_id=1829825654]
 layout_mode = 2
 metadata/_edit_group_ = true
 
-[node name="EndLevelButton" type="Button" parent="Control/MarginContainer/HBoxContainer/OtherContainer" unique_id=1350265474]
+[node name="EndLevelButton" type="Button" parent="Control/MainContainer/HBoxContainer/OtherContainer" unique_id=1350265474]
 layout_mode = 2
 text = "End Level"
 script = ExtResource("1_althg")
 
-[node name="KillEnemiesButton" type="Button" parent="Control/MarginContainer/HBoxContainer/OtherContainer" unique_id=135850104]
+[node name="KillEnemiesButton" type="Button" parent="Control/MainContainer/HBoxContainer/OtherContainer" unique_id=135850104]
 layout_mode = 2
 text = "Kill Enemies"
 script = ExtResource("3_met78")
 
-[node name="StopCrystalDropButton" type="Button" parent="Control/MarginContainer/HBoxContainer/OtherContainer" unique_id=623534567]
+[node name="StopCrystalDropButton" type="Button" parent="Control/MainContainer/HBoxContainer/OtherContainer" unique_id=623534567]
 layout_mode = 2
 text = "Remove Enemies
 (No Drops)"
 script = ExtResource("7_o5fu4")
 
-[node name="ToggleEnemySpawnButton" type="Button" parent="Control/MarginContainer/HBoxContainer/OtherContainer" unique_id=1409702954]
+[node name="ToggleEnemySpawnButton" type="Button" parent="Control/MainContainer/HBoxContainer/OtherContainer" unique_id=1409702954]
 layout_mode = 2
 text = "Stop Enemy
 Spawn"
 script = ExtResource("8_o5fu4")
+
+[node name="ModuleSelector" type="Control" parent="Control" unique_id=627926694]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("15_0q8tp")
+
+[node name="ModuleSelectorContainer" type="VFlowContainer" parent="Control/ModuleSelector" unique_id=1408864121]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

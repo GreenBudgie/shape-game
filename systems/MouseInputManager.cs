@@ -25,13 +25,16 @@ public partial class MouseInputManager : Node2D
             GetViewportRect().Size.X / 2.0f,
             GetViewportRect().Size.Y / 2.0f
         );
-
-        PauseManager.Instance.Connect(PauseManager.SignalName.GameUnpause, Callable.From(EnableCharacterControl));
-        PauseManager.Instance.Connect(PauseManager.SignalName.GamePause, Callable.From(ShowCursor));
-        InventoryManager.Instance.Connect(InventoryManager.SignalName.InventoryClosed, Callable.From(EnableCharacterControl));
-        InventoryManager.Instance.Connect(InventoryManager.SignalName.InventoryOpened, Callable.From(ShowCursor));
-        DebugScreen.Instance.Connect(DebugScreen.SignalName.ScreenClosed, Callable.From(EnableCharacterControl));
-        DebugScreen.Instance.Connect(DebugScreen.SignalName.ScreenOpened, Callable.From(ShowCursor));
+        
+        ScreenManager.Instance.Connect(
+            ScreenManager.SignalName.AllScreensClosed,
+            Callable.From(EnableCharacterControl)
+        );
+        
+        ScreenManager.Instance.Connect(
+            ScreenManager.SignalName.AnyScreenOpened,
+            Callable.From(ShowCursor)
+        );
     }
 
     public override void _Process(double delta)

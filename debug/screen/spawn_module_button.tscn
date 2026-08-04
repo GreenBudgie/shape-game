@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dmrwvpirma7su"]
+
+[ext_resource type="Theme" uid="uid://hdiwpud1ur1q" path="res://debug/screen/debug_theme.tres" id="1_iphol"]
+
+[node name="SpawnModuleButton" type="Button" unique_id=1958800834]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_iphol")
