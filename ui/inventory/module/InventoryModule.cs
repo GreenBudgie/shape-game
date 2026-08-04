@@ -52,11 +52,12 @@ public partial class InventoryModule : TextureButton
     private HexCoordinates? _mousePivot;
     private Dictionary<HexCoordinates, HexData> _hexes = [];
     private bool _isFirstInsert = true;
+    private bool _isFirstFrame = true;
     
     // Nullable since it uses a deferred call 
     private Glow? _glow;
     
-    private Vector2 _targetPosition = Vector2.Zero;
+    private Vector2? _targetPosition;
     private float _targetRotation;
 
     private TextureRect _moduleTexture = null!;
@@ -458,35 +459,41 @@ public partial class InventoryModule : TextureButton
 
         Rotation = angle;
     }
-
-    private bool _isFirstFrame = true;
-
+    
     private void MoveToTarget(double delta)
     {
-        if (_targetPosition.IsEqualApprox(Position))
-        {
-            return;
-        }
-
         if (_isFirstFrame)
         {
             // Move immediately on first frame
-            Position = _targetPosition;
+            if (_targetPosition.HasValue)
+            {
+                Position = _targetPosition.Value;
+            }
+            else
+            {
+                GlobalPosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
+            }
+            
             _isFirstFrame = false;
             return;
         }
         
+        if (!_targetPosition.HasValue || _targetPosition.Value.IsEqualApprox(Position))
+        {
+            return;
+        }
+        
         var followSpeed = IsFollowingCursor ? CursorFollowSpeed : TargetPositionFollowSpeed;
-        var distanceToX = Abs(Position.X - _targetPosition.X);
-        var distanceToY = Abs(Position.Y - _targetPosition.Y);
+        var distanceToX = Abs(Position.X - _targetPosition.Value.X);
+        var distanceToY = Abs(Position.Y - _targetPosition.Value.Y);
         var x = MoveToward(
             Position.X,
-            _targetPosition.X,
+            _targetPosition.Value.X,
             followSpeed * (float)delta * distanceToX
         );
         var y = MoveToward(+
             Position.Y,
-            _targetPosition.Y,
+            _targetPosition.Value.Y,
             followSpeed * (float)delta * distanceToY
         );
 
@@ -834,7 +841,7 @@ public partial class InventoryModule : TextureButton
         _targetPosition = GetSlotBasedPosition(Slots);
     }
 
-    public void StartFollowingCursor()
+    public void StartFollowingCursor(bool grabClosestHex = true)
     {
         if (_mousePivot.HasValue)
         {
@@ -847,10 +854,20 @@ public partial class InventoryModule : TextureButton
         MouseFilter = MouseFilterEnum.Ignore;
 
         var mousePosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
-        var closestHex = _hexes
-            .Where(x => x.Value.Connection == null)
-            .MinBy(entry => (entry.Value.RealPosition + Position).DistanceSquaredTo(mousePosition));
-        _mousePivot = closestHex.Key;
+
+        KeyValuePair<HexCoordinates, HexData> pivotHex;
+        if (grabClosestHex)
+        {
+            pivotHex = _hexes
+                .Where(x => x.Value.Connection == null)
+                .MinBy(entry => (entry.Value.RealPosition + Position).DistanceSquaredTo(mousePosition));
+        }
+        else
+        {
+            pivotHex = _hexes.First();
+        }
+        
+        _mousePivot = pivotHex.Key;
 
         ZIndex += 1;
 

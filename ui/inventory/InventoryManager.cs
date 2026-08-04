@@ -107,8 +107,7 @@ public partial class InventoryManager : Control, IScreen
         }
         
         Open();
-        result.InventoryModule.GlobalPosition = MouseInputManager.Instance.GetCachedGlobalMousePosition();
-        result.InventoryModule.StartFollowingCursor();
+        result.InventoryModule.StartFollowingCursor(grabClosestHex: false);
     }
 
     public InsertResult TryAddModule(Module module)
