@@ -8,6 +8,7 @@ public static class ModuleRegistry
     public static readonly ExtraDamageModule ExtraDamageModule = new();
     public static readonly ExtraFireRateModule ExtraFireRateModule = new();
     public static readonly PiercingModule PiercingModule = new();
+    public static readonly MassiveShotModule MassiveShotModule = new();
 
     public static readonly BoltModule BoltModule = new();
     public static readonly MineModule MineModule = new();

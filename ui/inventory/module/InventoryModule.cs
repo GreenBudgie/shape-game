@@ -112,7 +112,7 @@ public partial class InventoryModule : TextureButton
             if (!source.HasValue)
             {
                 throw new ArgumentException(
-                    $"Module has an incorrect connection configuration: {connectionHex} does not have a neighbor");
+                    $"Module ${Module.Name} has an incorrect connection configuration: {connectionHex} does not have a neighbor");
             }
 
             var connection = InventoryModuleConnection.Create(this);

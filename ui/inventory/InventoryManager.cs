@@ -83,13 +83,6 @@ public partial class InventoryManager : Control, IScreen
 
     private void PostSetup()
     {
-        AddModule(ModuleRegistry.BoltModule, LeftBlasterInventory);
-        AddModule(ModuleRegistry.ExtraFireRateModule, LeftBlasterInventory);
-        AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
-        AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
-        AddModule(ModuleRegistry.ExtraFireRateModule, RightBlasterInventory);
-        AddModule(ModuleRegistry.MineModule, RightBlasterInventory);
-
         Close(playSound: false);
         Visible = false;
     }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public class PiercingModule : ModifierModule
 {
@@ -27,12 +28,18 @@ public class PiercingModule : ModifierModule
             return;
         }
 
-        var projectile = context.Spawnable.Node;
-        TrailParticles.Create(projectile)
-            .WithTexture(ParticleTextures.Triangle)
-            .WithScale(0.4f, 0.1f)
-            .Color(ColorScheme.LightBlue)
-            .Spawn();
+        var projectiles = context.GetContextChain()
+            .Select(ctx => ctx.Spawnable.Node)
+            .OfType<BasicRigidBodyProjectile<Node2D>>();
+        
+        foreach (var projectile in projectiles)
+        {
+            TrailParticles.Create(projectile)
+                .WithTexture(ParticleTextures.Triangle)
+                .WithScale(0.4f, 0.1f)
+                .Color(ColorScheme.LightBlue)
+                .Spawn();
+        }
     }
 
 }
