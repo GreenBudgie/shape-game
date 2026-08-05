@@ -15,6 +15,7 @@ public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
     private Mask _spriteMask = null!;
     private GpuParticles2D _particles = null!;
     private Vector2 _initialPosition;
+    private SpawnableContext _context = null!;
 
     public Barrier Node => this;
 
@@ -25,6 +26,8 @@ public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
 
     public void Prepare(SpawnableContext context)
     {
+        _context = context;
+        
         RotationDegrees = RandomUtils.DeltaRange(0, 15);
         
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
@@ -56,10 +59,10 @@ public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
             .SetStrength(1)
             .SetRadius(30);
 
-        var player = Player.FindPlayer();
-        if (player != null)
+        var source = _context.Source;
+        if (IsInstanceValid(source))
         {
-            PlaySpawnBeamEffectForPlayer(player);
+            PlaySpawnBeamEffectForSource(source);
         }
 
         PlayAppearEffect();
@@ -87,8 +90,8 @@ public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
             return;
         }
 
-        var player = Player.FindPlayer();
-        if (player == null)
+        var source = _context.Source;
+        if (!IsInstanceValid(source))
         {
             return;
         }
@@ -108,15 +111,15 @@ public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
     private void UpdateBeamFromTo(Beam beam, Vector2 toPosition)
     {
         var globalPos = ToGlobal(toPosition * _animationProgress);
-    
-        var actualPlayer = Player.FindPlayer();
-        if (actualPlayer == null)
+
+        var source = _context.Source;
+        if (!IsInstanceValid(source))
         {
             beam.SetTo(globalPos);
             return;
         }
 
-        beam.SetFromTo(actualPlayer.GetGlobalNosePosition(), globalPos);
+        beam.SetFromTo(source.GlobalPosition, globalPos);
     }
 
     private void RetainPosition()
@@ -203,10 +206,10 @@ public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
         CollisionMask = _initialCollisionMask;
     }
 
-    private void PlaySpawnBeamEffectForPlayer(Player player)
+    private void PlaySpawnBeamEffectForSource(Node2D source)
     {
-        _leftBeam = CreateAndAnimateBeam(player);
-        _rightBeam = CreateAndAnimateBeam(player);
+        _leftBeam = CreateAndAnimateBeam(source);
+        _rightBeam = CreateAndAnimateBeam(source);
 
         var tween = CreateTween();
         tween.TweenMethod(
@@ -220,10 +223,10 @@ public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
             .SetTrans(Tween.TransitionType.Quad);
     }
 
-    private Beam CreateAndAnimateBeam(Player player)
+    private Beam CreateAndAnimateBeam(Node2D source)
     {
         var beam = Beam.Create()
-            .SetFromTo(player.GetGlobalNosePosition(), GlobalPosition)
+            .SetFromTo(source.GlobalPosition, GlobalPosition)
             .SetEnergy(0)
             .SetProgress(0)
             .SetOutlineThickness(100)

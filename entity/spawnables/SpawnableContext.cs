@@ -5,6 +5,11 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
 {
     
     public List<SpawnableContext> Triggers { get; private set; } = [];
+    
+    public List<SpawnableContext> GetTriggerChain()
+    {
+        return Triggers.SelectMany(trigger => trigger.GetTriggerChain()).Concat(Triggers).ToList();
+    }
 
     /// <summary>
     /// Context that this context was inherited from.
@@ -79,7 +84,25 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
     
     public float CalculateStat<TStat>() where TStat : SpawnableStat
     {
+        return CalculateStat<TStat>(false);
+    }
+    
+    public float CalculateStatWithTriggers<TStat>() where TStat : SpawnableStat
+    {
+        return CalculateStat<TStat>(true);
+    }
+    
+    private float CalculateStat<TStat>(bool includeTriggers) where TStat : SpawnableStat
+    {
         var statsOfType = Stats.OfType<TStat>().ToList();
+        if (includeTriggers)
+        {
+            foreach (var trigger in GetTriggerChain())
+            {
+                statsOfType.AddRange(trigger.GetStats<TStat>());
+            }
+        }
+        
         var additiveStats = statsOfType.Where(stat => stat.IsAdditive);
         var multiplicativeStats = statsOfType.Where(stat => !stat.IsAdditive);
 

@@ -107,7 +107,7 @@ public partial class Blaster : Node
     {
         context.Spawn();
 
-        var reload = context.CalculateStat<ReloadStat>();
+        var reload = context.CalculateStatWithTriggers<ReloadStat>();
         Delay += Max(reload, MinDelay);
     }
 
