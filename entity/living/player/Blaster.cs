@@ -35,22 +35,41 @@ public partial class Blaster : Node
         }
 
         var spawnableModules = _inventory.GetModules<SpawnableModule>();
+
+        List<SpawnableData> spawnables = [];
         foreach (var spawnableModule in spawnableModules)
         {
             var module = (SpawnableModule)spawnableModule.Module;
-            var modifiers = spawnableModule
-                .GetAllIncomingConnectedModules()
-                .Select(x => x.Module)
+            
+            var incomingModules = spawnableModule.GetAllIncomingConnectedModules();
+            var outgoingModules = spawnableModule.GetAllOutgoingConnectedModules();
+            
+            var modifiers = incomingModules
+                .Select(inventoryModule => inventoryModule.Module)
                 .OfType<ModifierModule>()
                 .ToList();
+            
+            var incomingTriggers = incomingModules
+                .Where(inventoryModule => inventoryModule.Module is TriggerModule)
+                .ToHashSet();
+            var outgoingTriggers = outgoingModules
+                .Where(inventoryModule => inventoryModule.Module is TriggerModule)
+                .ToHashSet();
 
-            ShootProjectile(modifiers, module);
+            spawnables.Add(new SpawnableData(module, modifiers, incomingTriggers, outgoingTriggers));
+        }
+        
+        var spawnablesWithoutTriggers = spawnables.Where(spawnable => spawnable.IncomingTriggers.Count == 0).ToList();
+        foreach (var spawnable in spawnablesWithoutTriggers)
+        {
+            var context = CreateContext(spawnables, spawnable);
+            Spawn(context);
         }
 
         return true;
     }
 
-    private void ShootProjectile(List<ModifierModule> modifiers, SpawnableModule spawnableModule)
+    private SpawnableContext CreateContext(List<SpawnableData> allSpawnables, SpawnableData spawnable)
     {
         var player = Player.FindPlayer();
         if (player == null)
@@ -58,20 +77,45 @@ public partial class Blaster : Node
             throw new Exception("Blaster cannot fire - player wasn't found");
         }
         
-        var context = new SpawnableContext(spawnableModule.CreateSpawnable())
+        var context = new SpawnableContext(spawnable.SpawnableModule.CreateSpawnable())
         {
             Position = player.GetGlobalNosePosition(),
             Direction = Vector2.FromAngle(player.GetTilt() - Pi / 2),
             Source = player,
-            Modifiers = modifiers
+            Modifiers = spawnable.Modifiers
         };
         
-        context.Stats.AddRange(spawnableModule.Stats);
-        
+        context.Stats.AddRange(spawnable.SpawnableModule.Stats);
+
+        foreach (var triggerModule in spawnable.OutgoingTriggers)
+        {
+            var spawnablesToTrigger = allSpawnables
+                .Where(currentSpawnable => currentSpawnable.IncomingTriggers.Contains(triggerModule))
+                .ToHashSet();
+            
+            foreach (var spawnableToTrigger in spawnablesToTrigger)
+            {
+                var triggerContext = CreateContext(allSpawnables, spawnableToTrigger);
+                context.Triggers.Add(triggerContext);
+            }
+        }
+
+        return context;
+    }
+
+    private void Spawn(SpawnableContext context)
+    {
         context.Spawn();
 
         var reload = context.CalculateStat<ReloadStat>();
         Delay += Max(reload, MinDelay);
     }
+
+    private readonly record struct SpawnableData(
+        SpawnableModule SpawnableModule,
+        List<ModifierModule> Modifiers,
+        HashSet<InventoryModule> IncomingTriggers,
+        HashSet<InventoryModule> OutgoingTriggers
+    );
 
 }

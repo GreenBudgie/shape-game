@@ -51,5 +51,7 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile<MiniSphereP
             .MaxVelocity(500f)
             .Configure()
             .Spawn();
+        
+        LaunchTriggers();
     }
 }

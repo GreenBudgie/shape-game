@@ -409,26 +409,47 @@ public partial class InventoryModule : TextureButton
         return slots
             .SelectMany(slot => slot.Connections)
             .Where(connection => connection.Type == ConnectionType.Incoming)
-            .Select(connection => connection.Slot?.Module)
-            .OfType<InventoryModule>()
+            .Select(connection => connection.Module)
             .Where(module => module != this && module != ignoredModule);
     }
-
-    public HashSet<InventoryModule> GetAllOutgoingConnectedModules(InventoryModule ignoredModule)
+    
+    public HashSet<InventoryModule> GetAllOutgoingConnectedModules()
     {
-        return GetAllOutgoingConnectedModules(Slots.Values, GetOutgoingConnectionsSlots(), ignoredModule, []);
+        return GetAllOutgoingConnectedModules(
+            Slots.Values,
+            GetOutgoingConnectionsSlots(),
+            this,
+            [],
+            stopAtInterruptingModules: true
+        );
     }
 
-    private HashSet<InventoryModule> GetAllOutgoingConnectedModules(
+    public HashSet<InventoryModule> GetAllOutgoingConnectedModules(
         InventoryModule ignoredModule,
-        HashSet<InventoryModule> visitedModules
+        bool stopAtInterruptingModules
     )
     {
         return GetAllOutgoingConnectedModules(
             Slots.Values,
             GetOutgoingConnectionsSlots(),
             ignoredModule,
-            visitedModules
+            [],
+            stopAtInterruptingModules
+        );
+    }
+
+    private HashSet<InventoryModule> GetAllOutgoingConnectedModules(
+        InventoryModule ignoredModule,
+        HashSet<InventoryModule> visitedModules,
+        bool stopAtInterruptingModules
+    )
+    {
+        return GetAllOutgoingConnectedModules(
+            Slots.Values,
+            GetOutgoingConnectionsSlots(),
+            ignoredModule,
+            visitedModules,
+            stopAtInterruptingModules
         );
     }
 
@@ -436,7 +457,8 @@ public partial class InventoryModule : TextureButton
         IEnumerable<InventorySlot> slots,
         IEnumerable<InventorySlot> outgoingConnectionSlots,
         InventoryModule ignoredModule,
-        HashSet<InventoryModule> visitedModules
+        HashSet<InventoryModule> visitedModules,
+        bool stopAtInterruptingModules
     )
     {
         var directModules = GetDirectOutgoingConnectedModules(slots, outgoingConnectionSlots, ignoredModule);
@@ -447,10 +469,14 @@ public partial class InventoryModule : TextureButton
 
         var unvisitedModules = directModules.Where(visitedModules.Add).ToList();
 
+        var modulesToRecurse = stopAtInterruptingModules
+            ? unvisitedModules.Where(module => !module.Module.InterruptsConnections)
+            : unvisitedModules;
+
         // This logic does not reflect complex chains with more than 3 modules,
         // some of which might be incoming, some outgoing. But it's fine for now
-        return unvisitedModules
-            .SelectMany(module => module.GetAllOutgoingConnectedModules(ignoredModule, visitedModules))
+        return modulesToRecurse
+            .SelectMany(module => module.GetAllOutgoingConnectedModules(ignoredModule, visitedModules, stopAtInterruptingModules))
             .Concat(directModules)
             .ToHashSet();
     }
@@ -498,19 +524,27 @@ public partial class InventoryModule : TextureButton
 
     public HashSet<InventoryModule> GetAllIncomingConnectedModules()
     {
-        return GetAllIncomingConnectedModules(Slots.Values, GetIncomingConnectionsSlots(), this, []);
+        return GetAllIncomingConnectedModules(
+            Slots.Values,
+            GetIncomingConnectionsSlots(),
+            this,
+            [],
+            stopAtInterruptingModules: true
+        );
     }
 
     private HashSet<InventoryModule> GetAllIncomingConnectedModules(
         InventoryModule ignoredModule,
-        HashSet<InventoryModule> visitedModules
+        HashSet<InventoryModule> visitedModules,
+        bool stopAtInterruptingModules
     )
     {
         return GetAllIncomingConnectedModules(
             Slots.Values,
             GetIncomingConnectionsSlots(),
             ignoredModule,
-            visitedModules
+            visitedModules,
+            stopAtInterruptingModules
         );
     }
 
@@ -518,7 +552,8 @@ public partial class InventoryModule : TextureButton
         IEnumerable<InventorySlot> slots,
         IEnumerable<InventorySlot> incomingConnectionSlots,
         InventoryModule ignoredModule,
-        HashSet<InventoryModule> visitedModules
+        HashSet<InventoryModule> visitedModules,
+        bool stopAtInterruptingModules
     )
     {
         var directModules = GetDirectIncomingConnectedModules(slots, incomingConnectionSlots, ignoredModule);
@@ -529,10 +564,14 @@ public partial class InventoryModule : TextureButton
 
         var unvisitedModules = directModules.Where(visitedModules.Add).ToList();
 
+        var modulesToRecurse = stopAtInterruptingModules
+            ? unvisitedModules.Where(module => !module.Module.InterruptsConnections)
+            : unvisitedModules;
+
         // This logic does not reflect complex chains with more than 3 modules,
         // some of which might be incoming, some outgoing. But it's fine for now
-        return unvisitedModules
-            .SelectMany(module => module.GetAllIncomingConnectedModules(ignoredModule, visitedModules))
+        return modulesToRecurse
+            .SelectMany(module => module.GetAllIncomingConnectedModules(ignoredModule, visitedModules, stopAtInterruptingModules))
             .Concat(directModules)
             .ToHashSet();
     }
@@ -780,13 +819,15 @@ public partial class InventoryModule : TextureButton
             slots.Values,
             incomingConnectionDirectSlots,
             ignoredModule: this,
-            visitedModules: []
+            visitedModules: [],
+            stopAtInterruptingModules: false
         );
         var outgoingConnectedModules = GetAllOutgoingConnectedModules(
             slots.Values,
             outgoingConnectionDirectSlots,
             ignoredModule: this,
-            visitedModules: []
+            visitedModules: [],
+            stopAtInterruptingModules: false
         );
         
         var hasCycle = outgoingConnectedModules.Any(incomingConnectedModules.Contains);

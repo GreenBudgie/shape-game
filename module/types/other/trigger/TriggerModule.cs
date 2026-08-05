@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class TriggerModule : ModifierModule
+public class TriggerModule : Module
 {
 
     public override Texture2D Texture => GD.Load<Texture2D>("uid://byomadw2augn4");
@@ -19,11 +19,8 @@ public class TriggerModule : ModifierModule
     
     public override HashSet<HexCoordinates> IncomingConnections => [HexCoordinates.Left];
 
-    public override Color Color => ColorScheme.LightBlue;
+    public override bool InterruptsConnections => true;
 
-    public override void Modify(SpawnableContext context)
-    {
-        
-    }
+    public override Color Color => ColorScheme.LightBlue;
 
 }

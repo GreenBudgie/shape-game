@@ -25,10 +25,12 @@ public abstract class Module : IStatsAware
     public virtual HashSet<HexCoordinates> IncomingConnections { get; } = [];
 
     /// <summary>
-    /// Whether this module as an intermediate connection and splits the chain of connections in two.
-    /// Usually it's only possible when module has both incoming and outgoing connections
+    /// Whether this module stops connections from propagating further. If a chain of connections
+    /// meets this module, it will be treated as it has no further connections in that direction.
+    ///
+    /// Modules that interrupt connections may still form a cycle, which is prohibited.
     /// </summary>
-    public virtual bool BreaksConnectionCycle { get; } = false;
+    public virtual bool InterruptsConnections => false;
 
     public virtual List<SpawnableStat> Stats { get; } = [];
     

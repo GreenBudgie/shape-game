@@ -3,6 +3,8 @@ using System.Linq;
 
 public class SpawnableContext(ISpawnable<Node2D> spawnable)
 {
+    
+    public List<SpawnableContext> Triggers { get; private set; } = [];
 
     /// <summary>
     /// Context that this context was inherited from.
@@ -135,6 +137,18 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
             AppliedModifiers.Add(modifier);
         }
     }
+
+    public void LaunchTriggers(Vector2 position, Vector2 direction, Node2D source)
+    {
+        foreach (var trigger in Triggers)
+        {
+            trigger.Position = position;
+            trigger.Direction = direction;
+            trigger.Source = source;
+
+            trigger.Spawn();
+        }
+    }
     
     /// <summary>
     /// Inherits ALL parameters from the parent context. Used when a spawnable is created by another spawnable and
@@ -152,6 +166,7 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
         OriginalSource = parentContext.OriginalSource;
         Stats = parentContext.Stats.ToList();
         Modifiers = parentContext.Modifiers.ToList();
+        Triggers = parentContext.Triggers.ToList();
     }
 
 }

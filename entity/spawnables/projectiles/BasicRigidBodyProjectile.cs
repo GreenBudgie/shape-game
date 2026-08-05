@@ -41,7 +41,13 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
 
     public virtual void Remove()
     {
+        LaunchTriggers();
         QueueFree();
+    }
+
+    protected void LaunchTriggers()
+    {
+        Context.LaunchTriggers(GlobalPosition, LinearVelocity.Normalized(), this);
     }
 
     public virtual void PlayerShapeEntered(Player player)

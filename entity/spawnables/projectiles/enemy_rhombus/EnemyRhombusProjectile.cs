@@ -32,6 +32,7 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhom
 
     public override void Remove()
     {
+        LaunchTriggers();
         Dissolve();
     }
 
