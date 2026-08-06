@@ -1,51 +1,66 @@
 [gd_resource type="Theme" format=3 uid="uid://ciwqpwd0x241b"]
 
-[ext_resource type="FontFile" uid="uid://bxlaon0gxsvq7" path="res://ui/default_font.ttf" id="1_vvb2q"]
-
-[sub_resource type="FontVariation" id="FontVariation_jf26r"]
-base_font = ExtResource("1_vvb2q")
-spacing_glyph = 4
+[ext_resource type="FontVariation" uid="uid://0c78k21urshf" path="res://ui/font_variation.tres" id="1_rqugq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jf26r"]
-draw_center = false
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.223529, 0.627451, 0.929412, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+content_margin_left = 64.0
+content_margin_top = 32.0
+content_margin_right = 64.0
+content_margin_bottom = 32.0
+bg_color = Color(0.24, 0.24, 0.2112, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.22352941, 0.627451, 0.92941177, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6lx7k"]
+content_margin_left = 64.0
+content_margin_top = 32.0
+content_margin_right = 64.0
+content_margin_bottom = 32.0
+bg_color = Color(0.16078432, 0.16078432, 0.14117648, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.22352941, 0.627451, 0.92941177, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iqtc0"]
+content_margin_left = 64.0
+content_margin_top = 32.0
+content_margin_right = 64.0
+content_margin_bottom = 32.0
+bg_color = Color(0.24, 0.24, 0.2112, 1)
+border_width_left = 12
+border_width_top = 12
+border_width_right = 12
+border_width_bottom = 12
+border_color = Color(0.22352941, 0.627451, 0.92941177, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqugq"]
-bg_color = Color(0.211765, 0.945098, 0.803922, 1)
-
-[sub_resource type="FontVariation" id="FontVariation_6lx7k"]
-base_font = ExtResource("1_vvb2q")
-variation_opentype = {
-2003265652: 700
-}
-spacing_glyph = 4
-
-[sub_resource type="FontVariation" id="FontVariation_rqugq"]
-base_font = ExtResource("1_vvb2q")
-spacing_glyph = 4
+bg_color = Color(0.11372549, 0.11372549, 0.105882354, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
 
 [resource]
-Label/colors/font_color = Color(1, 1, 1, 1)
-Label/colors/font_outline_color = Color(0, 0, 0, 1)
-Label/colors/font_shadow_color = Color(0, 0, 0, 0)
-Label/constants/line_spacing = 3
-Label/constants/outline_size = 0
-Label/constants/shadow_offset_x = 1
-Label/constants/shadow_offset_y = 1
-Label/constants/shadow_outline_size = 1
-Label/font_sizes/font_size = 56
-Label/fonts/font = SubResource("FontVariation_jf26r")
-ProgressBar/styles/background = SubResource("StyleBoxFlat_jf26r")
-ProgressBar/styles/fill = SubResource("StyleBoxFlat_rqugq")
-RichTextLabel/font_sizes/bold_font_size = 56
-RichTextLabel/font_sizes/normal_font_size = 56
-RichTextLabel/fonts/bold_font = SubResource("FontVariation_6lx7k")
-RichTextLabel/fonts/normal_font = SubResource("FontVariation_rqugq")
+default_font = ExtResource("1_rqugq")
+default_font_size = 80
+Button/styles/hover = SubResource("StyleBoxFlat_jf26r")
+Button/styles/normal = SubResource("StyleBoxFlat_6lx7k")
+Button/styles/pressed = SubResource("StyleBoxFlat_iqtc0")
+Panel/styles/panel = SubResource("StyleBoxFlat_rqugq")

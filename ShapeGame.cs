@@ -37,6 +37,11 @@ public partial class ShapeGame : Node2D
     {
         ProcessFullscreenToggle();
     }
+
+    public void Restart()
+    {
+        GetTree().ReloadCurrentScene();
+    }
     
     private void ProcessFullscreenToggle()
     {

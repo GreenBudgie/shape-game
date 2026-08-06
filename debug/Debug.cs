@@ -19,7 +19,7 @@ public partial class Debug : Node
         
         if (Input.IsActionJustPressed("debug_restart"))
         {
-            GetTree().ReloadCurrentScene();
+            ShapeGame.Instance.Restart();
         }
     }
 

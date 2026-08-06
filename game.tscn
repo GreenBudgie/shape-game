@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
 [ext_resource type="PackedScene" uid="uid://cjmguojhwcatt" path="res://debug/screen/debug_screen.tscn" id="6_rvswv"]
+[ext_resource type="PackedScene" uid="uid://dy2k3kjbjir5i" path="res://ui/game_over/game_over_screen.tscn" id="7_hb5m1"]
 [ext_resource type="Script" uid="uid://djxx4y1127mi" path="res://ui/FpsCounter.cs" id="8_215e1"]
 [ext_resource type="Script" uid="uid://fxme35ooeqpu" path="res://level/LevelManager.cs" id="8_j5wjh"]
 [ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://entity/living/enemies/EnemyManager.cs" id="8_vef74"]
@@ -19,6 +20,7 @@
 [ext_resource type="Script" uid="uid://di80l6kh6f4gs" path="res://module/world/WorldModuleManager.cs" id="14_boyg6"]
 [ext_resource type="Script" uid="uid://bhctivvx8cd75" path="res://systems/ScreenManager.cs" id="15_e36ub"]
 [ext_resource type="Script" uid="uid://d04nmdt4omsif" path="res://systems/MouseInputManager.cs" id="16_boyg6"]
+[ext_resource type="Script" uid="uid://ca64700tbqs0h" path="res://entity/living/player/PlayerManager.cs" id="17_x5p1p"]
 [ext_resource type="Script" uid="uid://dcfyc3mh3ufim" path="res://debug/DebugDraw.cs" id="19_boyg6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
@@ -136,6 +138,8 @@ metadata/_edit_lock_ = true
 
 [node name="InventoryManager" parent="UI" unique_id=338909771 instance=ExtResource("5_hve3p")]
 
+[node name="GameOverScreen" parent="UI" unique_id=421136395 instance=ExtResource("7_hb5m1")]
+
 [node name="PauseMenu" parent="UI" unique_id=1088637866 instance=ExtResource("6_mfdv2")]
 visible = false
 
@@ -169,6 +173,9 @@ script = ExtResource("14_boyg6")
 process_mode = 3
 process_priority = 1
 script = ExtResource("15_e36ub")
+
+[node name="PlayerManager" type="Node" parent="." unique_id=527546967]
+script = ExtResource("17_x5p1p")
 
 [node name="MouseInputManager" type="Node2D" parent="." unique_id=1359638225]
 process_mode = 3

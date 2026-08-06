@@ -28,6 +28,9 @@ public partial class Player : RigidBody2D
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bw1n7eocfhsbo");
     
     private static Player? _instance;
+
+    [Signal]
+    public delegate void RespawnedEventHandler();
     
     private static int _lastIndex = -1;
 
@@ -57,6 +60,8 @@ public partial class Player : RigidBody2D
         newPlayer.GlobalPosition = ShapeGame.Center;
         ShapeGame.Instance.AddChild(newPlayer);
         ShapeGame.Instance.MoveChild(newPlayer, _lastIndex);
+
+        PlayerManager.Instance.EmitSignal(PlayerManager.SignalName.Respawned);
     }
 
     public override void _EnterTree()
@@ -93,6 +98,12 @@ public partial class Player : RigidBody2D
         _prevPosition = Position;
 
         HealthController.DestroyAnimationFinished += QueueFree;
+        HealthController.Destroyed += OnDestroy;
+    }
+
+    private void OnDestroy()
+    {
+        PlayerManager.Instance.EmitSignal(PlayerManager.SignalName.Destroyed);
     }
 
     private void SetupCollisionDetector()
