@@ -25,25 +25,16 @@ public partial class ShapeGame : Node2D
     {
         // Engine.MaxFps = 60; 
 
-        EmitSignalPostSetup();
-    }
+        if (Debug.Enabled)
+        {
+            AddChild(new Debug());
+        }
 
-    public static bool IsDebugButtonJustPressed()
-    {
-        return Input.IsActionJustPressed("debug_button");
-    }
-    
-    public static bool IsDebugButtonPressed()
-    {
-        return Input.IsActionPressed("debug_button");
+        EmitSignalPostSetup();
     }
 
     public override void _Process(double delta)
     {
-        if (Input.IsActionJustPressed("restart"))
-        {
-            GetTree().ReloadCurrentScene();
-        }
         ProcessFullscreenToggle();
     }
     

@@ -16,6 +16,12 @@ public partial class DebugRect : ColorRect
 
     public override void _Ready()
     {
+        if (!Debug.Enabled)
+        {
+            Debug.PrintDebugNotEnabledError();
+            return;
+        }
+        
         Color = Colors.Red;
         ZIndex = 100;
         GlobalPosition = _rect.Position;

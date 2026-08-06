@@ -2,7 +2,7 @@ public partial class SpawnEnemiesContainer : VBoxContainer
 {
     public override void _Ready()
     {
-        foreach (var enemyType in EnemyManager.EnemyTypes)
+        foreach (var enemyType in EnemyTypeRegistry.Types)
         {
             var hBoxContainer = new HBoxContainer();
             hBoxContainer.AddThemeConstantOverride("separation", 12);

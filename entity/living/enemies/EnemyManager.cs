@@ -13,9 +13,6 @@ public partial class EnemyManager : Node
         128
     );
 
-    public static readonly List<EnemyType> EnemyTypes =
-        ResourceSearcher.FindInnerResources<EnemyType>("res://entity/living/enemies/types");
-
     public static EnemyManager Instance { get; private set; } = null!;
     
     /// <summary>
@@ -30,11 +27,6 @@ public partial class EnemyManager : Node
     public EnemyManager()
     {
         Instance = this;
-    }
-
-    public EnemyType GetRandomEnemyType()
-    {
-        return EnemyTypes.GetRandom();
     }
 
     public Enemy SpawnEnemy(EnemyType type)

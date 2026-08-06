@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 public partial class LevelManager : Node
@@ -7,22 +5,10 @@ public partial class LevelManager : Node
     public static LevelManager Instance { get; private set; } = null!;
 
     [Signal]
-    public delegate void LevelStartedEventHandler(Level level);
+    public delegate void LevelStartedEventHandler();
 
     [Signal]
     public delegate void DestroyProgressUpdatedEventHandler(int prevProgress, int newProgress);
-
-    [Signal]
-    public delegate void SurviveProgressUpdatedEventHandler(int prevProgress, int newProgress);
-
-    public static readonly List<Level> Levels = ResourceSearcher.FindResourcesInDirectory<Level>("res://level/config");
-
-    private static readonly Dictionary<int, Level> LevelByNumber = Levels
-        .GroupBy(level => level.Number)
-        .ToDictionary(
-            group => group.Key,
-            group => group.Single()
-        );
 
     public Level? Level;
 
@@ -30,21 +16,15 @@ public partial class LevelManager : Node
 
     public int SurviveProgress { get; private set; }
 
-    private double _surviveProgressRealSeconds;
     private double _timeToNextPhase;
     private bool _requirementsMet;
     private int _phase = 1;
 
-    private bool _spawnEnemies = false;
+    private bool _spawnEnemies = true;
 
     public LevelManager()
     {
         Instance = this;
-    }
-
-    public static Level GetLevelByNumber(int number)
-    {
-        return LevelByNumber[number];
     }
 
     public override void _Ready()
@@ -74,10 +54,9 @@ public partial class LevelManager : Node
 
         if (!_requirementsMet)
         {
-            SetSurviveProgress(Level.SurviveRequirement);
             SetDestroyProgress(Level.DestroyRequirement);
         }
-                
+
         foreach (var enemy in EnemyManager.Instance.GetAliveEnemies())
         {
             enemy.HealthController.Destroy();
@@ -95,13 +74,6 @@ public partial class LevelManager : Node
         if (_requirementsMet)
         {
             return;
-        }
-        
-        _surviveProgressRealSeconds += delta;
-        var fullSecondsProgress = FloorToInt(_surviveProgressRealSeconds);
-        if (fullSecondsProgress > SurviveProgress && SurviveProgress < level.SurviveRequirement)
-        {
-            SetSurviveProgress(Min(level.SurviveRequirement, fullSecondsProgress));
         }
 
         if (_spawnEnemies)
@@ -124,25 +96,24 @@ public partial class LevelManager : Node
         {
             return;
         }
-        
+
         var nextLevelNumber = Level.Number + 1;
         StartLevel(nextLevelNumber);
     }
-    
+
     public void StartLevel(int level)
     {
         GamePhaseManager.Instance.ChangePhase(GamePhase.Level);
-        
-        Level = GetLevelByNumber(level);
+
+        Level = LevelRegistry.GetLevel(level);
         _phase = 1;
         _requirementsMet = false;
 
-        SetSurviveProgress(0);
         SetDestroyProgress(0);
-        
+
         PrepareNextPhase();
 
-        EmitSignalLevelStarted(Level);
+        EmitSignalLevelStarted();
     }
 
     public void CheckIfRequirementsMet()
@@ -152,11 +123,11 @@ public partial class LevelManager : Node
             return;
         }
 
-        if (DestroyProgress < Level.DestroyRequirement || SurviveProgress < Level.SurviveRequirement)
+        if (DestroyProgress < Level.DestroyRequirement)
         {
             return;
         }
-        
+
         _requirementsMet = true;
         GamePhaseManager.Instance.ChangePhase(GamePhase.Shop);
     }
@@ -183,7 +154,7 @@ public partial class LevelManager : Node
         {
             return;
         }
-        
+
         PrepareNextPhase();
     }
 
@@ -197,14 +168,6 @@ public partial class LevelManager : Node
         var prevDestroyProgress = DestroyProgress;
         DestroyProgress = progress;
         EmitSignalDestroyProgressUpdated(prevDestroyProgress, DestroyProgress);
-        CheckIfRequirementsMet();
-    }
-
-    private void SetSurviveProgress(int progressSeconds)
-    {
-        var prevSurviveProgress = SurviveProgress;
-        SurviveProgress = progressSeconds;
-        EmitSignalSurviveProgressUpdated(prevSurviveProgress, SurviveProgress);
         CheckIfRequirementsMet();
     }
 

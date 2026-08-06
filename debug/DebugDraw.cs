@@ -16,6 +16,16 @@ public partial class DebugDraw : Node2D
 
     public override void _Draw()
     {
+        if (!Debug.Enabled)
+        {
+            if (_points.Count != 0 || _arrows.Count != 0)
+            {
+                Debug.PrintDebugNotEnabledError();
+            }
+            
+            return;
+        }
+        
         foreach (var point in _points)
         {
             DrawCircle(ToLocal(point.Position), point.Size, point.Color);

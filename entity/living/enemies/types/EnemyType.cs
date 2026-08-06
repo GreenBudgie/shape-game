@@ -1,9 +1,13 @@
-[GlobalClass]
-public partial class EnemyType : Resource
+public abstract class EnemyType
 {
 
-    [Export] public PackedScene Scene = null!;
+    public EnemyType()
+    {
+        EnemyTypeRegistry.Types.Add(this);
+    }
 
-    [Export] public string Name = null!;
+    public abstract PackedScene Scene { get; }
+
+    public abstract string Name { get; }
 
 }

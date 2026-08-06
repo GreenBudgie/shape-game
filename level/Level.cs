@@ -1,53 +1,46 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot.Collections;
 
-[GlobalClass]
-public partial class Level : Resource
+public abstract class Level
 {
-    [Export] public int Number { get; private set; }
 
-    [Export(PropertyHint.None, "suffix:units")]
-    public int DestroyRequirement { get; private set; }
+    public Level()
+    {
+        LevelRegistry.Levels.Add(this);
+    }
+    
+    public abstract int Number { get; }
 
-    [Export(PropertyHint.None, "suffix:sec")]
-    public int SurviveRequirement { get; private set; }
+    public abstract int DestroyRequirement { get; }
     
     /// <summary>
     /// Phase represents the "wave" of enemy spawns. Duration of the phase controls how frequently new
     /// enemies are spawned. Phases start from 1.
     /// </summary>
-    [Export(PropertyHint.None, "suffix:sec")]
-    [ExportCategory("Phase Duration")]
-    public float PhaseDuration { get; private set; } = 5;
+    public abstract float PhaseDuration { get; }
     
     /// <summary>
     /// How much faster each next phase will start
     /// </summary>
-    [Export(PropertyHint.None, "suffix:sec")]
-    public float PhaseDurationDec { get; private set; }
+    public abstract float PhaseDurationDec { get; }
 
-    [Export(PropertyHint.None, "suffix:sec")]
-    public float MinPhaseDuration { get; private set; } = 5;
+    public abstract float MinPhaseDuration { get; }
     
     /// <summary>
     /// Determines the number of enemies to be spawned each phase.
     /// </summary>
-    [Export]
-    [ExportCategory("Number of Enemies")]
-    public int EnemiesPerPhase { get; private set; }
+    public abstract int EnemiesPerPhase { get; }
     
     /// <summary>
     /// How much more enemies will spawn each next phase. Can be decimal, but floored to int
     /// </summary>
-    [Export]
-    public float EnemiesPerPhaseInc { get; private set; }
+    public abstract float EnemiesPerPhaseInc { get; }
 
-    [Export]
-    public int MaxEnemiesPerPhase { get; private set; }
+    public abstract int MaxEnemiesPerPhase { get; }
 
-    [ExportCategory("Distributions")]
-    [Export] public Array<EnemyTypeDistribution> EnemyTypeDistributions { get; private set; } = [];
+    public abstract List<EnemyTypeDistribution> EnemyTypeDistributions { get; }
 
     /// <summary>
     /// Returns a random EnemyType based on the weights of EnemyTypeDistributions, considering phase delays.
