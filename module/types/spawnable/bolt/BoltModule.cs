@@ -16,7 +16,7 @@ public class BoltModule : SpawnableModule
     public override List<SpawnableStat> Stats => [
         new DamageStat { Value = 2 },
         new SpeedStat { Value = 3000 },
-        new ReloadStat { Value = 1 },
+        new ReloadStat { Value = 0.8f },
         new LifetimeStat { Value = 4 },
     ];
 

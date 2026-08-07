@@ -16,7 +16,7 @@ public class MiniSphereModule : SpawnableModule
     public override List<SpawnableStat> Stats => [
         new DamageStat { Value = 1 },
         new SpeedStat { Value = 2000 },
-        new ReloadStat { Value = 0.1f },
+        new ReloadStat { Value = 0.2f },
         new LifetimeStat { Value = 1, ValueDelta = 0.1f },
     ];
 
