@@ -4,15 +4,45 @@ public class Level1 : Level
 {
     public override int Number => 1;
     public override int DestroyRequirement => 10;
-    public override float PhaseDuration => 30;
-    public override float PhaseDurationDec => 5;
-    public override float MinPhaseDuration => 5;
-    public override int EnemiesPerPhase => 5;
-    public override float EnemiesPerPhaseInc => 1;
-    public override int MaxEnemiesPerPhase => 10;
 
-    public override List<EnemyTypeDistribution> EnemyTypeDistributions =>
+    public override List<LevelPhase> Phases =>
     [
-        new(EnemyTypeRegistry.Square)
+        new()
+        {
+            Duration = 20,
+            MinEnemyBatch = 1,
+            MaxEnemyBatch = 2,
+            MinSpawnDelay = 6,
+            MaxSpawnDelay = 10,
+            EnemyTypeDistributions =
+            [
+                new EnemyTypeDistribution(EnemyTypeRegistry.Square)
+            ]
+        },
+
+        new()
+        {
+            Duration = 20,
+            MinEnemyBatch = 2,
+            MaxEnemyBatch = 3,
+            MinSpawnDelay = 5,
+            MaxSpawnDelay = 10,
+            EnemyTypeDistributions =
+            [
+                new EnemyTypeDistribution(EnemyTypeRegistry.Square)
+            ]
+        },
+        
+        new()
+        {
+            MinEnemyBatch = 3,
+            MaxEnemyBatch = 4,
+            MinSpawnDelay = 4,
+            MaxSpawnDelay = 10,
+            EnemyTypeDistributions =
+            [
+                new EnemyTypeDistribution(EnemyTypeRegistry.Square),
+            ]
+        },
     ];
 }

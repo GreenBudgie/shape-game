@@ -12,9 +12,5 @@ public class EnemyTypeDistribution(EnemyType enemyType)
     /// 4/(4+2) = 66.67% chance to spawn, and the second has a 2/(4+2) = 33.33% chance.
     /// </remarks>
     public int Weight { get; set; } = 1;
-    
-    /// <summary>
-    /// Determines the minimum amount of phases needed to pass before this enemy can be spawned on a level
-    /// </summary>
-    public int PhaseDelay { get; set; }
+
 }

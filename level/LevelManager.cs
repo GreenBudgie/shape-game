@@ -17,8 +17,10 @@ public partial class LevelManager : Node
     public int SurviveProgress { get; private set; }
 
     private double _timeToNextPhase;
+    private double _timeToSpawnEnemies;
     private bool _requirementsMet;
-    private int _phase = 1;
+    private bool _isLastPhase;
+    private int _phase;
 
     private bool _spawnEnemies = true;
 
@@ -79,16 +81,21 @@ public partial class LevelManager : Node
         if (_spawnEnemies)
         {
             _timeToNextPhase -= delta;
+            _timeToSpawnEnemies -= delta;
         }
-
-        if (_timeToNextPhase < 0)
+        
+        if (_timeToSpawnEnemies < 0)
         {
-            _timeToNextPhase = level.GetCurrentPhaseDuration(_phase);
+            _timeToSpawnEnemies = GetCurrentPhase(level).GetSpawnDelay();
             SpawnEnemyBatch();
         }
+        
+        if (_timeToNextPhase < 0)
+        {
+            StartNextPhase(level);
+            _timeToNextPhase = GetCurrentPhase(level).Duration;
+        }
     }
-
-    private const float PhaseStartMinDuration = 0.3f;
 
     public void StartNextLevel()
     {
@@ -106,13 +113,11 @@ public partial class LevelManager : Node
         GamePhaseManager.Instance.ChangePhase(GamePhase.Level);
 
         Level = LevelRegistry.GetLevel(level);
-        _phase = 1;
+        _phase = 0;
+        _isLastPhase = false;
         _requirementsMet = false;
 
         SetDestroyProgress(0);
-
-        PrepareNextPhase();
-
         EmitSignalLevelStarted();
     }
 
@@ -155,12 +160,18 @@ public partial class LevelManager : Node
             return;
         }
 
-        PrepareNextPhase();
+        SpawnNextEnemyBatchFaster();
     }
 
-    private void PrepareNextPhase()
+    private void SpawnNextEnemyBatchFaster()
     {
-        _timeToNextPhase = PhaseStartMinDuration;
+        const float nextBatchMinDelay = 0.5f;
+        if (_timeToSpawnEnemies < nextBatchMinDelay)
+        {
+            return;
+        }   
+        
+        _timeToSpawnEnemies = nextBatchMinDelay;
     }
 
     private void SetDestroyProgress(int progress)
@@ -171,9 +182,6 @@ public partial class LevelManager : Node
         CheckIfRequirementsMet();
     }
 
-    private const float EnemyInBatchSpawnDelay = 0.25f;
-    private const float EnemyInBatchSpawnDelayDelta = 0.1f;
-
     private void SpawnEnemyBatch()
     {
         if (Level == null)
@@ -181,21 +189,23 @@ public partial class LevelManager : Node
             return;
         }
 
-        for (var i = 0; i < Level.GetCurrentEnemiesPerPhase(_phase); i++)
+        foreach (var enemyType in GetCurrentPhase(Level).GetEnemyBatch())
         {
-            var delay = i * RandomUtils.DeltaRange(EnemyInBatchSpawnDelay, EnemyInBatchSpawnDelayDelta);
-            if (delay == 0)
-            {
-                SpawnEnemy();
-            }
-            else
-            {
-                GetTree().CreateTimer(delay).Timeout += SpawnEnemy;
-            }
+            EnemyManager.Instance.SpawnEnemy(enemyType);
+        }
+    }
 
-            continue;
-
-            void SpawnEnemy() => EnemyManager.Instance.SpawnEnemy(Level.GetRandomWeightedEnemyType(_phase));
+    private LevelPhase GetCurrentPhase(Level level)
+    {
+        return level.Phases[_phase];
+    }
+    
+    private void StartNextPhase(Level level)
+    {
+        if (level.Phases.Count >= _phase - 1)
+        {
+            _isLastPhase = true;
+            return;
         }
 
         _phase++;
