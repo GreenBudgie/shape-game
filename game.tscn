@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://entity/living/player/player.tscn" id="2_eow3j"]
+[ext_resource type="PackedScene" uid="uid://dlwvs3u6gqtsw" path="res://ui/stats/level_progress.tscn" id="3_qhcbd"]
 [ext_resource type="Texture2D" uid="uid://c1ai2x8hfwt2q" path="res://environment/wall/glowing_wall.png" id="4_rvswv"]
 [ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://shop/shop.tscn" id="5_e8heu"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
@@ -55,7 +56,10 @@ shader_parameter/magnitude = Vector2(0, 0)
 [node name="Game" type="Node2D" unique_id=1682739906]
 script = ExtResource("1_ryrav")
 
-[node name="Parallax2D" type="Parallax2D" parent="." unique_id=1419804882]
+[node name="Background" type="CanvasLayer" parent="." unique_id=1099077609]
+layer = -2
+
+[node name="Parallax2D" type="Parallax2D" parent="Background" unique_id=1419804882]
 z_index = -2
 repeat_size = Vector2(724, 724)
 autoscroll = Vector2(0, 100)
@@ -63,9 +67,14 @@ repeat_times = 6
 follow_viewport = false
 ignore_camera_scroll = true
 
-[node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=1231804813]
+[node name="Sprite2D" type="Sprite2D" parent="Background/Parallax2D" unique_id=1231804813]
 position = Vector2(1920, 1080)
 texture = ExtResource("10_hve3p")
+
+[node name="BackgroundUI" type="CanvasLayer" parent="." unique_id=479357002]
+layer = -1
+
+[node name="LevelProgress" parent="BackgroundUI" unique_id=676634815 instance=ExtResource("3_qhcbd")]
 
 [node name="Player" parent="." unique_id=692351150 instance=ExtResource("2_eow3j")]
 position = Vector2(2174, 1930)
@@ -195,10 +204,8 @@ metadata/_edit_lock_ = true
 layer = 10
 
 [node name="FpsCounter" type="Label" parent="DebugLayer" unique_id=1109875423]
-offset_left = 16.41
-offset_top = 10.655
-offset_right = 56.41
-offset_bottom = 112.655
+offset_right = 40.0
+offset_bottom = 102.0
 script = ExtResource("8_215e1")
 
 [node name="DebugDraw" type="Node2D" parent="DebugLayer" unique_id=1202650167]

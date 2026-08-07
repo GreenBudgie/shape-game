@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 public partial class LevelManager : Node
@@ -42,6 +43,16 @@ public partial class LevelManager : Node
         {
             ProcessLevel(delta, Level);
         }
+    }
+
+    public Level RequireLevel()
+    {
+        if (Level == null)
+        {
+            throw new Exception("Level is not running");
+        }
+
+        return Level;
     }
 
     /// <summary>

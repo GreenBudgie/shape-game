@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dy2k3kjbjir5i"]
 
-[ext_resource type="Script" uid="uid://dhpqica2q4gwt" path="res://GameOverScreen.cs" id="1_ahitp"]
+[ext_resource type="Script" uid="uid://dhpqica2q4gwt" path="res://ui/game_over/GameOverScreen.cs" id="1_ahitp"]
 
 [node name="GameOverScreen" type="Control" unique_id=421136395]
 visible = false
