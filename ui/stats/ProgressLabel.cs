@@ -1,4 +1,4 @@
-public partial class ProgressText : Label
+public partial class ProgressLabel : Label
 {
     public override void _Ready()
     {

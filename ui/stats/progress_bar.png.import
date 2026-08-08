@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmr7u4v55fm3t"
-path="res://.godot/imported/progress.png-8b1d5f3fbcde5a0fd47658e5d6201522.ctex"
+uid="uid://b53oniryknpeg"
+path="res://.godot/imported/progress_bar.png-1679201ca03508477c001776348f4240.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/stats/progress.png"
-dest_files=["res://.godot/imported/progress.png-8b1d5f3fbcde5a0fd47658e5d6201522.ctex"]
+source_file="res://ui/stats/progress_bar.png"
+dest_files=["res://.godot/imported/progress_bar.png-1679201ca03508477c001776348f4240.ctex"]
 
 [params]
 
