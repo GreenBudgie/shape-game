@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://entity/living/player/player.tscn" id="2_eow3j"]
-[ext_resource type="PackedScene" uid="uid://dlwvs3u6gqtsw" path="res://ui/stats/level_progress.tscn" id="3_qhcbd"]
+[ext_resource type="PackedScene" uid="uid://dlwvs3u6gqtsw" path="res://ui/game/game_ui.tscn" id="3_qhcbd"]
 [ext_resource type="Texture2D" uid="uid://c1ai2x8hfwt2q" path="res://environment/wall/glowing_wall.png" id="4_rvswv"]
 [ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://shop/shop.tscn" id="5_e8heu"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]

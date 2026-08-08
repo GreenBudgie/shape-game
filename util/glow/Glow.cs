@@ -64,8 +64,15 @@ public partial class Glow : Sprite2D, IGlow
 
         var t = Time.GetTicksMsec() / 1000f;
         var pulse = 0.5f + 0.5f * Sin(t * Tau * _pulsesPerSecond);
-        UpdateRadius(GetBaseRadius() + _pulseRadiusDelta * pulse);
-        UpdateStrength(GetBaseStrength() + _pulseStrengthDelta * pulse);
+        if (_pulseRadiusDelta > 0)
+        {
+            UpdateRadius(GetBaseRadius() + _pulseRadiusDelta * pulse);
+        }
+
+        if (_pulseStrengthDelta > 0)
+        {
+            UpdateStrength(GetBaseStrength() + _pulseStrengthDelta * pulse);
+        }
     }
 
     /// <summary>

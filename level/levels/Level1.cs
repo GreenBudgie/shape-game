@@ -3,7 +3,7 @@ using System.Collections.Generic;
 public class Level1 : Level
 {
     public override int Number => 1;
-    public override int DestroyRequirement => 10;
+    public override int DestroyRequirement => 5;
 
     public override List<LevelPhase> Phases =>
     [

@@ -14,7 +14,7 @@ public static class GodotConstants
     public static readonly NodePath OffsetProperty = "offset";
     public static readonly NodePath OffsetTransformPosition = "offset_transform_position";
     public static readonly NodePath OffsetTransformRotation = "offset_transform_rotation";
-    public static readonly NodePath OffsetTransformScale = "offset_transform_scale";
+    public static readonly NodePath OffsetTransformScaleProperty = "offset_transform_scale";
 
     public static string ShaderParameter(string parameter)
     {

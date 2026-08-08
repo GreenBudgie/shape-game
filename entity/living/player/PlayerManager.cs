@@ -9,6 +9,9 @@ public partial class PlayerManager : Node
     [Signal]
     public delegate void DestroyedEventHandler();
     
+    [Signal]
+    public delegate void HealthChangedEventHandler(float health);
+    
     public PlayerManager()
     {
         Instance = this;

@@ -101,12 +101,17 @@ public static class TypeSafeTweenHelper
     
     public static PropertyTweener TweenOffsetScale(this Tween tween, Control node, float finalVal, float duration)
     {
-        return tween.TweenProperty(node, OffsetTransformScale, new Vector2(finalVal, finalVal), duration);
+        return tween.TweenProperty(node, OffsetTransformScaleProperty, new Vector2(finalVal, finalVal), duration);
     }
     
     public static PropertyTweener TweenOffsetScaleReset(this Tween tween, Control node, float duration)
     {
-        return tween.TweenProperty(node, OffsetTransformScale, Vector2.One, duration);
+        return tween.TweenProperty(node, OffsetTransformScaleProperty, Vector2.One, duration);
+    }
+    
+    public static PropertyTweener TweenRangeValue(this Tween tween, Range node, float finalVal, float duration)
+    {
+        return tween.TweenProperty(node, ValueProperty, finalVal, duration);
     }
     
 }

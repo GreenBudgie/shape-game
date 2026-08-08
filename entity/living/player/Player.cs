@@ -99,6 +99,12 @@ public partial class Player : RigidBody2D
 
         HealthController.DestroyAnimationFinished += QueueFree;
         HealthController.Destroyed += OnDestroy;
+        HealthController.HealthChanged += OnHealthChanged;
+    }
+    
+    private void OnHealthChanged(float delta)
+    {
+        PlayerManager.Instance.EmitSignal(PlayerManager.SignalName.HealthChanged, HealthController.Health);
     }
 
     private void OnDestroy()
