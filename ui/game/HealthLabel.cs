@@ -23,6 +23,6 @@ public partial class HealthLabel : Label
     
     private void UpdateHealth(float health)
     {
-        Text = $"{health}";
+        Text = $"{RoundToInt(health)}";
     }
 }

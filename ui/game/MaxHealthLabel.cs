@@ -20,6 +20,6 @@ public partial class MaxHealthLabel : Label
     
     private void UpdateMaxHealth(float maxHealth)
     {
-        Text = $"{maxHealth}";
+        Text = $"{RoundToInt(maxHealth)}";
     }
 }

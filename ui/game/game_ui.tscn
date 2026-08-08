@@ -10,6 +10,9 @@
 [ext_resource type="Script" uid="uid://c1kw0hy8g2a6h" path="res://ui/game/HealthBar.cs" id="8_pc3ud"]
 [ext_resource type="Script" uid="uid://b0bbl31l30m00" path="res://ui/game/HealthLabel.cs" id="9_yw7c2"]
 [ext_resource type="Script" uid="uid://b0cok6cnk5ksv" path="res://ui/game/MaxHealthLabel.cs" id="10_7okqv"]
+[ext_resource type="Texture2D" uid="uid://3ir7ic650er4" path="res://ui/game/crystal.png" id="11_vor7y"]
+[ext_resource type="Script" uid="uid://bt5rfo0jnwvtv" path="res://ui/game/CrystalIcon.cs" id="12_b7dow"]
+[ext_resource type="Script" uid="uid://bakssr60d86ca" path="res://ui/game/CrystalsLabel.cs" id="12_w08ax"]
 
 [sub_resource type="Curve" id="Curve_dthx8"]
 _data = [Vector2(0, 0.662921), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.59158, 0.0, 0, 0]
@@ -71,7 +74,7 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 48.0
-offset_top = -194.0
+offset_top = -153.0
 offset_right = 484.0
 offset_bottom = -32.0
 grow_vertical = 0
@@ -168,6 +171,7 @@ offset_right = -48.0
 offset_bottom = -32.0
 grow_horizontal = 0
 grow_vertical = 0
+alignment = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="Health/VBoxContainer" unique_id=585604431]
 layout_mode = 2
@@ -238,3 +242,43 @@ amount = 30
 texture = ExtResource("5_vor7y")
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_55qsu")
+
+[node name="Crystals" type="Control" parent="." unique_id=699405562]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CrystalIcon" type="TextureRect" parent="Crystals" unique_id=601651268]
+layout_mode = 0
+offset_left = 3718.0
+offset_top = 1882.0
+offset_right = 3784.0
+offset_bottom = 1948.0
+offset_transform_enabled = true
+texture = ExtResource("11_vor7y")
+expand_mode = 1
+stretch_mode = 3
+script = ExtResource("12_b7dow")
+
+[node name="CrystalsLabel" type="Label" parent="Crystals" unique_id=101942110]
+modulate = Color(0.95686275, 0.9098039, 0.4862745, 1)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -390.0
+offset_top = -275.0
+offset_right = -151.0
+offset_bottom = -214.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 48
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+script = ExtResource("12_w08ax")
