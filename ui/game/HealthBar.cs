@@ -56,9 +56,19 @@ public partial class HealthBar : TextureProgressBar
             .SetPulseRadiusDelta(20f * ratio)
             .SetPulseStrengthDelta(ratio)
             .SetPulsesPerSecond(1f + ratio);
+        
+        const float startDuration = 0.1f;
+        const float endDuration = 0.2f;
 
         _animationTween?.Kill();
         _animationTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
         _animationTween.TweenRangeValue(this, health, 0.25f);
+        _animationTween.Parallel()
+            .TweenOffsetScale(this, (float)GD.RandRange(1.04f, 1.08f), startDuration);
+        _animationTween.Parallel()
+            .TweenOffsetRotation(this, RandomUtils.RandomSignedDeltaRange(0.1f, 0.05f), startDuration);
+        
+        _animationTween.TweenOffsetScaleReset(this, endDuration);
+        _animationTween.Parallel().TweenOffsetRotationReset(this, endDuration);
     }
 }
