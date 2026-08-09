@@ -10,12 +10,14 @@ public partial class HealthController : Node2D
 
     [Signal]
     public delegate void DestroyAnimationFinishedEventHandler();
+    
+    [Export] private float _invulnerabilityPeriod = 0.01f;
 
     [ExportGroup("Health")] [Export] public float MaxHealth { get; set; }
 
     [ExportGroup("Relations")] [Export] private Sprite2D? _sprite;
     [Export] private GlowWrapper? _glowWrapper;
-    [Export] private CollisionShape2D _damageLabelSpawnArea = null!;
+    [Export] private CollisionShape2D? _damageLabelSpawnArea;
 
     /// <summary>
     /// Health, always between 0 and MaxHealth
@@ -28,7 +30,14 @@ public partial class HealthController : Node2D
     /// </summary>
     public bool IsInvulnerable { get; set; }
 
+    protected CollisionShape2D? DamageLabelSpawnArea
+    {
+        get => _damageLabelSpawnArea;
+        set => _damageLabelSpawnArea = value;
+    }
+
     private Tween? _healthTween;
+    private double _invulnerabilityTime;
 
     public static HealthController? GetHealthControllerIfExists(Node2D owner)
     {
@@ -43,6 +52,23 @@ public partial class HealthController : Node2D
     public override void _Ready()
     {
         Health = MaxHealth;
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_invulnerabilityTime > 0)
+        {
+            _invulnerabilityTime -= delta;
+        }
+    }
+
+    /// <summary>
+    /// Changes max health and immediately changes Health to the new value. Does not count as dagaming/healing.
+    /// </summary>
+    public void ChangeMaxHealthImmediately(float maxHealth)
+    {
+        MaxHealth = maxHealth;
+        Health = maxHealth;
     }
 
     public bool IsDestroyed()
@@ -88,11 +114,18 @@ public partial class HealthController : Node2D
             return;
         }
 
+        if (_invulnerabilityTime > 0 && delta < 0)
+        {
+            // Invulnerability period is active, do nothing on damage
+            return;
+        }
+
         CreateHealthLabel(delta);
 
         if (!IsInvulnerable || delta >= 0)
         {
             Health = Clamp(Health + delta, 0, MaxHealth);
+            _invulnerabilityTime = _invulnerabilityPeriod;
         }
 
         EmitSignalHealthChanged(delta);
@@ -149,7 +182,15 @@ public partial class HealthController : Node2D
             healthToDisplay = RoundToInt(healthDelta).ToString();
         }
 
-        var position = ToGlobal(_damageLabelSpawnArea.Shape.GetRect().RandomPoint());
+        Vector2 position;
+        if (_damageLabelSpawnArea != null)
+        {
+            position = ToGlobal(_damageLabelSpawnArea.Shape.GetRect().RandomPoint());
+        }
+        else
+        {
+            position = GlobalPosition;
+        }
         var text = sign + healthToDisplay;
         
         PopupLabel.Create(position, text).SetColor(color);

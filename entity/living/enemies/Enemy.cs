@@ -5,29 +5,28 @@ public abstract partial class Enemy : RigidBody2D
     
     [Export] public Color Color { get; private set; }
 
-    [Export] protected CollisionShape2D Area = null!;
+    [Export] protected CollisionShape2D? Area;
 
     public HealthController HealthController { get; private set; } = null!;
     
     private GlowWrapper _glowWrapper = null!;
-
-    /// <summary>
-    /// A rectangle (in local coordinates) to use for spawning effects inside the enemy
-    /// </summary>
-    public Rect2 AreaRect { get; private set; }
     
     protected bool IsActive { get; private set; }
+
+    /// <summary>
+    /// Whether this enemy is environmental. Environmental enemies do not count as standard enemies.
+    /// </summary>
+    protected virtual bool IsEnvironmental { get; } = false;
     
     private uint _initialCollisionLayer;
     private uint _initialCollisionMask;
 
     public override void _Ready()
     {
-        if (!Area.Disabled)
+        if (Area is { Disabled: false })
         {
             Area.Disabled = true;
         }
-        AreaRect = Area.Shape.GetRect();
         
         AddToGroup(EnemyManager.AliveEnemiesGroup);
 
@@ -97,24 +96,33 @@ public abstract partial class Enemy : RigidBody2D
             DropCrystals();
         }
 
-        EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);
+        if (!IsEnvironmental)
+        {
+            EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);
+        }
     }
 
     private void DropCrystals()
     {
         for (var i = 0; i < GetCrystalsToDrop(); i++)
         {
-            var position = GlobalPosition + AreaRect.RandomPoint();
+            Vector2 position;
+            if (Area != null)
+            {
+                position = GlobalPosition + Area.Shape.GetRect().RandomPoint();
+            }
+            else
+            {
+                position = GlobalPosition;
+            }
             FallingCrystal.Spawn(position);
         }
     }
 
-
     private void SpawnParticles()
     {
-        BurstParticleEffect.Create(GlobalPosition)
+        var effect = BurstParticleEffect.Create(GlobalPosition)
             .WithTexture(ParticleTextures.Square)
-            .RectangleShape(AreaRect)
             .WithAmountPerPixel(0.15f)
             .Color(Color)
             .InheritVelocity(this)
@@ -122,8 +130,14 @@ public abstract partial class Enemy : RigidBody2D
             .MinVelocity(300f)
             .VelocityDelta(150f)
             .MaxVelocity(2000f)
-            .Configure()
-            .Spawn();
+            .Configure();
+
+        if (Area != null)
+        {
+            effect.RectangleShape(Area.Shape.GetRect());
+        }
+        
+        effect.Spawn();
     }
 
 }

@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://dwf11f6da31jj"]
+
+[ext_resource type="Script" uid="uid://c1ktve1ew1wua" path="res://entity/living/enemies/types/polysteroid/EnemyPolysteroid.cs" id="1_er0db"]
+[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="4_5xt0b"]
+[ext_resource type="Texture2D" uid="uid://1dpobmb33rix" path="res://entity/living/enemies/types/polysteroid/sizes/big/sprite.png" id="4_er0db"]
+[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="5_qyujg"]
+[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="7_46mis"]
+[ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/living/health/health_controller.tscn" id="8_1xivs"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_er0db"]
+friction = 0.3
+bounce = 0.8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_er0db"]
+resource_local_to_scene = true
+shader = ExtResource("5_qyujg")
+shader_parameter/glow_color = Color(0.9372549, 0.35686275, 0.35686275, 1)
+shader_parameter/glow_radius = 0.0
+shader_parameter/glow_strength = 2.0
+
+[node name="EnemyPolysteroid" type="RigidBody2D" unique_id=1623612089]
+collision_layer = 4
+collision_mask = 291
+mass = 1.2
+physics_material_override = SubResource("PhysicsMaterial_er0db")
+gravity_scale = 0.5
+contact_monitor = true
+max_contacts_reported = 5
+linear_damp = 0.2
+angular_damp = 0.2
+script = ExtResource("1_er0db")
+Color = Color(0.9372549, 0.35686275, 0.35686275, 1)
+
+[node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("4_5xt0b")]
+material = SubResource("ShaderMaterial_er0db")
+
+[node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1360807856]
+unique_name_in_owner = true
+texture = ExtResource("4_er0db")
+
+[node name="Pointer" parent="." unique_id=1593749051 node_paths=PackedStringArray("_target") instance=ExtResource("7_46mis")]
+visible = false
+_target = NodePath("..")
+_pointerColor = Color(0.9372549, 0.35686275, 0.35686275, 1)
+_showOnlyWhenMovingIn = false
+
+[node name="HealthController" parent="." unique_id=695144963 node_paths=PackedStringArray("_sprite", "_glowWrapper") instance=ExtResource("8_1xivs")]
+MaxHealth = 12.0
+_sprite = NodePath("../Glow/Sprite")
+_glowWrapper = NodePath("../Glow")

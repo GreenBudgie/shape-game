@@ -3,6 +3,23 @@ using System.Linq;
 
 public static class RandomUtils
 {
+    
+    /// <summary>
+    /// The same as GD.RandRange(), but for floats
+    /// </summary>
+    public static float Range(float min, float max)
+    {
+        return (float)GD.RandRange(min, max);
+    }
+    
+    /// <summary>
+    /// The same as GD.RandRange(), but for floats
+    /// </summary>
+    public static float RandomSignedRange(float min, float max)
+    {
+        return RandomSign() * (float)GD.RandRange(min, max);
+    }
+    
     /// <summary>
     /// Generates a random sign: +1 or -1 with equal probability.
     /// </summary>

@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://c7nwwkcvaimyw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sj1rv"]
+size = Vector2(140, 124)
+
+[node name="Area" type="CollisionShape2D" unique_id=840349136]
+position = Vector2(-7, 13)
+shape = SubResource("RectangleShape2D_sj1rv")
+disabled = true

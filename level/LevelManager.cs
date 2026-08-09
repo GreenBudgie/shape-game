@@ -19,6 +19,7 @@ public partial class LevelManager : Node
 
     private double _timeToNextPhase;
     private double _timeToSpawnEnemies;
+    private double _timeToSpawnPolysteroids;
     private bool _requirementsMet;
     private bool _isLastPhase;
     private int _phase;
@@ -93,12 +94,20 @@ public partial class LevelManager : Node
         {
             _timeToNextPhase -= delta;
             _timeToSpawnEnemies -= delta;
+            _timeToSpawnPolysteroids -= delta;
         }
         
         if (_timeToSpawnEnemies < 0)
         {
             _timeToSpawnEnemies = GetCurrentPhase(level).GetSpawnDelay();
             SpawnEnemyBatch();
+        }
+        
+        if (_timeToSpawnPolysteroids < 0)
+        {
+            _timeToSpawnPolysteroids =
+                RandomUtils.Range(level.PolysteroidMinTimeToSpawn, level.PolysteroidMaxTimeToSpawn);
+            SpawnPolysteroid();
         }
         
         if (_timeToNextPhase < 0)
@@ -128,6 +137,9 @@ public partial class LevelManager : Node
         _isLastPhase = false;
         _requirementsMet = false;
 
+        _timeToSpawnPolysteroids =
+            RandomUtils.Range(Level.PolysteroidMinTimeToSpawn, Level.PolysteroidMaxTimeToSpawn);
+        
         SetDestroyProgress(0);
         EmitSignalLevelStarted();
     }
@@ -191,6 +203,16 @@ public partial class LevelManager : Node
         DestroyProgress = progress;
         EmitSignalDestroyProgressUpdated(prevDestroyProgress, DestroyProgress);
         CheckIfRequirementsMet();
+    }
+
+    private void SpawnPolysteroid()
+    {
+        if (Level == null)
+        {
+            return;
+        }
+        
+        EnemyManager.Instance.SpawnEnemy(EnemyTypeRegistry.Polysteroid);
     }
 
     private void SpawnEnemyBatch()
