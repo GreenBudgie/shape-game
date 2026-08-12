@@ -16,7 +16,7 @@ public abstract partial class Enemy : RigidBody2D
     /// <summary>
     /// Whether this enemy is environmental. Environmental enemies do not count as standard enemies.
     /// </summary>
-    protected virtual bool IsEnvironmental { get; } = false;
+    public virtual bool IsEnvironmental { get; } = false;
     
     private uint _initialCollisionLayer;
     private uint _initialCollisionMask;

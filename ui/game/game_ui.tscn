@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dlwvs3u6gqtsw"]
 
 [ext_resource type="Texture2D" uid="uid://bsxnigw4fx44c" path="res://ui/game/progress_background.png" id="1_b3mny"]
+[ext_resource type="Script" uid="uid://lov84vuo7xam" path="res://ui/game/MaxEnemiesLabel.cs" id="1_ea8c5"]
 [ext_resource type="Texture2D" uid="uid://cbd0wputg4eg6" path="res://ui/game/progress_foreground.png" id="2_pc3ud"]
 [ext_resource type="Texture2D" uid="uid://b53oniryknpeg" path="res://ui/game/progress_bar.png" id="3_yw7c2"]
 [ext_resource type="Script" uid="uid://cybnjsfcfhuxa" path="res://ui/game/DestroyProgressBar.cs" id="4_7okqv"]
@@ -79,6 +80,14 @@ offset_right = 484.0
 offset_bottom = -32.0
 grow_vertical = 0
 alignment = 1
+
+[node name="MaxEnemiesLabel" type="Label" parent="LevelProgress/VBoxContainer" unique_id=1708319297]
+modulate = Color(1, 0.62352943, 0.30980393, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Max enemies"
+horizontal_alignment = 1
+script = ExtResource("1_ea8c5")
 
 [node name="CenterContainer" type="CenterContainer" parent="LevelProgress/VBoxContainer" unique_id=31814448]
 layout_mode = 2

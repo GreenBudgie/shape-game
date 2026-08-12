@@ -45,6 +45,16 @@ public partial class EnemyManager : Node
         return GetTree().GetNodesInGroup(AliveEnemiesGroup).Cast<Enemy>();
     }
 
+    public IEnumerable<Enemy> GetNonEnvironmentalAliveEnemies()
+    {
+        return GetTree().GetNodesInGroup(AliveEnemiesGroup).Cast<Enemy>().Where(enemy => !enemy.IsEnvironmental);
+    }
+    
+    public int GetAliveEnemiesCount()
+    {
+        return GetTree().GetNodeCountInGroup(AliveEnemiesGroup);
+    }
+
     private static Vector2 GetRandomEnemySpawnLocation()
     {
         var x = GD.RandRange(EnemySpawnArea.Position.X, EnemySpawnArea.End.X);

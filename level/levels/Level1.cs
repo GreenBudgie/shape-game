@@ -8,6 +8,8 @@ public class Level1 : Level
     public override float PolysteroidMinTimeToSpawn => 10f;
     public override float PolysteroidMaxTimeToSpawn => 15f;
 
+    public override float MaxEnemies => 8f;
+
     public override List<LevelPhase> Phases =>
     [
         new()

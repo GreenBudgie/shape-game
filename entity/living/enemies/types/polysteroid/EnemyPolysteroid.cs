@@ -3,7 +3,7 @@ public partial class EnemyPolysteroid : Enemy
 
     private const float Damage = 3;
 
-    protected override bool IsEnvironmental => true;
+    public override bool IsEnvironmental => true;
 
     private PolysteroidSize _size = null!;
 

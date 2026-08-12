@@ -15,6 +15,8 @@ public abstract class Level
     public virtual float PolysteroidMinTimeToSpawn => 2f;
     
     public virtual float PolysteroidMaxTimeToSpawn => 4f;
+
+    public abstract float MaxEnemies { get; }
     
     public abstract List<LevelPhase> Phases { get; }
 

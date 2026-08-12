@@ -93,8 +93,12 @@ public partial class LevelManager : Node
         if (_spawnEnemies)
         {
             _timeToNextPhase -= delta;
-            _timeToSpawnEnemies -= delta;
             _timeToSpawnPolysteroids -= delta;
+
+            if (!IsMaxEnemiesReached())
+            {
+                _timeToSpawnEnemies -= delta;
+            }
         }
         
         if (_timeToSpawnEnemies < 0)
@@ -158,6 +162,17 @@ public partial class LevelManager : Node
 
         _requirementsMet = true;
         GamePhaseManager.Instance.ChangePhase(GamePhase.Shop);
+    }
+
+    public bool IsMaxEnemiesReached()
+    {
+        if (Level == null)
+        {
+            return false;
+        }
+        
+        var enemyCount = EnemyManager.Instance.GetNonEnvironmentalAliveEnemies().Count();
+        return enemyCount >= Level.MaxEnemies;
     }
 
     private void OnEnemyDestroyed(Enemy enemy)
