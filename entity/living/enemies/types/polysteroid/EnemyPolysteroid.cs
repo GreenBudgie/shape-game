@@ -34,8 +34,22 @@ public partial class EnemyPolysteroid : Enemy
         BodyEntered += OnBodyEntered;
     }
 
-    protected override void OnActivate()
+    public override float GetTimeToActivate()
     {
+        return 0;
+    }
+
+    private bool _isFirstPhysicsFrame = true;
+
+    public override void _IntegrateForces(PhysicsDirectBodyState2D state)
+    {
+        if (!_isFirstPhysicsFrame)
+        {
+            return;
+        }
+
+        _isFirstPhysicsFrame = false;
+        
         GravityScale = _size.Gravity;
         
         var randomDirection = RandomUtils.Range(0, Tau);

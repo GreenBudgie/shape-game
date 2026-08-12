@@ -5,6 +5,9 @@ public class Level1 : Level
     public override int Number => 1;
     public override int DestroyRequirement => 5;
 
+    public override float PolysteroidMinTimeToSpawn => 10f;
+    public override float PolysteroidMaxTimeToSpawn => 15f;
+
     public override List<LevelPhase> Phases =>
     [
         new()

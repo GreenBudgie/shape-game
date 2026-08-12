@@ -38,8 +38,13 @@ public abstract partial class Enemy : RigidBody2D
             .SetRadius(0)
             .EnablePulsing();
 
-        Deactivate();
-        GetTree().CreateTimer(GetTimeToActivate()).Timeout += Activate;
+        
+        if (GetTimeToActivate() > 0)
+        {
+            Deactivate();
+            GetTree().CreateTimer(GetTimeToActivate()).Timeout += Activate;
+        }
+        
         HealthController.Destroyed += OnDestroy;
         HealthController.DestroyAnimationFinished += QueueFree;
     }
@@ -65,6 +70,9 @@ public abstract partial class Enemy : RigidBody2D
         OnActivate();
     }
 
+    /// <summary>
+    /// A callback when entity is activated. Not called if GetTimeToActivate is 0
+    /// </summary>
     protected virtual void OnActivate()
     {
     }
@@ -78,7 +86,7 @@ public abstract partial class Enemy : RigidBody2D
     ///
     /// 1 second by default.
     /// </summary>
-    public float GetTimeToActivate()
+    public virtual float GetTimeToActivate()
     {
         return 1;
     }
