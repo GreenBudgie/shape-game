@@ -5,10 +5,12 @@
 [ext_resource type="PackedScene" uid="uid://dlwvs3u6gqtsw" path="res://ui/game/game_ui.tscn" id="3_qhcbd"]
 [ext_resource type="Texture2D" uid="uid://c1ai2x8hfwt2q" path="res://environment/wall/glowing_wall.png" id="4_rvswv"]
 [ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://shop/shop.tscn" id="5_e8heu"]
+[ext_resource type="Script" uid="uid://cbwxymx4i00f0" path="res://environment/Environment.cs" id="5_f1jbl"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
 [ext_resource type="PackedScene" uid="uid://cjmguojhwcatt" path="res://debug/screen/debug_screen.tscn" id="6_rvswv"]
 [ext_resource type="PackedScene" uid="uid://dy2k3kjbjir5i" path="res://ui/game_over/game_over_screen.tscn" id="7_hb5m1"]
+[ext_resource type="PackedScene" uid="uid://c1qxnkasfw75n" path="res://util/glow/rect_glow.tscn" id="7_vaj68"]
 [ext_resource type="Script" uid="uid://djxx4y1127mi" path="res://ui/FpsCounter.cs" id="8_215e1"]
 [ext_resource type="Script" uid="uid://fxme35ooeqpu" path="res://level/LevelManager.cs" id="8_j5wjh"]
 [ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://entity/living/enemies/EnemyManager.cs" id="8_vef74"]
@@ -79,62 +81,76 @@ layer = -1
 [node name="Player" parent="." unique_id=692351150 instance=ExtResource("2_eow3j")]
 position = Vector2(2174, 1930)
 
-[node name="LevelWalls" type="StaticBody2D" parent="." unique_id=1246014687 groups=["level_walls"]]
+[node name="Environment" type="Node2D" parent="." unique_id=1509415066]
+script = ExtResource("5_f1jbl")
+
+[node name="LevelWalls" type="StaticBody2D" parent="Environment" unique_id=1246014687 groups=["level_walls"]]
 collision_layer = 32
 collision_mask = 0
 
-[node name="LeftWall" type="CollisionShape2D" parent="LevelWalls" unique_id=1024175451]
+[node name="LeftWall" type="CollisionShape2D" parent="Environment/LevelWalls" unique_id=1024175451]
 position = Vector2(-512, 1080)
 shape = SubResource("RectangleShape2D_87y3e")
 
-[node name="RightWall" type="CollisionShape2D" parent="LevelWalls" unique_id=1028911608]
+[node name="RightWall" type="CollisionShape2D" parent="Environment/LevelWalls" unique_id=1028911608]
 position = Vector2(4352, 1080)
 shape = SubResource("RectangleShape2D_0lhi4")
 
-[node name="RightGlow" type="Sprite2D" parent="LevelWalls" unique_id=1241804353]
+[node name="RightGlow" type="Sprite2D" parent="Environment/LevelWalls" unique_id=1241804353]
 position = Vector2(3872, 1080)
 texture = ExtResource("4_rvswv")
 
-[node name="LeftGlow" type="Sprite2D" parent="LevelWalls" unique_id=524103702]
+[node name="LeftGlow" type="Sprite2D" parent="Environment/LevelWalls" unique_id=524103702]
 position = Vector2(-32, 1089)
 texture = ExtResource("4_rvswv")
 
-[node name="LevelCeiling" type="StaticBody2D" parent="." unique_id=1646188548]
+[node name="LevelCeiling" type="StaticBody2D" parent="Environment" unique_id=1646188548]
 collision_layer = 64
 collision_mask = 0
 
-[node name="TopWall" type="CollisionShape2D" parent="LevelCeiling" unique_id=467383974]
+[node name="TopWall" type="CollisionShape2D" parent="Environment/LevelCeiling" unique_id=467383974]
 position = Vector2(1920, -512)
 shape = SubResource("RectangleShape2D_k07pp")
 
-[node name="LevelFloor" type="StaticBody2D" parent="." unique_id=798973780]
+[node name="CeilingGlow" parent="Environment/LevelCeiling" unique_id=1402074923 instance=ExtResource("7_vaj68")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 692.0
+offset_top = 237.0
+offset_right = 3661.0
+offset_bottom = 895.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LevelFloor" type="StaticBody2D" parent="Environment" unique_id=798973780]
 collision_layer = 128
 collision_mask = 0
 
-[node name="BottomWall" type="CollisionShape2D" parent="LevelFloor" unique_id=1878348994]
+[node name="BottomWall" type="CollisionShape2D" parent="Environment/LevelFloor" unique_id=1878348994]
 position = Vector2(1920, 2672)
 shape = SubResource("RectangleShape2D_jkk55")
 
-[node name="LevelOutsideBoundary" type="StaticBody2D" parent="." unique_id=345506684]
+[node name="LevelOutsideBoundary" type="StaticBody2D" parent="Environment" unique_id=345506684]
 collision_layer = 256
 collision_mask = 0
 
-[node name="TopWall" type="CollisionShape2D" parent="LevelOutsideBoundary" unique_id=1615479064]
+[node name="TopWall" type="CollisionShape2D" parent="Environment/LevelOutsideBoundary" unique_id=1615479064]
 position = Vector2(1920, -1536)
 shape = SubResource("RectangleShape2D_j5wjh")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
-[node name="LeftWall" type="CollisionShape2D" parent="LevelOutsideBoundary" unique_id=378929884]
+[node name="LeftWall" type="CollisionShape2D" parent="Environment/LevelOutsideBoundary" unique_id=378929884]
 position = Vector2(-1536, 1080)
 shape = SubResource("RectangleShape2D_7sc4i")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
-[node name="RightWall" type="CollisionShape2D" parent="LevelOutsideBoundary" unique_id=681198289]
+[node name="RightWall" type="CollisionShape2D" parent="Environment/LevelOutsideBoundary" unique_id=681198289]
 position = Vector2(5376, 1079.875)
 shape = SubResource("RectangleShape2D_80cx4")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 
-[node name="BottomWall" type="CollisionShape2D" parent="LevelOutsideBoundary" unique_id=188552543]
+[node name="BottomWall" type="CollisionShape2D" parent="Environment/LevelOutsideBoundary" unique_id=188552543]
 position = Vector2(1920, 3696)
 shape = SubResource("RectangleShape2D_vef74")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
