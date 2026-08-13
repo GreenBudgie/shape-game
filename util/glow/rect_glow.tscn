@@ -4,14 +4,15 @@
 [ext_resource type="Script" uid="uid://cags2fbrggccj" path="res://util/glow/RectGlow.cs" id="2_lj561"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_aeo8b"]
+resource_local_to_scene = true
 shader = ExtResource("1_5lg6x")
 shader_parameter/glow_color = Color(0.937, 0.357, 0.357, 1)
 shader_parameter/glow_radius = 12.0
 shader_parameter/glow_strength = 2.0
-shader_parameter/rect_size = Vector2(1000, 500)
+shader_parameter/rect_size = Vector2(512, 512)
 
 [node name="RectGlow" type="ColorRect" unique_id=1402074923]
 material = SubResource("ShaderMaterial_aeo8b")
-offset_right = 1000.0
-offset_bottom = 500.0
+offset_right = 512.0
+offset_bottom = 512.0
 script = ExtResource("2_lj561")

@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://entity/living/player/player.tscn" id="2_eow3j"]
 [ext_resource type="PackedScene" uid="uid://dlwvs3u6gqtsw" path="res://ui/game/game_ui.tscn" id="3_qhcbd"]
-[ext_resource type="Texture2D" uid="uid://c1ai2x8hfwt2q" path="res://environment/wall/glowing_wall.png" id="4_rvswv"]
 [ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://shop/shop.tscn" id="5_e8heu"]
 [ext_resource type="Script" uid="uid://cbwxymx4i00f0" path="res://environment/Environment.cs" id="5_f1jbl"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
@@ -32,11 +31,295 @@ size = Vector2(1024, 4208)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0lhi4"]
 size = Vector2(1024, 4208)
 
+[sub_resource type="Shader" id="Shader_f1jbl"]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform vec4 glow_color : source_color = vec4(0.937, 0.357, 0.357, 1.0);
+uniform float glow_radius : hint_range(0, 200) = 12.0;
+uniform float glow_strength : hint_range(0, 10) = 2.0;
+
+// Size of the ColorRect in local pixels. Set from RectGlow, replaces texture size.
+uniform vec2 rect_size = vec2(1.0);
+
+varying vec4 vertex_color;
+
+// Standard normal CDF, logistic approximation. Smooth everywhere, cheap, ~1% error.
+float ndf_cdf(float z) {
+	return 1.0 / (1.0 + exp(-1.702 * z));
+}
+
+// How far past the rectangle edge the halo needs to reach before it fades to ~0.
+// Grows with the blur sigma and, logarithmically, with strength (which lifts the tail).
+float glow_extent(float sigma) {
+	return sigma * (3.24 + 0.588 * log(max(glow_strength, 1.0)));
+}
+
+void vertex() {
+	vertex_color = COLOR;
+	float sigma = glow_radius * 0.35;
+	VERTEX += (UV - 0.5) * 2.0 * glow_extent(sigma);
+}
+
+void fragment() {
+	if (glow_radius < 0.5 || glow_strength < 0.01) {
+		discard;
+	}
+	float sigma = glow_radius * 0.35;
+	float extent = glow_extent(sigma);
+
+	vec2 pixel_size = 1.0 / rect_size;
+	vec2 expanded_scale = vec2(1.0) + 2.0 * extent * pixel_size;
+	vec2 uv = (UV - 0.5) * expanded_scale + 0.5;
+
+	// Gaussian blur of a solid rectangle is separable: the coverage at a point is
+	// the product of two 1D edge integrals. Smooth fill inside, soft falloff outside,
+	// no banding, no texture samples.
+	vec2 pos = uv * rect_size;
+	float inv_sigma = 1.0 / sigma;
+	float coverage_x = ndf_cdf(pos.x * inv_sigma) - ndf_cdf((pos.x - rect_size.x) * inv_sigma);
+	float coverage_y = ndf_cdf(pos.y * inv_sigma) - ndf_cdf((pos.y - rect_size.y) * inv_sigma);
+	float coverage = coverage_x * coverage_y;
+
+	// strength shapes the outer halo (1 = plain gaussian blur, >1 = brighter/wider glow),
+	// while the inside stays a solid fill.
+	float alpha = (1.0 - pow(1.0 - coverage, glow_strength)) * glow_color.a * vertex_color.a;
+
+	// Feather the very edge of the expanded quad so the halo can never cut off sharply.
+	vec2 edge = min(UV, 1.0 - UV);
+	alpha *= smoothstep(0.0, 0.02, min(edge.x, edge.y));
+
+	COLOR = vec4(glow_color.rgb * vertex_color.rgb, alpha);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vaj68"]
+resource_local_to_scene = true
+shader = SubResource("Shader_f1jbl")
+shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
+shader_parameter/glow_radius = 96.00000456
+shader_parameter/glow_strength = 2.000000095
+shader_parameter/rect_size = Vector2(1024, 4208)
+
+[sub_resource type="Shader" id="Shader_i2p71"]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform vec4 glow_color : source_color = vec4(0.937, 0.357, 0.357, 1.0);
+uniform float glow_radius : hint_range(0, 200) = 12.0;
+uniform float glow_strength : hint_range(0, 10) = 2.0;
+
+// Size of the ColorRect in local pixels. Set from RectGlow, replaces texture size.
+uniform vec2 rect_size = vec2(1.0);
+
+varying vec4 vertex_color;
+
+// Standard normal CDF, logistic approximation. Smooth everywhere, cheap, ~1% error.
+float ndf_cdf(float z) {
+	return 1.0 / (1.0 + exp(-1.702 * z));
+}
+
+// How far past the rectangle edge the halo needs to reach before it fades to ~0.
+// Grows with the blur sigma and, logarithmically, with strength (which lifts the tail).
+float glow_extent(float sigma) {
+	return sigma * (3.24 + 0.588 * log(max(glow_strength, 1.0)));
+}
+
+void vertex() {
+	vertex_color = COLOR;
+	float sigma = glow_radius * 0.35;
+	VERTEX += (UV - 0.5) * 2.0 * glow_extent(sigma);
+}
+
+void fragment() {
+	if (glow_radius < 0.5 || glow_strength < 0.01) {
+		discard;
+	}
+	float sigma = glow_radius * 0.35;
+	float extent = glow_extent(sigma);
+
+	vec2 pixel_size = 1.0 / rect_size;
+	vec2 expanded_scale = vec2(1.0) + 2.0 * extent * pixel_size;
+	vec2 uv = (UV - 0.5) * expanded_scale + 0.5;
+
+	// Gaussian blur of a solid rectangle is separable: the coverage at a point is
+	// the product of two 1D edge integrals. Smooth fill inside, soft falloff outside,
+	// no banding, no texture samples.
+	vec2 pos = uv * rect_size;
+	float inv_sigma = 1.0 / sigma;
+	float coverage_x = ndf_cdf(pos.x * inv_sigma) - ndf_cdf((pos.x - rect_size.x) * inv_sigma);
+	float coverage_y = ndf_cdf(pos.y * inv_sigma) - ndf_cdf((pos.y - rect_size.y) * inv_sigma);
+	float coverage = coverage_x * coverage_y;
+
+	// strength shapes the outer halo (1 = plain gaussian blur, >1 = brighter/wider glow),
+	// while the inside stays a solid fill.
+	float alpha = (1.0 - pow(1.0 - coverage, glow_strength)) * glow_color.a * vertex_color.a;
+
+	// Feather the very edge of the expanded quad so the halo can never cut off sharply.
+	vec2 edge = min(UV, 1.0 - UV);
+	alpha *= smoothstep(0.0, 0.02, min(edge.x, edge.y));
+
+	COLOR = vec4(glow_color.rgb * vertex_color.rgb, alpha);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xa8c5"]
+resource_local_to_scene = true
+shader = SubResource("Shader_i2p71")
+shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
+shader_parameter/glow_radius = 96.00000456
+shader_parameter/glow_strength = 2.000000095
+shader_parameter/rect_size = Vector2(1024, 4208)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k07pp"]
 size = Vector2(3840, 1024)
 
+[sub_resource type="Shader" id="Shader_vaj68"]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform vec4 glow_color : source_color = vec4(0.937, 0.357, 0.357, 1.0);
+uniform float glow_radius : hint_range(0, 200) = 12.0;
+uniform float glow_strength : hint_range(0, 10) = 2.0;
+
+// Size of the ColorRect in local pixels. Set from RectGlow, replaces texture size.
+uniform vec2 rect_size = vec2(1.0);
+
+varying vec4 vertex_color;
+
+// Standard normal CDF, logistic approximation. Smooth everywhere, cheap, ~1% error.
+float ndf_cdf(float z) {
+	return 1.0 / (1.0 + exp(-1.702 * z));
+}
+
+// How far past the rectangle edge the halo needs to reach before it fades to ~0.
+// Grows with the blur sigma and, logarithmically, with strength (which lifts the tail).
+float glow_extent(float sigma) {
+	return sigma * (3.24 + 0.588 * log(max(glow_strength, 1.0)));
+}
+
+void vertex() {
+	vertex_color = COLOR;
+	float sigma = glow_radius * 0.35;
+	VERTEX += (UV - 0.5) * 2.0 * glow_extent(sigma);
+}
+
+void fragment() {
+	if (glow_radius < 0.5 || glow_strength < 0.01) {
+		discard;
+	}
+	float sigma = glow_radius * 0.35;
+	float extent = glow_extent(sigma);
+
+	vec2 pixel_size = 1.0 / rect_size;
+	vec2 expanded_scale = vec2(1.0) + 2.0 * extent * pixel_size;
+	vec2 uv = (UV - 0.5) * expanded_scale + 0.5;
+
+	// Gaussian blur of a solid rectangle is separable: the coverage at a point is
+	// the product of two 1D edge integrals. Smooth fill inside, soft falloff outside,
+	// no banding, no texture samples.
+	vec2 pos = uv * rect_size;
+	float inv_sigma = 1.0 / sigma;
+	float coverage_x = ndf_cdf(pos.x * inv_sigma) - ndf_cdf((pos.x - rect_size.x) * inv_sigma);
+	float coverage_y = ndf_cdf(pos.y * inv_sigma) - ndf_cdf((pos.y - rect_size.y) * inv_sigma);
+	float coverage = coverage_x * coverage_y;
+
+	// strength shapes the outer halo (1 = plain gaussian blur, >1 = brighter/wider glow),
+	// while the inside stays a solid fill.
+	float alpha = (1.0 - pow(1.0 - coverage, glow_strength)) * glow_color.a * vertex_color.a;
+
+	// Feather the very edge of the expanded quad so the halo can never cut off sharply.
+	vec2 edge = min(UV, 1.0 - UV);
+	alpha *= smoothstep(0.0, 0.02, min(edge.x, edge.y));
+
+	COLOR = vec4(glow_color.rgb * vertex_color.rgb, alpha);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i2p71"]
+resource_local_to_scene = true
+shader = SubResource("Shader_vaj68")
+shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
+shader_parameter/glow_radius = 96.00000456
+shader_parameter/glow_strength = 2.0
+shader_parameter/rect_size = Vector2(3840, 1024)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkk55"]
 size = Vector2(3840, 1024)
+
+[sub_resource type="Shader" id="Shader_xa8c5"]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform vec4 glow_color : source_color = vec4(0.937, 0.357, 0.357, 1.0);
+uniform float glow_radius : hint_range(0, 200) = 12.0;
+uniform float glow_strength : hint_range(0, 10) = 2.0;
+
+// Size of the ColorRect in local pixels. Set from RectGlow, replaces texture size.
+uniform vec2 rect_size = vec2(1.0);
+
+varying vec4 vertex_color;
+
+// Standard normal CDF, logistic approximation. Smooth everywhere, cheap, ~1% error.
+float ndf_cdf(float z) {
+	return 1.0 / (1.0 + exp(-1.702 * z));
+}
+
+// How far past the rectangle edge the halo needs to reach before it fades to ~0.
+// Grows with the blur sigma and, logarithmically, with strength (which lifts the tail).
+float glow_extent(float sigma) {
+	return sigma * (3.24 + 0.588 * log(max(glow_strength, 1.0)));
+}
+
+void vertex() {
+	vertex_color = COLOR;
+	float sigma = glow_radius * 0.35;
+	VERTEX += (UV - 0.5) * 2.0 * glow_extent(sigma);
+}
+
+void fragment() {
+	if (glow_radius < 0.5 || glow_strength < 0.01) {
+		discard;
+	}
+	float sigma = glow_radius * 0.35;
+	float extent = glow_extent(sigma);
+
+	vec2 pixel_size = 1.0 / rect_size;
+	vec2 expanded_scale = vec2(1.0) + 2.0 * extent * pixel_size;
+	vec2 uv = (UV - 0.5) * expanded_scale + 0.5;
+
+	// Gaussian blur of a solid rectangle is separable: the coverage at a point is
+	// the product of two 1D edge integrals. Smooth fill inside, soft falloff outside,
+	// no banding, no texture samples.
+	vec2 pos = uv * rect_size;
+	float inv_sigma = 1.0 / sigma;
+	float coverage_x = ndf_cdf(pos.x * inv_sigma) - ndf_cdf((pos.x - rect_size.x) * inv_sigma);
+	float coverage_y = ndf_cdf(pos.y * inv_sigma) - ndf_cdf((pos.y - rect_size.y) * inv_sigma);
+	float coverage = coverage_x * coverage_y;
+
+	// strength shapes the outer halo (1 = plain gaussian blur, >1 = brighter/wider glow),
+	// while the inside stays a solid fill.
+	float alpha = (1.0 - pow(1.0 - coverage, glow_strength)) * glow_color.a * vertex_color.a;
+
+	// Feather the very edge of the expanded quad so the halo can never cut off sharply.
+	vec2 edge = min(UV, 1.0 - UV);
+	alpha *= smoothstep(0.0, 0.02, min(edge.x, edge.y));
+
+	COLOR = vec4(glow_color.rgb * vertex_color.rgb, alpha);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5b14r"]
+resource_local_to_scene = true
+shader = SubResource("Shader_xa8c5")
+shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
+shader_parameter/glow_radius = 96.00000456
+shader_parameter/glow_strength = 2.0
+shader_parameter/rect_size = Vector2(3840, 1024)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j5wjh"]
 size = Vector2(5888, 1024)
@@ -96,13 +379,29 @@ shape = SubResource("RectangleShape2D_87y3e")
 position = Vector2(4352, 1080)
 shape = SubResource("RectangleShape2D_0lhi4")
 
-[node name="RightGlow" type="Sprite2D" parent="Environment/LevelWalls" unique_id=1241804353]
-position = Vector2(3872, 1080)
-texture = ExtResource("4_rvswv")
+[node name="LeftGlow" parent="Environment/LevelWalls" unique_id=1402074923 instance=ExtResource("7_vaj68")]
+material = SubResource("ShaderMaterial_vaj68")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1024.0
+offset_top = -1024.0
+offset_right = 0.0
+offset_bottom = 3184.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="LeftGlow" type="Sprite2D" parent="Environment/LevelWalls" unique_id=524103702]
-position = Vector2(-32, 1089)
-texture = ExtResource("4_rvswv")
+[node name="RightGlow" parent="Environment/LevelWalls" unique_id=312963737 instance=ExtResource("7_vaj68")]
+material = SubResource("ShaderMaterial_xa8c5")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3840.0
+offset_top = -1024.0
+offset_right = 4864.0
+offset_bottom = 3184.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="LevelCeiling" type="StaticBody2D" parent="Environment" unique_id=1646188548]
 collision_layer = 64
@@ -112,14 +411,14 @@ collision_mask = 0
 position = Vector2(1920, -512)
 shape = SubResource("RectangleShape2D_k07pp")
 
-[node name="CeilingGlow" parent="Environment/LevelCeiling" unique_id=1402074923 instance=ExtResource("7_vaj68")]
+[node name="CeilingGlow" parent="Environment/LevelCeiling" unique_id=1382008011 instance=ExtResource("7_vaj68")]
+material = SubResource("ShaderMaterial_i2p71")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 692.0
-offset_top = 237.0
-offset_right = 3661.0
-offset_bottom = 895.0
+offset_top = -1024.0
+offset_right = 3840.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -130,6 +429,17 @@ collision_mask = 0
 [node name="BottomWall" type="CollisionShape2D" parent="Environment/LevelFloor" unique_id=1878348994]
 position = Vector2(1920, 2672)
 shape = SubResource("RectangleShape2D_jkk55")
+
+[node name="FloorGlow" parent="Environment/LevelFloor" unique_id=1794150407 instance=ExtResource("7_vaj68")]
+material = SubResource("ShaderMaterial_5b14r")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 2160.0
+offset_right = 3840.0
+offset_bottom = 3184.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="LevelOutsideBoundary" type="StaticBody2D" parent="Environment" unique_id=345506684]
 collision_layer = 256
