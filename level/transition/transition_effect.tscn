@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://c721i4lil1hmy"]
-
-[ext_resource type="Script" uid="uid://cb7mbkdxcfve7" path="res://level/transition/TransitionEffect.cs" id="1_8pd6r"]
-
-[node name="TransitionEffect" type="Node2D" unique_id=707907158]
-script = ExtResource("1_8pd6r")
