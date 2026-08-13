@@ -19,4 +19,7 @@
     <ItemGroup>
         <Content Include="credit.txt" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="environment\transition\" />
+    </ItemGroup>
 </Project>

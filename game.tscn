@@ -24,6 +24,7 @@
 [ext_resource type="Script" uid="uid://d04nmdt4omsif" path="res://systems/MouseInputManager.cs" id="16_boyg6"]
 [ext_resource type="Script" uid="uid://ca64700tbqs0h" path="res://entity/living/player/PlayerManager.cs" id="17_x5p1p"]
 [ext_resource type="Script" uid="uid://dcfyc3mh3ufim" path="res://debug/DebugDraw.cs" id="19_boyg6"]
+[ext_resource type="PackedScene" uid="uid://c721i4lil1hmy" path="res://level/transition/transition_effect.tscn" id="23_vaj68"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
 size = Vector2(1024, 4208)
@@ -244,7 +245,7 @@ resource_local_to_scene = true
 shader = SubResource("Shader_vaj68")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
-shader_parameter/glow_strength = 2.0
+shader_parameter/glow_strength = 0.0
 shader_parameter/rect_size = Vector2(3840, 1024)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkk55"]
@@ -318,7 +319,7 @@ resource_local_to_scene = true
 shader = SubResource("Shader_xa8c5")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
-shader_parameter/glow_strength = 2.0
+shader_parameter/glow_strength = 0.0
 shader_parameter/rect_size = Vector2(3840, 1024)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j5wjh"]
@@ -525,6 +526,11 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("13_lc2xo")
 metadata/_edit_lock_ = true
+
+[node name="TransitionLayer" type="CanvasLayer" parent="." unique_id=804563990]
+layer = 2
+
+[node name="TransitionEffect" parent="TransitionLayer" unique_id=707907158 instance=ExtResource("23_vaj68")]
 
 [node name="DebugLayer" type="CanvasLayer" parent="." unique_id=2028777421]
 layer = 10
