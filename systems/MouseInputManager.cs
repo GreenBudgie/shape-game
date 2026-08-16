@@ -41,8 +41,11 @@ public partial class MouseInputManager : Node2D
     {
         _cachedGlobalMousePosition = GetGlobalMousePosition();
         
-        if (_isAttackQueuedToEnable && (Input.IsActionJustPressed("inventory_left_click") 
-                                        || Input.IsActionJustReleased("inventory_left_click")))
+        if (_isAttackQueuedToEnable && (
+                Input.IsActionJustPressed("primary_fire")
+                || Input.IsActionJustReleased("primary_fire")
+                || Input.IsActionJustPressed("secondary_fire")
+                || Input.IsActionJustReleased("secondary_fire")))
         {
             IsAttackEnabled = true;
         }
@@ -69,12 +72,12 @@ public partial class MouseInputManager : Node2D
         return _cachedGlobalMousePosition;
     }
 
-    public void DisableAttack()
+    private void DisableAttack()
     {
         IsAttackEnabled = false;
     }
 
-    public void EnableAttack()
+    private void EnableAttack()
     {
         if (IsAttackEnabled)
         {
@@ -96,6 +99,7 @@ public partial class MouseInputManager : Node2D
 
     public void ShowCursor()
     {
+        DisableAttack();
         MoveMouseToWindowCenter(_windowCenter);
         Input.MouseMode = Input.MouseModeEnum.Visible;
         IsCharacterControlEnabled = false;
@@ -103,6 +107,7 @@ public partial class MouseInputManager : Node2D
     
     public void EnableCharacterControl()
     {
+        EnableAttack();
         MoveMouseToWindowCenter(_windowCenter);
         Input.MouseMode = Input.MouseModeEnum.Hidden;
         IsCharacterControlEnabled = true;

@@ -33,8 +33,6 @@ public partial class Shop : Node2D
 
     private void ShowShop()
     {
-        MouseInputManager.Instance.DisableAttack();
-
         var allModulesCopy = ModuleRegistry.Modules.ToList();
         for (var i = 0; i < 3; i++)
         {
@@ -50,7 +48,6 @@ public partial class Shop : Node2D
 
     private void HideShop()
     {
-        Callable.From(MouseInputManager.Instance.EnableAttack).CallDeferred();
         Visible = false;
 
         foreach (var module in _modules.GetChildren())
