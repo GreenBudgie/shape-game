@@ -51,6 +51,7 @@ enabled=PackedStringArray("res://addons/padding_tool/plugin.cfg", "res://addons/
 level_walls=""
 alive_enemies=""
 falling_crystals=""
+spawnables=""
 
 [gui]
 

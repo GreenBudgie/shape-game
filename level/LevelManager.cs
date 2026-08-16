@@ -15,14 +15,13 @@ public partial class LevelManager : Node
 
     public int DestroyProgress { get; private set; }
 
-    public int SurviveProgress { get; private set; }
-
     private double _timeToNextPhase;
     private double _timeToSpawnEnemies;
     private double _timeToSpawnPolysteroids;
     private bool _requirementsMet;
     private bool _isLastPhase;
     private int _phase;
+    private bool _isLevelEnding;
 
     private bool _spawnEnemies = true;
 
@@ -83,8 +82,31 @@ public partial class LevelManager : Node
         return _spawnEnemies;
     }
 
+    private bool ShouldEndLevel()
+    {
+        if (!_requirementsMet || _isLevelEnding)
+        {
+            return false;
+        }
+        
+        var hasAliveEnemies = EnemyManager.Instance.GetAliveEnemiesCount() > 0;
+        var hasSpawnables = SpawnableManager.Instance.GetSpawnablesCount() > 0;
+        return !hasAliveEnemies && !hasSpawnables;
+    }
+
+    private void EndLevel()
+    {
+        GamePhaseManager.Instance.ChangePhase(GamePhase.Shop);
+    }
+
     private void ProcessLevel(double delta, Level level)
     {
+        if (ShouldEndLevel())
+        {
+            EndLevel();
+            return;
+        }
+        
         if (_requirementsMet)
         {
             return;
@@ -161,7 +183,6 @@ public partial class LevelManager : Node
         }
 
         _requirementsMet = true;
-        GamePhaseManager.Instance.ChangePhase(GamePhase.Shop);
     }
 
     public bool IsMaxEnemiesReached()
@@ -182,7 +203,7 @@ public partial class LevelManager : Node
             return;
         }
 
-        if (DestroyProgress < Level.DestroyRequirement)
+        if (!enemy.IsEnvironmental && DestroyProgress < Level.DestroyRequirement)
         {
             SetDestroyProgress(DestroyProgress + 1);
         }

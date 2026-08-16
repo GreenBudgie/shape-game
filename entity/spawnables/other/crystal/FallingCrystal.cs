@@ -1,4 +1,4 @@
-public partial class FallingCrystal : RigidBody2D
+public partial class FallingCrystal : RigidBody2D, ISpawnable<FallingCrystal>
 {
     private const float InitialTorque = 500;
     private const float InitialTorqueDelta = 200;
@@ -18,21 +18,30 @@ public partial class FallingCrystal : RigidBody2D
 
     private static readonly Color GlowColor = ColorScheme.Yellow;
 
-    private bool _isCollected;
+    private bool _isRemoving;
     private Glow _glow = null!;
     private AnimationPlayer _crystalAnimations = null!;
+    
+    public FallingCrystal Node => this;
 
     public static FallingCrystal Spawn(Vector2 globalPosition)
     {
         var crystal = Scene.Instantiate<FallingCrystal>();
-        ShapeGame.Instance.AddChildDeferred(crystal);
-
-        crystal.GlobalPosition = globalPosition;
-        var randomStrength = (float)GD.RandRange(750f, 1500f);
+        
+        var randomSpeed = (float)GD.RandRange(750f, 1500f);
         var randomAngle = GD.RandRange(5 * Pi / 4, 7 * Pi / 4);
         var randomDirection = Vector2.FromAngle((float)randomAngle);
-        var impulse = randomDirection * randomStrength;
-        crystal.ApplyCentralImpulse(impulse);
+
+        var context = new SpawnableContext(crystal)
+        {
+            Position = globalPosition,
+            Direction = randomDirection,
+        };
+
+        context.Stats.Add(new SpeedStat { Value = randomSpeed });
+        context.Stats.Add(new LifetimeStat { Value = 10f });
+
+        context.Spawn();
 
         return crystal;
     }
@@ -67,6 +76,22 @@ public partial class FallingCrystal : RigidBody2D
         ApplyMagnet();
     }
 
+    public void Remove()
+    {
+        _isRemoving = true;
+        CollisionLayer = 0;
+        CollisionMask = 0;
+
+        var fadeOutTween = _glow.CreateTween();
+        var setColorAction = _glow.SetColor;
+        var finalGlowColor = _glow.GetColor();
+        finalGlowColor.A = 0;
+        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.15);
+
+        _crystalAnimations.Play("collect");
+        _crystalAnimations.AnimationFinished += _ => QueueFree();
+    }
+
     private void ApplyMagnet()
     {
         var player = Player.FindPlayer();
@@ -89,7 +114,7 @@ public partial class FallingCrystal : RigidBody2D
 
         var direction = GlobalPosition.DirectionTo(player.GlobalPosition);
 
-        if (_isCollected)
+        if (_isRemoving)
         {
             LinearDamp = CollectedDamp;
             SetGravityScale(0);
@@ -136,19 +161,7 @@ public partial class FallingCrystal : RigidBody2D
 
     private void Collect()
     {
-        _isCollected = true;
-        CollisionLayer = 0;
-        CollisionMask = 0;
-
-        var fadeOutTween = _glow.CreateTween();
-        var setColorAction = _glow.SetColor;
-        var finalGlowColor = _glow.GetColor();
-        finalGlowColor.A = 0;
-        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.15);
-
-        _crystalAnimations.Play("collect");
-        _crystalAnimations.AnimationFinished += _ => QueueFree();
-
+        Remove();
         CrystalManager.Instance.CollectCrystal();
     }
 }

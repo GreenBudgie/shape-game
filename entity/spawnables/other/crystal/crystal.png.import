@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bf4gkg13wl2b8"
-path="res://.godot/imported/crystal.png-8534d8d0ef9dc8e9d216e89304659e8e.ctex"
+path="res://.godot/imported/crystal.png-841eb858fe289e087d447bb462ccda6d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entity/living/enemies/crystal.png"
-dest_files=["res://.godot/imported/crystal.png-8534d8d0ef9dc8e9d216e89304659e8e.ctex"]
+source_file="res://entity/spawnables/other/crystal/crystal.png"
+dest_files=["res://.godot/imported/crystal.png-841eb858fe289e087d447bb462ccda6d.ctex"]
 
 [params]
 

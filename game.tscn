@@ -24,6 +24,7 @@
 [ext_resource type="Script" uid="uid://d04nmdt4omsif" path="res://systems/MouseInputManager.cs" id="16_boyg6"]
 [ext_resource type="Script" uid="uid://ca64700tbqs0h" path="res://entity/living/player/PlayerManager.cs" id="17_x5p1p"]
 [ext_resource type="Script" uid="uid://dcfyc3mh3ufim" path="res://debug/DebugDraw.cs" id="19_boyg6"]
+[ext_resource type="Script" uid="uid://cncdoym5y3n6m" path="res://entity/spawnables/SpawnableManager.cs" id="19_vaj68"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
 size = Vector2(1024, 4208)
@@ -176,7 +177,7 @@ shader_parameter/rect_size = Vector2(1024, 4208)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k07pp"]
 size = Vector2(3840, 1024)
 
-[sub_resource type="Shader" id="Shader_vaj68"]
+[sub_resource type="Shader" id="Shader_5b14r"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -239,9 +240,9 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_i2p71"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bnpwn"]
 resource_local_to_scene = true
-shader = SubResource("Shader_vaj68")
+shader = SubResource("Shader_5b14r")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 0.0
@@ -250,7 +251,7 @@ shader_parameter/rect_size = Vector2(3840, 1024)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkk55"]
 size = Vector2(3840, 1024)
 
-[sub_resource type="Shader" id="Shader_xa8c5"]
+[sub_resource type="Shader" id="Shader_36jdj"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -313,9 +314,9 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5b14r"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xfvwf"]
 resource_local_to_scene = true
-shader = SubResource("Shader_xa8c5")
+shader = SubResource("Shader_36jdj")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 0.0
@@ -412,7 +413,7 @@ position = Vector2(1920, -512)
 shape = SubResource("RectangleShape2D_k07pp")
 
 [node name="CeilingGlow" parent="Environment/LevelCeiling" unique_id=1382008011 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_i2p71")
+material = SubResource("ShaderMaterial_bnpwn")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -431,7 +432,7 @@ position = Vector2(1920, 2672)
 shape = SubResource("RectangleShape2D_jkk55")
 
 [node name="FloorGlow" parent="Environment/LevelFloor" unique_id=1794150407 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_5b14r")
+material = SubResource("ShaderMaterial_xfvwf")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -504,6 +505,9 @@ script = ExtResource("15_e36ub")
 
 [node name="PlayerManager" type="Node" parent="." unique_id=527546967]
 script = ExtResource("17_x5p1p")
+
+[node name="SpawnableManager" type="Node" parent="." unique_id=1175050760]
+script = ExtResource("19_vaj68")
 
 [node name="MouseInputManager" type="Node2D" parent="." unique_id=1359638225]
 process_mode = 3

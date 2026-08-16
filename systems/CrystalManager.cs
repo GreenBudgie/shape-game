@@ -1,5 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
+using Godot.Collections;
+
 public partial class CrystalManager : Node
 {
+
+    private static readonly StringName FallingCrystalsGroup = "falling_crystals"; 
 
     [Signal]
     public delegate void CrystalAmountChangedEventHandler();
@@ -62,9 +68,19 @@ public partial class CrystalManager : Node
         Crystals++;
     }
 
+    public IEnumerable<FallingCrystal> GetFallingCrystals()
+    {
+        return GetTree().GetNodesInGroup(FallingCrystalsGroup).Cast<FallingCrystal>();
+    }
+    
+    public int GetFallingCrystalsCount()
+    {
+        return GetTree().GetNodeCountInGroup(FallingCrystalsGroup);
+    }
+
     public void ClearFallingCrystals()
     {
-        foreach (var crystal in GetTree().GetNodesInGroup("falling_crystals"))
+        foreach (var crystal in GetTree().GetNodesInGroup(FallingCrystalsGroup))
         {
             crystal.QueueFree();
         }

@@ -132,7 +132,7 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
     public void Spawn()
     {
         ApplyModifiers();
-        
+
         foreach (var component in Spawnable.GetComponents())
         {
             component.Prepare(this);
@@ -141,8 +141,21 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
         Spawnable.Node.GlobalPosition = Position;
 
         Spawnable.Prepare(this);
+
+        if (Engine.IsInPhysicsFrame())
+        {
+            Callable.From(AddToTree).CallDeferred();
+        }
+        else
+        {
+            AddToTree();
+        }
+    }
+
+    private void AddToTree()
+    {
         ShapeGame.Instance.AddChild(Spawnable.Node);
-        
+
         foreach (var component in Spawnable.GetComponents())
         {
             component.Apply(this);

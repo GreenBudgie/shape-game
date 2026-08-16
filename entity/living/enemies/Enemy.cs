@@ -104,10 +104,8 @@ public abstract partial class Enemy : RigidBody2D
             DropCrystals();
         }
 
-        if (!IsEnvironmental)
-        {
-            EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);
-        }
+
+        EnemyManager.Instance.EmitSignal(EnemyManager.SignalName.EnemyDestroyed, this);
     }
 
     private void DropCrystals()
