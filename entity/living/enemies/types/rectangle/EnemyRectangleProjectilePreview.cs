@@ -34,7 +34,7 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
         }
 
         var direction = Vector2.FromAngle(_owner.Rotation + Pi / 2);
-        var context = new SpawnableContext(EnemyRectangleProjectile.Create())
+        var context = new SpawnableContext(EnemyRectangleProjectile.Create)
         {
             Position = GlobalPosition,
             Source = _owner,

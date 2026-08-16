@@ -1,9 +1,24 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class SpawnableContext(ISpawnable<Node2D> spawnable)
+public class SpawnableContext
 {
-    
+
+    // Only set for contexts that may be cloned (triggers). Cloning needs a way to build a fresh node.
+    private readonly Func<ISpawnable<Node2D>>? _spawnableFactory;
+
+    public SpawnableContext(ISpawnable<Node2D> spawnable)
+    {
+        Spawnable = spawnable;
+    }
+
+    public SpawnableContext(Func<ISpawnable<Node2D>> spawnableFactory)
+    {
+        _spawnableFactory = spawnableFactory;
+        Spawnable = spawnableFactory();
+    }
+
     public List<SpawnableContext> Triggers { get; private set; } = [];
     
     public List<SpawnableContext> GetTriggerChain()
@@ -34,7 +49,7 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
             .ToList();
     }
     
-    public ISpawnable<Node2D> Spawnable { get; } = spawnable;
+    public ISpawnable<Node2D> Spawnable { get; }
 
     /// <summary>
     /// Where the spawnable should be created, in global coords
@@ -202,7 +217,33 @@ public class SpawnableContext(ISpawnable<Node2D> spawnable)
         OriginalSource = parentContext.OriginalSource;
         Stats = parentContext.Stats.ToList();
         Modifiers = parentContext.Modifiers.ToList();
-        Triggers = parentContext.Triggers.ToList();
+        // Clone triggers so each inheriting context gets its own fresh spawnable nodes.
+        // Sharing them would make several spawnables re-spawn the same one-shot node.
+        Triggers = parentContext.Triggers.Select(trigger => trigger.Clone()).ToList();
+    }
+
+    /// <summary>
+    /// Creates a deep copy of this context with a freshly created spawnable and independently
+    /// cloned triggers. Used so that a context can be spawned more than once (e.g. one per YinYang sphere).
+    /// </summary>
+    public SpawnableContext Clone()
+    {
+        if (_spawnableFactory == null)
+        {
+            throw new InvalidOperationException(
+                "Cannot clone a SpawnableContext created without a factory. Triggers must use the factory constructor.");
+        }
+
+        var clone = new SpawnableContext(_spawnableFactory)
+        {
+            Position = Position,
+            Direction = Direction,
+            Source = Source,
+            Modifiers = Modifiers.ToList()
+        };
+        clone.Stats.AddRange(Stats);
+        clone.Triggers = Triggers.Select(trigger => trigger.Clone()).ToList();
+        return clone;
     }
 
 }

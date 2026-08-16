@@ -14,7 +14,7 @@ public abstract partial class ClosedEnemyPath : EnemyPath
     {
         base._Ready();
 
-        PathPoint.ProgressRatio = 0;
+        PathPoint.ProgressRatio = GD.Randf();
 
         var xOffset = ShapeGame.Center.X - PathWidth / 2f;
         var yOffset = (float)GD.RandRange(MinYOffset, MaxYOffset);

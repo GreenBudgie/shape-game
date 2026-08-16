@@ -77,7 +77,7 @@ public partial class Blaster : Node
             throw new Exception("Blaster cannot fire - player wasn't found");
         }
         
-        var context = new SpawnableContext(spawnable.SpawnableModule.CreateSpawnable())
+        var context = new SpawnableContext(spawnable.SpawnableModule.CreateSpawnable)
         {
             Position = player.GetGlobalNosePosition(),
             Direction = Vector2.FromAngle(player.GetTilt() - Pi / 2),

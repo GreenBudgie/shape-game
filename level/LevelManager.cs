@@ -22,6 +22,7 @@ public partial class LevelManager : Node
     private bool _isLastPhase;
     private int _phase;
     private bool _isLevelEnding;
+    private double _timeToEndLevel;
 
     private bool _spawnEnemies = true;
 
@@ -84,7 +85,7 @@ public partial class LevelManager : Node
 
     private bool ShouldEndLevel()
     {
-        if (!_requirementsMet || _isLevelEnding)
+        if (!_requirementsMet)
         {
             return false;
         }
@@ -94,16 +95,42 @@ public partial class LevelManager : Node
         return !hasAliveEnemies && !hasSpawnables;
     }
 
+    private const double MaxTimeToEndLevel = 0.5;
+
+    private void EndLevelBegin()
+    {
+        _isLevelEnding = true;
+        _timeToEndLevel = MaxTimeToEndLevel;
+    }
+    
     private void EndLevel()
     {
+        _isLevelEnding = false;
         GamePhaseManager.Instance.ChangePhase(GamePhase.Shop);
     }
 
     private void ProcessLevel(double delta, Level level)
     {
+        if (_isLevelEnding)
+        {
+            if (!ShouldEndLevel())
+            {
+                _timeToEndLevel = MaxTimeToEndLevel;
+                return;
+            }
+            
+            _timeToEndLevel -= delta;
+            if (_timeToEndLevel <= 0)
+            {
+                EndLevel();
+            }
+            
+            return;
+        }
+        
         if (ShouldEndLevel())
         {
-            EndLevel();
+            EndLevelBegin();
             return;
         }
         
