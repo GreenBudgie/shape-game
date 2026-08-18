@@ -170,6 +170,7 @@ public class SpawnableContext
     private void AddToTree()
     {
         ShapeGame.Instance.AddChild(Spawnable.Node);
+        Spawnable.Node.AddToGroup(SpawnableManager.SpawnablesGroupName);
 
         foreach (var component in Spawnable.GetComponents())
         {

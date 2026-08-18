@@ -4,7 +4,7 @@ using System.Linq;
 public partial class SpawnableManager : Node
 {
 
-    private static readonly StringName SpawnablesGroupName = "spawnables";
+    public static readonly StringName SpawnablesGroupName = "spawnables";
 
     public static SpawnableManager Instance { get; private set; } = null!;
 
