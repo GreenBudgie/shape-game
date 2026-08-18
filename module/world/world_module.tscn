@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://vttr4qdxbyil" path="res://module/world/WorldModule.cs" id="1_ooccc"]
 [ext_resource type="Texture2D" uid="uid://bwxthnwovlmpr" path="res://module/shape/shape_single_outline.png" id="3_f71yx"]
 [ext_resource type="Texture2D" uid="uid://bv0dh5lkm5vq6" path="res://module/shape/shape_single_fill.png" id="3_q5y2o"]
+[ext_resource type="Texture2D" uid="uid://3ir7ic650er4" path="res://ui/game/crystal.png" id="4_f71yx"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_s7n3m"]
 friction = 0.25
@@ -31,3 +32,21 @@ texture = ExtResource("3_f71yx")
 [node name="PlayerDetectionArea" type="Area2D" parent="." unique_id=1350748351]
 collision_layer = 0
 monitorable = false
+
+[node name="PriceContainer" type="HBoxContainer" parent="." unique_id=466547972]
+offset_left = -263.0
+offset_top = 103.0
+offset_right = 263.0
+offset_bottom = 169.0
+alignment = 1
+metadata/_edit_group_ = true
+
+[node name="PriceLabel" type="Label" parent="PriceContainer" unique_id=1153384054]
+modulate = Color(0.95686275, 0.9098039, 0.4862745, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "123"
+
+[node name="CrystalIcon" type="TextureRect" parent="PriceContainer" unique_id=325039381]
+layout_mode = 2
+texture = ExtResource("4_f71yx")

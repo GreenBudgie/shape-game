@@ -14,10 +14,14 @@ public partial class WorldModule : RigidBody2D
     private Node2D _spritesNode = null!;
     private Glow _glow = null!;
     private Area2D _playerDetectionArea = null!;
+    private HBoxContainer _priceContainer = null!;
+    private Label _priceLabel = null!;
 
     private bool _isHovered;
     private bool _isSelected;
     private bool _isRemoving;
+    private bool _isInShop;
+    private Vector2? _pinPoint;
     
     private Tween? _animationTween;
     private Tween? _alphaTween;
@@ -44,7 +48,6 @@ public partial class WorldModule : RigidBody2D
 
     public override void _Ready()
     {
-        
         _spritesNode = GetNode<Node2D>("Sprites");
         
         var fillSprite = _spritesNode.GetNode<Sprite2D>("FillSprite");
@@ -88,6 +91,13 @@ public partial class WorldModule : RigidBody2D
                 _playerDetectionArea.AddChild(connectionShape.Duplicate());
             }
         }
+        
+        _priceContainer = GetNode<HBoxContainer>("PriceContainer");
+        // TODO _priceContainer.GlobalPosition = _priceContainer.GlobalPosition with { Y = 1 };
+        _priceContainer.Visible = false;
+        
+        _priceLabel = GetNode<Label>("PriceContainer/PriceLabel");
+        _priceLabel.Text = Module.Price.ToString();
 
         Modulate = Colors.Transparent;
         Scale = new Vector2(1.2f, 1.2f);
@@ -101,7 +111,7 @@ public partial class WorldModule : RigidBody2D
             return;
         }
         
-        if (InventoryManager.Instance.IsOpen)
+        if (ScreenManager.Instance.IsAnyScreenOpen())
         {
             return;
         }
@@ -118,6 +128,62 @@ public partial class WorldModule : RigidBody2D
         
         PickUp();
         GetViewport().SetInputAsHandled();
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        RetainPosition();
+        RetainRotation();
+    }
+    
+    private void RetainPosition()
+    {
+        // TODO code is stolen from Barrier
+        if (!_pinPoint.HasValue)
+        {
+            return;
+        }
+        
+        const float force = 0.1f;
+        var direction = _pinPoint.Value - GlobalPosition;
+        var speed = GlobalPosition.DistanceSquaredTo(_pinPoint.Value);
+        ApplyCentralForce(speed * force * direction);
+    }
+
+    private void RetainRotation()
+    {
+        if (!_pinPoint.HasValue)
+        {
+            return;
+        }
+        
+        // TODO code is stolen from Barrier
+        var rotationDegrees = RotationDegrees;
+        if (IsZeroApprox(rotationDegrees))
+        {
+            return;
+        }
+
+        const float torqueByDegree = 100000f;
+        var direction = rotationDegrees < 0 ? 1 : -1;
+        var torque = Abs(rotationDegrees) * torqueByDegree;
+        ApplyTorque(torque * direction);
+    }
+
+    private Tween? _priceTween;
+
+    public void SetInShop()
+    {
+        _isInShop = true;
+        _pinPoint = GlobalPosition;
+
+        _priceContainer.Modulate = _priceContainer.Modulate.AsTransparent();
+        
+        _priceTween?.Kill();
+        _priceTween = CreateTween().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+        _priceTween.FadeIn(_priceContainer, 0.2f);
+        
+        _priceContainer.Visible = true;
     }
 
     private void OnPlayerHovered(Node2D _)
@@ -212,6 +278,16 @@ public partial class WorldModule : RigidBody2D
 
     private void PickUp()
     {
+        if (_isInShop)
+        {
+            var price = Module.Price;
+            var canBuy = price >= CrystalManager.Instance.Crystals;
+            if (!canBuy)
+            {
+                return;
+            }
+        }
+        
         InventoryManager.Instance.AddModule(Module);
         Remove();
     }

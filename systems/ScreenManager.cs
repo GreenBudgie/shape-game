@@ -39,6 +39,11 @@ public partial class ScreenManager : Node
         }
     }
 
+    public bool IsAnyScreenOpen()
+    {
+        return _openedScreens.Count != 0;
+    }
+
     public void RegisterScreen(IScreen screen)
     {
         _screens.Add(screen);
