@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://shop/shop.tscn" id="5_e8heu"]
 [ext_resource type="Script" uid="uid://cbwxymx4i00f0" path="res://environment/Environment.cs" id="5_f1jbl"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
+[ext_resource type="Script" uid="uid://dublvr51xvlu8" path="res://environment/LevelBoundary.cs" id="6_i2p71"]
 [ext_resource type="PackedScene" uid="uid://b063yya1e0eik" path="res://ui/inventory/pause/pause_menu.tscn" id="6_mfdv2"]
 [ext_resource type="PackedScene" uid="uid://cjmguojhwcatt" path="res://debug/screen/debug_screen.tscn" id="6_rvswv"]
 [ext_resource type="PackedScene" uid="uid://dy2k3kjbjir5i" path="res://ui/game_over/game_over_screen.tscn" id="7_hb5m1"]
@@ -32,7 +33,7 @@ size = Vector2(1024, 4208)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0lhi4"]
 size = Vector2(1024, 4208)
 
-[sub_resource type="Shader" id="Shader_f1jbl"]
+[sub_resource type="Shader" id="Shader_xa8c5"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -95,15 +96,15 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_vaj68"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5b14r"]
 resource_local_to_scene = true
-shader = SubResource("Shader_f1jbl")
+shader = SubResource("Shader_xa8c5")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 2.000000095
 shader_parameter/rect_size = Vector2(1024, 4208)
 
-[sub_resource type="Shader" id="Shader_i2p71"]
+[sub_resource type="Shader" id="Shader_bnpwn"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -166,9 +167,9 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xa8c5"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_36jdj"]
 resource_local_to_scene = true
-shader = SubResource("Shader_i2p71")
+shader = SubResource("Shader_bnpwn")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 2.000000095
@@ -177,7 +178,7 @@ shader_parameter/rect_size = Vector2(1024, 4208)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k07pp"]
 size = Vector2(3840, 1024)
 
-[sub_resource type="Shader" id="Shader_5b14r"]
+[sub_resource type="Shader" id="Shader_xfvwf"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -240,9 +241,9 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bnpwn"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dhpj7"]
 resource_local_to_scene = true
-shader = SubResource("Shader_5b14r")
+shader = SubResource("Shader_xfvwf")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 0.0
@@ -251,7 +252,7 @@ shader_parameter/rect_size = Vector2(3840, 1024)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkk55"]
 size = Vector2(3840, 1024)
 
-[sub_resource type="Shader" id="Shader_36jdj"]
+[sub_resource type="Shader" id="Shader_7knny"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -314,9 +315,9 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xfvwf"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_082n1"]
 resource_local_to_scene = true
-shader = SubResource("Shader_36jdj")
+shader = SubResource("Shader_7knny")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 0.0
@@ -371,6 +372,7 @@ script = ExtResource("5_f1jbl")
 [node name="LevelWalls" type="StaticBody2D" parent="Environment" unique_id=1246014687 groups=["level_walls"]]
 collision_layer = 32
 collision_mask = 0
+script = ExtResource("6_i2p71")
 
 [node name="LeftWall" type="CollisionShape2D" parent="Environment/LevelWalls" unique_id=1024175451]
 position = Vector2(-512, 1080)
@@ -381,7 +383,7 @@ position = Vector2(4352, 1080)
 shape = SubResource("RectangleShape2D_0lhi4")
 
 [node name="LeftGlow" parent="Environment/LevelWalls" unique_id=1402074923 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_vaj68")
+material = SubResource("ShaderMaterial_5b14r")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -393,7 +395,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="RightGlow" parent="Environment/LevelWalls" unique_id=312963737 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_xa8c5")
+material = SubResource("ShaderMaterial_36jdj")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -407,13 +409,14 @@ grow_vertical = 2
 [node name="LevelCeiling" type="StaticBody2D" parent="Environment" unique_id=1646188548]
 collision_layer = 64
 collision_mask = 0
+script = ExtResource("6_i2p71")
 
 [node name="TopWall" type="CollisionShape2D" parent="Environment/LevelCeiling" unique_id=467383974]
 position = Vector2(1920, -512)
 shape = SubResource("RectangleShape2D_k07pp")
 
 [node name="CeilingGlow" parent="Environment/LevelCeiling" unique_id=1382008011 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_bnpwn")
+material = SubResource("ShaderMaterial_dhpj7")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -426,13 +429,14 @@ grow_vertical = 2
 [node name="LevelFloor" type="StaticBody2D" parent="Environment" unique_id=798973780]
 collision_layer = 128
 collision_mask = 0
+script = ExtResource("6_i2p71")
 
 [node name="BottomWall" type="CollisionShape2D" parent="Environment/LevelFloor" unique_id=1878348994]
 position = Vector2(1920, 2672)
 shape = SubResource("RectangleShape2D_jkk55")
 
 [node name="FloorGlow" parent="Environment/LevelFloor" unique_id=1794150407 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_xfvwf")
+material = SubResource("ShaderMaterial_082n1")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -445,6 +449,7 @@ grow_vertical = 2
 [node name="LevelOutsideBoundary" type="StaticBody2D" parent="Environment" unique_id=345506684]
 collision_layer = 256
 collision_mask = 0
+script = ExtResource("6_i2p71")
 
 [node name="TopWall" type="CollisionShape2D" parent="Environment/LevelOutsideBoundary" unique_id=1615479064]
 position = Vector2(1920, -1536)

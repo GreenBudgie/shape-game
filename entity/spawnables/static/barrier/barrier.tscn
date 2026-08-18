@@ -13,7 +13,7 @@
 friction = 0.5
 bounce = 0.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5543c"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dk3do"]
 resource_local_to_scene = true
 shader = ExtResource("6_y6mjq")
 shader_parameter/glow_color = Color(0.21176471, 0.94509804, 0.8039216, 1)
@@ -71,7 +71,7 @@ _appearSound = ExtResource("2_g8n68")
 _disappearSound = ExtResource("3_y6mjq")
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_g8n68")]
-material = SubResource("ShaderMaterial_5543c")
+material = SubResource("ShaderMaterial_dk3do")
 
 [node name="Sprite2D" type="Sprite2D" parent="Glow" unique_id=210456309]
 texture = ExtResource("5_wc1s4")

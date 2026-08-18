@@ -183,7 +183,7 @@ public static class CollisionObjectUtils
         collisionObject.CollisionLayer |= layerBit;
     }
 
-    private static IEnumerable<Rect2> GetCollisionRects(this CollisionObject2D collisionObject)
+    public static IEnumerable<Rect2> GetCollisionRects(this CollisionObject2D collisionObject)
     {
         foreach (var shapeOwnerId in collisionObject.GetShapeOwners())
         {

@@ -2,6 +2,8 @@ using System.Linq;
 
 public partial class WorldModule : RigidBody2D
 {
+    private const float DefaultDamp = 2.0f;
+    private const float PinnedDamp = 5.0f;
 
     private const float AlphaTweenDuration = 0.2f;
     
@@ -92,8 +94,11 @@ public partial class WorldModule : RigidBody2D
             }
         }
         
-        _priceContainer = GetNode<HBoxContainer>("PriceContainer");
-        // TODO _priceContainer.GlobalPosition = _priceContainer.GlobalPosition with { Y = 1 };
+        const float priceGap = 50f;
+        var lowestY = _playerDetectionArea.GetCollisionRects().MaxBy(rect => rect.End.Y).End.Y;
+        
+        _priceContainer = GetNode<HBoxContainer>("PriceContainer"); 
+        _priceContainer.GlobalPosition = _priceContainer.GlobalPosition with { Y = lowestY + priceGap };
         _priceContainer.Visible = false;
         
         _priceLabel = GetNode<Label>("PriceContainer/PriceLabel");
@@ -176,6 +181,9 @@ public partial class WorldModule : RigidBody2D
     {
         _isInShop = true;
         _pinPoint = GlobalPosition;
+
+        LinearDamp = PinnedDamp;
+        AngularDamp = PinnedDamp;
 
         _priceContainer.Modulate = _priceContainer.Modulate.AsTransparent();
         
@@ -280,12 +288,13 @@ public partial class WorldModule : RigidBody2D
     {
         if (_isInShop)
         {
-            var price = Module.Price;
-            var canBuy = price >= CrystalManager.Instance.Crystals;
+            var canBuy = CrystalManager.Instance.Crystals >= Module.Price;
             if (!canBuy)
             {
                 return;
             }
+            
+            CrystalManager.Instance.Crystals -= Module.Price;
         }
         
         InventoryManager.Instance.AddModule(Module);
@@ -310,7 +319,7 @@ public partial class WorldModule : RigidBody2D
         _alphaTween.FadeIn(this, AlphaTweenDuration);
     }
     
-    private void Remove()
+    public void Remove()
     {
         if (_isRemoving)
         {
