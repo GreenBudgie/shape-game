@@ -3,6 +3,8 @@ using System.Collections.Generic;
 public partial class Player : RigidBody2D
 {
 
+    public static readonly Vector2 MaxVisibleSize = new(140, 140);
+
     private const int CornerDistance = 28;
 
     /**
@@ -138,7 +140,15 @@ public partial class Player : RigidBody2D
 
     private void Unstuck()
     {
-        if (ShapeGame.PlayableArea.HasPoint(GlobalPosition))
+        const float expansion = 1024;
+
+        var expandedArea = new Rect2(
+            ShapeGame.PlayableArea.Position.X - expansion,
+            ShapeGame.PlayableArea.Position.Y - expansion,
+            ShapeGame.PlayableArea.Size.X + expansion * 2,
+            ShapeGame.PlayableArea.Size.Y + expansion * 2
+        );
+        if (expandedArea.HasPoint(GlobalPosition))
         {
             return;
         }

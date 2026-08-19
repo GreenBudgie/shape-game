@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://entity/living/player/player.tscn" id="2_eow3j"]
 [ext_resource type="PackedScene" uid="uid://dlwvs3u6gqtsw" path="res://ui/game/game_ui.tscn" id="3_qhcbd"]
-[ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://shop/shop.tscn" id="5_e8heu"]
+[ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://systems/shop/shop.tscn" id="5_e8heu"]
 [ext_resource type="Script" uid="uid://cbwxymx4i00f0" path="res://environment/Environment.cs" id="5_f1jbl"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
 [ext_resource type="Script" uid="uid://dublvr51xvlu8" path="res://environment/LevelBoundary.cs" id="6_i2p71"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://djxx4y1127mi" path="res://ui/FpsCounter.cs" id="8_215e1"]
 [ext_resource type="Script" uid="uid://fxme35ooeqpu" path="res://level/LevelManager.cs" id="8_j5wjh"]
 [ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://entity/living/enemies/EnemyManager.cs" id="8_vef74"]
+[ext_resource type="Script" uid="uid://ribdcuixu4kl" path="res://environment/FloorArea.cs" id="8_xa8c5"]
 [ext_resource type="PackedScene" uid="uid://b8gd2gve05upa" path="res://systems/CrystalManager.tscn" id="9_vef74"]
 [ext_resource type="Texture2D" uid="uid://ck75mef3o2t0i" path="res://environment/background_square.png" id="10_hve3p"]
 [ext_resource type="Script" uid="uid://dbtjcecl2kyym" path="res://entity/spawnables/static/explosion/ExplosionEffects.cs" id="11_mfdv2"]
@@ -335,6 +336,9 @@ size = Vector2(1024, 6256.25)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vef74"]
 size = Vector2(5888, 1024)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8vif8"]
+size = Vector2(3840, 1024)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lc2xo"]
 shader = ExtResource("12_iotsf")
 shader_parameter/strength = 0.0
@@ -470,6 +474,15 @@ debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
 position = Vector2(1920, 3696)
 shape = SubResource("RectangleShape2D_vef74")
 debug_color = Color(0.294118, 0.615686, 0.384314, 0.419608)
+
+[node name="FloorArea" type="Area2D" parent="Environment" unique_id=1362563233]
+collision_layer = 0
+monitorable = false
+script = ExtResource("8_xa8c5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/FloorArea" unique_id=513337069]
+position = Vector2(1920, 2672)
+shape = SubResource("RectangleShape2D_8vif8")
 
 [node name="Shop" parent="." unique_id=1220203929 instance=ExtResource("5_e8heu")]
 z_index = -1

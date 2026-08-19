@@ -20,6 +20,7 @@ public partial class Environment : Node2D
         {
             _walls.EnableGlowWithColor(ColorScheme.Yellow);
             _ceiling.EnableGlowWithColor(ColorScheme.Red);
+            _ceiling.DisableCollisions();
             return;
         }
         
@@ -27,6 +28,21 @@ public partial class Environment : Node2D
         {
             _walls.EnableGlowWithColor(ColorScheme.LightBlue);
             _ceiling.DisableGlow();
+            _ceiling.EnableCollisions();
+            _floor.EnableCollisions();
         }
+
+        if (phase == GamePhase.LevelPreparation)
+        {
+            _walls.EnableGlowWithColor(ColorScheme.LightBlue);
+            _ceiling.DisableGlow();
+            _ceiling.EnableCollisions();
+            _floor.DisableCollisions();
+        }
+    }
+
+    private void OnPlayerLeftFloor()
+    {
+        _floor.EnableCollisions();
     }
 }

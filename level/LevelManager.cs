@@ -33,14 +33,14 @@ public partial class LevelManager : Node
 
     public override void _Ready()
     {
-        Callable.From(() => StartLevel(1)).CallDeferred();
+        Callable.From(StartFirstLevel).CallDeferred();
 
         EnemyManager.Instance.EnemyDestroyed += OnEnemyDestroyed;
     }
 
     public override void _Process(double delta)
     {
-        if (Level != null)
+        if (Level != null && GamePhaseManager.Instance.Phase == GamePhase.Level)
         {
             ProcessLevel(delta, Level);
         }
@@ -170,6 +170,33 @@ public partial class LevelManager : Node
         }
     }
 
+    public void PrepareNextLevel()
+    {
+        if (Level == null)
+        {
+            return;
+        }
+
+        GamePhaseManager.Instance.ChangePhase(GamePhase.LevelPreparation);
+        
+        var player = Player.FindPlayer();
+        if (player == null)
+        {
+            return;
+        }
+        
+        // Move player to the bottom of the screen. Make it invisible due to physics interpolation so it's not
+        // flying through the screen
+        player.PhysicsInterpolationMode = PhysicsInterpolationModeEnum.Off;
+        player.GlobalPosition = player.GlobalPosition with
+        {
+            Y = ShapeGame.PlayableArea.End.Y + Player.MaxVisibleSize.Y
+        };
+            
+        Callable.From(() => player.PhysicsInterpolationMode = PhysicsInterpolationModeEnum.Inherit).CallNextPhysicsFrame(GetTree());
+
+    }
+    
     public void StartNextLevel()
     {
         if (Level == null)
@@ -181,19 +208,26 @@ public partial class LevelManager : Node
         StartLevel(nextLevelNumber);
     }
 
-    public void StartLevel(int level)
+    private void StartFirstLevel()
     {
-        GamePhaseManager.Instance.ChangePhase(GamePhase.Level);
+        StartLevel(1);
+    }
 
+    private void StartLevel(int level)
+    {
         Level = LevelRegistry.GetLevel(level);
-        _phase = 0;
-        _isLastPhase = false;
-        _requirementsMet = false;
 
-        _timeToSpawnPolysteroids =
-            RandomUtils.Range(Level.PolysteroidMinTimeToSpawn, Level.PolysteroidMaxTimeToSpawn);
+        _timeToNextPhase = 0;
+        _timeToSpawnEnemies = 0;
+        _requirementsMet = false;
+        _isLastPhase = false;
+        _phase = 0;
+        _isLevelEnding = false;
+        _timeToEndLevel = 0;
+        _timeToSpawnPolysteroids = RandomUtils.Range(Level.PolysteroidMinTimeToSpawn, Level.PolysteroidMaxTimeToSpawn);
         
         SetDestroyProgress(0);
+        GamePhaseManager.Instance.ChangePhase(GamePhase.Level);
         EmitSignalLevelStarted();
     }
 

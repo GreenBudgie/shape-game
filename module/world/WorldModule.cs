@@ -3,7 +3,7 @@ using System.Linq;
 public partial class WorldModule : RigidBody2D
 {
     private const float DefaultDamp = 2.0f;
-    private const float PinnedDamp = 5.0f;
+    private const float PinnedDamp = 6.0f;
 
     private const float AlphaTweenDuration = 0.2f;
     
@@ -169,7 +169,7 @@ public partial class WorldModule : RigidBody2D
             return;
         }
 
-        const float torqueByDegree = 100000f;
+        const float torqueByDegree = 10000f;
         var direction = rotationDegrees < 0 ? 1 : -1;
         var torque = Abs(rotationDegrees) * torqueByDegree;
         ApplyTorque(torque * direction);

@@ -7,7 +7,7 @@ public partial class Shop : Node2D
     
     public static Shop Instance { get; private set; } = null!;
 
-    private List<WorldModule> _shopModules = [];
+    private readonly List<WorldModule> _shopModules = [];
 
     public Shop()
     {

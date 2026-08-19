@@ -13,9 +13,12 @@ public partial class LevelBoundary : StaticBody2D
 
     private Tween? _glowColorTween;
     private Tween? _glowTween;
+    private uint _initialCollisionLayer;
     
     public override void _Ready()
     {
+        _initialCollisionLayer = CollisionLayer;
+        
         Glows = GetChildren().OfType<RectGlow>().ToImmutableList();
     }
     
@@ -38,10 +41,25 @@ public partial class LevelBoundary : StaticBody2D
         _glowColorTween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quad);
         foreach (var glow in Glows)
         {
+            if (glow.Strength <= 0 || glow.Radius <= 0 || glow.Color.A == 0)
+            {
+                glow.Color = color.AsTransparent();
+            }
+            
             _glowTween.TweenGlowStrength(glow, DefaultGlowStrength, TweenDuration);
             _glowTween.TweenGlowRadius(glow, DefaultGlowRadius, TweenDuration);
             _glowColorTween.TweenGlowColor(glow, color, GlowTweenDuration);
         }
+    }
+
+    public void DisableCollisions()
+    {
+        CollisionLayer = 0;
+    }
+    
+    public void EnableCollisions()
+    {
+        CollisionLayer = _initialCollisionLayer;
     }
     
 }

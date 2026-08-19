@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://bliriv38qvb4i"]
+
+[ext_resource type="Script" uid="uid://c4kyw6msgrepp" path="res://systems/shop/Shop.cs" id="1_r2p71"]
+[ext_resource type="Script" uid="uid://cdsurw366padd" path="res://systems/shop/AscendLabel.cs" id="2_d1iid"]
+[ext_resource type="Texture2D" uid="uid://df6ytahijo560" path="res://systems/shop/pointer.png" id="2_q7vm2"]
+[ext_resource type="Script" uid="uid://vg4ndjx68ihd" path="res://systems/shop/AscendPointer.cs" id="4_rxov8"]
+[ext_resource type="Script" uid="uid://cxnbr22s1cxbu" path="res://systems/shop/NextLevelArea.cs" id="5_s7g53"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8vif8"]
+size = Vector2(3840, 582)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d1iid"]
+size = Vector2(3840, 273)
+
+[node name="Shop" type="Node2D" unique_id=2086323810]
+script = ExtResource("1_r2p71")
+
+[node name="AscendLabel" type="Label" parent="." unique_id=1838412139 node_paths=PackedStringArray("_ceilingArea")]
+modulate = Color(0.9372549, 0.35686275, 0.35686275, 1)
+offset_top = 89.0
+offset_right = 3840.0
+offset_bottom = 191.0
+text = "ASCEND"
+horizontal_alignment = 1
+script = ExtResource("2_d1iid")
+_ceilingArea = NodePath("../CeilingArea")
+
+[node name="AscendPointer" type="Sprite2D" parent="." unique_id=91372117 node_paths=PackedStringArray("_ceilingArea")]
+modulate = Color(0.9372549, 0.35686275, 0.35686275, 1)
+position = Vector2(1920, 67)
+texture = ExtResource("2_q7vm2")
+script = ExtResource("4_rxov8")
+_ceilingArea = NodePath("../CeilingArea")
+
+[node name="NextLevelArea" type="Area2D" parent="." unique_id=1507740266]
+collision_layer = 0
+monitorable = false
+script = ExtResource("5_s7g53")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NextLevelArea" unique_id=695818906]
+position = Vector2(1920, -469)
+shape = SubResource("RectangleShape2D_8vif8")
+
+[node name="CeilingArea" type="Area2D" parent="." unique_id=1558195548]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CeilingArea" unique_id=63335391]
+position = Vector2(1920, 136.5)
+shape = SubResource("RectangleShape2D_d1iid")
