@@ -5,7 +5,7 @@ public partial class ModuleInfo : Control
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://c47f74u04f8m2");
     
-    private Module _module = null!;
+    private ModuleType _moduleType = null!;
 
     private RichTextLabel _title = null!;
     private RichTextLabel _description = null!;
@@ -14,10 +14,10 @@ public partial class ModuleInfo : Control
     private Tween? _scaleTween;
     private bool _isRemoving;
     
-    public static ModuleInfo Create(Module module)
+    public static ModuleInfo Create(ModuleType moduleType)
     {
         var node = Scene.Instantiate<ModuleInfo>();
-        node._module = module;
+        node._moduleType = moduleType;
         return node;
     }
 
@@ -27,7 +27,7 @@ public partial class ModuleInfo : Control
         _description = GetNode<RichTextLabel>("%Description");
         _statsContainer = GetNode<StatsContainer>("%StatsContainer");
 
-        if (_module.Stats.Count == 0)
+        if (_moduleType.Stats.Count == 0)
         {
             _statsContainer.QueueFree();
             return;
@@ -35,12 +35,12 @@ public partial class ModuleInfo : Control
 
         _title.Clear();
         _title.PushBold();
-        _title.AppendText(_module.Name);
+        _title.AppendText(_moduleType.Name);
         _title.Pop();
         
-        _description.Text = _module.Description;
+        _description.Text = _moduleType.Description;
         
-        foreach (var stat in _module.Stats)
+        foreach (var stat in _moduleType.Stats)
         {
             AddStat(stat);
         }

@@ -26,7 +26,7 @@ public partial class InventoryModuleConnection : Node2D
         _arrow = GetNode<Sprite2D>("Arrow");
         _connector = GetNode<Sprite2D>("Connector");
 
-        _arrow.Modulate = Module.Module.Color;
+        _arrow.Modulate = Module.ModuleType.Color;
 
         if (Type == ConnectionType.Incoming)
         {
@@ -144,9 +144,9 @@ public partial class InventoryModuleConnection : Node2D
         _arrowTween?.Kill();
         _arrowTween = CreateTween().SetParallel().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quad);
 
-        _arrowTween.TweenModulate(_arrow, Module.Module.Color, StateChangeDuration);
+        _arrowTween.TweenModulate(_arrow, Module.ModuleType.Color, StateChangeDuration);
         _arrowTween.TweenScaleReset(_arrow, StateChangeDuration);
-        _arrowTween.TweenGlowColor(_arrowGlow, Module.Module.Color, StateChangeDuration);
+        _arrowTween.TweenGlowColor(_arrowGlow, Module.ModuleType.Color, StateChangeDuration);
         _arrowTween.TweenGlowRadius(_arrowGlow, 0, StateChangeDuration);
     }
     
@@ -162,9 +162,9 @@ public partial class InventoryModuleConnection : Node2D
         _arrowTween?.Kill();
         _arrowTween = CreateTween().SetParallel().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quad);
 
-        _arrowTween.TweenModulate(_arrow, Module.Module.Color, StateChangeDuration);
+        _arrowTween.TweenModulate(_arrow, Module.ModuleType.Color, StateChangeDuration);
         _arrowTween.TweenScale(_arrow, 1.25f, StateChangeDuration);
-        _arrowTween.TweenGlowColor(_arrowGlow, Module.Module.Color, StateChangeDuration);
+        _arrowTween.TweenGlowColor(_arrowGlow, Module.ModuleType.Color, StateChangeDuration);
         _arrowTween.TweenGlowRadius(_arrowGlow, GlowRadius, StateChangeDuration);
     }
 

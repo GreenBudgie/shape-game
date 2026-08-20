@@ -11,7 +11,7 @@ public partial class WorldModule : RigidBody2D
     private static readonly PackedScene ConnectionShapeScene = GD.Load<PackedScene>("uid://do5oc5gogcakt");
     private static readonly PackedScene HexShapeScene = GD.Load<PackedScene>("uid://cqy7bjj6axtb2");
 
-    public Module Module { get; private set; } = null!;
+    public ModuleType ModuleType { get; private set; } = null!;
 
     private Node2D _spritesNode = null!;
     private Glow _glow = null!;
@@ -28,10 +28,10 @@ public partial class WorldModule : RigidBody2D
     private Tween? _animationTween;
     private Tween? _alphaTween;
     
-    public static WorldModule Create(Module module)
+    public static WorldModule Create(ModuleType moduleType)
     {
         var worldModule = Scene.Instantiate<WorldModule>();
-        worldModule.Module = module;
+        worldModule.ModuleType = moduleType;
         
         var player = Player.FindPlayer();
         if (player != null)
@@ -53,26 +53,26 @@ public partial class WorldModule : RigidBody2D
         _spritesNode = GetNode<Node2D>("Sprites");
         
         var fillSprite = _spritesNode.GetNode<Sprite2D>("FillSprite");
-        fillSprite.Texture = Module.Shape.FillTexture;
+        fillSprite.Texture = ModuleType.Shape.FillTexture;
         fillSprite.SelfModulate = ColorScheme.DarkOrange;
         
         var outlineSprite = _spritesNode.GetNode<Sprite2D>("OutlineSprite");
-        outlineSprite.Texture = Module.Shape.OutlineTexture;
-        outlineSprite.SelfModulate = Module.Color;
+        outlineSprite.Texture = ModuleType.Shape.OutlineTexture;
+        outlineSprite.SelfModulate = ModuleType.Color;
         
         var moduleSprite = _spritesNode.GetNode<Sprite2D>("ModuleSprite");
-        moduleSprite.Texture = Module.Texture;
+        moduleSprite.Texture = ModuleType.Texture;
         
         _playerDetectionArea = GetNode<Area2D>("PlayerDetectionArea");
         _playerDetectionArea.BodyEntered += OnPlayerHovered;
         _playerDetectionArea.BodyExited += OnPlayerUnhovered;
         
         _glow = Glow.AddGlow(fillSprite)
-            .SetColor(Module.Color.AsTransparent())
+            .SetColor(ModuleType.Color.AsTransparent())
             .SetRadius(0)
             .SetStrength(1);
 
-        var hexPositions = Module.Shape.CenteredPixelHexPositions;
+        var hexPositions = ModuleType.Shape.CenteredPixelHexPositions;
         foreach (var hex in hexPositions)
         {
             var hexShape = HexShapeScene.Instantiate<CollisionPolygon2D>();
@@ -102,7 +102,7 @@ public partial class WorldModule : RigidBody2D
         _priceContainer.Visible = false;
         
         _priceLabel = GetNode<Label>("PriceContainer/PriceLabel");
-        _priceLabel.Text = Module.Price.ToString();
+        _priceLabel.Text = ModuleType.Price.ToString();
 
         Modulate = Colors.Transparent;
         Scale = new Vector2(1.2f, 1.2f);
@@ -288,16 +288,16 @@ public partial class WorldModule : RigidBody2D
     {
         if (_isInShop)
         {
-            var canBuy = CrystalManager.Instance.Crystals >= Module.Price;
+            var canBuy = CrystalManager.Instance.Crystals >= ModuleType.Price;
             if (!canBuy)
             {
                 return;
             }
             
-            CrystalManager.Instance.Crystals -= Module.Price;
+            CrystalManager.Instance.Crystals -= ModuleType.Price;
         }
         
-        InventoryManager.Instance.AddModule(Module);
+        InventoryManager.Instance.AddModule(ModuleType);
         Remove();
     }
 

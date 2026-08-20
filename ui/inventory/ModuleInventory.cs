@@ -27,9 +27,9 @@ public partial class ModuleInventory : Control
         InventoryManager.Instance.InventoryClosed += HideSlots;
     }
     
-    public List<InventoryModule> GetModules<T>() where T : Module
+    public List<InventoryModule> GetModules<T>() where T : ModuleType
     {
-        return GetModules().Where(x => x.Module is T).ToList();
+        return GetModules().Where(x => x.ModuleType is T).ToList();
     }
 
     public List<InventoryModule> GetModules()

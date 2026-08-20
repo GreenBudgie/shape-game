@@ -38,7 +38,7 @@ public partial class Shop : Node2D
         const float halfNumberOfModules = (NumberOfModules - 1f) / 2f;
         var firstModulePositionX = ShapeGame.Center.X - moduleGap * halfNumberOfModules;
         
-        var allModulesCopy = ModuleRegistry.Modules.ToList();
+        var allModulesCopy = ModuleTypeRegistry.Types.ToList();
         for (var i = 0; i < NumberOfModules; i++)
         {
             var module = allModulesCopy.GetRandom();

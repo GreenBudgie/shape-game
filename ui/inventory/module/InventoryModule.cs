@@ -63,7 +63,7 @@ public partial class InventoryModule : TextureButton
     private TextureRect _moduleTexture = null!;
     private TextureRect _outline = null!;
 
-    public Module Module { get; private set; } = null!;
+    public ModuleType ModuleType { get; private set; } = null!;
     public Dictionary<HexCoordinates, InventorySlot> Slots { get; private set; } = [];
     public Dictionary<HexCoordinates, InventoryModuleConnection> Connections { get; private set; } = [];
     public bool IsFollowingCursor => _mousePivot.HasValue;
@@ -73,10 +73,10 @@ public partial class InventoryModule : TextureButton
     private Tween? _appearTween;
     private Tween? _animationTween;
 
-    public static InventoryModule Create(Module module)
+    public static InventoryModule Create(ModuleType moduleType)
     {
         var inventoryModule = Scene.Instantiate<InventoryModule>();
-        inventoryModule.Module = module;
+        inventoryModule.ModuleType = moduleType;
         return inventoryModule;
     }
 
@@ -85,33 +85,33 @@ public partial class InventoryModule : TextureButton
         _moduleTexture = GetNode<TextureRect>("ModuleTexture");
         _outline = GetNode<TextureRect>("Outline");
 
-        _outline.Texture = Module.Shape.OutlineTexture;
-        _outline.Modulate = Module.Color;
+        _outline.Texture = ModuleType.Shape.OutlineTexture;
+        _outline.Modulate = ModuleType.Color;
 
         SelfModulate = ColorScheme.DarkOrange;
-        TextureNormal = Module.Shape.FillTexture;
-        _moduleTexture.Texture = Module.Texture;
+        TextureNormal = ModuleType.Shape.FillTexture;
+        _moduleTexture.Texture = ModuleType.Texture;
         _material = (ShaderMaterial)Material;
-        TextureClickMask = Module.Shape.Bitmap;
+        TextureClickMask = ModuleType.Shape.Bitmap;
 
         Callable.From(() =>
             _glow = Glow.AddGlow(this)
-                .SetColor(Module.Color)
+                .SetColor(ModuleType.Color)
                 .SetRadius(0)
                 .SetStrength(1)
         ).CallDeferred();
 
-        foreach (var moduleHex in Module.Shape.PixelHexPositions)
+        foreach (var moduleHex in ModuleType.Shape.PixelHexPositions)
         {
             _hexes.Add(moduleHex.Key, new HexData(moduleHex.Value, null));
         }
 
-        foreach (var connectionHex in Module.OutgoingConnections)
+        foreach (var connectionHex in ModuleType.OutgoingConnections)
         {
             AddConnection(connectionHex, ConnectionType.Outgoing);
         }
         
-        foreach (var connectionHex in Module.IncomingConnections)
+        foreach (var connectionHex in ModuleType.IncomingConnections)
         {
             AddConnection(connectionHex, ConnectionType.Incoming);
         }
@@ -138,7 +138,7 @@ public partial class InventoryModule : TextureButton
         if (!source.HasValue)
         {
             throw new ArgumentException(
-                $"Module {Module.Name} has an incorrect connection configuration: {connectionHex} does not have a neighbor");
+                $"Module {ModuleType.Name} has an incorrect connection configuration: {connectionHex} does not have a neighbor");
         }
 
         var connection = InventoryModuleConnection.Create(this, type);
@@ -225,7 +225,7 @@ public partial class InventoryModule : TextureButton
         
         BeforeRemove();
         
-        var worldModule = WorldModule.Create(Module);
+        var worldModule = WorldModule.Create(ModuleType);
         WorldModuleManager.Instance.SpawnModule(worldModule);
 
         const float duration = 0.2f;
@@ -470,7 +470,7 @@ public partial class InventoryModule : TextureButton
         var unvisitedModules = directModules.Where(visitedModules.Add).ToList();
 
         var modulesToRecurse = stopAtInterruptingModules
-            ? unvisitedModules.Where(module => !module.Module.InterruptsConnections)
+            ? unvisitedModules.Where(module => !module.ModuleType.InterruptsConnections)
             : unvisitedModules;
 
         // This logic does not reflect complex chains with more than 3 modules,
@@ -565,7 +565,7 @@ public partial class InventoryModule : TextureButton
         var unvisitedModules = directModules.Where(visitedModules.Add).ToList();
 
         var modulesToRecurse = stopAtInterruptingModules
-            ? unvisitedModules.Where(module => !module.Module.InterruptsConnections)
+            ? unvisitedModules.Where(module => !module.ModuleType.InterruptsConnections)
             : unvisitedModules;
 
         // This logic does not reflect complex chains with more than 3 modules,
@@ -689,7 +689,7 @@ public partial class InventoryModule : TextureButton
             }
         }
 
-        var allSlotsHovered = hoveredSlots.Count == Module.Shape.Hexes.Count;
+        var allSlotsHovered = hoveredSlots.Count == ModuleType.Shape.Hexes.Count;
         if (!allSlotsHovered || !IsAllSlotsAvailable(hoveredSlots.Values))
         {
             ResetHoveredSlots();
@@ -1105,7 +1105,7 @@ public partial class InventoryModule : TextureButton
             return;
         }
 
-        _moduleInfo = ModuleInfo.Create(Module);
+        _moduleInfo = ModuleInfo.Create(ModuleType);
         InventoryManager.Instance.AddChild(_moduleInfo);
     }
 

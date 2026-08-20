@@ -7,24 +7,24 @@ public partial class ModuleSelector : Control
     {
         _container = GetNode<VFlowContainer>("ModuleSelectorContainer");
         
-        foreach (var module in ModuleRegistry.Modules)
+        foreach (var module in ModuleTypeRegistry.Types)
         {
             AddModuleButton(module);
         }
     }
 
-    private void AddModuleButton(Module module)
+    private void AddModuleButton(ModuleType moduleType)
     {
         var button = new Button
         {
-            Text = module.Name
+            Text = moduleType.Name
         };
-        button.Pressed += () => SpawnModule(module);
+        button.Pressed += () => SpawnModule(moduleType);
         _container.AddChild(button);
     }
 
-    private void SpawnModule(Module module)
+    private void SpawnModule(ModuleType moduleType)
     {
-        InventoryManager.Instance.AddModule(module);
+        InventoryManager.Instance.AddModule(moduleType);
     }
 }

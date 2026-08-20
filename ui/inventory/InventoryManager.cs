@@ -83,8 +83,8 @@ public partial class InventoryManager : Control, IScreen
 
     private void PostSetup()
     {
-        AddModule(ModuleRegistry.Bolt, LeftBlasterInventory);
-        AddModule(ModuleRegistry.MiniSphere, RightBlasterInventory);
+        AddModule(ModuleTypeRegistry.Bolt, LeftBlasterInventory);
+        AddModule(ModuleTypeRegistry.MiniSphere, RightBlasterInventory);
         
         Close(playSound: false);
         Visible = false;
@@ -94,9 +94,9 @@ public partial class InventoryManager : Control, IScreen
     /// Adds module either directly to the inventory, if it has space, or opens the inventory while holding the module
     /// at cursor
     /// </summary>
-    public void AddModule(Module module)
+    public void AddModule(ModuleType moduleType)
     {
-        var result = TryAddModule(module);
+        var result = TryAddModule(moduleType);
         if (result.Success)
         {
             return;
@@ -106,9 +106,9 @@ public partial class InventoryManager : Control, IScreen
         result.InventoryModule.StartFollowingCursor(grabClosestHex: false);
     }
 
-    public InsertResult TryAddModule(Module module)
+    public InsertResult TryAddModule(ModuleType moduleType)
     {
-        var inventoryModule = InventoryModule.Create(module);
+        var inventoryModule = InventoryModule.Create(moduleType);
         AddChild(inventoryModule);
         
         foreach (var inventory in _inventories)
@@ -125,14 +125,14 @@ public partial class InventoryManager : Control, IScreen
 
     public readonly record struct InsertResult(InventoryModule InventoryModule, bool Success);
 
-    private void AddModule(Module module, ModuleInventory inventory)
+    private void AddModule(ModuleType moduleType, ModuleInventory inventory)
     {
-        var inventoryModule = InventoryModule.Create(module);
+        var inventoryModule = InventoryModule.Create(moduleType);
         AddChild(inventoryModule);
         var inserted = inventory.TryInsertModule(inventoryModule);
         if (!inserted)
         {
-            throw new ArgumentException($"No space for module {module.Name}");
+            throw new ArgumentException($"No space for module {moduleType.Name}");
         }
     }
 
