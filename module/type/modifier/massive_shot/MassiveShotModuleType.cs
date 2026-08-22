@@ -1,11 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 
 public class MassiveShotModuleType : ModifierModuleType
 {
-    
-    private const float GravityScaleFactor = 1f;
-    private const float MassFactor = 0.5f;
 
     public override Texture2D Texture => GD.Load<Texture2D>("uid://b18uxs8lf5pwj");
 
@@ -17,37 +13,11 @@ public class MassiveShotModuleType : ModifierModuleType
 
     public override int Price => 10;
 
-    public override List<SpawnableStat> Stats => [
-        new DamageStat { ValuePercent = 40f },
-    ];
-    
     public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right];
 
-    public override void Modify(SpawnableContext context)
+    public override Module CreateModule()
     {
-        var projectiles = context.GetContextChain()
-            .Select(ctx => ctx.Spawnable.Node)
-            .OfType<RigidBody2D>()
-            .ToList();
-
-        foreach (var projectile in projectiles)
-        {
-            projectile.GravityScale += GravityScaleFactor;
-            projectile.Mass += MassFactor;
-        }
-
-        if (context.IsModifierTypeApplied<MassiveShotModuleType>())
-        {
-            return;
-        }
-        
-        foreach (var projectile in projectiles)
-        {
-            TrailParticles.Create(projectile)
-                .WithTexture(ParticleTextures.Triangle)
-                .WithScale(0.6f, 0.1f)
-                .Color(ColorScheme.Red)
-                .Spawn();
-        }
+        return new MassiveShotModule();
     }
+
 }

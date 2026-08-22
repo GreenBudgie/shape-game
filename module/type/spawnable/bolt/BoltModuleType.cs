@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 public class BoltModuleType : SpawnableModuleType
 {
 
@@ -13,16 +11,9 @@ public class BoltModuleType : SpawnableModuleType
 
     public override int Price => 5;
 
-    public override List<SpawnableStat> Stats => [
-        new DamageStat { Value = 2 },
-        new SpeedStat { Value = 3000 },
-        new ReloadStat { Value = 0.8f },
-        new LifetimeStat { Value = 4 },
-    ];
-
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override Module CreateModule()
     {
-        return BoltProjectile.Create();
+        return new BoltModule();
     }
 
 }

@@ -25,6 +25,6 @@ public partial class ModuleSelector : Control
 
     private void SpawnModule(ModuleType moduleType)
     {
-        InventoryManager.Instance.AddModule(new ModuleInstance(moduleType));
+        InventoryManager.Instance.AddModule(moduleType.CreateModule());
     }
 }

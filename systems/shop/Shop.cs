@@ -48,6 +48,7 @@ public partial class Shop : Node2D
             shopModule.Rotation = 0;
             
             WorldModuleManager.Instance.SpawnModule(shopModule);
+            shopModule.SetInShop();
             _shopModules.Add(shopModule);
 
             allModulesCopy.Remove(module);

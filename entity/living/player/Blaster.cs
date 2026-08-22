@@ -39,14 +39,14 @@ public partial class Blaster : Node
         List<SpawnableData> spawnables = [];
         foreach (var spawnableModule in spawnableModules)
         {
-            var moduleType = (SpawnableModuleType)spawnableModule.Module.Type;
+            var module = (SpawnableModule)spawnableModule.Module;
             
             var incomingModules = spawnableModule.GetAllIncomingConnectedModules();
             var outgoingModules = spawnableModule.GetAllOutgoingConnectedModules();
             
             var modifiers = incomingModules
                 .Select(inventoryModule => inventoryModule.Module)
-                .Where(module => module.Type is ModifierModuleType)
+                .OfType<ModifierModule>()
                 .ToList();
             
             var incomingTriggers = incomingModules
@@ -56,7 +56,7 @@ public partial class Blaster : Node
                 .Where(inventoryModule => inventoryModule.Module.Type is TriggerModuleType)
                 .ToHashSet();
 
-            spawnables.Add(new SpawnableData(spawnableModule.Module, modifiers, incomingTriggers, outgoingTriggers));
+            spawnables.Add(new SpawnableData(module, modifiers, incomingTriggers, outgoingTriggers));
         }
         
         var spawnablesWithoutTriggers = spawnables.Where(spawnable => spawnable.IncomingTriggers.Count == 0).ToList();
@@ -77,13 +77,12 @@ public partial class Blaster : Node
             throw new Exception("Blaster cannot fire - player wasn't found");
         }
 
-        var spawnableModuleType = (SpawnableModuleType)spawnable.SpawnableModule.Type;
-        var context = new SpawnableContext(spawnableModuleType.CreateSpawnable)
+        var context = new SpawnableContext(spawnable.SpawnableModule.CreateSpawnable)
         {
             Position = player.GetGlobalNosePosition(),
             Direction = Vector2.FromAngle(player.GetTilt() - Pi / 2),
             Source = player,
-            Modifiers = spawnable.Modifiers.Select(instance => (ModifierModuleType)instance.Type)
+            Modifiers = spawnable.Modifiers
         };
         
         context.Stats.AddRange(spawnable.SpawnableModule.Stats);
@@ -113,8 +112,8 @@ public partial class Blaster : Node
     }
 
     private readonly record struct SpawnableData(
-        ModuleInstance SpawnableModule,
-        List<ModuleInstance> Modifiers,
+        SpawnableModule SpawnableModule,
+        List<ModifierModule> Modifiers,
         HashSet<InventoryModule> IncomingTriggers,
         HashSet<InventoryModule> OutgoingTriggers
     );

@@ -1,3 +1,5 @@
+using System.Linq;
+
 public partial class ModuleInfo : Control
 {
 
@@ -5,7 +7,7 @@ public partial class ModuleInfo : Control
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://c47f74u04f8m2");
     
-    private ModuleInstance _module = null!;
+    private Module _module = null!;
 
     private RichTextLabel _title = null!;
     private RichTextLabel _description = null!;
@@ -14,7 +16,7 @@ public partial class ModuleInfo : Control
     private Tween? _scaleTween;
     private bool _isRemoving;
     
-    public static ModuleInfo Create(ModuleInstance module)
+    public static ModuleInfo Create(Module module)
     {
         var node = Scene.Instantiate<ModuleInfo>();
         node._module = module;
@@ -27,12 +29,6 @@ public partial class ModuleInfo : Control
         _description = GetNode<RichTextLabel>("%Description");
         _statsContainer = GetNode<StatsContainer>("%StatsContainer");
 
-        if (_module.Type.Stats.Count == 0)
-        {
-            _statsContainer.QueueFree();
-            return;
-        }
-
         _title.Clear();
         _title.PushBold();
         _title.AppendText(_module.Type.Name);
@@ -40,10 +36,7 @@ public partial class ModuleInfo : Control
         
         _description.Text = _module.Type.Description;
         
-        foreach (var stat in _module.Stats)
-        {
-            AddStat(stat);
-        }
+        AddStats();
 
         Scale = Vector2.Zero;
         PlayScaleEffect(finalScale: 1, xDuration: 0.1f, yDuration: 0.2f);
@@ -73,6 +66,20 @@ public partial class ModuleInfo : Control
         _scaleTween.TweenProperty(this, "scale:x", finalScale, xDuration);
         _scaleTween.Parallel().TweenProperty(this, "scale:y", finalScale, yDuration);
         return _scaleTween;
+    }
+
+    private void AddStats()
+    {
+        if (!_module.Stats.Any())
+        {
+            _statsContainer.QueueFree();
+            return;
+        }
+        
+        foreach (var stat in _module.Stats)
+        {
+            AddStat(stat);
+        }
     }
 
     private void AddStat(SpawnableStat stat)

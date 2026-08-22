@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://vt7okfs2ogm3" path="res://debug/screen/PlayerDamageContainer.cs" id="9_6gkk3"]
 [ext_resource type="Script" uid="uid://dmysiou2hms64" path="res://debug/screen/PlayerRespawnButton.cs" id="10_sx7eh"]
 [ext_resource type="Script" uid="uid://ba20msfvljxu5" path="res://debug/screen/ModuleSelector.cs" id="15_0q8tp"]
+[ext_resource type="Script" uid="uid://30brdcoksbn0" path="res://debug/screen/ToggleLevelProgressButton.cs" id="15_f1kqk"]
 
 [node name="DebugScreen" type="CanvasLayer" unique_id=1374611125]
 script = ExtResource("1_pwcox")
@@ -127,6 +128,12 @@ layout_mode = 2
 text = "Stop Enemy
 Spawn"
 script = ExtResource("8_o5fu4")
+
+[node name="ToggleLevelProgressButton" type="Button" parent="Control/MainContainer/HBoxContainer/OtherContainer" unique_id=27794619]
+layout_mode = 2
+text = "Stop Level
+Progress"
+script = ExtResource("15_f1kqk")
 
 [node name="ModuleSelector" type="Control" parent="Control" unique_id=627926694]
 visible = false

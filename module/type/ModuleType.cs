@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public abstract class ModuleType : IStatsAware
+public abstract class ModuleType
 {
 
     public ModuleType()
@@ -19,8 +19,8 @@ public abstract class ModuleType : IStatsAware
     public abstract int Price { get; }
     
     public abstract Color Color { get; }
-    
-    public virtual ActiveModule? CreateActiveModule(ActiveModuleData? data) => null;
+
+    public abstract Module CreateModule();
     
     public virtual HashSet<HexCoordinates> OutgoingConnections { get; } = [];
     
@@ -33,9 +33,5 @@ public abstract class ModuleType : IStatsAware
     /// Modules that interrupt connections may still form a cycle, which is prohibited.
     /// </summary>
     public virtual bool InterruptsConnections => false;
-
-    public virtual List<SpawnableStat> Stats { get; } = [];
-    
-    IEnumerable<SpawnableStat> IStatsAware.Stats => Stats;
 
 }

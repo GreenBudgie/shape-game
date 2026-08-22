@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 
-public abstract partial class ActiveModule(ActiveModuleData data) : Node, IStatsAware
+public abstract partial class Module : Node, IStatsAware
 {
+
+    public Module()
+    {
+        ShapeGame.Instance.AddChild(this);
+    }
     
-    public abstract ModuleType ModuleType { get; }
+    public abstract ModuleType Type { get; }
 
     public bool IsActive { get; private set; }
-    
-    public virtual ActiveModuleData Data { get; } = data;
     
     public virtual List<SpawnableStat> GetStats() => [];
 
@@ -42,11 +45,6 @@ public abstract partial class ActiveModule(ActiveModuleData data) : Node, IStats
 
     protected virtual void OnDeactivate()
     {
-    }
-    
-    public void Spawn()
-    {
-        ShapeGame.Instance.AddChild(this);
     }
 
     public void Remove()

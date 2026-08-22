@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 
-public partial class EnemyDamageActiveModule(EnemyDamageModuleData data) : ActiveModule(data)
+public partial class EnemyDamageModule : ModifierModule
 {
-    
-    public override ModuleType ModuleType => ModuleTypeRegistry.EnemyDamage;
 
-    public override EnemyDamageModuleData Data { get; } = data;
+    public override ModuleType Type => ModuleTypeRegistry.EnemyDamage;
+
+    private EnemyDamageModuleData _data = new();
 
     protected override void OnActivate()
     {
         EnemyManager.Instance.EnemyDestroyed += OnEnemyDestroyed;
     }
-    
+
     protected override void OnDeactivate()
     {
         EnemyManager.Instance.EnemyDestroyed -= OnEnemyDestroyed;
@@ -24,17 +24,17 @@ public partial class EnemyDamageActiveModule(EnemyDamageModuleData data) : Activ
             return;
         }
 
-        Data.AdditionalDamagePercent++;
+        _data.AdditionalDamagePercent++;
     }
 
     public override List<SpawnableStat> GetStats()
     {
-        if (Data.AdditionalDamagePercent == 0)
+        if (_data.AdditionalDamagePercent == 0)
         {
             return [];
         }
-        
-        return [new DamageStat { ValuePercent = Data.AdditionalDamagePercent }];
+
+        return [new DamageStat { ValuePercent = _data.AdditionalDamagePercent }];
     }
-    
+
 }

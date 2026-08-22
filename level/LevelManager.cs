@@ -25,6 +25,7 @@ public partial class LevelManager : Node
     private double _timeToEndLevel;
 
     private bool _spawnEnemies = true;
+    private bool _levelProgress = true;
 
     public LevelManager()
     {
@@ -75,6 +76,12 @@ public partial class LevelManager : Node
         {
             enemy.HealthController.Destroy();
         }
+    }
+    
+    public bool ToggleLevelProgress()
+    {
+        _levelProgress = !_levelProgress;
+        return _levelProgress;
     }
 
     public bool ToggleEnemySpawning()
@@ -259,7 +266,7 @@ public partial class LevelManager : Node
 
     private void OnEnemyDestroyed(Enemy enemy)
     {
-        if (Level == null)
+        if (!_levelProgress || Level == null)
         {
             return;
         }

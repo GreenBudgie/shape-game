@@ -61,7 +61,7 @@ public partial class InventoryModule : TextureButton
     private TextureRect _moduleTexture = null!;
     private TextureRect _outline = null!;
 
-    public ModuleInstance Module { get; private set; } = null!;
+    public Module Module { get; private set; } = null!;
     public Dictionary<HexCoordinates, InventorySlot> Slots { get; private set; } = [];
     public Dictionary<HexCoordinates, InventoryModuleConnection> Connections { get; private set; } = [];
     public bool IsFollowingCursor => _mousePivot.HasValue;
@@ -71,7 +71,7 @@ public partial class InventoryModule : TextureButton
     private Tween? _appearTween;
     private Tween? _animationTween;
 
-    public static InventoryModule Create(ModuleInstance module)
+    public static InventoryModule Create(Module module)
     {
         var inventoryModule = Scene.Instantiate<InventoryModule>();
         inventoryModule.Module = module;
@@ -244,7 +244,7 @@ public partial class InventoryModule : TextureButton
 
         _animationTween.Finished += QueueFree;
         
-        Module.ActiveModule?.Deactivate();
+        Module.Deactivate();
         EmitSignalRemoved();
         InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleRemoved, this);
     }
@@ -1009,7 +1009,7 @@ public partial class InventoryModule : TextureButton
 
         _targetPosition = GetSlotBasedPosition(Slots);
         
-        Module.ActiveModule?.Activate();
+        Module.Activate();
     }
 
     public void StartFollowingCursor(bool grabClosestHex = true)

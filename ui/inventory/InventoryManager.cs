@@ -83,8 +83,8 @@ public partial class InventoryManager : Control, IScreen
 
     private void PostSetup()
     {
-        AddModule(new ModuleInstance(ModuleTypeRegistry.Bolt), LeftBlasterInventory);
-        AddModule(new ModuleInstance(ModuleTypeRegistry.MiniSphere), RightBlasterInventory);
+        AddModule(ModuleTypeRegistry.Bolt.CreateModule(), LeftBlasterInventory);
+        AddModule(ModuleTypeRegistry.MiniSphere.CreateModule(), RightBlasterInventory);
         
         Close(playSound: false);
         Visible = false;
@@ -94,7 +94,7 @@ public partial class InventoryManager : Control, IScreen
     /// Adds module either directly to the inventory, if it has space, or opens the inventory while holding the module
     /// at cursor
     /// </summary>
-    public void AddModule(ModuleInstance module)
+    public void AddModule(Module module)
     {
         var result = TryAddModule(module);
         if (result.Success)
@@ -106,7 +106,7 @@ public partial class InventoryManager : Control, IScreen
         result.InventoryModule.StartFollowingCursor(grabClosestHex: false);
     }
 
-    public InsertResult TryAddModule(ModuleInstance module)
+    public InsertResult TryAddModule(Module module)
     {
         var inventoryModule = InventoryModule.Create(module);
         AddChild(inventoryModule);
@@ -125,7 +125,7 @@ public partial class InventoryManager : Control, IScreen
 
     public readonly record struct InsertResult(InventoryModule InventoryModule, bool Success);
 
-    private void AddModule(ModuleInstance module, ModuleInventory inventory)
+    private void AddModule(Module module, ModuleInventory inventory)
     {
         var inventoryModule = InventoryModule.Create(module);
         AddChild(inventoryModule);

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 public class YinYangModuleType : SpawnableModuleType
 {
 
@@ -13,16 +11,9 @@ public class YinYangModuleType : SpawnableModuleType
 
     public override int Price => 5;
 
-    public override List<SpawnableStat> Stats => [
-        new DamageStat { Value = 2 },
-        new LifetimeStat { Value = 10 },
-        new ReloadStat { Value = 0.5f },
-        new SpeedStat { Value = 800 },
-    ];
-
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override Module CreateModule()
     {
-        return YinYang.Create();
+        return new YinYangModule();
     }
 
 }

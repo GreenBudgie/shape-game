@@ -1,8 +1,6 @@
-public abstract class ModifierModuleType : ModuleType, ISpawnableModifier
+public abstract class ModifierModuleType : ModuleType
 {
-    public virtual void Modify(SpawnableContext context)
-    {
-    }
 
     public override Color Color => ColorScheme.Yellow;
+
 }

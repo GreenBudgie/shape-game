@@ -13,14 +13,17 @@ public class TriggerModuleType : ModuleType
 
     public override int Price => 15;
 
-    public override List<SpawnableStat> Stats => [];
-    
+    public override Color Color => ColorScheme.LightBlue;
+
     public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right * 2];
-    
+
     public override HashSet<HexCoordinates> IncomingConnections => [HexCoordinates.Left];
 
     public override bool InterruptsConnections => true;
 
-    public override Color Color => ColorScheme.LightBlue;
+    public override Module CreateModule()
+    {
+        return new TriggerModule();
+    }
 
 }

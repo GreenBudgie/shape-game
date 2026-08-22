@@ -11,7 +11,7 @@ public partial class WorldModule : RigidBody2D
     private static readonly PackedScene ConnectionShapeScene = GD.Load<PackedScene>("uid://do5oc5gogcakt");
     private static readonly PackedScene HexShapeScene = GD.Load<PackedScene>("uid://cqy7bjj6axtb2");
 
-    public ModuleInstance Module { get; private set; } = null!;
+    public Module Module { get; private set; } = null!;
 
     private Node2D _spritesNode = null!;
     private Glow _glow = null!;
@@ -31,12 +31,11 @@ public partial class WorldModule : RigidBody2D
     public static WorldModule CreateForShop(ModuleType moduleType)
     {
         var worldModule = Scene.Instantiate<WorldModule>();
-        worldModule.Module = new ModuleInstance(moduleType);
-        worldModule.SetInShop();
+        worldModule.Module = moduleType.CreateModule();
         return worldModule;
     }
     
-    public static WorldModule CreateForDrop(ModuleInstance module)
+    public static WorldModule CreateForDrop(Module module)
     {
         var worldModule = Scene.Instantiate<WorldModule>();
         worldModule.Module = module;

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 public class MineModuleType : SpawnableModuleType
 {
 
@@ -13,17 +11,9 @@ public class MineModuleType : SpawnableModuleType
 
     public override int Price => 15;
 
-    public override List<SpawnableStat> Stats => [
-        new SpeedStat { Value = 5000 },
-        new ReloadStat { Value = 3 },
-        new ExplosionDamageStat { Value = 10 },
-        new ExplosionRadiusStat { Value = 400 },
-        new LifetimeStat { Value = 0.5f },
-    ];
-
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override Module CreateModule()
     {
-        return MineProjectile.Create();
+        return new MineModule();
     }
 
 }

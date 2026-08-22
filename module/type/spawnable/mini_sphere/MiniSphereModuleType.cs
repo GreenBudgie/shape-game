@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 public class MiniSphereModuleType : SpawnableModuleType
 {
 
@@ -13,16 +11,9 @@ public class MiniSphereModuleType : SpawnableModuleType
 
     public override int Price => 5;
 
-    public override List<SpawnableStat> Stats => [
-        new DamageStat { Value = 1 },
-        new SpeedStat { Value = 2000 },
-        new ReloadStat { Value = 0.2f },
-        new LifetimeStat { Value = 1, ValueDelta = 0.1f },
-    ];
-
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override Module CreateModule()
     {
-        return MiniSphereProjectile.Create();
+        return new MiniSphereModule();
     }
 
 }

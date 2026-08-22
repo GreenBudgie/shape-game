@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 public class PiercingModuleType : ModifierModuleType
 {
@@ -14,32 +13,11 @@ public class PiercingModuleType : ModifierModuleType
 
     public override int Price => 15;
 
-    public override List<SpawnableStat> Stats => [
-        new PiercingStat { Value = 1 },
-        new ReloadStat { Value = 0.2f },
-    ];
-    
     public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right * 2];
 
-    public override void Modify(SpawnableContext context)
+    public override Module CreateModule()
     {
-        if (context.IsModifierTypeApplied<PiercingModuleType>())
-        {
-            return;
-        }
-
-        var projectiles = context.GetContextChain()
-            .Select(ctx => ctx.Spawnable.Node)
-            .OfType<BasicRigidBodyProjectile<Node2D>>();
-        
-        foreach (var projectile in projectiles)
-        {
-            TrailParticles.Create(projectile)
-                .WithTexture(ParticleTextures.Triangle)
-                .WithScale(0.4f, 0.1f)
-                .Color(ColorScheme.LightBlue)
-                .Spawn();
-        }
+        return new PiercingModule();
     }
 
 }

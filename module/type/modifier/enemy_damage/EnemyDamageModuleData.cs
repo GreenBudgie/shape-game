@@ -1,4 +1,4 @@
-public partial class EnemyDamageModuleData : ActiveModuleData
+public partial class EnemyDamageModuleData : ModuleData
 {
     
     public float AdditionalDamagePercent = 0;
