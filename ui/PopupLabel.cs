@@ -6,8 +6,9 @@ public partial class PopupLabel : Label
     public static PopupLabel Create(Vector2 spawnPosition, string text)
     {
         var node = Scene.Instantiate<PopupLabel>();
-        node.GlobalPosition = spawnPosition;
         node.Text = text;
+        node.Position = spawnPosition;
+        node.Position -= node.Size / 2f;
         ShapeGame.Instance.AddChild(node);
         return node;
     }

@@ -13,7 +13,7 @@ public partial class WorldModule : RigidBody2D
 
     public Module Module { get; private set; } = null!;
 
-    private Node2D _spritesNode = null!;
+    private ModuleDisplay _display = null!;
     private Glow _glow = null!;
     private Area2D _playerDetectionArea = null!;
     private HBoxContainer _priceContainer = null!;
@@ -57,24 +57,14 @@ public partial class WorldModule : RigidBody2D
 
     public override void _Ready()
     {
-        _spritesNode = GetNode<Node2D>("Sprites");
-        
-        var fillSprite = _spritesNode.GetNode<Sprite2D>("FillSprite");
-        fillSprite.Texture = Module.Type.Shape.FillTexture;
-        fillSprite.SelfModulate = ColorScheme.DarkOrange;
-        
-        var outlineSprite = _spritesNode.GetNode<Sprite2D>("OutlineSprite");
-        outlineSprite.Texture = Module.Type.Shape.OutlineTexture;
-        outlineSprite.SelfModulate = Module.Type.Color;
-        
-        var moduleSprite = _spritesNode.GetNode<Sprite2D>("ModuleSprite");
-        moduleSprite.Texture = Module.Type.Texture;
+        _display = ModuleDisplay.Create(Module.Type);
+        AddChild(_display);
         
         _playerDetectionArea = GetNode<Area2D>("PlayerDetectionArea");
         _playerDetectionArea.BodyEntered += OnPlayerHovered;
         _playerDetectionArea.BodyExited += OnPlayerUnhovered;
         
-        _glow = Glow.AddGlow(fillSprite)
+        _glow = Glow.AddGlow(_display.Fill)
             .SetColor(Module.Type.Color.AsTransparent())
             .SetRadius(0)
             .SetStrength(1);
@@ -236,7 +226,7 @@ public partial class WorldModule : RigidBody2D
         
         _animationTween?.Kill();
         _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-        _animationTween.TweenScale(_spritesNode, 1.1f, duration);
+        _animationTween.TweenScale(_display, 1.1f, duration);
         _animationTween.TweenGlowRadius(_glow, 30, duration);
         
         var glowFadeInTweener = _animationTween.TweenGlowFadeIn(_glow, duration);
@@ -259,7 +249,7 @@ public partial class WorldModule : RigidBody2D
         
         _animationTween?.Kill();
         _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-        _animationTween.TweenScaleReset(_spritesNode, duration);
+        _animationTween.TweenScaleReset(_display, duration);
         _animationTween.TweenGlowRadius(_glow, 0, duration);
         _animationTween.TweenGlowFadeOut(_glow, duration);
     }
@@ -319,7 +309,7 @@ public partial class WorldModule : RigidBody2D
         
         _animationTween?.Kill();
         _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-        _animationTween.TweenScaleReset(_spritesNode, duration);
+        _animationTween.TweenScaleReset(_display, duration);
         
         _alphaTween?.Kill();
         _alphaTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
@@ -341,7 +331,7 @@ public partial class WorldModule : RigidBody2D
         
         _animationTween?.Kill();
         _animationTween = CreateTween().SetParallel().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-        _animationTween.TweenScale(_spritesNode, 1.2f, duration);
+        _animationTween.TweenScale(_display, 1.2f, duration);
         _animationTween.TweenGlowRadius(_glow, 0, duration / 4);
         _animationTween.TweenGlowFadeOut(_glow, duration / 4);
         

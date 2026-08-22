@@ -85,6 +85,7 @@ public partial class InventoryManager : Control, IScreen
     {
         AddModule(ModuleTypeRegistry.Bolt.CreateModule(), LeftBlasterInventory);
         AddModule(ModuleTypeRegistry.MiniSphere.CreateModule(), RightBlasterInventory);
+        AddModule(ModuleTypeRegistry.EnemyDamage.CreateModule(), RightBlasterInventory);
         
         Close(playSound: false);
         Visible = false;

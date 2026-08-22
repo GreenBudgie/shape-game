@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://djv8r6n40ajfq"]
+
+[ext_resource type="Texture2D" uid="uid://bv0dh5lkm5vq6" path="res://module/shape/shape_single_fill.png" id="1_nnegp"]
+[ext_resource type="Script" uid="uid://pd620wrc0ccs" path="res://module/display/ModuleDisplay.cs" id="1_ptydj"]
+[ext_resource type="Texture2D" uid="uid://bwxthnwovlmpr" path="res://module/shape/shape_single_outline.png" id="2_ptydj"]
+
+[node name="ModuleDisplay" type="Node2D" unique_id=986740299]
+script = ExtResource("1_ptydj")
+
+[node name="FillSprite" type="Sprite2D" parent="." unique_id=1254469132]
+texture = ExtResource("1_nnegp")
+
+[node name="OutlineSprite" type="Sprite2D" parent="." unique_id=1944919319]
+texture = ExtResource("2_ptydj")
+
+[node name="ModuleSprite" type="Sprite2D" parent="." unique_id=1174485612]

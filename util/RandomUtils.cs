@@ -158,5 +158,22 @@ public static class RandomUtils
         var index = GD.RandRange(0, list.Count - 1);
         return list[index];
     }
+
+    /// <summary>
+    /// Returns random angle from 0 to 2pi, in radians
+    /// </summary>
+    public static float RandomAngle()
+    {
+        return Range(0, Tau);
+    }
+    
+    /// <summary>
+    /// Returns normalized vector pointing at a random direction
+    /// </summary>
+    public static Vector2 RandomNormalizedVector()
+    {
+        return Vector2.FromAngle(RandomAngle());
+    }
+
     
 }

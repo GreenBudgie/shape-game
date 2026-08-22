@@ -25,6 +25,7 @@ public partial class EnemyDamageModule : ModifierModule
         }
 
         _data.AdditionalDamagePercent++;
+        ModuleEffect.Create(Type).WithText("+1%").WithTextColor(ColorScheme.LightGreen).Spawn();
     }
 
     public override List<SpawnableStat> GetStats()
