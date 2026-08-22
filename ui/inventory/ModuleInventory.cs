@@ -29,7 +29,7 @@ public partial class ModuleInventory : Control
     
     public List<InventoryModule> GetModules<T>() where T : ModuleType
     {
-        return GetModules().Where(x => x.ModuleType is T).ToList();
+        return GetModules().Where(x => x.Module.Type is T).ToList();
     }
 
     public List<InventoryModule> GetModules()

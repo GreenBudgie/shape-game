@@ -42,13 +42,12 @@ public partial class Shop : Node2D
         for (var i = 0; i < NumberOfModules; i++)
         {
             var module = allModulesCopy.GetRandom();
-            var shopModule = WorldModule.Create(module);
+            var shopModule = WorldModule.CreateForShop(module);
             
             shopModule.GlobalPosition = new Vector2(firstModulePositionX + i * moduleGap, ShapeGame.Center.Y);
             shopModule.Rotation = 0;
             
             WorldModuleManager.Instance.SpawnModule(shopModule);
-            shopModule.SetInShop();
             _shopModules.Add(shopModule);
 
             allModulesCopy.Remove(module);

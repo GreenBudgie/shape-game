@@ -17,4 +17,5 @@ public static class ModuleTypeRegistry
     public static readonly YinYangModuleType YinYang = new();
     
     public static readonly TriggerModuleType Trigger = new();
+    public static readonly EnemyDamageModuleType EnemyDamage = new();
 }

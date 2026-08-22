@@ -16,24 +16,15 @@ public partial class InventoryModule : TextureButton
     [Export] private AudioStream _rotateSound = null!;
     [Export] private AudioStream _slotSnapSound = null!;
     [Export] private AudioStream _invalidConnectionSound = null!;
-    
-    /// <summary>
-    /// Emitted whenever this module is rotated
-    /// </summary>
+
     [Signal]
     public delegate void RotatedEventHandler(int direction);
-    
-    /// <summary>
-    /// Emitted whenever this module is inserted into inventory
-    /// </summary>
+
     [Signal]
-    public delegate void InsertedEventHandler();
-    
-    /// <summary>
-    /// Emitted whenever this module is taken out from the inventory
-    /// </summary>
+    public delegate void StoppedFollowingCursorEventHandler();
+
     [Signal]
-    public delegate void TakenOutEventHandler();
+    public delegate void StartedFollowingCursorEventHandler();
     
     /// <summary>
     /// Emitted when the module is fully shown after inventory is opened
@@ -42,10 +33,17 @@ public partial class InventoryModule : TextureButton
     public delegate void ShowAnimationFinishedEventHandler();
     
     /// <summary>
-    /// Emitted when module dropping animation has started
+    /// Emitted when module dropping animation has started, and it is basically removed from inventory
     /// </summary>
     [Signal]
-    public delegate void DroppingEventHandler();
+    public delegate void RemovedEventHandler();
+    
+    /// <summary>
+    /// Emitted when this module is inserted into the inventory for the first time. NOT emitted if it
+    /// is moved between slots, grabbed or rotated.
+    /// </summary>
+    [Signal]
+    public delegate void FirstInsertedEventHandler();
 
     private ShaderMaterial _material = null!;
     private ModuleInfo? _moduleInfo;
@@ -63,7 +61,7 @@ public partial class InventoryModule : TextureButton
     private TextureRect _moduleTexture = null!;
     private TextureRect _outline = null!;
 
-    public ModuleType ModuleType { get; private set; } = null!;
+    public ModuleInstance Module { get; private set; } = null!;
     public Dictionary<HexCoordinates, InventorySlot> Slots { get; private set; } = [];
     public Dictionary<HexCoordinates, InventoryModuleConnection> Connections { get; private set; } = [];
     public bool IsFollowingCursor => _mousePivot.HasValue;
@@ -73,10 +71,10 @@ public partial class InventoryModule : TextureButton
     private Tween? _appearTween;
     private Tween? _animationTween;
 
-    public static InventoryModule Create(ModuleType moduleType)
+    public static InventoryModule Create(ModuleInstance module)
     {
         var inventoryModule = Scene.Instantiate<InventoryModule>();
-        inventoryModule.ModuleType = moduleType;
+        inventoryModule.Module = module;
         return inventoryModule;
     }
 
@@ -85,33 +83,33 @@ public partial class InventoryModule : TextureButton
         _moduleTexture = GetNode<TextureRect>("ModuleTexture");
         _outline = GetNode<TextureRect>("Outline");
 
-        _outline.Texture = ModuleType.Shape.OutlineTexture;
-        _outline.Modulate = ModuleType.Color;
+        _outline.Texture = Module.Type.Shape.OutlineTexture;
+        _outline.Modulate = Module.Type.Color;
 
         SelfModulate = ColorScheme.DarkOrange;
-        TextureNormal = ModuleType.Shape.FillTexture;
-        _moduleTexture.Texture = ModuleType.Texture;
+        TextureNormal = Module.Type.Shape.FillTexture;
+        _moduleTexture.Texture = Module.Type.Texture;
         _material = (ShaderMaterial)Material;
-        TextureClickMask = ModuleType.Shape.Bitmap;
+        TextureClickMask = Module.Type.Shape.Bitmap;
 
         Callable.From(() =>
             _glow = Glow.AddGlow(this)
-                .SetColor(ModuleType.Color)
+                .SetColor(Module.Type.Color)
                 .SetRadius(0)
                 .SetStrength(1)
         ).CallDeferred();
 
-        foreach (var moduleHex in ModuleType.Shape.PixelHexPositions)
+        foreach (var moduleHex in Module.Type.Shape.PixelHexPositions)
         {
             _hexes.Add(moduleHex.Key, new HexData(moduleHex.Value, null));
         }
 
-        foreach (var connectionHex in ModuleType.OutgoingConnections)
+        foreach (var connectionHex in Module.Type.OutgoingConnections)
         {
             AddConnection(connectionHex, ConnectionType.Outgoing);
         }
         
-        foreach (var connectionHex in ModuleType.IncomingConnections)
+        foreach (var connectionHex in Module.Type.IncomingConnections)
         {
             AddConnection(connectionHex, ConnectionType.Incoming);
         }
@@ -138,7 +136,7 @@ public partial class InventoryModule : TextureButton
         if (!source.HasValue)
         {
             throw new ArgumentException(
-                $"Module {ModuleType.Name} has an incorrect connection configuration: {connectionHex} does not have a neighbor");
+                $"Module {Module.Type.Name} has an incorrect connection configuration: {connectionHex} does not have a neighbor");
         }
 
         var connection = InventoryModuleConnection.Create(this, type);
@@ -225,7 +223,7 @@ public partial class InventoryModule : TextureButton
         
         BeforeRemove();
         
-        var worldModule = WorldModule.Create(ModuleType);
+        var worldModule = WorldModule.CreateForDrop(Module);
         WorldModuleManager.Instance.SpawnModule(worldModule);
 
         const float duration = 0.2f;
@@ -246,8 +244,9 @@ public partial class InventoryModule : TextureButton
 
         _animationTween.Finished += QueueFree;
         
-        EmitSignalDropping();
-        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleDropping, this);
+        Module.ActiveModule?.Deactivate();
+        EmitSignalRemoved();
+        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleRemoved, this);
     }
 
     private void OnInventoryOpened()
@@ -409,7 +408,7 @@ public partial class InventoryModule : TextureButton
         return slots
             .SelectMany(slot => slot.Connections)
             .Where(connection => connection.Type == ConnectionType.Incoming)
-            .Select(connection => connection.Module)
+            .Select(connection => connection.InventoryModule)
             .Where(module => module != this && module != ignoredModule);
     }
     
@@ -470,7 +469,7 @@ public partial class InventoryModule : TextureButton
         var unvisitedModules = directModules.Where(visitedModules.Add).ToList();
 
         var modulesToRecurse = stopAtInterruptingModules
-            ? unvisitedModules.Where(module => !module.ModuleType.InterruptsConnections)
+            ? unvisitedModules.Where(module => !module.Module.Type.InterruptsConnections)
             : unvisitedModules;
 
         // This logic does not reflect complex chains with more than 3 modules,
@@ -509,7 +508,7 @@ public partial class InventoryModule : TextureButton
     {
         return slots.SelectMany(slot => slot.Connections)
             .Where(connection => connection.Type == ConnectionType.Outgoing)
-            .Select(connection => connection.Module)
+            .Select(connection => connection.InventoryModule)
             .Where(module => module != this && module != ignoredModule);
     }
 
@@ -565,7 +564,7 @@ public partial class InventoryModule : TextureButton
         var unvisitedModules = directModules.Where(visitedModules.Add).ToList();
 
         var modulesToRecurse = stopAtInterruptingModules
-            ? unvisitedModules.Where(module => !module.ModuleType.InterruptsConnections)
+            ? unvisitedModules.Where(module => !module.Module.Type.InterruptsConnections)
             : unvisitedModules;
 
         // This logic does not reflect complex chains with more than 3 modules,
@@ -689,7 +688,7 @@ public partial class InventoryModule : TextureButton
             }
         }
 
-        var allSlotsHovered = hoveredSlots.Count == ModuleType.Shape.Hexes.Count;
+        var allSlotsHovered = hoveredSlots.Count == Module.Type.Shape.Hexes.Count;
         if (!allSlotsHovered || !IsAllSlotsAvailable(hoveredSlots.Values))
         {
             ResetHoveredSlots();
@@ -1009,6 +1008,8 @@ public partial class InventoryModule : TextureButton
         }
 
         _targetPosition = GetSlotBasedPosition(Slots);
+        
+        Module.ActiveModule?.Activate();
     }
 
     public void StartFollowingCursor(bool grabClosestHex = true)
@@ -1054,8 +1055,8 @@ public partial class InventoryModule : TextureButton
         
         SoundManager.Instance.PlaySound(_grabSound).RandomizePitchOffset();
         
-        EmitSignalTakenOut();
-        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleGrabbed, this);
+        EmitSignalStartedFollowingCursor();
+        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleStartedFollowingCursor, this);
     }
 
     private void StopFollowingCursor()
@@ -1094,8 +1095,8 @@ public partial class InventoryModule : TextureButton
         _animationTween.TweenOffsetScaleReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
         _animationTween.Parallel().TweenOffsetRotationReset(this, AnimationTweenDuration).SetEase(Tween.EaseType.In);
         
-        EmitSignalInserted();
-        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleInserted, this);
+        EmitSignalStoppedFollowingCursor();
+        InventoryManager.Instance.EmitSignal(InventoryManager.SignalName.ModuleStoppedFollowingCursor, this);
     }
 
     private void ShowModuleInfo()
@@ -1105,7 +1106,7 @@ public partial class InventoryModule : TextureButton
             return;
         }
 
-        _moduleInfo = ModuleInfo.Create(ModuleType);
+        _moduleInfo = ModuleInfo.Create(Module);
         InventoryManager.Instance.AddChild(_moduleInfo);
     }
 

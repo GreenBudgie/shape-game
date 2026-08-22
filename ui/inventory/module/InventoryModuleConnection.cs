@@ -7,7 +7,7 @@ public partial class InventoryModuleConnection : Node2D
     private Sprite2D _connector = null!;
     private Glow _arrowGlow = null!;
 
-    public InventoryModule Module { get; private set; } = null!;
+    public InventoryModule InventoryModule { get; private set; } = null!;
     public InventorySlot? Slot { get; set; }
     public ConnectionType Type { get; private set; }
 
@@ -16,7 +16,7 @@ public partial class InventoryModuleConnection : Node2D
     public static InventoryModuleConnection Create(InventoryModule module, ConnectionType type)
     {
         var node = Scene.Instantiate<InventoryModuleConnection>();
-        node.Module = module;
+        node.InventoryModule = module;
         node.Type = type;
         return node;
     }
@@ -26,7 +26,7 @@ public partial class InventoryModuleConnection : Node2D
         _arrow = GetNode<Sprite2D>("Arrow");
         _connector = GetNode<Sprite2D>("Connector");
 
-        _arrow.Modulate = Module.ModuleType.Color;
+        _arrow.Modulate = InventoryModule.Module.Type.Color;
 
         if (Type == ConnectionType.Incoming)
         {
@@ -50,17 +50,17 @@ public partial class InventoryModuleConnection : Node2D
             .SetRadius(0)
             .SetStrength(1);
 
-        Module.Connect(InventoryModule.SignalName.Inserted, Callable.From(OnModuleInserted));
-        Module.Connect(InventoryModule.SignalName.ShowAnimationFinished, Callable.From(ShowConnector));
-        Module.Connect(InventoryModule.SignalName.TakenOut, Callable.From(() => HideConnector(false)));
-        Module.Connect(InventoryModule.SignalName.Dropping, Callable.From(RemoveConnector));
+        InventoryModule.Connect(InventoryModule.SignalName.StoppedFollowingCursor, Callable.From(OnModuleStoppedFollowingCursor));
+        InventoryModule.Connect(InventoryModule.SignalName.ShowAnimationFinished, Callable.From(ShowConnector));
+        InventoryModule.Connect(InventoryModule.SignalName.StartedFollowingCursor, Callable.From(() => HideConnector(false)));
+        InventoryModule.Connect(InventoryModule.SignalName.Removed, Callable.From(RemoveConnector));
         InventoryManager.Instance.Connect(
             InventoryManager.SignalName.InventoryClosed,
             Callable.From(() => HideConnector(true))
         );
     }
 
-    private void OnModuleInserted()
+    private void OnModuleStoppedFollowingCursor()
     {
         if (_isRemoving || !InventoryManager.Instance.IsOpen)
         {
@@ -92,7 +92,7 @@ public partial class InventoryModuleConnection : Node2D
         _arrow.GlobalPosition = GlobalPosition;
         _arrow.GlobalRotation = GlobalRotation;
 
-        if (Module.IsFollowingCursor)
+        if (InventoryModule.IsFollowingCursor)
         {
             return;
         }
@@ -144,9 +144,9 @@ public partial class InventoryModuleConnection : Node2D
         _arrowTween?.Kill();
         _arrowTween = CreateTween().SetParallel().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quad);
 
-        _arrowTween.TweenModulate(_arrow, Module.ModuleType.Color, StateChangeDuration);
+        _arrowTween.TweenModulate(_arrow, InventoryModule.Module.Type.Color, StateChangeDuration);
         _arrowTween.TweenScaleReset(_arrow, StateChangeDuration);
-        _arrowTween.TweenGlowColor(_arrowGlow, Module.ModuleType.Color, StateChangeDuration);
+        _arrowTween.TweenGlowColor(_arrowGlow, InventoryModule.Module.Type.Color, StateChangeDuration);
         _arrowTween.TweenGlowRadius(_arrowGlow, 0, StateChangeDuration);
     }
     
@@ -162,9 +162,9 @@ public partial class InventoryModuleConnection : Node2D
         _arrowTween?.Kill();
         _arrowTween = CreateTween().SetParallel().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quad);
 
-        _arrowTween.TweenModulate(_arrow, Module.ModuleType.Color, StateChangeDuration);
+        _arrowTween.TweenModulate(_arrow, InventoryModule.Module.Type.Color, StateChangeDuration);
         _arrowTween.TweenScale(_arrow, 1.25f, StateChangeDuration);
-        _arrowTween.TweenGlowColor(_arrowGlow, Module.ModuleType.Color, StateChangeDuration);
+        _arrowTween.TweenGlowColor(_arrowGlow, InventoryModule.Module.Type.Color, StateChangeDuration);
         _arrowTween.TweenGlowRadius(_arrowGlow, GlowRadius, StateChangeDuration);
     }
 

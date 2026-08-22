@@ -20,6 +20,8 @@ public abstract class ModuleType : IStatsAware
     
     public abstract Color Color { get; }
     
+    public virtual ActiveModule? CreateActiveModule(ActiveModuleData? data) => null;
+    
     public virtual HashSet<HexCoordinates> OutgoingConnections { get; } = [];
     
     public virtual HashSet<HexCoordinates> IncomingConnections { get; } = [];

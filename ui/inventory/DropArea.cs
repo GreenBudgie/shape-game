@@ -34,15 +34,15 @@ public partial class DropArea : TextureButton
         Pressed += OnPress;
         
         InventoryManager.Instance.Connect(
-            InventoryManager.SignalName.ModuleGrabbed,
+            InventoryManager.SignalName.ModuleStartedFollowingCursor,
             Callable.From((InventoryModule _) => DoShow())
         );
         InventoryManager.Instance.Connect(
-            InventoryManager.SignalName.ModuleInserted,
+            InventoryManager.SignalName.ModuleStoppedFollowingCursor,
             Callable.From((InventoryModule _) => DoHide())
         );
         InventoryManager.Instance.Connect(
-            InventoryManager.SignalName.ModuleDropping,
+            InventoryManager.SignalName.ModuleRemoved,
             Callable.From((InventoryModule _) => DoHide())
         );
     }
