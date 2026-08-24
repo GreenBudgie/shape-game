@@ -47,6 +47,11 @@ public abstract partial class Module : Node, IStatsAware
     {
     }
 
+    protected ModuleEffect ShowEffect(string text, Color textColor)
+    {
+        return ModuleEffectManager.Instance.ShowEffect(this, text, textColor);
+    }
+
     public void Remove()
     {
         QueueFree();

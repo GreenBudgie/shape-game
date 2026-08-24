@@ -27,6 +27,7 @@
 [ext_resource type="Script" uid="uid://ca64700tbqs0h" path="res://entity/living/player/PlayerManager.cs" id="17_x5p1p"]
 [ext_resource type="Script" uid="uid://dcfyc3mh3ufim" path="res://debug/DebugDraw.cs" id="19_boyg6"]
 [ext_resource type="Script" uid="uid://cncdoym5y3n6m" path="res://entity/spawnables/SpawnableManager.cs" id="19_vaj68"]
+[ext_resource type="Script" uid="uid://c68pii1vyb4hg" path="res://module/effect/ModuleEffectManager.cs" id="22_5b14r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_87y3e"]
 size = Vector2(1024, 4208)
@@ -366,6 +367,9 @@ texture = ExtResource("10_hve3p")
 layer = -1
 
 [node name="LevelProgress" parent="BackgroundUI" unique_id=676634815 instance=ExtResource("3_qhcbd")]
+
+[node name="ModuleEffectManager" type="Node2D" parent="BackgroundUI" unique_id=360961453]
+script = ExtResource("22_5b14r")
 
 [node name="Player" parent="." unique_id=692351150 instance=ExtResource("2_eow3j")]
 position = Vector2(2174, 1930)

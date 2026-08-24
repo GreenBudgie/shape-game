@@ -1,127 +1,130 @@
 public partial class ModuleEffect : Node2D
 {
+
+    private const float DisplayScale = 0.75f;
+
+    public ModuleEffectPlace Place { get; private set; }
+    public Module Module { get; private set; } = null!;
     
-    private ModuleType _moduleType = null!;
-    private string? _text;
-    private Color? _textColor;
+    private string _text = null!;
+    private Color _textColor;
 
     private ModuleDisplay _display = null!; 
+    private Vector2 _startPosition;
+    private Vector2 _endPosition; 
     
-    public static ModuleEffect Create(ModuleType module)
+    /// <summary>
+    /// Do not call directly! Use ModuleEffectManager.Instance.ShowEffect instead
+    /// </summary>
+    public static ModuleEffect Create(ModuleEffectPlace place, Module module, string text, Color textColor)
     {
         var node = new ModuleEffect();
-        node._moduleType = module;
+        node.Place = place;
+        node.Module = module;
+        node._text = text;
+        node._textColor = textColor;
+        
+        node.CalculateRandomDisplayPositionsStartEnd();
+        node.GlobalPosition = node._startPosition;
+        
         return node;
-    }
-
-    public ModuleEffect WithText(string text)
-    {
-        _text = text;
-        return this;
-    }
-    
-    public ModuleEffect WithTextColor(Color textColor)
-    {
-        _textColor = textColor;
-        return this;
-    }
-
-    public void Spawn()
-    {
-        ShapeGame.Instance.AddChild(this);
     }
 
     public override void _Ready()
     {
-        GlobalPosition = GetRandomDisplayPosition();
-        
-        _display = ModuleDisplay.Create(_moduleType);
+        _display = ModuleDisplay.Create(Module.Type);
         AddChild(_display);
-        
-        if (_text != null)
-        {
-            ShowText(_text);
-        }
-        
-        PlayAnimation();
-    }
 
-    private void PlayAnimation()
-    {
-        const float maxAlpha = 0.75f;
-        const float maxSize = 0.75f;
-        const float maxRotationDelta = 30;
-        RotationDegrees = RandomUtils.DeltaRange(0, maxRotationDelta / 2);
-        
-        const float initDuration = 0.15f;
-        const float duration = 1f;
-        
-        const float minRadius = 10;
-        const float maxRadius = 40;
-        
-        var positionTween = CreateTween()
-            .SetTrans(Tween.TransitionType.Quad)
-            .SetEase(Tween.EaseType.Out);
-        
-        var finalPosition = RandomUtils.RandomPointInRadii(minRadius, maxRadius);
-        var finalRotation = RandomUtils.DeltaRange(RotationDegrees, maxRotationDelta / 2);
-        positionTween.TweenPosition(this, finalPosition, duration + initDuration)
-            .AsRelative();
-        positionTween.Parallel().TweenRotationDegrees(this, finalRotation, duration + initDuration)
-            .SetEase(Tween.EaseType.Out);
-        
         Modulate = Colors.Transparent;
-        Scale = Vector2.Zero;
-        
-        var modulateTween = CreateTween().SetTrans(Tween.TransitionType.Quad);
-        
-        modulateTween.TweenAlpha(this, maxAlpha, initDuration).SetEase(Tween.EaseType.Out);
-        modulateTween.Parallel().TweenScale(this, maxSize, initDuration).SetEase(Tween.EaseType.Out);
-        
-        modulateTween.FadeOut(this, duration).SetEase(Tween.EaseType.In);
-        const float minSize = 0.5f;
-        modulateTween.Parallel().TweenScale(this, new Vector2(minSize, minSize), duration)
-            .SetEase(Tween.EaseType.In);
-        
-        modulateTween.Finished += QueueFree;
+        Scale = new Vector2(DisplayScale, DisplayScale);
+        Rotation = RandomUtils.DeltaRange(0, Pi / 6);
+        PlayAnimationAndShowText();
     }
 
-    private void ShowText(string text)
+    /// <summary>
+    /// Stops the disappearing animation and shows the text again at the same effect
+    /// </summary>
+    public void ProlongWithText(string text, Color textColor)
     {
-        var smallerShapeSize = _moduleType.Shape.PixelSize * 0.33f;
-        var positionOffset = new Vector2(
-            RandomUtils.DeltaRange(0, smallerShapeSize.X),
-            RandomUtils.DeltaRange(0, smallerShapeSize.Y)
-        );
-        var labelPosition = GlobalPosition + positionOffset;
-        
-        var label = PopupLabel.Create(labelPosition, text);
-        if (_textColor.HasValue)
-        {
-            label.SetColor(_textColor.Value);
-        }
+        PlayAnimationAndShowText();
     }
 
-    private Vector2 GetRandomDisplayPosition()
+    private Tween? _appearPositionTween;
+    private Tween? _appearHoldTween;
+    private Tween? _appearModulateTween;
+    private Tween? _disappearPositionTween;
+    private Tween? _disappearModulateTween;
+
+    private void PlayAnimationAndShowText()
     {
-        var player = Player.FindPlayer();
-        if (player == null)
+        const float startDuration = 0.25f;
+        const float holdDuration = 1f;
+
+        _disappearPositionTween?.Kill();
+        if (_appearPositionTween == null)
         {
-            // Usually this should not happen, but just in case spawn at center
-            return ShapeGame.Center;
+            _appearPositionTween = CreateTween().SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
+            _appearPositionTween.TweenPosition(this, _endPosition, startDuration);
         }
         
-        var shapeSize = _moduleType.Shape.PixelSize;
-        var distanceFromShapeCenter = Max(shapeSize.X, shapeSize.Y) / 2f; 
-        var distanceFromPlayer = Max(Player.MaxVisibleSize.X, Player.MaxVisibleSize.Y) / 2f;
-        
-        const float maxDeviation = 50f;
-        var minLength = distanceFromShapeCenter + distanceFromPlayer;
-        var maxLength = minLength + maxDeviation;
-        var length = RandomUtils.Range(minLength, maxLength);
-        var vector = RandomUtils.RandomNormalizedVector() * length;
+        _disappearModulateTween?.Kill();        
+        if (_appearModulateTween == null)
+        {
+            _appearModulateTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            _appearModulateTween.FadeIn(this, startDuration / 2);
+        }
 
-        return player.GlobalPosition + vector;
+        _appearHoldTween?.Kill();
+        _appearHoldTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.InOut);
+        _appearHoldTween.TweenScale(_display, 0.9f, startDuration / 3);
+        _appearHoldTween.TweenScale(_display, 1.1f, startDuration / 3);
+        _appearHoldTween.Parallel().TweenCallback(Callable.From(ShowText));
+        _appearHoldTween.TweenScaleReset(_display, startDuration / 3);
+        _appearHoldTween.TweenRotation(_display, RandomUtils.DeltaRange(0, Pi / 6), holdDuration);
+
+        _appearHoldTween.Finished += PlayDisappearAnimation;
+    }
+
+    private void PlayDisappearAnimation()
+    {
+        _appearModulateTween?.Kill();
+        _appearPositionTween = null;
+        
+        _appearModulateTween?.Kill();
+        _appearModulateTween = null;
+        
+        const float endDuration = 0.25f;
+        
+        _disappearPositionTween?.Kill();
+        _disappearPositionTween = CreateTween().SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.In);
+        _disappearPositionTween.TweenPosition(this, _startPosition, endDuration);
+        
+        _disappearModulateTween?.Kill();
+        _disappearModulateTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+        _disappearModulateTween.FadeIn(this, endDuration);
+
+        _disappearModulateTween.Finished += QueueFree;
+    }
+
+    private void ShowText()
+    {
+        const float offset = 50f;
+        
+        var scaledShapeSize = Module.Type.Shape.PixelSize.Y * DisplayScale / 2f;
+        var labelPosition = GlobalPosition - new Vector2(0, scaledShapeSize + offset);
+        
+        var label = PopupLabel.Create(labelPosition, _text);
+        label.SetColor(_textColor);
+    }
+
+    private void CalculateRandomDisplayPositionsStartEnd()
+    {
+        var shapeSize = Module.Type.Shape.PixelSize;
+        var startY = ShapeGame.PlayableArea.End.Y + shapeSize.Y * DisplayScale / 2f;
+        var endY = ShapeGame.PlayableArea.End.Y - shapeSize.Y * DisplayScale / 2f - 50f;
+
+        _startPosition = new Vector2(Place.X, startY);
+        _endPosition = new Vector2(Place.X, endY);
     }
     
 }
