@@ -33,6 +33,15 @@ uniform float edge_softness : hint_range(0.01, 0.5) = 0.15;
 const float BODY_RADIUS = 0.5;
 // The body sits slightly below the quad center to leave room for the tongues.
 const float BODY_OFFSET = 0.15;
+// How far the sway shifts the flame body sideways.
+const float SWAY_SHIFT = 0.4;
+// How strongly the noise changes the heat field.
+const float NOISE_GAIN = 1.6;
+// Upper bound of fbm(): the sum of 4 octave amplitudes.
+const float FBM_MAX = 0.9375;
+
+// Glow multiplier with flicker. Depends only on time and uniforms, so it is computed per vertex.
+varying float glow_gain;
 
 // Sine-free hash, stable for large inputs (TIME keeps growing).
 float hash(vec2 p) {
@@ -52,15 +61,24 @@ float value_noise(vec2 p) {
 	return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
 
-float fbm(vec2 p) {
+// Fractal noise in 0..FBM_MAX. Fewer octaves are cheaper and lose only the finest detail,
+// the average and the range stay the same.
+float fbm(vec2 p, int octaves) {
 	float v = 0.0;
 	float amp = 0.5;
-	for (int i = 0; i < 4; i++) {
+	float total = 0.0;
+	for (int i = 0; i < octaves; i++) {
 		v += amp * value_noise(p);
+		total += amp;
 		p = p * 2.0 + vec2(37.0, 17.0);
 		amp *= 0.5;
 	}
-	return v;
+	return v * (FBM_MAX / total);
+}
+
+void vertex() {
+	float flicker = 0.8 + 0.4 * value_noise(vec2(TIME * speed * 4.0, 3.7));
+	glow_gain = glow_strength * intensity * ignition * flicker;
 }
 
 void fragment() {
@@ -69,24 +87,14 @@ void fragment() {
 	float t = TIME * speed;
 
 	// Ignition scales the flame body around the center.
-	float size = max(ignition, 0.001);
-	vec2 c = p / size - vec2(0.0, BODY_OFFSET);
+	float inv_size = 1.0 / max(ignition, 0.001);
+	vec2 c = p * inv_size - vec2(0.0, BODY_OFFSET);
 
 	// 0 at the body center, 1 at the top of the tongues.
 	float up = clamp(-c.y, 0.0, 1.0);
 
-	// Sideways sway, stronger higher up.
-	float sway = fbm(vec2(p.y * detail * 0.5 + t * 0.9, t * 0.3)) - 0.5;
-	vec2 np = p + vec2(sway * turbulence * 0.6 * up, 0.0);
-
-	// Noise scrolls upward and is stretched vertically -> elongated rising tongues.
-	float n1 = fbm(vec2(np.x * detail, np.y * detail * 0.5 + t * 1.6));
-	float n2 = fbm(vec2(np.x * detail * 2.0 + 7.3, np.y * detail + t * 2.7));
-	float noise_val = n1 * 0.65 + n2 * 0.35;
-
 	// Heat field: a disc stretched upward, 1 in the center, 0 at the body edge.
 	vec2 shape = c;
-	shape.x += sway * turbulence * 0.4 * up;
 	if (shape.y < 0.0) {
 		shape.y /= 1.0 + flame_height;
 	}
@@ -94,25 +102,42 @@ void fragment() {
 
 	// Noise erodes the heat. The core stays solid, the top breaks into tongues.
 	float erosion = turbulence * mix(0.35, 1.0, up);
-	heat += (noise_val - 0.5) * 1.6 * erosion;
-	heat *= intensity;
-	heat -= (1.0 - ignition) * 0.2;
 
-	// Layers by heat thresholds: outer -> mid -> core.
-	float alpha = smoothstep(0.0, edge_softness, heat);
-	float mid_mask = smoothstep(0.25, 0.25 + edge_softness, heat);
-	float core_mask = smoothstep(0.55, 0.55 + edge_softness, heat);
-	vec3 color = outer_color.rgb;
-	color = mix(color, mid_color.rgb, mid_mask);
-	color = mix(color, core_color.rgb, core_mask);
+	// The most heat that sway (|sway| <= 0.5) and noise (<= FBM_MAX) can add here.
+	// If even that is not enough, the flame is fully transparent, so all noise is skipped.
+	float max_sway_heat = 0.5 * SWAY_SHIFT * turbulence * up / BODY_RADIUS;
+	float max_noise_heat = (FBM_MAX - 0.5) * NOISE_GAIN * erosion;
+
+	vec3 rgb = vec3(0.0);
+	if (heat + max_sway_heat + max_noise_heat > 0.0) {
+		// Sideways sway, stronger higher up.
+		float sway = fbm(vec2(p.y * detail * 0.5 + t * 0.9, t * 0.3), 3) - 0.5;
+		vec2 np = p + vec2(sway * turbulence * 0.6 * up, 0.0);
+
+		// Noise scrolls upward and is stretched vertically -> elongated rising tongues.
+		float n1 = fbm(vec2(np.x * detail, np.y * detail * 0.5 + t * 1.6), 4);
+		float n2 = fbm(vec2(np.x * detail * 2.0 + 7.3, np.y * detail + t * 2.7), 3);
+		float noise_val = n1 * 0.65 + n2 * 0.35;
+
+		shape.x += sway * SWAY_SHIFT * turbulence * up;
+		heat = 1.0 - length(shape) / BODY_RADIUS;
+		heat += (noise_val - 0.5) * NOISE_GAIN * erosion;
+		heat *= intensity;
+		heat -= (1.0 - ignition) * 0.2;
+
+		// Layers by heat thresholds: outer -> mid -> core.
+		float alpha = smoothstep(0.0, edge_softness, heat);
+		float mid_mask = smoothstep(0.25, 0.25 + edge_softness, heat);
+		float core_mask = smoothstep(0.55, 0.55 + edge_softness, heat);
+		vec3 color = outer_color.rgb;
+		color = mix(color, mid_color.rgb, mid_mask);
+		color = mix(color, core_color.rgb, core_mask);
+		rgb = color * alpha;
+	}
 
 	// Flickering halo.
-	vec2 g = p / size - vec2(0.0, BODY_OFFSET * 0.5);
-	float glow = exp(-dot(g, g) * 3.0);
-	float flicker = 0.8 + 0.4 * value_noise(vec2(t * 4.0, 3.7));
-	glow *= glow_strength * intensity * ignition * flicker;
-
-	vec3 rgb = color * alpha + glow_color.rgb * glow;
+	vec2 g = p * inv_size - vec2(0.0, BODY_OFFSET * 0.5);
+	rgb += glow_color.rgb * (exp(-dot(g, g) * 3.0) * glow_gain);
 
 	// Fade out near the quad border so nothing is ever cut off sharply.
 	vec2 edge = min(UV, 1.0 - UV);
