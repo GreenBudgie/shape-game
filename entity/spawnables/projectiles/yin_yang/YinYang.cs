@@ -1,10 +1,8 @@
-public partial class YinYang : Node2D, ISpawnable<YinYang>
+public partial class YinYang : Node2D, ISpawnable
 {
     private const float PathRadius = 128f;
     const float RotationSpeedMin = 7f;
     const float RotationSpeedMax = 9f;
-
-    public YinYang Node => this;
 
     private Node2D _yinFollowTarget = null!;
     private Node2D _yangFollowTarget = null!;

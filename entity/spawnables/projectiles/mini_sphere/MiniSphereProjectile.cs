@@ -1,4 +1,4 @@
-public partial class MiniSphereProjectile : BasicRigidBodyProjectile<MiniSphereProjectile>
+public partial class MiniSphereProjectile : BasicRigidBodyProjectile
 {
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dbw8nhcxt7xux");
@@ -6,8 +6,6 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile<MiniSphereP
     [Export]
     private AudioStream _shotSound = null!;
     
-    public override MiniSphereProjectile Node => this;
-
     public static MiniSphereProjectile Create()
     {
         return Scene.Instantiate<MiniSphereProjectile>();

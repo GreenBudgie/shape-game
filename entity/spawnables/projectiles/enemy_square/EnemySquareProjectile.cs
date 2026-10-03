@@ -1,11 +1,9 @@
-﻿public partial class EnemySquareProjectile : BasicRigidBodyProjectile<EnemySquareProjectile>
+﻿public partial class EnemySquareProjectile : BasicRigidBodyProjectile
 {
     private const float InitialTorque = 1500;
     private const float InitialTorqueDelta = 500;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bhj8dgeytmpxx");
-
-    public override EnemySquareProjectile Node => this;
 
     [Export] private AudioStream _hitWallSound = null!;
 

@@ -12,7 +12,7 @@ public partial class YinYangModule : SpawnableModule
         new SpeedStat { Value = 800 },
     ];
 
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override ISpawnable CreateSpawnable()
     {
         return YinYang.Create();
     }

@@ -12,7 +12,7 @@ public partial class BoltModule : SpawnableModule
         new LifetimeStat { Value = 4 },
     ];
 
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override ISpawnable CreateSpawnable()
     {
         return BoltProjectile.Create();
     }

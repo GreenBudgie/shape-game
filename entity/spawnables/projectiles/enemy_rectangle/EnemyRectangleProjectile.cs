@@ -1,10 +1,8 @@
-public partial class EnemyRectangleProjectile : BasicRigidBodyProjectile<EnemyRectangleProjectile>
+public partial class EnemyRectangleProjectile : BasicRigidBodyProjectile
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b1rpikysssmoh");
 
     private EnemyRectangle _owner = null!;
-
-    public override EnemyRectangleProjectile Node => this;
 
     public static EnemyRectangleProjectile Create()
     {

@@ -1,4 +1,4 @@
-public partial class BoltProjectile : BasicRigidBodyProjectile<BoltProjectile>
+public partial class BoltProjectile : BasicRigidBodyProjectile
 {
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bnh56fabyfl1o");
@@ -6,8 +6,6 @@ public partial class BoltProjectile : BasicRigidBodyProjectile<BoltProjectile>
     [Export]
     private AudioStream _shotSound = null!;
     
-    public override BoltProjectile Node => this;
-
     public static BoltProjectile Create()
     {
         return Scene.Instantiate<BoltProjectile>();

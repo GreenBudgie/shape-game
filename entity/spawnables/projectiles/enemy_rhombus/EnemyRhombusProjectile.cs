@@ -1,4 +1,4 @@
-public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhombusProjectile>
+public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile
 {
     private const float MaxLifetimeSeconds = 4;
 
@@ -8,8 +8,6 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile<EnemyRhom
 
     private bool _isDissolving;
     private GpuParticles2D _particles = null!;
-
-    public override EnemyRhombusProjectile Node => this;
 
     public static EnemyRhombusProjectile Create()
     {

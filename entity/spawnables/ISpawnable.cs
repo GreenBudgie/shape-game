@@ -1,7 +1,10 @@
-public interface ISpawnable<out T> where T : Node2D
+public interface ISpawnable
 {
 
-    public T Node { get; }
+    /// <summary>
+    /// The spawnable itself. Every spawnable is expected to be a Node2D.
+    /// </summary>
+    public Node2D Node => (Node2D)this;
 
     public void Remove();
 

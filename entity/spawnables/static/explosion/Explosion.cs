@@ -1,4 +1,4 @@
-public partial class Explosion : ShapeCast2D, ISpawnable<Explosion>
+public partial class Explosion : ShapeCast2D, ISpawnable
 {
 
     /// <summary>
@@ -11,8 +11,6 @@ public partial class Explosion : ShapeCast2D, ISpawnable<Explosion>
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b676isra84rkm");
 
-    public Explosion Node => this;
-    
     [Signal]
     public delegate void DetonatedEventHandler();
 

@@ -1,4 +1,4 @@
-public partial class FallingCrystal : RigidBody2D, ISpawnable<FallingCrystal>
+public partial class FallingCrystal : RigidBody2D, ISpawnable
 {
     private const float InitialTorque = 500;
     private const float InitialTorqueDelta = 200;
@@ -22,8 +22,6 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable<FallingCrystal>
     private Glow _glow = null!;
     private AnimationPlayer _crystalAnimations = null!;
     
-    public FallingCrystal Node => this;
-
     public static FallingCrystal Spawn(Vector2 globalPosition)
     {
         var crystal = Scene.Instantiate<FallingCrystal>();

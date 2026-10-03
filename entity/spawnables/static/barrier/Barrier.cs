@@ -1,4 +1,4 @@
-public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
+public partial class Barrier : RigidBody2D, ISpawnable
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://cgm0yfj1g1own");
 
@@ -16,8 +16,6 @@ public partial class Barrier : RigidBody2D, ISpawnable<Barrier>
     private GpuParticles2D _particles = null!;
     private Vector2 _initialPosition;
     private SpawnableContext _context = null!;
-
-    public Barrier Node => this;
 
     public static Barrier Create()
     {

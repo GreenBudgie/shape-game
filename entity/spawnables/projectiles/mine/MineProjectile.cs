@@ -1,6 +1,6 @@
 using System.Linq;
 
-public partial class MineProjectile : RigidBody2D, ISpawnable<MineProjectile>
+public partial class MineProjectile : RigidBody2D, ISpawnable
 {
     private static readonly Color OversaturatedWhite = new(4, 4, 4);
 
@@ -11,8 +11,6 @@ public partial class MineProjectile : RigidBody2D, ISpawnable<MineProjectile>
     [Export] private AudioStream _wallHitSound = null!;
 
     [Export] private AudioStream _beepSound = null!;
-
-    public MineProjectile Node => this;
 
     public static MineProjectile Create()
     {

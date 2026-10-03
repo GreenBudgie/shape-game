@@ -13,7 +13,7 @@ public partial class MineModule : SpawnableModule
         new LifetimeStat { Value = 0.5f },
     ];
 
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override ISpawnable CreateSpawnable()
     {
         return MineProjectile.Create();
     }

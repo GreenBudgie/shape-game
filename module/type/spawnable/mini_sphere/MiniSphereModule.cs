@@ -12,7 +12,7 @@ public partial class MiniSphereModule : SpawnableModule
         new LifetimeStat { Value = 1, ValueDelta = 0.1f },
     ];
 
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override ISpawnable CreateSpawnable()
     {
         return MiniSphereProjectile.Create();
     }

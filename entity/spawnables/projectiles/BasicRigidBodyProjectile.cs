@@ -1,13 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
-    ISpawnable<T>
-    where T : Node2D
+public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 {
     [Export] private AudioStream _wallHitSound = null!;
-
-    public abstract T Node { get; }
 
     protected SpawnableContext Context = null!;
     protected int ObstaclesToPierce;

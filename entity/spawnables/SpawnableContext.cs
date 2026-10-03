@@ -6,14 +6,14 @@ public class SpawnableContext
 {
 
     // Only set for contexts that may be cloned (triggers). Cloning needs a way to build a fresh node.
-    private readonly Func<ISpawnable<Node2D>>? _spawnableFactory;
+    private readonly Func<ISpawnable>? _spawnableFactory;
 
-    public SpawnableContext(ISpawnable<Node2D> spawnable)
+    public SpawnableContext(ISpawnable spawnable)
     {
         Spawnable = spawnable;
     }
 
-    public SpawnableContext(Func<ISpawnable<Node2D>> spawnableFactory)
+    public SpawnableContext(Func<ISpawnable> spawnableFactory)
     {
         _spawnableFactory = spawnableFactory;
         Spawnable = spawnableFactory();
@@ -49,7 +49,7 @@ public class SpawnableContext
             .ToList();
     }
     
-    public ISpawnable<Node2D> Spawnable { get; }
+    public ISpawnable Spawnable { get; }
 
     /// <summary>
     /// Where the spawnable should be created, in global coords

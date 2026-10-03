@@ -13,9 +13,9 @@ public partial class SpawnableManager : Node
         Instance = this;
     }
     
-    public IEnumerable<ISpawnable<Node2D>> GetSpawnables()
+    public IEnumerable<ISpawnable> GetSpawnables()
     {
-        return GetTree().GetNodesInGroup(SpawnablesGroupName).Cast<ISpawnable<Node2D>>();
+        return GetTree().GetNodesInGroup(SpawnablesGroupName).Cast<ISpawnable>();
     }
     
     public int GetSpawnablesCount()

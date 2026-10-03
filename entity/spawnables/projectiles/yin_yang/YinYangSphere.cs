@@ -1,4 +1,4 @@
-public partial class YinYangSphere : BasicRigidBodyProjectile<YinYangSphere>
+public partial class YinYangSphere : BasicRigidBodyProjectile
 {
 
     private const float Radius = 32f;
@@ -6,8 +6,6 @@ public partial class YinYangSphere : BasicRigidBodyProjectile<YinYangSphere>
     private static readonly Texture2D YinTexture = GD.Load<Texture2D>("uid://dndyopr6137m3"); // Blue
     private static readonly Texture2D YangTexture = GD.Load<Texture2D>("uid://bye8t1ytl68gx"); // Red
     
-    public override YinYangSphere Node => this;
-
     public YinYangSphere? OtherSphere { get; set; }
 
     private YinYangType _type;

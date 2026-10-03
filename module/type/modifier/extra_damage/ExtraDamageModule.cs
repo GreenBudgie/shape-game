@@ -20,7 +20,7 @@ public partial class ExtraDamageModule : ModifierModule
 
         var projectiles = context.GetContextChain()
             .Select(ctx => ctx.Spawnable.Node)
-            .OfType<BasicRigidBodyProjectile<Node2D>>();
+            .OfType<BasicRigidBodyProjectile>();
         foreach (var projectile in projectiles)
         {
             TrailParticles.Create(projectile)

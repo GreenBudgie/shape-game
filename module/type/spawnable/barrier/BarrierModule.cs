@@ -10,7 +10,7 @@ public partial class BarrierModule : SpawnableModule
         new ReloadStat { Value = 2 },
     ];
 
-    public override ISpawnable<Node2D> CreateSpawnable()
+    public override ISpawnable CreateSpawnable()
     {
         return Barrier.Create();
     }
