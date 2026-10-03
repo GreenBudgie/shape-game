@@ -56,6 +56,10 @@ const float NOISE_GAIN = 1.6;
 const float FBM_MAX = 0.9375;
 // Scales gradient noise so its spread matches value noise in 0..1 (std ~0.21 vs ~0.17).
 const float NOISE_CONTRAST = 1.24;
+// Round window of the halo, in centered UV units. The halo center sits BODY_OFFSET / 2 below the quad center,
+// so the nearest border is 1 - BODY_OFFSET / 2 = 0.925 away and the window must end before it.
+const float GLOW_WINDOW_START = 0.55;
+const float GLOW_WINDOW_END = 0.92;
 // Lattice period of gradient_noise(). A power of two, so mod() is exact for any input.
 const float NOISE_PERIOD = 1024.0;
 
@@ -180,8 +184,12 @@ void fragment() {
 	}
 
 	// Flickering halo. It stays around the body and does not lean.
-	vec2 g = quad_p * inv_size - vec2(0.0, BODY_OFFSET * 0.5);
-	rgb += glow_color.rgb * (exp(-dot(g, g) * 3.0) * glow_gain);
+	vec2 glow_center = vec2(0.0, BODY_OFFSET * 0.5);
+	vec2 g = quad_p * inv_size - glow_center;
+	// The gaussian never reaches zero, so a round window fades it out before the nearest quad border.
+	// Otherwise the rectangular border fade below gives the halo a square silhouette.
+	float glow_window = 1.0 - smoothstep(GLOW_WINDOW_START, GLOW_WINDOW_END, length(quad_p - glow_center));
+	rgb += glow_color.rgb * (exp(-dot(g, g) * 3.0) * glow_gain * glow_window);
 
 	// Fade out near the border of the drawn quad so nothing is ever cut off sharply.
 	vec2 edge = min(draw_uv, 1.0 - draw_uv);

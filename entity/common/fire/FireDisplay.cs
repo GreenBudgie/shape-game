@@ -14,10 +14,10 @@ public partial class FireDisplay : Node2D
     // Average flame quad size is SizeScale * area^SizeExponent. The exponent below 0.5 makes flames grow
     // with the area, but slower than the area itself, so big hosts are covered by more flames, not only bigger ones.
     // Areas of current hosts: player ~6900, polysteroids ~11000-30000, square ~32000, rectangle ~77000.
-    private const float SizeScale = 4.5f;
+    private const float SizeScale = 3.6f;
     private const float SizeExponent = 0.4f;
     private const float MinFlameSize = 48f;
-    private const float MaxFlameSize = 420f;
+    private const float MaxFlameSize = 340f;
 
     /// <summary>
     /// Approximate part of a flame quad covered by the visible flame.
@@ -26,7 +26,7 @@ public partial class FireDisplay : Node2D
     /// <summary>
     /// How many times the visible flames together cover the area. Above 1, so flames overlap and leave no holes.
     /// </summary>
-    private const float Coverage = 3f;
+    private const float Coverage = 2f;
     private const int MinFlames = 1;
     private const int MaxFlames = 8;
 
@@ -38,7 +38,7 @@ public partial class FireDisplay : Node2D
 
     // Random ranges of flame parameters, around the defaults of the fire shader
     private const float MinSizeFactor = 0.75f;
-    private const float MaxSizeFactor = 1.25f;
+    private const float MaxSizeFactor = 1.15f;
     private const float MinIntensity = 0.8f;
     private const float MaxIntensity = 1.15f;
     private const float MinGlowStrength = 0.35f;
@@ -53,20 +53,20 @@ public partial class FireDisplay : Node2D
     private const float MaxDetail = 3.4f;
 
     // Random ranges of the flame lifecycle, in seconds
-    private const float MinIgniteDuration = 0.25f;
-    private const float MaxIgniteDuration = 0.6f;
-    private const float MinBurnDuration = 0.3f;
-    private const float MaxBurnDuration = 1.8f;
-    private const float MinExtinguishDuration = 0.3f;
-    private const float MaxExtinguishDuration = 0.7f;
+    private const float MinIgniteDuration = 0.2f;
+    private const float MaxIgniteDuration = 0.45f;
+    private const float MinBurnDuration = 0.15f;
+    private const float MaxBurnDuration = 0.8f;
+    private const float MinExtinguishDuration = 0.25f;
+    private const float MaxExtinguishDuration = 0.5f;
     /// <summary>
     /// A replacement flame ignites after a random delay up to this, once the previous flame starts burning out.
     /// </summary>
-    private const float MaxReplacementDelay = 0.25f;
+    private const float MaxReplacementDelay = 0.15f;
     /// <summary>
     /// The first flames ignite at random moments within this time, so they do not burn in sync.
     /// </summary>
-    private const float InitialIgniteSpread = 1f;
+    private const float InitialIgniteSpread = 0.6f;
 
     /// <summary>
     /// Speed of a flame, in pixels per second, at which it reaches the maximum lean.
