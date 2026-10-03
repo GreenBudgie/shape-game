@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://biye3d0dqqeuj" path="res://ShapeGame.cs" id="1_ryrav"]
 [ext_resource type="PackedScene" uid="uid://bw1n7eocfhsbo" path="res://entity/living/player/player.tscn" id="2_eow3j"]
 [ext_resource type="PackedScene" uid="uid://dlwvs3u6gqtsw" path="res://ui/game/game_ui.tscn" id="3_qhcbd"]
-[ext_resource type="Texture2D" uid="uid://dp0jpi2wpuyrl" path="res://entity/living/effect/type/fire/fire_icon.png" id="5_bnpwn"]
+[ext_resource type="Texture2D" uid="uid://dgwf5xg8innm7" path="res://module/type/modifier/ignition/ignition.png" id="5_bnpwn"]
 [ext_resource type="PackedScene" uid="uid://bliriv38qvb4i" path="res://systems/shop/shop.tscn" id="5_e8heu"]
 [ext_resource type="Script" uid="uid://cbwxymx4i00f0" path="res://environment/Environment.cs" id="5_f1jbl"]
 [ext_resource type="PackedScene" uid="uid://csitvuhpytc2q" path="res://ui/inventory/inventory_manager.tscn" id="5_hve3p"]
