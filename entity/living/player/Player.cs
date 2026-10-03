@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public partial class Player : RigidBody2D
+public partial class Player : Entity
 {
 
     public static readonly Vector2 MaxVisibleSize = new(140, 140);
@@ -36,16 +36,12 @@ public partial class Player : RigidBody2D
     
     private static int _lastIndex = -1;
 
-    public HealthController HealthController { get; private set; } = null!;
-
     private Vector2 _windowCenter;
     private Blaster _leftBlaster = null!;
     private Blaster _rightBlaster = null!;
     private ShapeCast2D _playerCollisionDetector = null!;
-    private Sprite2D _sprite = null!;
     private Vector2 _prevPosition = Vector2.Zero;
-    private GlowWrapper _glowWrapper = null!;
-    
+
     public static Player? FindPlayer()
     {
         return _instance;
@@ -78,10 +74,9 @@ public partial class Player : RigidBody2D
         _instance = null;
     }
 
-    public override void _Ready()
+    protected override void Setup()
     {
-        _sprite = GetNode<Sprite2D>("GlowWrapper/PlayerSprite");
-        HealthController = HealthController.GetHealthController(this);
+        Sprite = GetNode<Sprite2D>("GlowWrapper/PlayerSprite");
 
         _leftBlaster = Blaster.Create(InventoryManager.Instance.LeftBlasterInventory);
         AddChild(_leftBlaster);
@@ -91,7 +86,7 @@ public partial class Player : RigidBody2D
         _playerCollisionDetector = GetNode<ShapeCast2D>("PlayerCollisionDetector");
         Callable.From(SetupCollisionDetector).CallDeferred();
         
-        _glowWrapper = GetNode<GlowWrapper>("GlowWrapper")
+        Glow = GetNode<GlowWrapper>("GlowWrapper")
             .SetColor(ColorScheme.LightBlueGreen)
             .SetStrength(0)
             .SetRadius(0)
@@ -99,6 +94,8 @@ public partial class Player : RigidBody2D
 
         _prevPosition = Position;
 
+        HealthController.MaxHealth = 10;
+        HealthController.InvulnerabilityPeriod = 0.1f;
         HealthController.DestroyAnimationFinished += QueueFree;
         HealthController.Destroyed += OnDestroy;
         HealthController.HealthChanged += OnHealthChanged;
@@ -177,15 +174,15 @@ public partial class Player : RigidBody2D
 
     private void HandleTilt(double delta, double tiltDegrees)
     {
-        _sprite.RotationDegrees *= Clamp(1 - (float)(delta * TiltDecreaseFactor), 0, 1);
-        _sprite.RotationDegrees = (float)Clamp(
-            _sprite.RotationDegrees + tiltDegrees,
+        Sprite.RotationDegrees *= Clamp(1 - (float)(delta * TiltDecreaseFactor), 0, 1);
+        Sprite.RotationDegrees = (float)Clamp(
+            Sprite.RotationDegrees + tiltDegrees,
             -MaxTiltDegrees,
             MaxTiltDegrees
         );
-        if (Abs(_sprite.RotationDegrees) <= RotationDegreesEpsilon)
+        if (Abs(Sprite.RotationDegrees) <= RotationDegreesEpsilon)
         {
-            _sprite.RotationDegrees = 0;
+            Sprite.RotationDegrees = 0;
         }
     }
 
@@ -293,12 +290,12 @@ public partial class Player : RigidBody2D
 
     public float GetTilt()
     {
-        return _sprite.Rotation;
+        return Sprite.Rotation;
     }
     
     public float GetTiltDegrees()
     {
-        return _sprite.RotationDegrees;
+        return Sprite.RotationDegrees;
     }
 
 }

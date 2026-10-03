@@ -10,8 +10,6 @@ public abstract class PolysteroidSize
     
     public abstract PackedScene CollisionPolygonScene { get; }
     
-    public abstract PackedScene AreaScene { get; }
-    
     public abstract float Health { get; }
     
     public abstract float Gravity { get; }

@@ -17,9 +17,9 @@ public partial class EnemyRectangle : Enemy
     private List<ProjectileSpawn> _projectileSpawns = null!;
     private State _state = State.Idle;
 
-    public override void _Ready()
+    protected override void Setup()
     {
-        base._Ready();
+        base.Setup();
 
         RotationDegrees = (float)GD.RandRange(-180f, 180f);
 
@@ -28,6 +28,8 @@ public partial class EnemyRectangle : Enemy
             .OfType<Marker2D>()
             .Select(node => new ProjectileSpawn(node))
             .ToList();
+
+        HealthController.MaxHealth = 12;
     }
 
     protected override void OnActivate()

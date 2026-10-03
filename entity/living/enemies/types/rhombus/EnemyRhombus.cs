@@ -7,6 +7,13 @@
     private EnemyRhombusPath _path = null!;
     private EnemyPathFollowController _pathFollowController = null!;
 
+    protected override void Setup()
+    {
+        base.Setup();
+        
+        HealthController.MaxHealth = 5;
+    }
+
     protected override void OnActivate()
     {
         _path = EnemyRhombusPath.Create();

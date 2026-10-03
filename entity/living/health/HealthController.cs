@@ -1,6 +1,6 @@
 using System.Globalization;
 
-public partial class HealthController : Node2D
+public partial class HealthController(Entity owner) : Node2D
 {
     [Signal]
     public delegate void HealthChangedEventHandler(float delta);
@@ -11,13 +11,9 @@ public partial class HealthController : Node2D
     [Signal]
     public delegate void DestroyAnimationFinishedEventHandler();
     
-    [Export] private float _invulnerabilityPeriod = 0.01f;
+    public Entity OwnerEntity { get; } = owner;
 
-    [ExportGroup("Health")] [Export] public float MaxHealth { get; set; }
-
-    [ExportGroup("Relations")] [Export] private Sprite2D? _sprite;
-    [Export] private GlowWrapper? _glowWrapper;
-    [Export] private CollisionShape2D? _damageLabelSpawnArea;
+    public float MaxHealth { get; set; }
 
     /// <summary>
     /// Health, always between 0 and MaxHealth
@@ -30,24 +26,10 @@ public partial class HealthController : Node2D
     /// </summary>
     public bool IsInvulnerable { get; set; }
 
-    protected CollisionShape2D? DamageLabelSpawnArea
-    {
-        get => _damageLabelSpawnArea;
-        set => _damageLabelSpawnArea = value;
-    }
+    public float InvulnerabilityPeriod { get; set; } = 0.01f;
 
     private Tween? _healthTween;
     private double _invulnerabilityTime;
-
-    public static HealthController? GetHealthControllerIfExists(Node2D owner)
-    {
-        return owner.GetNodeOrNull<HealthController>("HealthController");
-    }
-
-    public static HealthController GetHealthController(Node2D owner)
-    {
-        return owner.GetNode<HealthController>("HealthController");
-    }
 
     public override void _Ready()
     {
@@ -63,7 +45,7 @@ public partial class HealthController : Node2D
     }
 
     /// <summary>
-    /// Changes max health and immediately changes Health to the new value. Does not count as dagaming/healing.
+    /// Changes max health and immediately changes Health to the new value. Does not count as damaging/healing.
     /// </summary>
     public void ChangeMaxHealthImmediately(float maxHealth)
     {
@@ -125,7 +107,7 @@ public partial class HealthController : Node2D
         if (!IsInvulnerable || delta >= 0)
         {
             Health = Clamp(Health + delta, 0, MaxHealth);
-            _invulnerabilityTime = _invulnerabilityPeriod;
+            _invulnerabilityTime = InvulnerabilityPeriod;
         }
 
         EmitSignalHealthChanged(delta);
@@ -138,7 +120,7 @@ public partial class HealthController : Node2D
 
         var dangerLevel = 1f - GetHealthRatio();
 
-        _glowWrapper?
+        OwnerEntity.Glow
             .SetRadius(40f * dangerLevel)
             .SetStrength(2f * dangerLevel)
             .SetPulseRadiusDelta(20f * dangerLevel)
@@ -182,15 +164,7 @@ public partial class HealthController : Node2D
             healthToDisplay = RoundToInt(healthDelta).ToString();
         }
 
-        Vector2 position;
-        if (_damageLabelSpawnArea != null)
-        {
-            position = ToGlobal(_damageLabelSpawnArea.Shape.GetRect().RandomPoint());
-        }
-        else
-        {
-            position = GlobalPosition;
-        }
+        var position = OwnerEntity.Area.GetRandomGlobalPoint();
         var text = sign + healthToDisplay;
         
         PopupLabel.Create(position, text).SetColor(color);
@@ -201,33 +175,30 @@ public partial class HealthController : Node2D
         var sound = SoundManager.Instance.PlayPositionalSound(this, HealthSounds.HealSound);
         sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
 
-        if (_sprite == null)
-        {
-            return;
-        }
+        var sprite = OwnerEntity.Sprite;
 
         const float duration = 0.25f;
         const float inDuration = duration / 4f;
 
         _healthTween?.Kill();
-        _healthTween = _sprite.CreateTween().SetTrans(Tween.TransitionType.Cubic);
+        _healthTween = sprite.CreateTween().SetTrans(Tween.TransitionType.Cubic);
 
-        _healthTween.TweenScale(_sprite, 1.2f, inDuration)
+        _healthTween.TweenScale(sprite, 1.2f, inDuration)
             .SetEase(Tween.EaseType.Out);
         _healthTween.Parallel()
-            .TweenRotationDegrees(_sprite, 20f, inDuration)
+            .TweenRotationDegrees(sprite, 20f, inDuration)
             .SetEase(Tween.EaseType.Out);
         _healthTween.Parallel()
-            .TweenModulate(_sprite, Colors.LightGreen * 5f, inDuration)
+            .TweenModulate(sprite, Colors.LightGreen * 5f, inDuration)
             .SetEase(Tween.EaseType.Out);
 
-        _healthTween.TweenScale(_sprite, 1f, duration - inDuration)
+        _healthTween.TweenScale(sprite, 1f, duration - inDuration)
             .SetEase(Tween.EaseType.In);
         _healthTween.Parallel()
-            .TweenRotationReset(_sprite, duration - inDuration)
+            .TweenRotationReset(sprite, duration - inDuration)
             .SetEase(Tween.EaseType.In);
         _healthTween.Parallel()
-            .TweenModulateReset(_sprite, duration - inDuration)
+            .TweenModulateReset(sprite, duration - inDuration)
             .SetEase(Tween.EaseType.In);
     }
 
@@ -236,27 +207,24 @@ public partial class HealthController : Node2D
         var sound = SoundManager.Instance.PlayPositionalSound(this, HealthSounds.DamageSound);
         sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
 
-        if (_sprite == null)
-        {
-            return;
-        }
+        var sprite = OwnerEntity.Sprite;
 
         const float duration = 0.25f;
         const float inDuration = duration / 4f;
 
         _healthTween?.Kill();
-        _healthTween = _sprite.CreateTween().SetTrans(Tween.TransitionType.Cubic);
+        _healthTween = sprite.CreateTween().SetTrans(Tween.TransitionType.Cubic);
 
-        _healthTween.TweenScale(_sprite, 1.2f, inDuration)
+        _healthTween.TweenScale(sprite, 1.2f, inDuration)
             .SetEase(Tween.EaseType.Out);
         _healthTween.Parallel()
-            .TweenModulate(_sprite, 5f, inDuration)
+            .TweenModulate(sprite, 5f, inDuration)
             .SetEase(Tween.EaseType.Out);
 
-        _healthTween.TweenScaleReset(_sprite, duration - inDuration)
+        _healthTween.TweenScaleReset(sprite, duration - inDuration)
             .SetEase(Tween.EaseType.In);
         _healthTween.Parallel()
-            .TweenModulateReset(_sprite, duration - inDuration)
+            .TweenModulateReset(sprite, duration - inDuration)
             .SetEase(Tween.EaseType.In);
     }
 
@@ -280,27 +248,21 @@ public partial class HealthController : Node2D
 
         SoundManager.Instance.PlayPositionalSound(this, HealthSounds.DestroySound);
         const float duration = 0.4f;
+        
+        var sprite = OwnerEntity.Sprite;
+        var glowWrapper = OwnerEntity.Glow;
 
-        if (_glowWrapper != null)
-        {
-            _glowWrapper.DisablePulsing();
-            var fadeOutTween = _glowWrapper.CreateTween();
-            fadeOutTween.TweenProperty(_glowWrapper, "Color:a", 0, duration);
-        }
+        glowWrapper.DisablePulsing();
+        var fadeOutTween = glowWrapper.CreateTween();
+        fadeOutTween.TweenProperty(glowWrapper, "Color:a", 0, duration);
 
-        if (_sprite == null)
-        {
-            EmitSignalDestroyAnimationFinished();
-            return;
-        }
-
-        var destroyTween = _sprite.CreateTween()
+        var destroyTween = sprite.CreateTween()
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
-        destroyTween.TweenProperty(_sprite, ModulateProperty, new Color(5f, 5f, 5f, 0f), duration);
+        destroyTween.TweenProperty(sprite, ModulateProperty, new Color(5f, 5f, 5f, 0f), duration);
         destroyTween.Parallel()
-            .TweenProperty(_sprite, ScaleProperty, new Vector2(1.75f, 1.75f), duration);
-        DissolveEffect.DissolveSprite(_sprite, duration);
+            .TweenProperty(sprite, ScaleProperty, new Vector2(1.75f, 1.75f), duration);
+        DissolveEffect.DissolveSprite(sprite, duration);
 
         destroyTween.Finished += EmitSignalDestroyAnimationFinished;
     }

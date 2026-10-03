@@ -5,21 +5,16 @@ public partial class EnemyPolysteroid : Enemy
 
     public override bool IsEnvironmental => true;
 
-    private PolysteroidSize _size = null!;
+    private readonly PolysteroidSize _size = PolysteroidSizeRegistry.Sizes.GetRandom();
 
-    public override void _Ready()
+    protected override void Setup()
     {
-        base._Ready();
-
-        _size = PolysteroidSizeRegistry.Sizes.GetRandom();
-        GetNode<Sprite2D>("%Sprite").Texture = _size.Texture;
-        Mass = _size.Mass;
-        HealthController.ChangeMaxHealthImmediately(_size.Health);
-
-        var area = _size.AreaScene.Instantiate<CollisionShape2D>();
-        AddChild(area);
-        Area = area;
+        base.Setup();
         
+        Sprite.Texture = _size.Texture;
+        Mass = _size.Mass;
+        HealthController.MaxHealth = _size.Health;
+
         var collisionPolygon = _size.CollisionPolygonScene.Instantiate<CollisionPolygon2D>();
         AddChild(collisionPolygon);
 
@@ -28,7 +23,7 @@ public partial class EnemyPolysteroid : Enemy
             .WithTexture(ParticleTextures.Circle)
             .WithScale(0.3f, 0.1f)
             .Color(ColorScheme.Red)
-            .RectangleShape(area.Shape.GetRect())
+            .AreaShape(Area)
             .Spawn();
 
         BodyEntered += OnBodyEntered;

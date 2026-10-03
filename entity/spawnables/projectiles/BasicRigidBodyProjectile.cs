@@ -100,7 +100,10 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             return;
         }
 
-        HealthController.GetHealthControllerIfExists(collisionObject2D)?.Damage(Context.CalculateStat<DamageStat>());
+        if (collisionObject2D is Entity entity)
+        {
+            entity.HealthController.Damage(Context.CalculateStat<DamageStat>());
+        }
 
         if (ObstaclesToPierce <= 0)
         {
@@ -214,7 +217,10 @@ public abstract partial class BasicRigidBodyProjectile<T> : RigidBody2D,
             return;
         }
 
-        HealthController.GetHealthControllerIfExists(collisionObject2D)?.Damage(Context.CalculateStat<DamageStat>());
+        if (collisionObject2D is Entity entity)
+        {
+            entity.HealthController.Damage(Context.CalculateStat<DamageStat>());
+        }
 
         OnWallHit(collisionObject2D);
         AddCollisionExceptionWith(collisionObject2D);

@@ -5,13 +5,12 @@
 [ext_resource type="Texture2D" uid="uid://1dpobmb33rix" path="res://entity/living/enemies/types/polysteroid/sizes/big/sprite.png" id="4_er0db"]
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="5_qyujg"]
 [ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="7_46mis"]
-[ext_resource type="PackedScene" uid="uid://v608jbnpitvx" path="res://entity/living/health/health_controller.tscn" id="8_1xivs"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_er0db"]
 friction = 0.3
 bounce = 0.8
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_er0db"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5ta4u"]
 resource_local_to_scene = true
 shader = ExtResource("5_qyujg")
 shader_parameter/glow_color = Color(0.9372549, 0.35686275, 0.35686275, 1)
@@ -32,7 +31,7 @@ script = ExtResource("1_er0db")
 Color = Color(0.9372549, 0.35686275, 0.35686275, 1)
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("4_5xt0b")]
-material = SubResource("ShaderMaterial_er0db")
+material = SubResource("ShaderMaterial_5ta4u")
 
 [node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1360807856]
 unique_name_in_owner = true
@@ -43,8 +42,3 @@ visible = false
 _target = NodePath("..")
 _pointerColor = Color(0.9372549, 0.35686275, 0.35686275, 1)
 _showOnlyWhenMovingIn = false
-
-[node name="HealthController" parent="." unique_id=695144963 node_paths=PackedStringArray("_sprite", "_glowWrapper") instance=ExtResource("8_1xivs")]
-MaxHealth = 12.0
-_sprite = NodePath("../Glow/Sprite")
-_glowWrapper = NodePath("../Glow")

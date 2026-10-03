@@ -1,15 +1,9 @@
 ﻿using System;
 
-public abstract partial class Enemy : RigidBody2D
+public abstract partial class Enemy : Entity
 {
     
     [Export] public Color Color { get; private set; }
-
-    [Export] protected CollisionShape2D? Area;
-
-    public HealthController HealthController { get; private set; } = null!;
-    
-    private GlowWrapper _glowWrapper = null!;
     
     protected bool IsActive { get; private set; }
 
@@ -21,23 +15,16 @@ public abstract partial class Enemy : RigidBody2D
     private uint _initialCollisionLayer;
     private uint _initialCollisionMask;
 
-    public override void _Ready()
+    protected override void Setup()
     {
-        if (Area is { Disabled: false })
-        {
-            Area.Disabled = true;
-        }
-        
         AddToGroup(EnemyManager.AliveEnemiesGroup);
-
-        HealthController = HealthController.GetHealthController(this);
-
-        _glowWrapper = GetNode<GlowWrapper>("Glow")
+        
+        Glow = GetNode<GlowWrapper>("Glow")
             .SetColor(Color)
             .SetStrength(0)
             .SetRadius(0)
             .EnablePulsing();
-
+        Sprite = GetNode<Sprite2D>("Glow/Sprite");
         
         if (GetTimeToActivate() > 0)
         {
@@ -112,22 +99,14 @@ public abstract partial class Enemy : RigidBody2D
     {
         for (var i = 0; i < GetCrystalsToDrop(); i++)
         {
-            Vector2 position;
-            if (Area != null)
-            {
-                position = GlobalPosition + Area.Shape.GetRect().RandomPoint();
-            }
-            else
-            {
-                position = GlobalPosition;
-            }
-            FallingCrystal.Spawn(position);
+            FallingCrystal.Spawn(Area.GetRandomGlobalPoint());
         }
     }
 
     private void SpawnParticles()
     {
-        var effect = BurstParticleEffect.Create(GlobalPosition)
+        BurstParticleEffect.Create(GlobalPosition)
+            .AreaShape(Area)
             .WithTexture(ParticleTextures.Square)
             .WithAmountPerPixel(0.15f)
             .Color(Color)
@@ -136,14 +115,8 @@ public abstract partial class Enemy : RigidBody2D
             .MinVelocity(300f)
             .VelocityDelta(150f)
             .MaxVelocity(2000f)
-            .Configure();
-
-        if (Area != null)
-        {
-            effect.RectangleShape(Area.Shape.GetRect());
-        }
-        
-        effect.Spawn();
+            .Configure()
+            .Spawn();
     }
 
 }

@@ -117,7 +117,10 @@ public partial class Explosion : ShapeCast2D, ISpawnable<Explosion>
             var relativeStrength = 1f - Clamp(Sqrt(distance / _radius), 0.1f, 1);
             body.ApplyCentralImpulse(direction * (strength * relativeStrength));
 
-            HealthController.GetHealthControllerIfExists(body)?.Damage(_damage);
+            if (body is Entity entity)
+            {
+                entity.HealthController.Damage(_damage);
+            }
         }
 
         QueueFree();

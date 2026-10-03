@@ -2,9 +2,39 @@ public abstract partial class ParticleBuilder<T> : GpuParticles2D where T : Part
 {
     protected ParticleProcessMaterial ProcMaterial;
 
+    /// <summary>
+    /// Whether particles are emitted from <see cref="AreaShape"/>. The emitter must then keep the rotation
+    /// of the sampled object, because the emission points are in its local coordinates.
+    /// </summary>
+    protected bool UsesAreaShape { get; private set; }
+
+    private float _areaShapeArea;
+
     public ParticleBuilder()
     {
         ProcMaterial = (ParticleProcessMaterial)ProcessMaterial;
+    }
+
+    /// <summary>
+    /// Emits particles from random points inside the collision shapes of the sampled object.
+    /// Rotates the emitter to the rotation of the object, the emission direction stays in global coordinates.
+    /// </summary>
+    public T AreaShape(CollisionAreaSampler sampler)
+    {
+        var points = sampler.GetEmissionPoints();
+        if (points == null)
+        {
+            GD.PushWarning($"{sampler.CollisionObject.Name} has no collision shapes with an area to emit from");
+            return (T)this;
+        }
+
+        ProcMaterial.EmissionShape = ParticleProcessMaterial.EmissionShapeEnum.Points;
+        ProcMaterial.EmissionPointTexture = points;
+        ProcMaterial.EmissionPointCount = CollisionAreaSampler.EmissionPointCount;
+        _areaShapeArea = sampler.Area;
+        UsesAreaShape = true;
+        SetEmitterRotation(sampler.CollisionObject.GlobalRotation);
+        return (T)this;
     }
 
     public T RectangleShape(Rect2 area)
@@ -51,6 +81,10 @@ public abstract partial class ParticleBuilder<T> : GpuParticles2D where T : Part
         {
             area = Pi * ProcMaterial.EmissionSphereRadius * ProcMaterial.EmissionSphereRadius;
         }
+        if (ProcMaterial.EmissionShape == ParticleProcessMaterial.EmissionShapeEnum.Points && UsesAreaShape)
+        {
+            area = _areaShapeArea;
+        }
 
         if (area == 0)
         {
@@ -77,6 +111,34 @@ public abstract partial class ParticleBuilder<T> : GpuParticles2D where T : Part
     public InheritVelocityConfiguration InheritVelocity(RigidBody2D body)
     {
         return new InheritVelocityConfiguration((T)this, body, ProcMaterial);
+    }
+
+    /// <summary>
+    /// Rotates the emitter and keeps the emission direction unchanged in global coordinates.
+    /// Godot applies the emitter transform to the initial velocity of particles as well as to their position.
+    /// </summary>
+    protected void SetEmitterRotation(float rotation)
+    {
+        if (IsEqualApprox(Rotation, rotation))
+        {
+            return;
+        }
+
+        var globalDirection = GetGlobalDirection();
+        Rotation = rotation;
+        SetGlobalDirection(globalDirection);
+    }
+
+    private Vector2 GetGlobalDirection()
+    {
+        var direction = ProcMaterial.Direction;
+        return new Vector2(direction.X, direction.Y).Rotated(Rotation);
+    }
+
+    private void SetGlobalDirection(Vector2 direction)
+    {
+        var localDirection = direction.Rotated(-Rotation);
+        ProcMaterial.Direction = new Vector3(localDirection.X, localDirection.Y, 0);
     }
 
     public class InheritVelocityConfiguration(T builder, RigidBody2D body, ParticleProcessMaterial procMaterial)
@@ -137,7 +199,7 @@ public abstract partial class ParticleBuilder<T> : GpuParticles2D where T : Part
             var velocityLen = body.LinearVelocity.Length();
 
             procMaterial.Spread = 180 - Clamp(velocityLen * _velocitySpreadFactor, 0, 180);
-            procMaterial.Direction = new Vector3(normalizedDir.X, normalizedDir.Y, 0);
+            builder.SetGlobalDirection(normalizedDir);
 
             var velocity = Clamp(velocityLen, _minVelocity, _maxVelocity);
             procMaterial.InitialVelocityMin = _minVelocity;

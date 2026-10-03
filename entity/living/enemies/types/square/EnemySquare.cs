@@ -10,6 +10,13 @@
     private double _fireTimer = RandomUtils.DeltaRange(FireDelay, FireDelayDelta);
     private EnemyPathFollowController _pathFollowController = null!;
 
+    protected override void Setup()
+    {
+        base.Setup();
+        
+        HealthController.MaxHealth = 10;
+    }
+    
     protected override void OnActivate()
     {
         var path = PathScene.Instantiate<EnemySquarePath>();

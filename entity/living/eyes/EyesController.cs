@@ -5,17 +5,10 @@ using System.Linq;
 public partial class EyesController : Node2D
 {
     public Vector2? LookTarget { get; private set; }
-    public HealthController? OwnerHealthController { get; private set; }
 
     private List<Eye> _eyes = null!;
 
-    [Export] public Node2D EyeOwner { get; private set; } = null!;
-
-    /**
-     * Might be null. If not set, EyeOwner is used instead
-     */
-    [Export]
-    public Node2D? EyeOwnerSprite { get; private set; }
+    [Export] public Entity EyeOwner { get; private set; } = null!;
 
     [Export] public EyeTargetStrategy TargetStrategy { get; private set; } = new PlayerEyeTargetStrategy();
 
@@ -29,24 +22,14 @@ public partial class EyesController : Node2D
     {
         _eyes = GetChildren().Cast<Eye>().ToList();
 
-        OwnerHealthController = HealthController.GetHealthControllerIfExists(EyeOwner);
-
-        if (OwnerHealthController != null)
-        {
-            OwnerHealthController.HealthChanged += OnHealthChange;
-            OwnerHealthController.Destroyed += OnDestroy;
-        }
+        EyeOwner.HealthController.HealthChanged += OnHealthChange;
+        EyeOwner.HealthController.Destroyed += OnDestroy;
     }
 
     public override void _ExitTree()
     {
-        if (OwnerHealthController == null)
-        {
-            return;
-        }
-
-        OwnerHealthController.HealthChanged -= OnHealthChange;
-        OwnerHealthController.Destroyed -= OnDestroy;
+        EyeOwner.HealthController.HealthChanged -= OnHealthChange;
+        EyeOwner.HealthController.Destroyed -= OnDestroy;
     }
 
     private void OnHealthChange(float delta)
@@ -73,8 +56,8 @@ public partial class EyesController : Node2D
 
     public override void _Process(double delta)
     {
-        GlobalPosition = GetEffectiveOwner().GlobalPosition;
-        GlobalRotation = GetEffectiveOwner().GlobalRotation;
+        GlobalPosition = EyeOwner.Sprite.GlobalPosition;
+        GlobalRotation = EyeOwner.Sprite.GlobalRotation;
         UpdateLookTarget();
     }
 
@@ -86,16 +69,6 @@ public partial class EyesController : Node2D
             EyeLookDirection.Down => Vector2.Down,
             _ => throw new ArgumentOutOfRangeException()
         };
-    }
-
-    public Node2D GetEffectiveOwner()
-    {
-        if (EyeOwnerSprite != null)
-        {
-            return EyeOwnerSprite;
-        }
-
-        return EyeOwner;
     }
 
     private void UpdateLookTarget()

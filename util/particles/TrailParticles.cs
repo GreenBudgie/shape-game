@@ -23,6 +23,10 @@ public partial class TrailParticles : ParticleBuilder<TrailParticles>
         if (IsInstanceValid(_owner))
         {
             GlobalPosition = _owner.GlobalPosition;
+            if (UsesAreaShape)
+            {
+                SetEmitterRotation(_owner.GlobalRotation);
+            }
         }
     }
 

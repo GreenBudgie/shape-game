@@ -28,10 +28,12 @@ public partial class Eye : Node2D
 
     public override void _ExitTree()
     {
-        if (_controller?.OwnerHealthController != null)
+        if (_controller == null)
         {
-            _controller.OwnerHealthController.Destroyed -= Remove;
+            return;
         }
+        
+        _controller.EyeOwner.HealthController.Destroyed -= Remove;
     }
 
     private bool _isRemoving;
@@ -58,14 +60,11 @@ public partial class Eye : Node2D
             QueueFree();
             return;
         }
-        
-        if (_controller.OwnerHealthController != null)
-        {
-            _controller.OwnerHealthController.Destroyed += Remove;
-        }
+
+        _controller.EyeOwner.HealthController.Destroyed += Remove;
         
         _followTarget = new Node2D();
-        _controller.GetEffectiveOwner().AddChild(_followTarget);
+        _controller.EyeOwner.AddChild(_followTarget);
         _followTarget.GlobalPosition = GlobalPosition;
 
         _virtualGlobalPosition = GlobalPosition;
