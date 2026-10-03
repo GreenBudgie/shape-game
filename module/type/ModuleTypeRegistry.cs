@@ -9,6 +9,7 @@ public static class ModuleTypeRegistry
     public static readonly ExtraFireRateModuleType ExtraFireRate = new();
     public static readonly PiercingModuleType Piercing = new();
     public static readonly MassiveShotModuleType MassiveShot = new();
+    public static readonly IgnitionModuleType Ignition = new();
 
     public static readonly BoltModuleType Bolt = new();
     public static readonly MineModuleType Mine = new();
