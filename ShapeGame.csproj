@@ -20,6 +20,7 @@
         <Content Include="credit.txt" />
     </ItemGroup>
     <ItemGroup>
+      <Folder Include="entity\common\fire\" />
       <Folder Include="entity\living\effect\type\" />
       <Folder Include="entity\living\effect\ui\" />
     </ItemGroup>

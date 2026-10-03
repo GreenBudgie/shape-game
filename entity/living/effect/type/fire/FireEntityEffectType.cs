@@ -6,7 +6,7 @@ public class FireEntityEffectType : EntityEffectType
     
     public override EntityEffect CreateEffect()
     {
-        throw new System.NotImplementedException();
+        return new FireEntityEffect();
     }
     
 }

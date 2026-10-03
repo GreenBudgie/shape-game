@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://cik11saufuu5e"]
+[gd_scene format=3 uid="uid://hpghw3i0rnqj"]
 
-[ext_resource type="Shader" path="res://entity/living/effect/type/fire/fire.gdshader" id="1_b3qij"]
+[ext_resource type="Shader" uid="uid://btbn8wfjijlmq" path="res://entity/common/fire/fire.gdshader" id="1_b3qij"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qhd6d"]
 shader = ExtResource("1_b3qij")

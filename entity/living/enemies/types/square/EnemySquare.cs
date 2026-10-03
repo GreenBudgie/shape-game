@@ -15,6 +15,8 @@
         base.Setup();
         
         HealthController.MaxHealth = 10;
+        
+        FireDisplay.Attach(this);
     }
     
     protected override void OnActivate()

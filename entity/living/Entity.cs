@@ -1,6 +1,6 @@
 using System;
 
-public abstract partial class Entity : RigidBody2D
+public abstract partial class Entity : RigidBody2D, IAreaAware
 {
 
     public HealthController HealthController { get; }

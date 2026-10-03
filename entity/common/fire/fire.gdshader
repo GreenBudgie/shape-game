@@ -29,6 +29,21 @@ uniform float detail : hint_range(1.0, 8.0) = 3.0;
 // Softness of the flame edges and of the transitions between color layers.
 uniform float edge_softness : hint_range(0.01, 0.5) = 0.15;
 
+// Shift of the noise pattern, in centered UV units (quad half-size = 1).
+// A random value per flame makes flames look different from each other.
+// Adding the movement of the flame in the same units keeps the pattern in place in the world,
+// so the fire visibly evolves and trails behind a moving object.
+uniform vec2 noise_offset = vec2(0.0);
+
+// Bends the flame: the shift of the flame top, in centered UV units. The base stays in place.
+// X leans the flame sideways, positive Y squashes it, negative Y stretches it upward.
+// Set it opposite to the movement to make the fire be blown back by the air.
+uniform vec2 lean = vec2(0.0);
+
+// Size of the quad in local pixels. Needed to expand the quad when the flame leans out of it.
+// Set from Fire.cs. If zero, the quad is never expanded.
+uniform vec2 rect_size = vec2(0.0);
+
 // Radius of the flame body in centered UV space (quad half-size = 1).
 const float BODY_RADIUS = 0.5;
 // The body sits slightly below the quad center to leave room for the tongues.
@@ -46,6 +61,8 @@ const float NOISE_PERIOD = 1024.0;
 
 // Glow multiplier with flicker. Depends only on time and uniforms, so it is computed per vertex.
 varying float glow_gain;
+// 0..1 across the drawn quad, which may be larger than the flame quad, see vertex().
+varying vec2 draw_uv;
 
 // Sine-free hash, returns 0..1 per component. Expects small inputs, see gradient_noise().
 vec2 hash22(vec2 p) {
@@ -88,17 +105,30 @@ float fbm(vec2 p, int octaves) {
 }
 
 void vertex() {
-	float flicker = 0.8 + 0.4 * gradient_noise(vec2(TIME * speed * 4.0, 3.7));
+	// A leaning flame moves up to |lean| out of its quad, so the drawn quad grows by that margin on each side.
+	// UV is remapped to keep the flame at the same size and position.
+	float margin = rect_size.x > 0.0 ? max(abs(lean.x), max(-lean.y, 0.0)) : 0.0;
+	draw_uv = UV;
+	VERTEX += (UV - 0.5) * rect_size * margin;
+	UV = (UV - 0.5) * (1.0 + margin) + 0.5;
+
+	float flicker = 0.8 + 0.4 * gradient_noise(vec2(TIME * speed * 4.0 + noise_offset.x, 3.7 + noise_offset.y));
 	glow_gain = glow_strength * intensity * ignition * flicker;
 }
 
 void fragment() {
 	// Centered coordinates, -1..1. Y points down, so "up" is negative Y.
-	vec2 p = (UV - 0.5) * 2.0;
+	vec2 quad_p = (UV - 0.5) * 2.0;
 	float t = TIME * speed;
 
 	// Ignition scales the flame body around the center.
 	float inv_size = 1.0 / max(ignition, 0.001);
+
+	// Lean: the flame is sampled at a shifted position. The shift grows quadratically with the height
+	// above the body center, so the base stays in place and the tongues bend.
+	float lean_height = clamp(BODY_OFFSET - quad_p.y * inv_size, 0.0, 1.0);
+	vec2 p = quad_p - lean * (lean_height * lean_height);
+
 	vec2 c = p * inv_size - vec2(0.0, BODY_OFFSET);
 
 	// 0 at the body center, 1 at the top of the tongues.
@@ -121,9 +151,12 @@ void fragment() {
 
 	vec3 rgb = vec3(0.0);
 	if (heat + max_sway_heat + max_noise_heat > 0.0) {
+		// Noise is sampled in the shifted space, see noise_offset.
+		vec2 q = p + noise_offset;
+
 		// Sideways sway, stronger higher up.
-		float sway = fbm(vec2(p.y * detail * 0.5 + t * 0.9, t * 0.3), 3) - 0.5;
-		vec2 np = p + vec2(sway * turbulence * 0.6 * up, 0.0);
+		float sway = fbm(vec2(q.y * detail * 0.5 + t * 0.9, t * 0.3 + noise_offset.x), 3) - 0.5;
+		vec2 np = q + vec2(sway * turbulence * 0.6 * up, 0.0);
 
 		// Noise scrolls upward and is stretched vertically -> elongated rising tongues.
 		float n1 = fbm(vec2(np.x * detail, np.y * detail * 0.5 + t * 1.6), 4);
@@ -146,12 +179,12 @@ void fragment() {
 		rgb = color * alpha;
 	}
 
-	// Flickering halo.
-	vec2 g = p * inv_size - vec2(0.0, BODY_OFFSET * 0.5);
+	// Flickering halo. It stays around the body and does not lean.
+	vec2 g = quad_p * inv_size - vec2(0.0, BODY_OFFSET * 0.5);
 	rgb += glow_color.rgb * (exp(-dot(g, g) * 3.0) * glow_gain);
 
-	// Fade out near the quad border so nothing is ever cut off sharply.
-	vec2 edge = min(UV, 1.0 - UV);
+	// Fade out near the border of the drawn quad so nothing is ever cut off sharply.
+	vec2 edge = min(draw_uv, 1.0 - draw_uv);
 	rgb *= smoothstep(0.0, 0.1, min(edge.x, edge.y));
 
 	// Color is premultiplied, so alpha 1.0 means "just add rgb".
