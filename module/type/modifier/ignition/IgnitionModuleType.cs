@@ -17,7 +17,7 @@ public class IgnitionModuleType : ModifierModuleType
 
     public override Module CreateModule()
     {
-        return new MassiveShotModule();
+        return new IgnitionModule();
     }
 
 }

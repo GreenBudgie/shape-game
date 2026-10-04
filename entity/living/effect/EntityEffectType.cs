@@ -10,6 +10,6 @@ public abstract class EntityEffectType
     
     public abstract Texture2D Icon { get; }
 
-    public abstract EntityEffect CreateEffect();
+    public abstract EntityEffect CreateEffect(Entity owner, float duration);
 
 }

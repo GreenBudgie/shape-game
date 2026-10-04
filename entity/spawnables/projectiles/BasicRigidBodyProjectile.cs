@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
+public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable, IAreaAware
 {
     [Export] private AudioStream _wallHitSound = null!;
+
+    public CollisionAreaSampler Area { get; private set; } = null!;
 
     protected SpawnableContext Context = null!;
     protected int ObstaclesToPierce;
@@ -12,6 +14,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
  
     public virtual void Prepare(SpawnableContext context)
     {
+        Area = new CollisionAreaSampler(this);
         Context = context;
     }
 
@@ -99,6 +102,11 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
         if (collisionObject2D is Entity entity)
         {
             entity.HealthController.Damage(Context.CalculateStat<DamageStat>());
+            var burningSeconds = Context.CalculateStat<BurningStat>();
+            if (burningSeconds > 0)
+            {
+                entity.EffectController.AddEffect(EntityEffectTypeRegistry.Burning, burningSeconds);
+            }
         }
 
         if (ObstaclesToPierce <= 0)

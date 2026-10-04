@@ -99,8 +99,6 @@ public partial class Player : Entity
         HealthController.DestroyAnimationFinished += QueueFree;
         HealthController.Destroyed += OnDestroy;
         HealthController.HealthChanged += OnHealthChanged;
-        
-        FireDisplay.Attach(this).SetColor(ColorScheme.LightBlueGreen);
     }
     
     private void OnHealthChanged(float delta)

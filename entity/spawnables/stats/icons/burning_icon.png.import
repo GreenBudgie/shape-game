@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c216uw8unddjj"
-path="res://.godot/imported/Piercing Icon Frame.png-38dae2269841da25f60273de21d5d35f.ctex"
+uid="uid://dmd8l5cd3ddxd"
+path="res://.godot/imported/burning_icon.png-fff622b08bc91f05866be5786aad481c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entity/spawnables/stats/icons/Piercing Icon Frame.png"
-dest_files=["res://.godot/imported/Piercing Icon Frame.png-38dae2269841da25f60273de21d5d35f.ctex"]
+source_file="res://entity/spawnables/stats/icons/burning_icon.png"
+dest_files=["res://.godot/imported/burning_icon.png-fff622b08bc91f05866be5786aad481c.ctex"]
 
 [params]
 
