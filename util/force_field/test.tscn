@@ -12,6 +12,7 @@ shader_parameter/rim_strength = 1.1
 shader_parameter/rim_width = 0.13
 shader_parameter/rim_whiteness = 0.45
 shader_parameter/edge_softness = 0.13
+shader_parameter/ripple_mode = 0
 shader_parameter/ripple_count = 5.0
 shader_parameter/ripple_speed = 0.5
 shader_parameter/ripple_strength = 0.5

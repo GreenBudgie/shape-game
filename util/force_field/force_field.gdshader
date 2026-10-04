@@ -1,9 +1,10 @@
 shader_type canvas_item;
 render_mode blend_add, unshaded;
 
-// A circular force field with a water-like surface. Several sets of waves run across the field
-// in different directions at once and overlap, strongly bent by noise, so the surface looks like
-// water stirred from all sides rather than circles or a single stream.
+// A circular force field with a water-like surface. The ripples are bent by noise and move in one of the modes:
+// - Waves: several sets of waves cross the field from different sides, like water stirred from all sides.
+// - Outward: rings spread from the center, like the field pushes things away.
+// - Inward: rings run into the center, like the field pulls things in.
 // A brighter rim marks the border of the field.
 // The field fills the inscribed circle of its rect, so the rect should be square.
 
@@ -26,6 +27,8 @@ uniform float rim_whiteness : hint_range(0.0, 1.0) = 0.45;
 // Softness of the outer edge, as a part of the radius.
 uniform float edge_softness : hint_range(0.01, 0.5) = 0.13;
 
+// How the ripples move, see the description at the top.
+uniform int ripple_mode : hint_enum("Waves", "Outward", "Inward") = 0;
 // Number of waves fitting into the radius.
 uniform float ripple_count : hint_range(1.0, 20.0) = 5.0;
 // How fast the waves run and the surface changes.
@@ -46,6 +49,10 @@ const float NOISE_PERIOD = 1024.0;
 const float NOISE_CONTRAST = 1.24;
 // Upper bound of fbm(): the sum of octave amplitudes.
 const float FBM_MAX = 0.9375;
+
+// Values of ripple_mode that the code checks. Outward is 1, it is the default of the ring branch.
+const int RIPPLE_MODE_WAVES = 0;
+const int RIPPLE_MODE_INWARD = 2;
 
 // How far the surface noise moves the waves at full wobble, in field units (radius = 1).
 // Larger than a wave length, so the waves meander instead of only wiggling.
@@ -124,23 +131,36 @@ void fragment() {
 	float n1 = fbm(q + vec2(t * 0.15, -t * 0.1), 3);
 	float n2 = fbm(q * 1.7 + vec2(-t * 0.12, t * 0.17) + 19.3, 2);
 
-	// The noise moves the point where the waves are measured, which bends their fronts.
-	vec2 warp = (vec2(n1, n2) - FBM_MAX * 0.5) * WARP_SCALE;
-	vec2 wf = f + warp * wobble;
+	// The mode is a uniform, so every pixel takes the same branch and the other one is skipped.
+	float interference = 0.0;
+	if (ripple_mode == RIPPLE_MODE_WAVES) {
+		// The noise moves the point where the waves are measured, which bends their fronts.
+		vec2 warp = (vec2(n1, n2) - FBM_MAX * 0.5) * WARP_SCALE;
+		vec2 wf = f + warp * wobble;
 
-	// Every set of waves runs along its own direction: its fronts are perpendicular to it
-	// and move forward with time.
-	vec4 positions = vec4(
-		dot(wf, WAVE_DIRECTION_0),
-		dot(wf, WAVE_DIRECTION_1),
-		dot(wf, WAVE_DIRECTION_2),
-		dot(wf, WAVE_DIRECTION_3)
-	);
-	vec4 waves = sin((positions * ripple_count * WAVE_SCALES - t * WAVE_SPEEDS) * TAU);
-	// The sets overlap: crests meet and brighten, troughs cancel. Normalized by the combined weight,
-	// so the contrast is the same as of a single set. Where several crests meet the sum goes above 1,
-	// which is clamped into a bright spot.
-	float interference = dot(waves, WAVE_WEIGHTS) / length(WAVE_WEIGHTS);
+		// Every set of waves runs along its own direction: its fronts are perpendicular to it
+		// and move forward with time.
+		vec4 positions = vec4(
+			dot(wf, WAVE_DIRECTION_0),
+			dot(wf, WAVE_DIRECTION_1),
+			dot(wf, WAVE_DIRECTION_2),
+			dot(wf, WAVE_DIRECTION_3)
+		);
+		vec4 waves = sin((positions * ripple_count * WAVE_SCALES - t * WAVE_SPEEDS) * TAU);
+		// The sets overlap: crests meet and brighten, troughs cancel. Normalized by the combined weight,
+		// so the contrast is the same as of a single set. Where several crests meet the sum goes above 1,
+		// which is clamped into a bright spot.
+		interference = dot(waves, WAVE_WEIGHTS) / length(WAVE_WEIGHTS);
+	} else {
+		// Rings around the center. The noise shifts the radius they are measured at,
+		// which bends them like waves on water.
+		float warp = (n1 - FBM_MAX * 0.5) * 0.7 + (n2 - FBM_MAX * 0.5) * 0.3;
+		float ripple_radius = r + warp * wobble;
+		// Outward rings move to bigger radii with time, inward ones to smaller.
+		float direction = ripple_mode == RIPPLE_MODE_INWARD ? -1.0 : 1.0;
+		interference = sin((ripple_radius * ripple_count - t * direction) * TAU);
+	}
+
 	float rings = clamp(interference, -1.0, 1.0) * 0.5 + 0.5;
 	// Squaring sharpens the crests and widens the troughs, like waves on water.
 	rings *= rings;
