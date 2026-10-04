@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://dgjiuvelr38rh"]
+
+[ext_resource type="Shader" uid="uid://dqe2wsnoftl3i" path="res://util/force_field/force_field.gdshader" id="1_3o7ej"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jb8ml"]
+shader = ExtResource("1_3o7ej")
+shader_parameter/field_color = Color(0.22, 0.63, 0.93, 1)
+shader_parameter/intensity = 1.0
+shader_parameter/activation = 1.0
+shader_parameter/fill_strength = 0.22
+shader_parameter/rim_strength = 1.1
+shader_parameter/rim_width = 0.13
+shader_parameter/rim_whiteness = 0.45
+shader_parameter/edge_softness = 0.13
+shader_parameter/ripple_count = 6.0
+shader_parameter/ripple_speed = 0.8
+shader_parameter/ripple_strength = 0.5
+shader_parameter/wobble = 0.35
+shader_parameter/detail = 2.6
+shader_parameter/noise_offset = Vector2(0, 0)
+
+[node name="Test" type="Node2D" unique_id=950735476]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=789629884]
+material = SubResource("ShaderMaterial_jb8ml")
+offset_right = 310.0
+offset_bottom = 310.0
