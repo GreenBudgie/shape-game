@@ -68,8 +68,12 @@ public partial class FireDisplay : Node2D
     private const float MaxReplacementDelay = 0.15f;
     /// <summary>
     /// The first flames ignite at random moments within this time, so they do not burn in sync.
+    /// Short, so that the fire flares up instead of slowly growing.
     /// </summary>
-    private const float InitialIgniteSpread = 0.6f;
+    private const float InitialIgniteSpread = 0.25f;
+    // The first flames also ignite faster than the ones replacing them later, for the same reason
+    private const float MinInitialIgniteDuration = 0.08f;
+    private const float MaxInitialIgniteDuration = 0.18f;
 
     /// <summary>
     /// Speed of a flame, in pixels per second, at which it reaches the maximum lean.
@@ -137,7 +141,9 @@ public partial class FireDisplay : Node2D
 
         for (var i = 0; i < flameCount; i++)
         {
-            IgniteFlameAfter(GD.Randf() * InitialIgniteSpread);
+            // The very first flame flares up right away, the rest follow shortly after
+            var delay = i == 0 ? 0 : GD.Randf() * InitialIgniteSpread;
+            IgniteFlameAfter(delay, RandomUtils.Range(MinInitialIgniteDuration, MaxInitialIgniteDuration));
         }
     }
 
@@ -206,14 +212,20 @@ public partial class FireDisplay : Node2D
         }
     }
 
-    private void IgniteFlameAfter(float delay)
+    private void IgniteFlameAfter(float delay, float igniteDuration)
     {
+        if (delay <= 0)
+        {
+            IgniteFlame(igniteDuration);
+            return;
+        }
+
         var tween = CreateTween();
         tween.TweenInterval(delay);
-        tween.TweenCallback(Callable.From(IgniteFlame));
+        tween.TweenCallback(Callable.From(() => IgniteFlame(igniteDuration)));
     }
 
-    private void IgniteFlame()
+    private void IgniteFlame(float igniteDuration)
     {
         if (_isStopping || !IsInstanceValid(_hostNode))
         {
@@ -243,7 +255,7 @@ public partial class FireDisplay : Node2D
         flame.PrevGlobalPosition = GlobalPosition + offset;
 
         // Tweens of a node can be created only inside the tree, so the fire is added first
-        var tween = fire.Ignite(RandomUtils.Range(MinIgniteDuration, MaxIgniteDuration));
+        var tween = fire.Ignite(igniteDuration);
         tween.TweenInterval(RandomUtils.Range(MinBurnDuration, MaxBurnDuration));
         tween.TweenCallback(Callable.From(() => BurnOut(flame)));
         flame.Tween = tween;
@@ -298,7 +310,10 @@ public partial class FireDisplay : Node2D
 
         if (!_isStopping)
         {
-            IgniteFlameAfter(GD.Randf() * MaxReplacementDelay);
+            IgniteFlameAfter(
+                GD.Randf() * MaxReplacementDelay,
+                RandomUtils.Range(MinIgniteDuration, MaxIgniteDuration)
+            );
         }
     }
 
