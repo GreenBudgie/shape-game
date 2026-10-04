@@ -18,19 +18,45 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
         Context = context;
     }
 
-    public override void _Ready()
+    public sealed override void _Ready()
     {
         SetupPiercing();
         BodyEntered += HandleBodyEntered;
         BodyExited += HandleBodyExited;
+        
+        var burningSeconds = Context.CalculateStat<BurningStat>();
+        if (burningSeconds > 0)
+        {
+            FireDisplay.Attach(this);
+        }
+
+        OnReady();
     }
 
-    public override void _Process(double delta)
+    /// <summary>
+    /// Called after the projectile is set up. Use it instead of _Ready.
+    /// </summary>
+    protected virtual void OnReady()
+    {
+    }
+
+    public sealed override void _Process(double delta)
     {
         if (ShouldRemoveWhenOutsidePlayableArea() && this.IsOutsidePlayableArea())
         {
             Remove();
+            return;
         }
+
+        OnProcess(delta);
+    }
+
+    /// <summary>
+    /// Called every frame. Use it instead of _Process. Not called on the frame the projectile leaves
+    /// the playable area and gets removed.
+    /// </summary>
+    protected virtual void OnProcess(double delta)
+    {
     }
 
     protected virtual bool ShouldRemoveWhenOutsidePlayableArea()

@@ -11,10 +11,8 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile
         return Scene.Instantiate<MiniSphereProjectile>();
     }
     
-    public override void _Ready()
+    protected override void OnReady()
     {
-        base._Ready();
-        
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
     }
 

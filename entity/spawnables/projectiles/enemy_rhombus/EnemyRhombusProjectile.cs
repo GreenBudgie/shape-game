@@ -21,10 +21,8 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile
         context.Stats.Add(new DamageStat { Value = 3 });
     }
 
-    public override void _Ready()
+    protected override void OnReady()
     {
-        base._Ready();
-
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
     }
 

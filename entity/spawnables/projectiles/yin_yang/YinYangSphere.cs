@@ -23,10 +23,8 @@ public partial class YinYangSphere : BasicRigidBodyProjectile
     
     private Tween? _pathAnimationTween;
 
-    public override void _Ready()
+    protected override void OnReady()
     {
-        base._Ready();
-        
         var texture = _type == YinYangType.Yin ? YinTexture : YangTexture;
         GetNode<Sprite2D>("Sprite2D").Texture = texture;
         
@@ -75,7 +73,7 @@ public partial class YinYangSphere : BasicRigidBodyProjectile
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-        
+
         if (_followTarget == null)
         {
             return;

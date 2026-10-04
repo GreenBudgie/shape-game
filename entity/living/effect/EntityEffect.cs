@@ -23,6 +23,7 @@ public abstract partial class EntityEffect(Entity owner, float duration) : Node2
         Duration -= (float)delta;
         if (Duration <= 0)
         {
+            Remove();
             return;
         }
         

@@ -7,6 +7,9 @@ using System.Collections.Generic;
 /// parameters and timings.
 /// <br/><br/>
 /// Flames always rise up, whatever the rotation of the host, and lean against the movement of the host.
+/// <br/><br/>
+/// The display is not a child of its host. It follows the host instead, so that it outlives it and the flames
+/// can burn out smoothly when the host is removed.
 /// </summary>
 public partial class FireDisplay : Node2D
 {
@@ -95,25 +98,36 @@ public partial class FireDisplay : Node2D
     private bool _isStopping;
 
     /// <summary>
+    /// Last known rotation of the host. Kept after the host is removed, so the flames left burning out
+    /// stay where they were.
+    /// </summary>
+    private float _hostRotation;
+
+    /// <summary>
     /// Color of all flames, or null if flames use the default palette of the fire shader.
     /// </summary>
     public Color? Color => _color;
 
     /// <summary>
-    /// Creates a fire display and adds it as a child of the host, so it moves and gets removed together with the host.
+    /// Creates a fire display that follows the given host. The display stops by itself when the host is removed,
+    /// letting the flames burn out.
     /// </summary>
     public static FireDisplay Attach(IAreaAware host)
     {
         var display = new FireDisplay();
         display._host = host;
         display._hostNode = host.Area.CollisionObject;
-        display._hostNode.AddChild(display);
+        ShapeGame.Instance.AddChild(display);
         return display;
     }
 
     public override void _Ready()
     {
-        GlobalRotation = 0;
+        FollowHost();
+
+        // The display is not a child of the host, so it has to burn out on its own when the host is gone.
+        // Godot drops this connection automatically if the display is freed first.
+        _hostNode.TreeExiting += Stop;
 
         var area = _host.Area.Area;
         _flameSize = Clamp(SizeScale * Pow(area, SizeExponent), MinFlameSize, MaxFlameSize);
@@ -129,12 +143,27 @@ public partial class FireDisplay : Node2D
 
     public override void _Process(double delta)
     {
-        GlobalRotation = 0;
+        FollowHost();
 
         foreach (var flame in _flames)
         {
             UpdateFlame(flame, (float)delta);
         }
+    }
+
+    /// <summary>
+    /// Moves the display to the host. Does nothing once the host is removed, so the flames left burning out
+    /// stay where the host was. The display itself never rotates, which keeps the flames rising up.
+    /// </summary>
+    private void FollowHost()
+    {
+        if (!IsInstanceValid(_hostNode))
+        {
+            return;
+        }
+
+        GlobalPosition = _hostNode.GlobalPosition;
+        _hostRotation = _hostNode.GlobalRotation;
     }
 
     /// <summary>
@@ -186,7 +215,7 @@ public partial class FireDisplay : Node2D
 
     private void IgniteFlame()
     {
-        if (_isStopping)
+        if (_isStopping || !IsInstanceValid(_hostNode))
         {
             return;
         }
@@ -314,7 +343,7 @@ public partial class FireDisplay : Node2D
     /// </summary>
     private Vector2 GetFlameOffset(Flame flame)
     {
-        return flame.LocalPoint.Rotated(_hostNode.GlobalRotation);
+        return flame.LocalPoint.Rotated(_hostRotation);
     }
 
     private sealed class Flame(Fire fire, Vector2 localPoint)

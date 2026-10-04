@@ -9,10 +9,8 @@ public partial class EnemyRectangleProjectile : BasicRigidBodyProjectile
         return Scene.Instantiate<EnemyRectangleProjectile>();
     }
 
-    public override void _Ready()
+    protected override void OnReady()
     {
-        base._Ready();
-
         EnemyRectangleProjectileParticles.Create(this);
     }
 
