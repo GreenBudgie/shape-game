@@ -1,8 +1,10 @@
 shader_type canvas_item;
 render_mode blend_add, unshaded;
 
-// A circular force field with a water-like surface: ripples run outward from the center,
-// wobbling as if the field were liquid, and a brighter rim marks its border.
+// A circular force field with a water-like surface. Several sets of waves run across the field
+// in different directions at once and overlap, strongly bent by noise, so the surface looks like
+// water stirred from all sides rather than circles or a single stream.
+// A brighter rim marks the border of the field.
 // The field fills the inscribed circle of its rect, so the rect should be square.
 
 // Color of the field. The brightest parts shift towards white on top of it.
@@ -24,16 +26,16 @@ uniform float rim_whiteness : hint_range(0.0, 1.0) = 0.45;
 // Softness of the outer edge, as a part of the radius.
 uniform float edge_softness : hint_range(0.01, 0.5) = 0.13;
 
-// Number of ripple rings fitting into the radius.
-uniform float ripple_count : hint_range(1.0, 20.0) = 6.0;
-// How fast the ripples run outward.
-uniform float ripple_speed : hint_range(0.0, 5.0) = 0.8;
-// Contrast of the ripples.
+// Number of waves fitting into the radius.
+uniform float ripple_count : hint_range(1.0, 20.0) = 5.0;
+// How fast the waves run and the surface changes.
+uniform float ripple_speed : hint_range(0.0, 5.0) = 0.5;
+// Contrast of the waves.
 uniform float ripple_strength : hint_range(0.0, 1.0) = 0.5;
-// How strongly the surface bends the ripples. 0 gives perfect circles, higher looks like water.
-uniform float wobble : hint_range(0.0, 1.0) = 0.35;
-// Scale of the surface noise. Higher = finer waves.
-uniform float detail : hint_range(1.0, 8.0) = 2.6;
+// How strongly the noise bends the waves. 0 gives straight overlapping waves, higher looks like water.
+uniform float wobble : hint_range(0.0, 1.0) = 0.8;
+// Scale of the surface noise. Higher = finer bends.
+uniform float detail : hint_range(1.0, 8.0) = 2.2;
 
 // Shift of the noise pattern. A random value per field makes fields look different from each other.
 uniform vec2 noise_offset = vec2(0.0);
@@ -44,6 +46,22 @@ const float NOISE_PERIOD = 1024.0;
 const float NOISE_CONTRAST = 1.24;
 // Upper bound of fbm(): the sum of octave amplitudes.
 const float FBM_MAX = 0.9375;
+
+// How far the surface noise moves the waves at full wobble, in field units (radius = 1).
+// Larger than a wave length, so the waves meander instead of only wiggling.
+const float WARP_SCALE = 1.0;
+
+// Directions of the 4 wave sets. Each next one is turned by the golden angle (137.5 degrees),
+// which spreads directions as unevenly as possible, so the overlap never forms a symmetric pattern.
+const vec2 WAVE_DIRECTION_0 = vec2(1.0, 0.0);
+const vec2 WAVE_DIRECTION_1 = vec2(-0.73737, 0.67549);
+const vec2 WAVE_DIRECTION_2 = vec2(0.08743, -0.99617);
+const vec2 WAVE_DIRECTION_3 = vec2(0.60844, 0.79360);
+// Wave length, speed and strength of each set relative to the uniforms. The ratios are not simple,
+// so the sets never line up into a repeating grid.
+const vec4 WAVE_SCALES = vec4(1.0, 1.31, 0.83, 1.17);
+const vec4 WAVE_SPEEDS = vec4(1.0, 0.8, 1.15, 0.9);
+const vec4 WAVE_WEIGHTS = vec4(1.0, 0.85, 0.7, 0.55);
 
 // Sine-free hash, returns 0..1 per component. Expects small inputs, see gradient_noise().
 vec2 hash22(vec2 p) {
@@ -78,7 +96,10 @@ float fbm(vec2 p, int octaves) {
 	for (int i = 0; i < octaves; i++) {
 		v += amp * gradient_noise(p);
 		total += amp;
-		p = p * 2.0 + vec2(37.0, 17.0);
+		// Every octave is rotated by about 37 degrees. Without it the lattices of all octaves line up,
+		// the noise varies less along their shared cell borders, and the waves bent by it show
+		// straight darker lines drifting across the field.
+		p = vec2(0.8 * p.x - 0.6 * p.y, 0.6 * p.x + 0.8 * p.y) * 2.0 + vec2(37.0, 17.0);
 		amp *= 0.5;
 	}
 	return clamp(v * (FBM_MAX / total), 0.0, FBM_MAX);
@@ -88,8 +109,10 @@ void fragment() {
 	// Centered coordinates, -1..1. The field fills the inscribed circle.
 	vec2 p = (UV - 0.5) * 2.0;
 
+	// Field coordinates grow with activation, so the whole pattern opens together with the field.
+	vec2 f = p / max(activation, 0.001);
 	// 0 at the center, 1 at the border of the active field.
-	float r = length(p) / max(activation, 0.001);
+	float r = length(f);
 	if (r > 1.0) {
 		discard;
 	}
@@ -100,19 +123,31 @@ void fragment() {
 	// Two noise layers drifting apart make the surface move without repeating.
 	float n1 = fbm(q + vec2(t * 0.15, -t * 0.1), 3);
 	float n2 = fbm(q * 1.7 + vec2(-t * 0.12, t * 0.17) + 19.3, 2);
-	float warp = (n1 - 0.5) * 0.7 + (n2 - 0.5) * 0.3;
 
-	// Rings running outward. The noise bends them, which is what makes the field look liquid.
-	float ripple_radius = r + warp * wobble;
-	float rings = sin(ripple_radius * ripple_count * TAU - t * TAU) * 0.5 + 0.5;
+	// The noise moves the point where the waves are measured, which bends their fronts.
+	vec2 warp = (vec2(n1, n2) - FBM_MAX * 0.5) * WARP_SCALE;
+	vec2 wf = f + warp * wobble;
+
+	// Every set of waves runs along its own direction: its fronts are perpendicular to it
+	// and move forward with time.
+	vec4 positions = vec4(
+		dot(wf, WAVE_DIRECTION_0),
+		dot(wf, WAVE_DIRECTION_1),
+		dot(wf, WAVE_DIRECTION_2),
+		dot(wf, WAVE_DIRECTION_3)
+	);
+	vec4 waves = sin((positions * ripple_count * WAVE_SCALES - t * WAVE_SPEEDS) * TAU);
+	// The sets overlap: crests meet and brighten, troughs cancel. Normalized by the combined weight,
+	// so the contrast is the same as of a single set. Where several crests meet the sum goes above 1,
+	// which is clamped into a bright spot.
+	float interference = dot(waves, WAVE_WEIGHTS) / length(WAVE_WEIGHTS);
+	float rings = clamp(interference, -1.0, 1.0) * 0.5 + 0.5;
 	// Squaring sharpens the crests and widens the troughs, like waves on water.
 	rings *= rings;
 
-	// The ripples converge at the center, so they are faded out there to avoid a hot spot.
-	float ripple_mask = smoothstep(0.0, 0.3, r);
 	// Soft outer edge of the inner area.
 	float fade = 1.0 - smoothstep(1.0 - edge_softness, 1.0, r);
-	float inside = (fill_strength * mix(0.7, 1.3, n1) + rings * ripple_strength * ripple_mask) * fade;
+	float inside = (fill_strength * mix(0.7, 1.3, n1) + rings * ripple_strength) * fade;
 
 	// A band ending exactly at the border, so it fades out on its own and is not dimmed by the fade above.
 	float rim_center = 1.0 - rim_width * 0.5;
