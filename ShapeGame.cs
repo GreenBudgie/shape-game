@@ -19,6 +19,7 @@ public partial class ShapeGame : Node2D
     public override void _EnterTree()
     {
         Instance = this;
+        ResourcePreloader.PreloadStaticResources();
     }
 
     public override void _Ready()
