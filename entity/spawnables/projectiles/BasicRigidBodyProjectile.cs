@@ -30,6 +30,17 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
             FireDisplay.Attach(this);
         }
 
+        if (Context.OriginalSource is not Player)
+        {
+            var pointer = new PointerArea(this)
+            {
+                PointerColor = ColorScheme.Red,
+                ShowOnlyWhenMovingIn = false,
+                ShowBelow = false
+            };
+            AddChild(pointer);
+        }
+
         OnReady();
     }
 

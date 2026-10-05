@@ -51,6 +51,13 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
         ResetGlowToMin();
 
         _crystalAnimations = GetNode<AnimationPlayer>("CrystalAnimations");
+        
+        var pointer = new PointerArea(this)
+        {
+            PointerColor = ColorScheme.Yellow,
+            ShowOnlyWhenMovingIn = false,
+        };
+        AddChild(pointer);
 
         BodyEntered += HandleCollision;
     }

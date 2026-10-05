@@ -1,17 +1,26 @@
-public partial class PointerArea : Node2D
+public partial class PointerArea(CollisionObject2D target) : Node2D
 {
 
     private const float DelayBeforeRemovePointer = 0.2f;
 
-    [Export] private CollisionObject2D _target = null!;
-    
-    [Export] private Color _pointerColor;
+    private CollisionObject2D _target = target;
 
-    [Export] private bool _showBelow = true;
+    public Color PointerColor { get; set; } = Colors.White;
     
-    [Export] private bool _showAbove = true;
+    /// <summary>
+    /// Whether to show pointer when target is below the visible screen area
+    /// </summary>
+    public bool ShowBelow { get; set; } = true;
+    
+    /// <summary>
+    /// Whether to show pointer when target is above the visible screen area
+    /// </summary>
+    public bool ShowAbove { get; set; } = true;
 
-    [Export] private bool _showOnlyWhenMovingIn = true;
+    /// <summary>
+    /// Whether to only show pointer when target is moving towards the visible area
+    /// </summary>
+    public bool ShowOnlyWhenMovingIn { get; set; } = true;
 
     private Pointer? _pointer;
     private Vector2? _prevGlobalTargetPosition;
@@ -28,27 +37,23 @@ public partial class PointerArea : Node2D
         {
             _delayBeforeRemove -= (float)delta;
         }
+
+        if (ShowBelow && IsMovingUpOrIgnored() && _target.IsBelowPlayableArea() ||
+            ShowAbove && IsMovingDownOrIgnored() && _target.IsAbovePlayableArea())
+        {
+            SpawnPointer();
+        }
+        else
+        {
+            RemovePointer();
+        }
         
         _prevGlobalTargetPosition = _target.GlobalPosition;
-        
-        if (_showBelow && IsMovingUpOrIgnored() && _target.IsBelowPlayableArea())
-        {
-            SpawnPointer();
-            return;
-        }
-        
-        if (_showAbove && IsMovingDownOrIgnored() && _target.IsAbovePlayableArea())
-        {
-            SpawnPointer();
-            return;
-        }
-        
-        RemovePointer();
     }
 
     private bool IsMovingDownOrIgnored()
     {
-        if (!_showOnlyWhenMovingIn)
+        if (!ShowOnlyWhenMovingIn)
         {
             return true;
         }
@@ -63,7 +68,7 @@ public partial class PointerArea : Node2D
     
     private bool IsMovingUpOrIgnored()
     {
-        if (!_showOnlyWhenMovingIn)
+        if (!ShowOnlyWhenMovingIn)
         {
             return true;
         }
@@ -84,7 +89,7 @@ public partial class PointerArea : Node2D
         }
 
         _delayBeforeRemove = DelayBeforeRemovePointer;
-        _pointer = Pointer.Create(_target, _pointerColor);
+        _pointer = Pointer.Create(_target, PointerColor);
         ShapeGame.Instance.AddChild(_pointer);
     }
 

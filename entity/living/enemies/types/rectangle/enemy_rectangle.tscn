@@ -6,11 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="6_86isg"]
 [ext_resource type="Texture2D" uid="uid://lb0yaaolwk6i" path="res://entity/living/enemies/types/rectangle/rectangle.png" id="6_ynf1d"]
 [ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="7_4becm"]
-[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="9_hx3wo"]
 [ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/living/eyes/eyes_controller.tscn" id="13_4gdr3"]
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/living/eyes/eye.tscn" id="14_gx6kt"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_i1h6h"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j2k68"]
 resource_local_to_scene = true
 shader = ExtResource("7_4becm")
 shader_parameter/glow_color = Color(0.5411765, 0.41960785, 0.74509805, 1)
@@ -30,7 +29,7 @@ _launchSound = ExtResource("3_hx3wo")
 Color = Color(0.541176, 0.419608, 0.745098, 1)
 
 [node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("6_86isg")]
-material = SubResource("ShaderMaterial_i1h6h")
+material = SubResource("ShaderMaterial_j2k68")
 
 [node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1360807856]
 texture = ExtResource("6_ynf1d")
@@ -64,11 +63,6 @@ position = Vector2(44, 44)
 
 [node name="Position8" type="Marker2D" parent="ProjectileSpawnPositions" unique_id=1544052353]
 position = Vector2(132, 44)
-
-[node name="Pointer" parent="." unique_id=1593749051 node_paths=PackedStringArray("_target") instance=ExtResource("9_hx3wo")]
-_target = NodePath("..")
-_pointerColor = Color(0.5411765, 0.41960785, 0.74509805, 1)
-_showOnlyWhenMovingIn = false
 
 [node name="EyesController" parent="." unique_id=983799153 node_paths=PackedStringArray("EyeOwner") instance=ExtResource("13_4gdr3")]
 EyeOwner = NodePath("..")

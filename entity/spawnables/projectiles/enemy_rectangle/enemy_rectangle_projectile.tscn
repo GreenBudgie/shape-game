@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cphrulhegtsgj" path="res://entity/spawnables/projectiles/enemy_rectangle/EnemyRectangleProjectile.cs" id="1_er2ye"]
 [ext_resource type="Texture2D" uid="uid://44pceip607pu" path="res://entity/spawnables/projectiles/enemy_rectangle/rectangle_projectile.png" id="1_t6ung"]
-[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="4_px6o3"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://entity/spawnables/components/initial_impulse/initial_impulse_component.tscn" id="4_rix0r"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ywo36"]
@@ -28,10 +27,5 @@ texture = ExtResource("1_t6ung")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=376614639]
 visible = false
 shape = SubResource("RectangleShape2D_t6ung")
-
-[node name="Pointer" parent="." unique_id=2040384770 node_paths=PackedStringArray("_target") instance=ExtResource("4_px6o3")]
-_target = NodePath("..")
-_pointerColor = Color(0.5411765, 0.41960785, 0.74509805, 1)
-_showBelow = false
 
 [node name="InitialImpulseComponent" parent="." unique_id=1309508634 instance=ExtResource("4_rix0r")]

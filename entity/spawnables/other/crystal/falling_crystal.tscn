@@ -3,7 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://bf4gkg13wl2b8" path="res://entity/spawnables/other/crystal/crystal.png" id="1_5v78r"]
 [ext_resource type="Script" uid="uid://j44h0xyk3xdr" path="res://entity/spawnables/other/crystal/FallingCrystal.cs" id="1_qiyar"]
 [ext_resource type="Shader" uid="uid://cywmpl84gklry" path="res://util/dissolve/dissolve.gdshader" id="2_e1k7q"]
-[ext_resource type="PackedScene" uid="uid://c7tdc8y26o2ij" path="res://util/pointer/pointer_area.tscn" id="4_pd4ca"]
 [ext_resource type="PackedScene" uid="uid://bi35dwsglibl3" path="res://entity/spawnables/components/initial_impulse/initial_impulse_component.tscn" id="5_s7fit"]
 [ext_resource type="PackedScene" uid="uid://6dllnllpl3my" path="res://entity/spawnables/components/lifetime/lifetime_component.tscn" id="6_r36ym"]
 
@@ -214,11 +213,6 @@ shape = SubResource("RectangleShape2D_e1k7q")
 
 [node name="CrystalAnimations" type="AnimationPlayer" parent="." unique_id=1752858511]
 libraries/ = SubResource("AnimationLibrary_jqj6i")
-
-[node name="PointerArea" parent="." unique_id=444043203 node_paths=PackedStringArray("_target") instance=ExtResource("4_pd4ca")]
-_target = NodePath("..")
-_pointerColor = Color(0.95686275, 0.9098039, 0.4862745, 1)
-_showOnlyWhenMovingIn = false
 
 [node name="InitialImpulseComponent" parent="." unique_id=327601635 instance=ExtResource("5_s7fit")]
 

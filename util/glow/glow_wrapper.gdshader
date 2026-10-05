@@ -35,27 +35,35 @@ void fragment() {
         float steps_scale = clamp(glow_radius_sqrt * 1.25, 2.0, 16.0);
         int num_steps = int(ceil(steps_scale));
         float angle_step = 6.283185 / float(num_directions);
+        // Turn by one angle step. Every next direction is the previous one turned by it,
+        // so no cos() and sin() are needed per sample.
+        vec2 turn = vec2(cos(angle_step), sin(angle_step));
 
         vec2 px = SCREEN_PIXEL_SIZE * local_to_screen;
         float sigma_sq = glow_radius * glow_radius * 0.36;
         float inv_two_sigma_sq = 1.0 / (2.0 * sigma_sq);
         float step_size = glow_radius / float(num_steps);
 
-        for (int d = 0; d < num_directions; d++) {
-            float angle = float(d) * angle_step;
-            vec2 dir = vec2(cos(angle), sin(angle));
+        // Samples lie on rings around the pixel, one ring per step. The weight depends only on the ring,
+        // so it is computed once per ring and applied to the sum of its samples.
+        // fast_exp() never goes below 0.25, so no ring is ever too weak to be sampled.
+        for (int s = 1; s <= num_steps; s++) {
+            float dist = float(s) * step_size;
+            float weight = fast_exp(-dist * dist * inv_two_sigma_sq);
+            vec2 ring_offset = dist * px;
 
-            for (int s = 1; s <= num_steps; s++) {
-                float dist = float(s) * step_size;
-                vec2 offset = dir * dist * px;
-                float dist_sq = dist * dist;
-                float weight = fast_exp(-dist_sq * inv_two_sigma_sq);
-                if (weight < 0.01) break;
-
-                alpha_sum += texture(screen_texture, SCREEN_UV + offset).a * weight;
-                total_weight += weight;
+            vec2 dir = vec2(1.0, 0.0);
+            float ring_sum = 0.0;
+            for (int d = 0; d < num_directions; d++) {
+                ring_sum += texture(screen_texture, SCREEN_UV + dir * ring_offset).a;
+                dir = vec2(dir.x * turn.x - dir.y * turn.y, dir.x * turn.y + dir.y * turn.x);
             }
+
+            alpha_sum += ring_sum * weight;
+            total_weight += weight;
         }
+        // Every ring has the same number of samples
+        total_weight *= float(num_directions);
     }
 
     total_weight = max(total_weight, 0.0001);

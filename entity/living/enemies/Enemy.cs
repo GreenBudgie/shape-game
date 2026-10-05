@@ -25,6 +25,13 @@ public abstract partial class Enemy : Entity
             .SetRadius(0)
             .EnablePulsing();
         Sprite = GetNode<Sprite2D>("Glow/Sprite");
+
+        var pointer = new PointerArea(this)
+        {
+            PointerColor = Color,
+            ShowOnlyWhenMovingIn = false,
+        };
+        AddChild(pointer);
         
         if (GetTimeToActivate() > 0)
         {
