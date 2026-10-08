@@ -11,7 +11,7 @@
     {
         base.Setup();
         
-        HealthController.MaxHealth = 5;
+        HealthController.MaxHealth = 16;
     }
 
     protected override void OnActivate()
@@ -39,23 +39,29 @@
             return;
         }
 
+        if (!_pathFollowController.IsPathReached)
+        {
+            return;
+        }
+
         HandleAttack(delta);
     }
 
     public override float GetCrystalsToDrop()
     {
-        return 1;
+        return 3;
     }
 
-    private const double MinAttackStartDelaySeconds = 2;
-    private const double MaxAttackStartDelaySeconds = 3;
+    private const double MinAttackStartDelaySeconds = 0.5;
+    private const double MaxAttackStartDelaySeconds = 1;
     private const double MinAttackDurationSeconds = 3;
     private const double MaxAttackDurationSeconds = 5;
     private const float AttackTorqueAcceleration = 25000;
     private const float StartAttackTorqueAcceleration = 100000;
-    private const double StartDelayPerShotSeconds = 0.8f;
-    private const double MinDelayPerShotSeconds = 0.4f;
-    private const double DelayPerShotDecreaseSeconds = 0.075f;
+    private const double StartDelayPerShotSeconds = 0.6f;
+    private const double MinDelayPerShotSeconds = 0.2f;
+    private const double DelayPerShotDecreaseSecondsMin = 0.07f;
+    private const double DelayPerShotDecreaseSecondsMax = 0.09f;
 
     private double _attackStartDelay;
     private double _attackDuration;
@@ -106,7 +112,8 @@
 
         if (_timeToFire <= 0)
         {
-            _timeToFire = Max(_prevTimeToFire - DelayPerShotDecreaseSeconds, MinDelayPerShotSeconds);
+            var decrease = GD.RandRange(DelayPerShotDecreaseSecondsMin, DelayPerShotDecreaseSecondsMax);
+            _timeToFire = Max(_prevTimeToFire - decrease, MinDelayPerShotSeconds);
             _prevTimeToFire = _timeToFire;
 
             FireProjectiles();
@@ -133,7 +140,7 @@
     {
         var context = new SpawnableContext(EnemyRhombusProjectile.Create())
         {
-            Position = GlobalPosition,
+            Position = spawnPosition,
             Source = this,
             Direction = GlobalPosition.DirectionTo(spawnPosition),
         };

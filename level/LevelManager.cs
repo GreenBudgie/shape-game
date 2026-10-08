@@ -203,7 +203,7 @@ public partial class LevelManager : Node
 
     private void StartFirstLevel()
     {
-        StartLevel(1);
+        StartLevel(2);
     }
 
     private void StartLevel(int level)

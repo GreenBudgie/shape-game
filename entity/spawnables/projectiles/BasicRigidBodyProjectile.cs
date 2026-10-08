@@ -35,7 +35,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
             var pointer = new PointerArea(this)
             {
                 PointerColor = ColorScheme.Red,
-                ShowOnlyWhenMovingIn = false,
+                ShowOnlyWhenMovingIn = true,
                 ShowBelow = false
             };
             AddChild(pointer);
