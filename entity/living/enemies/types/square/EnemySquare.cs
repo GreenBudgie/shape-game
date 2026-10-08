@@ -5,7 +5,7 @@
     [Export] private AudioStream _shotSound = null!;
 
     private const double MaxFireDelay = 0.5f;
-    private const double MinFireDelay = 0.2f;
+    private const double MinFireDelay = 0.25f;
     private const double FireDelayDelta = 0.1f;
     private const double TimeToMinFireDelaySeconds = 30f;
 

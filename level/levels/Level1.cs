@@ -10,18 +10,6 @@ public class Level1 : Level
     [
         new()
         {
-            Repetitions = 2,
-            EnemySpawnDelay = 7,
-            EnemyTypeDistributions =
-            [
-                new EnemyTypeDistribution(EnemyTypeRegistry.Square)
-            ]
-        },
-
-        new()
-        {
-            Repetitions = 2,
-            EnemySpawnDelay = 3,
             EnemyTypeDistributions =
             [
                 new EnemyTypeDistribution(EnemyTypeRegistry.Square)
@@ -30,12 +18,22 @@ public class Level1 : Level
         
         new()
         {
-            Repetitions = 2,
-            EnemyBatchSize = 2,
-            EnemySpawnDelay = 2,
+            EnemySpawnDelay = 7,
+            EnemyBatchSize = 1,
             EnemyTypeDistributions =
             [
-                new EnemyTypeDistribution(EnemyTypeRegistry.Square),
+                new EnemyTypeDistribution(EnemyTypeRegistry.Square)
+            ]
+        },
+
+        new()
+        {
+            Repetitions = 3,
+            EnemySpawnDelay = 7,
+            EnemyBatchSize = 2,
+            EnemyTypeDistributions =
+            [
+                new EnemyTypeDistribution(EnemyTypeRegistry.Square)
             ]
         },
     ];

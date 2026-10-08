@@ -35,7 +35,7 @@ size = Vector2(1024, 4208)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0lhi4"]
 size = Vector2(1024, 4208)
 
-[sub_resource type="Shader" id="Shader_bnpwn"]
+[sub_resource type="Shader" id="Shader_5b14r"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -98,15 +98,15 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_36jdj"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bnpwn"]
 resource_local_to_scene = true
-shader = SubResource("Shader_bnpwn")
+shader = SubResource("Shader_5b14r")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 2.000000095
 shader_parameter/rect_size = Vector2(1024, 4208)
 
-[sub_resource type="Shader" id="Shader_xfvwf"]
+[sub_resource type="Shader" id="Shader_36jdj"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -169,9 +169,9 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_dhpj7"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xfvwf"]
 resource_local_to_scene = true
-shader = SubResource("Shader_xfvwf")
+shader = SubResource("Shader_36jdj")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 2.000000095
@@ -180,7 +180,7 @@ shader_parameter/rect_size = Vector2(1024, 4208)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k07pp"]
 size = Vector2(3840, 1024)
 
-[sub_resource type="Shader" id="Shader_7knny"]
+[sub_resource type="Shader" id="Shader_dhpj7"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -243,9 +243,9 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_082n1"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7knny"]
 resource_local_to_scene = true
-shader = SubResource("Shader_7knny")
+shader = SubResource("Shader_dhpj7")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 0.0
@@ -254,7 +254,7 @@ shader_parameter/rect_size = Vector2(3840, 1024)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkk55"]
 size = Vector2(3840, 1024)
 
-[sub_resource type="Shader" id="Shader_xex6t"]
+[sub_resource type="Shader" id="Shader_082n1"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 render_mode unshaded;
@@ -317,9 +317,9 @@ void fragment() {
 }
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_aa0lp"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xex6t"]
 resource_local_to_scene = true
-shader = SubResource("Shader_xex6t")
+shader = SubResource("Shader_082n1")
 shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
 shader_parameter/glow_radius = 96.00000456
 shader_parameter/glow_strength = 0.0
@@ -429,7 +429,7 @@ position = Vector2(4352, 1080)
 shape = SubResource("RectangleShape2D_0lhi4")
 
 [node name="LeftGlow" parent="Environment/LevelWalls" unique_id=1402074923 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_36jdj")
+material = SubResource("ShaderMaterial_bnpwn")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -441,7 +441,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="RightGlow" parent="Environment/LevelWalls" unique_id=312963737 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_dhpj7")
+material = SubResource("ShaderMaterial_xfvwf")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -462,7 +462,7 @@ position = Vector2(1920, -512)
 shape = SubResource("RectangleShape2D_k07pp")
 
 [node name="CeilingGlow" parent="Environment/LevelCeiling" unique_id=1382008011 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_082n1")
+material = SubResource("ShaderMaterial_7knny")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -482,7 +482,7 @@ position = Vector2(1920, 2672)
 shape = SubResource("RectangleShape2D_jkk55")
 
 [node name="FloorGlow" parent="Environment/LevelFloor" unique_id=1794150407 instance=ExtResource("7_vaj68")]
-material = SubResource("ShaderMaterial_aa0lp")
+material = SubResource("ShaderMaterial_xex6t")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
