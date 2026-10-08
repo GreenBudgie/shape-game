@@ -9,14 +9,8 @@ public abstract class Level
     }
     
     public abstract int Number { get; }
-
-    public abstract int DestroyRequirement { get; }
-
-    public virtual float PolysteroidMinTimeToSpawn => 2f;
     
-    public virtual float PolysteroidMaxTimeToSpawn => 4f;
-
-    public abstract float MaxEnemies { get; }
+    public virtual FloatRange PolysteroidTimeToSpawn => new(2f, 4f);
     
     public abstract List<LevelPhase> Phases { get; }
 

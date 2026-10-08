@@ -4,17 +4,20 @@
 
     [Export] private AudioStream _shotSound = null!;
 
-    private const double FireDelay = 0.5f;
+    private const double MaxFireDelay = 0.5f;
+    private const double MinFireDelay = 0.2f;
     private const double FireDelayDelta = 0.1f;
+    private const double TimeToMinFireDelaySeconds = 30f;
 
-    private double _fireTimer = RandomUtils.DeltaRange(FireDelay, FireDelayDelta);
+    private double _fireTimer = RandomUtils.DeltaRange(MaxFireDelay, FireDelayDelta);
+    private double _currentFireDelay = MaxFireDelay;
     private EnemyPathFollowController _pathFollowController = null!;
 
     protected override void Setup()
     {
         base.Setup();
         
-        HealthController.MaxHealth = 10;
+        HealthController.MaxHealth = 12;
     }
     
     protected override void OnActivate()
@@ -38,10 +41,15 @@
             return;
         }
 
+        if (_currentFireDelay > MinFireDelay)
+        {
+            _currentFireDelay -= delta / TimeToMinFireDelaySeconds;
+        }
+
         if (_fireTimer <= 0)
         {
             Fire();
-            _fireTimer = RandomUtils.DeltaRange(FireDelay, FireDelayDelta);
+            _fireTimer = RandomUtils.DeltaRange(_currentFireDelay, FireDelayDelta);
         }
         else
         {
@@ -51,7 +59,7 @@
 
     public override float GetCrystalsToDrop()
     {
-        return 50;
+        return 2;
     }
 
     private void Fire()

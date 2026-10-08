@@ -5,6 +5,14 @@ public partial class Debug : Node
 
     public static readonly bool Enabled = true;
 
+    public override void _Ready()
+    {
+        if (Enabled)
+        {
+            DebugDraw.AddInfo(() => $"Fps: {(int)Engine.GetFramesPerSecond()}");
+        }
+    }
+
     public override void _Process(double delta)
     {
         if (Input.IsActionJustPressed("debug_timescale"))

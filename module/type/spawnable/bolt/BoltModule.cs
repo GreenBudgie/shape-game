@@ -6,7 +6,7 @@ public partial class BoltModule : SpawnableModule
     public override ModuleType Type => ModuleTypeRegistry.Bolt;
 
     public override List<SpawnableStat> GetStats() => [
-        new DamageStat { Value = 2 },
+        new DamageStat { Value = 5 },
         new SpeedStat { Value = 3000 },
         new ReloadStat { Value = 0.8f },
         new LifetimeStat { Value = 4 },

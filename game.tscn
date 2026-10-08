@@ -12,7 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://cjmguojhwcatt" path="res://debug/screen/debug_screen.tscn" id="6_rvswv"]
 [ext_resource type="PackedScene" uid="uid://dy2k3kjbjir5i" path="res://ui/game_over/game_over_screen.tscn" id="7_hb5m1"]
 [ext_resource type="PackedScene" uid="uid://c1qxnkasfw75n" path="res://util/glow/rect_glow.tscn" id="7_vaj68"]
-[ext_resource type="Script" uid="uid://djxx4y1127mi" path="res://ui/FpsCounter.cs" id="8_215e1"]
 [ext_resource type="Script" uid="uid://fxme35ooeqpu" path="res://level/LevelManager.cs" id="8_j5wjh"]
 [ext_resource type="Script" uid="uid://6vqg7uvcvpn2" path="res://entity/living/enemies/EnemyManager.cs" id="8_vef74"]
 [ext_resource type="Script" uid="uid://ribdcuixu4kl" path="res://environment/FloorArea.cs" id="8_xa8c5"]
@@ -534,6 +533,7 @@ metadata/_edit_lock_ = true
 [node name="UI" type="CanvasLayer" parent="." unique_id=1677117807]
 
 [node name="InventoryManager" parent="UI" unique_id=338909771 instance=ExtResource("5_hve3p")]
+visible = false
 
 [node name="GameOverScreen" parent="UI" unique_id=421136395 instance=ExtResource("7_hb5m1")]
 
@@ -596,11 +596,6 @@ layer = 2
 
 [node name="DebugLayer" type="CanvasLayer" parent="." unique_id=2028777421]
 layer = 10
-
-[node name="FpsCounter" type="Label" parent="DebugLayer" unique_id=1109875423]
-offset_right = 40.0
-offset_bottom = 102.0
-script = ExtResource("8_215e1")
 
 [node name="DebugDraw" type="Node2D" parent="DebugLayer" unique_id=1202650167]
 process_mode = 3

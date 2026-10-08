@@ -5,26 +5,26 @@ using System.Linq;
 public class LevelPhase
 {
 
-    public float Duration { get; set; } = -1;
+    /// <summary>
+    /// The number of phase repetitions. To avoid ambiguity, 1 repetition means that enemies in this phase will only
+    /// spawn once, 2 is twice, and so on.
+    /// </summary>
+    public uint Repetitions { get; set; } = 1;
 
-    public int MinEnemyBatch { get; set; } = 1;
+    public UIntRange EnemyBatchSize { get; set; } = 1;
 
-    public int MaxEnemyBatch { get; set; } = 1;
-
-    public int MinSpawnDelay { get; set; } = 5;
-
-    public int MaxSpawnDelay { get; set; } = 5;
+    public FloatRange EnemySpawnDelay { get; set; } = 1f;
     
     public List<EnemyTypeDistribution> EnemyTypeDistributions { get; set; } = [];
 
     public float GetSpawnDelay()
     {
-        return (float)GD.RandRange((float)MinSpawnDelay, (float)MaxSpawnDelay);
+        return EnemySpawnDelay.Random();
     }
     
     public List<EnemyType> GetEnemyBatch()
     {
-        var enemyBatchSize = GD.RandRange(MinEnemyBatch, MaxEnemyBatch);
+        var enemyBatchSize = EnemyBatchSize.Random();
         List<EnemyType> batch = [];
         for (var i = 0; i < enemyBatchSize; i++)
         {

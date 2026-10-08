@@ -8,19 +8,13 @@ public partial class LevelManager : Node
     [Signal]
     public delegate void LevelStartedEventHandler();
 
-    [Signal]
-    public delegate void DestroyProgressUpdatedEventHandler(int prevProgress, int newProgress);
-
     public Level? Level;
 
-    public int DestroyProgress { get; private set; }
-
-    private double _timeToNextPhase;
     private double _timeToSpawnEnemies;
     private double _timeToSpawnPolysteroids;
-    private bool _requirementsMet;
-    private bool _isLastPhase;
     private int _phase;
+    private int _phaseRepetition;
+    private bool _phasesEnded;
     private bool _isLevelEnding;
     private double _timeToEndLevel;
 
@@ -35,6 +29,14 @@ public partial class LevelManager : Node
     public override void _Ready()
     {
         Callable.From(StartFirstLevel).CallDeferred();
+
+        if (Debug.Enabled)
+        {
+            DebugDraw.AddInfo(() => $"Level: {Level?.Number}");
+            DebugDraw.AddInfo(() => $"Phase: {_phase}; rep: {_phaseRepetition}");
+            DebugDraw.AddInfo(() => $"Time: {_timeToSpawnEnemies:F1}");
+            DebugDraw.AddInfo(() => $"End: {_phasesEnded}");
+        }
 
         EnemyManager.Instance.EnemyDestroyed += OnEnemyDestroyed;
     }
@@ -67,11 +69,6 @@ public partial class LevelManager : Node
             return;
         }
 
-        if (!_requirementsMet)
-        {
-            SetDestroyProgress(Level.DestroyRequirement);
-        }
-
         foreach (var enemy in EnemyManager.Instance.GetAliveEnemies())
         {
             enemy.HealthController.Destroy();
@@ -92,7 +89,7 @@ public partial class LevelManager : Node
 
     private bool ShouldEndLevel()
     {
-        if (!_requirementsMet)
+        if (!_phasesEnded)
         {
             return false;
         }
@@ -141,39 +138,28 @@ public partial class LevelManager : Node
             return;
         }
         
-        if (_requirementsMet)
+        if (_phasesEnded)
         {
             return;
         }
 
         if (_spawnEnemies)
         {
-            _timeToNextPhase -= delta;
             _timeToSpawnPolysteroids -= delta;
-
-            if (!IsMaxEnemiesReached())
-            {
-                _timeToSpawnEnemies -= delta;
-            }
-        }
-        
-        if (_timeToSpawnEnemies < 0)
-        {
-            _timeToSpawnEnemies = GetCurrentPhase(level).GetSpawnDelay();
-            SpawnEnemyBatch();
+            _timeToSpawnEnemies -= delta;
         }
         
         if (_timeToSpawnPolysteroids < 0)
         {
-            _timeToSpawnPolysteroids =
-                RandomUtils.Range(level.PolysteroidMinTimeToSpawn, level.PolysteroidMaxTimeToSpawn);
+            _timeToSpawnPolysteroids = level.PolysteroidTimeToSpawn.Random();
             SpawnPolysteroid();
         }
         
-        if (_timeToNextPhase < 0)
+        if (_timeToSpawnEnemies < 0)
         {
-            StartNextPhase(level);
-            _timeToNextPhase = GetCurrentPhase(level).Duration;
+            SpawnEnemyBatch();
+            StartNextPhaseOrRepetition(level);
+            _timeToSpawnEnemies = GetCurrentPhase(level).GetSpawnDelay();
         }
     }
 
@@ -224,69 +210,31 @@ public partial class LevelManager : Node
     {
         Level = LevelRegistry.GetLevel(level);
 
-        _timeToNextPhase = 0;
         _timeToSpawnEnemies = 0;
-        _requirementsMet = false;
-        _isLastPhase = false;
         _phase = 0;
+        _phaseRepetition = 0;
+        _phasesEnded = false;
         _isLevelEnding = false;
         _timeToEndLevel = 0;
-        _timeToSpawnPolysteroids = RandomUtils.Range(Level.PolysteroidMinTimeToSpawn, Level.PolysteroidMaxTimeToSpawn);
+        _timeToSpawnPolysteroids = Level.PolysteroidTimeToSpawn.Random();
         
-        SetDestroyProgress(0);
         GamePhaseManager.Instance.ChangePhase(GamePhase.Level);
         EmitSignalLevelStarted();
     }
 
-    public void CheckIfRequirementsMet()
-    {
-        if (Level == null)
-        {
-            return;
-        }
-
-        if (DestroyProgress < Level.DestroyRequirement)
-        {
-            return;
-        }
-
-        _requirementsMet = true;
-    }
-
-    public bool IsMaxEnemiesReached()
-    {
-        if (Level == null)
-        {
-            return false;
-        }
-        
-        var enemyCount = EnemyManager.Instance.GetNonEnvironmentalAliveEnemies().Count();
-        return enemyCount >= Level.MaxEnemies;
-    }
-
     private void OnEnemyDestroyed(Enemy enemy)
     {
-        if (!_levelProgress || Level == null)
+        if (!_levelProgress || Level == null || _phasesEnded)
         {
             return;
         }
 
-        if (!enemy.IsEnvironmental && DestroyProgress < Level.DestroyRequirement)
-        {
-            SetDestroyProgress(DestroyProgress + 1);
-        }
-
-        var aliveEnemies = EnemyManager.Instance.GetAliveEnemies();
+        var aliveEnemies = EnemyManager.Instance.GetNonEnvironmentalAliveEnemies();
         if (aliveEnemies.Any())
         {
             return;
         }
-
-        if (_requirementsMet)
-        {
-            return;
-        }
-
+        
         SpawnNextEnemyBatchFaster();
     }
 
@@ -299,14 +247,6 @@ public partial class LevelManager : Node
         }   
         
         _timeToSpawnEnemies = nextBatchMinDelay;
-    }
-
-    private void SetDestroyProgress(int progress)
-    {
-        var prevDestroyProgress = DestroyProgress;
-        DestroyProgress = progress;
-        EmitSignalDestroyProgressUpdated(prevDestroyProgress, DestroyProgress);
-        CheckIfRequirementsMet();
     }
 
     private void SpawnPolysteroid()
@@ -337,14 +277,22 @@ public partial class LevelManager : Node
         return level.Phases[_phase];
     }
     
-    private void StartNextPhase(Level level)
+    private void StartNextPhaseOrRepetition(Level level)
     {
-        if (level.Phases.Count >= _phase - 1)
+        var currentPhase = GetCurrentPhase(level);
+        if (currentPhase.Repetitions > _phaseRepetition + 1)
         {
-            _isLastPhase = true;
+            _phaseRepetition++;
+            return;
+        }
+
+        if (level.Phases.Count <= _phase + 1)
+        {
+            _phasesEnded = true;
             return;
         }
 
         _phase++;
+        _phaseRepetition = 0;
     }
 }
