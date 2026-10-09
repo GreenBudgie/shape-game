@@ -20,4 +20,5 @@ public static class ModuleTypeRegistry
     public static readonly TriggerModuleType Trigger = new();
     public static readonly EnemyDamageModuleType EnemyDamage = new();
     public static readonly MissileModuleType Missile = new();
+    public static readonly TargetingModuleType Targeting = new();
 }

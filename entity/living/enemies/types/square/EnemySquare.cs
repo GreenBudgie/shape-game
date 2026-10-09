@@ -77,6 +77,7 @@
         };
  
         context.Stats.Add(new SpeedStat { Value = impulseLength });
+        context.Stats.Add(new DamageStat { Value = 2 });
         
         context.Spawn();
 

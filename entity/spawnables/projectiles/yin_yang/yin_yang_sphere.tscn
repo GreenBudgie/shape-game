@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dtxua27qef0xu" path="res://entity/spawnables/projectiles/yin_yang/YinYangSphere.cs" id="1_eulnx"]
 [ext_resource type="Texture2D" uid="uid://dndyopr6137m3" path="res://entity/spawnables/projectiles/yin_yang/yin.png" id="2_eulnx"]
-[ext_resource type="PackedScene" uid="uid://6dllnllpl3my" path="res://entity/spawnables/components/lifetime/lifetime_component.tscn" id="3_l4ilm"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_l4ilm"]
 friction = 0.0
@@ -28,5 +27,3 @@ texture = ExtResource("2_eulnx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1708453766]
 shape = SubResource("CircleShape2D_8vif8")
-
-[node name="LifetimeComponent" parent="." unique_id=1742972924 instance=ExtResource("3_l4ilm")]

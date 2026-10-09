@@ -1,7 +1,8 @@
-public partial class LifetimeComponent : Node, ISpawnableComponent
+public partial class LifetimeComponent : Component
 {
+    public override ComponentType Type => ComponentTypeRegistry.Lifetime;
 
-    public void Apply(SpawnableContext context)
+    public override void Apply(SpawnableContext context)
     {
         var spawnable = context.Spawnable;
 

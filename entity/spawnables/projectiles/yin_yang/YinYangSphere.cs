@@ -20,7 +20,12 @@ public partial class YinYangSphere : BasicRigidBodyProjectile
         node._followTarget = followTarget;
         return node;
     }
-    
+
+    public override bool SupportsComponentType(ComponentType type)
+    {
+        return type != ComponentTypeRegistry.InitialImpulse;
+    }
+
     private Tween? _pathAnimationTween;
 
     protected override void OnReady()

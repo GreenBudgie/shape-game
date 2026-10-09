@@ -12,12 +12,6 @@
         return Scene.Instantiate<EnemySquareProjectile>();
     }
 
-    public override void Prepare(SpawnableContext context)
-    {
-        base.Prepare(context);
-        context.Stats.Add(new DamageStat { Value = 2 });
-    }
-
     private bool _torqueApplied;
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)

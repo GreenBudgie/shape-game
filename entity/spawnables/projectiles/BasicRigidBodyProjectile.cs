@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,17 +6,27 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 {
     [Export] private AudioStream _wallHitSound = null!;
 
-    public CollisionAreaSampler Area { get; private set; } = null!;
+    public event Action<EntityDamagedEvent>? EntityDamaged;
+    public SpawnableContext Context { get; set; } = null!;
 
-    protected SpawnableContext Context = null!;
+    public CollisionAreaSampler Area { get; private set; } = null!;
+    
     protected int ObstaclesToPierce;
 
     private Area2D? _piercingDetectionArea;
- 
-    public virtual void Prepare(SpawnableContext context)
+
+    public virtual void Setup(SpawnableContext context)
     {
         Area = new CollisionAreaSampler(this);
-        Context = context;
+    }
+
+    public virtual void Prepare(SpawnableContext context)
+    {
+    }
+
+    public virtual bool SupportsComponentType(ComponentType type)
+    {
+        return true;
     }
 
     public sealed override void _Ready()
@@ -23,12 +34,6 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
         SetupPiercing();
         BodyEntered += HandleBodyEntered;
         BodyExited += HandleBodyExited;
-        
-        var burningSeconds = Context.CalculateStat<BurningStat>();
-        if (burningSeconds > 0)
-        {
-            FireDisplay.Attach(this);
-        }
 
         if (Context.OriginalSource is not Player)
         {
@@ -138,12 +143,10 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
         if (collisionObject2D is Entity entity)
         {
-            entity.HealthController.Damage(Context.CalculateStat<DamageStat>());
-            var burningSeconds = Context.CalculateStat<BurningStat>();
-            if (burningSeconds > 0)
-            {
-                entity.EffectController.AddEffect(EntityEffectTypeRegistry.Burning, burningSeconds);
-            }
+            var damage = Context.CalculateStat<DamageStat>();
+            entity.HealthController.Damage(damage);
+            var entityDamagedEvent = new EntityDamagedEvent(entity, damage);
+            EntityDamaged?.Invoke(entityDamagedEvent);
         }
 
         if (ObstaclesToPierce <= 0)

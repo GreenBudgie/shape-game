@@ -1,3 +1,5 @@
+using System;
+
 public partial class Barrier : RigidBody2D, ISpawnable
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://cgm0yfj1g1own");
@@ -10,12 +12,14 @@ public partial class Barrier : RigidBody2D, ISpawnable
     
     [Export]
     private AudioStream _disappearSound = null!;
+    
+    public event Action<EntityDamagedEvent>? EntityDamaged;
+    public SpawnableContext Context { get; set; } = null!;
 
     private Sprite2D _sprite = null!;
     private Mask _spriteMask = null!;
     private GpuParticles2D _particles = null!;
     private Vector2 _initialPosition;
-    private SpawnableContext _context = null!;
 
     public static Barrier Create()
     {
@@ -24,8 +28,6 @@ public partial class Barrier : RigidBody2D, ISpawnable
 
     public void Prepare(SpawnableContext context)
     {
-        _context = context;
-        
         RotationDegrees = RandomUtils.DeltaRange(0, 15);
         
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
@@ -57,7 +59,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
             .SetStrength(1)
             .SetRadius(30);
 
-        var source = _context.Source;
+        var source = Context.Source;
         if (IsInstanceValid(source))
         {
             PlaySpawnBeamEffectForSource(source);
@@ -88,7 +90,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
             return;
         }
 
-        var source = _context.Source;
+        var source = Context.Source;
         if (!IsInstanceValid(source))
         {
             return;
@@ -110,7 +112,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
     {
         var globalPos = ToGlobal(toPosition * _animationProgress);
 
-        var source = _context.Source;
+        var source = Context.Source;
         if (!IsInstanceValid(source))
         {
             beam.SetTo(globalPos);

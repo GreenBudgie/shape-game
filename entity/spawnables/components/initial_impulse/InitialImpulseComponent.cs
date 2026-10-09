@@ -1,14 +1,14 @@
-public partial class InitialImpulseComponent : Node, ISpawnableComponent
+public partial class InitialImpulseComponent : Component
 {
-    [Export(PropertyHint.Range, "0,360")] public float Spread { get; private set; }
-    [Export] public float SpeedDelta { get; private set; }
+    
+    public float Spread { get; set; }
+    public float SpeedDelta { get; set; }
 
-    public Node Node => this;
+    public override ComponentType Type => ComponentTypeRegistry.InitialImpulse;
 
-    public void Apply(SpawnableContext context)
+    public override void Apply(SpawnableContext context)
     {
-        var projectile = context.Spawnable.Node;
-        if (projectile is not RigidBody2D rigidBodyProjectile)
+        if (Spawnable.Node is not RigidBody2D rigidBodyProjectile)
         {
             return;
         }

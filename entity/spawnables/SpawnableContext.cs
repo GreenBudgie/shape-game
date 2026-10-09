@@ -11,12 +11,16 @@ public class SpawnableContext
     public SpawnableContext(ISpawnable spawnable)
     {
         Spawnable = spawnable;
+        Spawnable.Context = this;
+        Spawnable.Setup(this);
     }
 
     public SpawnableContext(Func<ISpawnable> spawnableFactory)
     {
         _spawnableFactory = spawnableFactory;
         Spawnable = spawnableFactory();
+        Spawnable.Context = this;
+        Spawnable.Setup(this);
     }
 
     public List<SpawnableContext> Triggers { get; private set; } = [];
@@ -47,6 +51,19 @@ public class SpawnableContext
         return ChildContexts.SelectMany(childContext => childContext.GetContextChain())
             .Prepend(this)
             .ToList();
+    }
+
+    /// <summary>
+    /// Adds a component to every spawnable in context chain that supports it.
+    ///
+    /// Only add components on context preparation.
+    /// </summary>
+    public void AddComponentToChain(ComponentType type)
+    {
+        foreach (var context in GetContextChain())
+        {
+            context.Spawnable.AddComponentIfPossible(type);
+        }
     }
     
     public ISpawnable Spawnable { get; }
@@ -147,7 +164,11 @@ public class SpawnableContext
     public void Spawn()
     {
         ApplyModifiers();
+        
+        // No stat modifications after this point
 
+        Spawnable.AddAutoComponents();
+        
         foreach (var component in Spawnable.GetComponents())
         {
             component.Prepare(this);

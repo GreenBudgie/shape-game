@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 public partial class MineProjectile : RigidBody2D, ISpawnable
@@ -16,16 +17,13 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
     {
         return Scene.Instantiate<MineProjectile>();
     }
+    
+    public event Action<EntityDamagedEvent>? EntityDamaged;
+    public SpawnableContext Context { get; set; } = null!;
 
-    private SpawnableContext _context = null!;
     private Explosion? _explosion;
     private GlowWrapper _glowWrapper = null!;
     private Sprite2D _sprite = null!;
-
-    public void Prepare(SpawnableContext context)
-    {
-        _context = context;
-    }
 
     public override void _Ready()
     {
@@ -78,11 +76,11 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         {
             Position = GlobalPosition,
             Source = this,
-            OriginalSource = _context.OriginalSource,
+            OriginalSource = Context.OriginalSource,
         };
 
-        explosionContext.Stats.AddRange(_context.GetStats<ExplosionDamageStat>());
-        explosionContext.Stats.AddRange(_context.GetStats<ExplosionRadiusStat>());
+        explosionContext.Stats.AddRange(Context.GetStats<ExplosionDamageStat>());
+        explosionContext.Stats.AddRange(Context.GetStats<ExplosionRadiusStat>());
         explosionContext.Stats.Add(new LifetimeStat { Value = fuseTime });
 
         explosionContext.Spawn();

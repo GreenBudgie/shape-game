@@ -1,8 +1,13 @@
+using System;
+
 public partial class YinYang : Node2D, ISpawnable
 {
     private const float PathRadius = 128f;
     const float RotationSpeedMin = 7f;
     const float RotationSpeedMax = 9f;
+    
+    public event Action<EntityDamagedEvent>? EntityDamaged;
+    public SpawnableContext Context { get; set; } = null!;
 
     private Node2D _yinFollowTarget = null!;
     private Node2D _yangFollowTarget = null!;
@@ -11,8 +16,7 @@ public partial class YinYang : Node2D, ISpawnable
 
     private float _yinRotation;
     private float _yangRotation = Pi;
-
-    private SpawnableContext _context = null!;
+    
     private Vector2 _direction;
     private float _speed;
     private float _rotationSpeed;
@@ -25,15 +29,10 @@ public partial class YinYang : Node2D, ISpawnable
         return node;
     }
 
-    public void Prepare(SpawnableContext context)
-    {
-        _context = context;
-    }
-
     public override void _Ready()
     {
-        _direction = _context.Direction;
-        _speed = _context.CalculateStat<SpeedStat>();
+        _direction = Context.Direction;
+        _speed = Context.CalculateStat<SpeedStat>();
         _rotationSpeed = (float)GD.RandRange(RotationSpeedMin, RotationSpeedMax) * RandomUtils.RandomSign();
 
         _yinFollowTarget = GetNode<Node2D>("YinFollowTarget");
@@ -56,7 +55,7 @@ public partial class YinYang : Node2D, ISpawnable
     {
         var context = new SpawnableContext(sphere);
         
-        context.InheritFrom(_context);
+        context.InheritFrom(Context);
         context.Position = followTarget.GlobalPosition;
 
         context.Spawn();

@@ -13,6 +13,10 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile
     
     protected override void OnReady()
     {
+        var initialImpulseComponent = this.GetSingleComponent<InitialImpulseComponent>();
+        initialImpulseComponent.SpeedDelta = 500;
+        initialImpulseComponent.Spread = 30;
+        
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
     }
 

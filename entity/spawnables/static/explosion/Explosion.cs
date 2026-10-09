@@ -1,6 +1,7 @@
+using System;
+
 public partial class Explosion : ShapeCast2D, ISpawnable
 {
-
     /// <summary>
     /// Represents max radius for some effects like screen shake, particles e.t.c.
     ///
@@ -17,8 +18,10 @@ public partial class Explosion : ShapeCast2D, ISpawnable
     [Export] private AudioStream _smallExplosionSound = null!;
     [Export] private AudioStream _mediumExplosionSound = null!;
     [Export] private AudioStream _largeExplosionSound = null!;
+    
+    public event Action<EntityDamagedEvent>? EntityDamaged;
+    public SpawnableContext Context { get; set; } = null!;
 
-    private SpawnableContext _context = null!;
     private float _radius;
     private float _damage;
     private float _fuseTimeSeconds;
@@ -26,11 +29,6 @@ public partial class Explosion : ShapeCast2D, ISpawnable
     public static Explosion Create(Node2D initiator)
     {
         return Scene.Instantiate<Explosion>();
-    }
-
-    public void Prepare(SpawnableContext context)
-    {
-        _context = context;
     }
 
     public void Remove()
@@ -42,19 +40,19 @@ public partial class Explosion : ShapeCast2D, ISpawnable
     {
         Callable.From(() => ExplosionRadiusPreview.Create(this)).CallDeferred();
 
-        _radius = _context.CalculateStat<ExplosionRadiusStat>();
+        _radius = Context.CalculateStat<ExplosionRadiusStat>();
         var circleShape = (CircleShape2D)Shape;
         circleShape.Radius = _radius;
         
-        _damage = _context.CalculateStat<ExplosionDamageStat>();
-        _fuseTimeSeconds = _context.CalculateStat<LifetimeStat>();
+        _damage = Context.CalculateStat<ExplosionDamageStat>();
+        _fuseTimeSeconds = Context.CalculateStat<LifetimeStat>();
     }
 
     public override void _Process(double delta)
     {
-        if (IsInstanceValid(_context.Source))
+        if (IsInstanceValid(Context.Source))
         {
-            GlobalPosition = _context.Source.GlobalPosition;
+            GlobalPosition = Context.Source.GlobalPosition;
         }
         else
         {
@@ -118,6 +116,8 @@ public partial class Explosion : ShapeCast2D, ISpawnable
             if (body is Entity entity)
             {
                 entity.HealthController.Damage(_damage);
+                var entityDamagedEvent = new EntityDamagedEvent(entity, _damage);
+                EntityDamaged?.Invoke(entityDamagedEvent);
             }
         }
 

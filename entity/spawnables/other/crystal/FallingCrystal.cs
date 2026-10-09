@@ -1,3 +1,5 @@
+using System;
+
 public partial class FallingCrystal : RigidBody2D, ISpawnable
 {
     private const float InitialTorque = 500;
@@ -17,6 +19,9 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bu4bb10k0x66d");
 
     private static readonly Color GlowColor = ColorScheme.Yellow;
+    
+    public event Action<EntityDamagedEvent>? EntityDamaged;
+    public SpawnableContext Context { get; set; } = null!;
 
     private bool _isRemoving;
     private Glow _glow = null!;

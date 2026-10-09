@@ -14,12 +14,6 @@ public partial class EnemyRectangleProjectile : BasicRigidBodyProjectile
         EnemyRectangleProjectileParticles.Create(this);
     }
 
-    public override void Prepare(SpawnableContext context)
-    {
-        base.Prepare(context);
-        context.Stats.Add(new DamageStat { Value = 5 });
-    }
-
     private bool _torqueApplied;
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
