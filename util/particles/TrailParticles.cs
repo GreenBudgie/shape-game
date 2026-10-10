@@ -30,9 +30,10 @@ public partial class TrailParticles : ParticleBuilder<TrailParticles>
         }
     }
 
-    public void Spawn()
+    public TrailParticles Spawn()
     {
         ShapeGame.Instance.AddChild(this);
+        return this;
     }
 
     private void Remove()
