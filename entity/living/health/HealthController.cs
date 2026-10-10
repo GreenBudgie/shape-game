@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 
 public partial class HealthController(Entity owner) : Node2D
@@ -29,7 +30,8 @@ public partial class HealthController(Entity owner) : Node2D
     public float InvulnerabilityPeriod { get; set; } = 0.01f;
 
     private Tween? _healthTween;
-    private double _invulnerabilityTime;
+    private readonly Dictionary<DamageSource, double> _invulnerableUntil = [];
+    private double _elapsedTime;
 
     public override void _Ready()
     {
@@ -38,10 +40,12 @@ public partial class HealthController(Entity owner) : Node2D
 
     public override void _Process(double delta)
     {
-        if (_invulnerabilityTime > 0)
-        {
-            _invulnerabilityTime -= delta;
-        }
+        _elapsedTime += delta;
+    }
+
+    private void StopInvulnerabilityPeriod()
+    {
+        _invulnerableUntil.Clear();
     }
 
     /// <summary>
@@ -65,16 +69,16 @@ public partial class HealthController(Entity owner) : Node2D
 
     public void FullHeal()
     {
-        ChangeHealth(MaxHealth - Health);
+        ChangeHealth(null, MaxHealth - Health);
     }
 
     /**
      * Inflicts a specified amount of damage. Negative damage means healing.
      * The same as ChangeHealth(-damage), but more convenient to use since negation is not needed.
      */
-    public void Damage(float damage)
+    public void Damage(DamageSource? source, float damage)
     {
-        ChangeHealth(-damage);
+        ChangeHealth(source, -damage);
     }
 
     /**
@@ -83,20 +87,20 @@ public partial class HealthController(Entity owner) : Node2D
      */
     public void Heal(float heal)
     {
-        ChangeHealth(heal);
+        ChangeHealth(null, heal);
     }
 
     /**
      * Changes health by delta, plays effects and sound. Negative delta is considered damage, positive - healing.
      */
-    public void ChangeHealth(float delta)
+    private void ChangeHealth(DamageSource? source, float delta)
     {
         if (IsDestroyed())
         {
             return;
         }
 
-        if (_invulnerabilityTime > 0 && delta < 0)
+        if (delta < 0 && IsInvulnerableTo(source))
         {
             // Invulnerability period is active, do nothing on damage
             return;
@@ -107,7 +111,10 @@ public partial class HealthController(Entity owner) : Node2D
         if (!IsInvulnerable || delta >= 0)
         {
             Health = Clamp(Health + delta, 0, MaxHealth);
-            _invulnerabilityTime = InvulnerabilityPeriod;
+            if (source.HasValue)
+            {
+                _invulnerableUntil[source.Value] = _elapsedTime + InvulnerabilityPeriod;
+            }
         }
 
         EmitSignalHealthChanged(delta);
@@ -239,6 +246,18 @@ public partial class HealthController(Entity owner) : Node2D
         {
             ForceDestroy();
         }
+    }
+
+    private bool IsInvulnerableTo(DamageSource? source)
+    {
+        if (IsInvulnerable)
+        {
+            return true;
+        }
+        
+        return source.HasValue
+               && _invulnerableUntil.TryGetValue(source.Value, out var until)
+               && until > _elapsedTime;
     }
 
     private void ForceDestroy()

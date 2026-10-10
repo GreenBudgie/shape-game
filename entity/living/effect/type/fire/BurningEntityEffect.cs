@@ -20,7 +20,7 @@ public partial class BurningEntityEffect(Entity owner, float duration) : EntityE
         if (_burnTimer >= BurnDamageFrequencySec)
         {
             _burnTimer = 0;
-            OwnerEntity.HealthController.Damage(BurnDamage);
+            OwnerEntity.HealthController.Damage(DamageSource.Fire, BurnDamage);
         }
     }
 

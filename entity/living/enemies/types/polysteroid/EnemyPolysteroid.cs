@@ -79,7 +79,7 @@ public partial class EnemyPolysteroid : Enemy
 
         if (collisionObject is Player player)
         {
-            player.HealthController.Damage(Damage);
+            player.HealthController.Damage(DamageSource.Contact, Damage);
             HealthController.Destroy();
         }
     }

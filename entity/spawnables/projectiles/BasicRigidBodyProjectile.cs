@@ -151,7 +151,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
         if (collisionObject2D is Entity entity)
         {
             var damage = Context.CalculateStat<DamageStat>();
-            entity.HealthController.Damage(damage);
+            entity.HealthController.Damage(DamageSource.Projectile, damage);
             var entityDamagedEvent = new EntityDamagedEvent(entity, damage);
             EntityDamaged?.Invoke(entityDamagedEvent);
         }
@@ -270,7 +270,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
         if (collisionObject2D is Entity entity)
         {
-            entity.HealthController.Damage(Context.CalculateStat<DamageStat>());
+            entity.HealthController.Damage(DamageSource.Projectile, Context.CalculateStat<DamageStat>());
         }
 
         OnWallHit(collisionObject2D);

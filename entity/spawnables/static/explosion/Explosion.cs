@@ -33,6 +33,12 @@ public partial class Explosion : ShapeCast2D, ISpawnable
 
     public void Prepare(SpawnableContext context)
     {
+        _radius = Context.CalculateStat<ExplosionRadiusStat>();
+        var circleShape = (CircleShape2D)Shape;
+        circleShape.Radius = _radius;
+        
+        _damage = Context.CalculateStat<ExplosionDamageStat>();
+        
         _fuseTimeSeconds = Context.CalculateStat<LifetimeStat>();
         IsInstant = _fuseTimeSeconds <= 0;
         ExplosionRadiusPreview.Create(this);
@@ -46,11 +52,6 @@ public partial class Explosion : ShapeCast2D, ISpawnable
 
     public override void _Ready()
     {
-        _radius = Context.CalculateStat<ExplosionRadiusStat>();
-        var circleShape = (CircleShape2D)Shape;
-        circleShape.Radius = _radius;
-        
-        _damage = Context.CalculateStat<ExplosionDamageStat>();
         if (IsInstant)
         {
             Remove();
@@ -122,7 +123,7 @@ public partial class Explosion : ShapeCast2D, ISpawnable
 
             if (body is Entity entity)
             {
-                entity.HealthController.Damage(_damage);
+                entity.HealthController.Damage(DamageSource.Explosion, _damage);
                 var entityDamagedEvent = new EntityDamagedEvent(entity, _damage);
                 EntityDamaged?.Invoke(entityDamagedEvent);
             }
