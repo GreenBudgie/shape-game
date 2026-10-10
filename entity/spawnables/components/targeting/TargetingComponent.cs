@@ -3,6 +3,7 @@ using System.Linq;
 
 public partial class TargetingComponent : Component
 {
+
     public override ComponentType Type => ComponentTypeRegistry.Targeting;
     
     public Entity? Target { get; private set; }
@@ -40,7 +41,7 @@ public partial class TargetingComponent : Component
         ShapeGame.Instance.AddChild(_display);
         _display.AttachToEntity(Target);
 
-        Target.HealthController.Destroyed += Remove;
+        Target.HealthController.Connect(HealthController.SignalName.Destroyed, Callable.From(Remove));
     }
 
     public override void _PhysicsProcess(double delta)
@@ -51,14 +52,26 @@ public partial class TargetingComponent : Component
             return;
         }
 
-        const float forceStrength = 1000f;
-        const float maxForce = 1000f;
+        const float homingSpeed = 2500f;
+        const float speedChangeRate = 15000f;
+        const float minTurnRate = 5f;
+        const float maxTurnRate = 14f;
+
+        var step = (float)delta;
+        var velocity = _rigidBodySpawnable.LinearVelocity;
+        var speed = velocity.Length();
+
+        var directionToTarget = GlobalPosition.DirectionTo(Target.GlobalPosition);
+        var direction = speed > 0 ? velocity / speed : directionToTarget;
 
         var distance = GlobalPosition.DistanceTo(Target.GlobalPosition);
-        var directionToTarget = GlobalPosition.DirectionTo(Target.GlobalPosition);
+        var angle = direction.AngleTo(directionToTarget);
+        var turnRate = Clamp(speed / Max(distance, 1), minTurnRate, maxTurnRate);
+        var turn = Clamp(angle, -turnRate * step, turnRate * step);
 
-        var force = directionToTarget * forceStrength;
-        _rigidBodySpawnable.ApplyCentralForce(force.LimitLength(maxForce));
+        var targetSpeed = Min(homingSpeed, maxTurnRate * distance / Max(2 * Abs(Sin(angle)), 0.05f));
+        var desiredVelocity = direction.Rotated(turn) * MoveToward(speed, targetSpeed, speedChangeRate * step);
+        _rigidBodySpawnable.ApplyCentralForce(_rigidBodySpawnable.Mass * (desiredVelocity - velocity) / step);
     }
 
     public override void _ExitTree()
@@ -68,8 +81,17 @@ public partial class TargetingComponent : Component
 
     private void Remove()
     {
+        if (IsQueuedForDeletion())
+        {
+            return;
+        }
+        
         Target = null;
-        _particles.Emitting = false;
+
+        if (IsInstanceValid(_particles))
+        {
+            _particles.Emitting = false;
+        }
         
         if (IsInstanceValid(_display))
         {

@@ -261,6 +261,7 @@ public class SpawnableContext
             Position = Position,
             Direction = Direction,
             Source = Source,
+            OriginalSource = OriginalSource,
             Modifiers = Modifiers.ToList()
         };
         clone.Stats.AddRange(Stats);
