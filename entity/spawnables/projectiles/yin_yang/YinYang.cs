@@ -7,6 +7,7 @@ public partial class YinYang : Node2D, ISpawnable
     const float RotationSpeedMax = 9f;
     
     public event Action<EntityDamagedEvent>? EntityDamaged;
+    public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
 
     private Node2D _yinFollowTarget = null!;
@@ -87,5 +88,6 @@ public partial class YinYang : Node2D, ISpawnable
         _yangSphere.Detach();
         
         QueueFree();
+        Removed?.Invoke();
     }
 }

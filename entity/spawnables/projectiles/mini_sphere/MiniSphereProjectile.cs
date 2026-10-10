@@ -21,8 +21,8 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile
     }
 
     private bool _isRemoving;
-    
-    public override void Remove()
+
+    public override void OnRemove()
     {
         if (_isRemoving)
         {

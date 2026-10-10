@@ -35,7 +35,13 @@ public partial class ExplosionRadiusPreview : Node2D
 
     public override void _Ready()
     {
-        _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(RemovePreview));
+        if (_explosion.IsInstant)
+        {
+            RemovePreview();
+            return;
+        }
+        
+        _explosion.Removed += RemovePreview;
         
         var fuseTime = _explosion.GetFuseTimeSeconds();
         if (fuseTime <= 0)

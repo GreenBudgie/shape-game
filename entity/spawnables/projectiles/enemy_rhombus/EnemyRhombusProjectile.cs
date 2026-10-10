@@ -17,9 +17,8 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
     }
 
-    public override void Remove()
+    public override void OnRemove()
     {
-        LaunchTriggers();
         Dissolve();
     }
 

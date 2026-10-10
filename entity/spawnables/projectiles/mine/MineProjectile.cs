@@ -19,6 +19,7 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
     }
     
     public event Action<EntityDamagedEvent>? EntityDamaged;
+    public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
 
     private Explosion? _explosion;
@@ -43,6 +44,8 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
     public void Remove()
     {
         Fuse();
+        // TODO redo this mechanic
+        Removed?.Invoke();
     }
 
     private bool _torqueApplied;
@@ -71,7 +74,7 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         _isFused = true;
         const float fuseTime = 1f;
 
-        _explosion = Explosion.Create(this);
+        _explosion = Explosion.Create();
         var explosionContext = new SpawnableContext(_explosion)
         {
             Position = GlobalPosition,
@@ -84,9 +87,7 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         explosionContext.Stats.Add(new LifetimeStat { Value = fuseTime });
 
         explosionContext.Spawn();
-
-        _explosion.Connect(Explosion.SignalName.Detonated, Callable.From(QueueFree));
-
+        
         CreateTween()
             .TweenProperty(_glowWrapper, IGlow.RadiusProperty, 100, fuseTime)
             .SetTrans(Tween.TransitionType.Quad)

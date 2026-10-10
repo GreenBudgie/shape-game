@@ -12,40 +12,49 @@ public partial class Explosion : ShapeCast2D, ISpawnable
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://b676isra84rkm");
 
-    [Signal]
-    public delegate void DetonatedEventHandler();
-
     [Export] private AudioStream _smallExplosionSound = null!;
     [Export] private AudioStream _mediumExplosionSound = null!;
     [Export] private AudioStream _largeExplosionSound = null!;
     
     public event Action<EntityDamagedEvent>? EntityDamaged;
+    public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
 
+    public bool IsInstant { get; private set; }
+    
     private float _radius;
     private float _damage;
     private float _fuseTimeSeconds;
 
-    public static Explosion Create(Node2D initiator)
+    public static Explosion Create()
     {
         return Scene.Instantiate<Explosion>();
+    }
+
+    public void Prepare(SpawnableContext context)
+    {
+        _fuseTimeSeconds = Context.CalculateStat<LifetimeStat>();
+        IsInstant = _fuseTimeSeconds <= 0;
+        ExplosionRadiusPreview.Create(this);
     }
 
     public void Remove()
     {
         Detonate();
+        Removed?.Invoke();
     }
 
     public override void _Ready()
     {
-        Callable.From(() => ExplosionRadiusPreview.Create(this)).CallDeferred();
-
         _radius = Context.CalculateStat<ExplosionRadiusStat>();
         var circleShape = (CircleShape2D)Shape;
         circleShape.Radius = _radius;
         
         _damage = Context.CalculateStat<ExplosionDamageStat>();
-        _fuseTimeSeconds = Context.CalculateStat<LifetimeStat>();
+        if (IsInstant)
+        {
+            Remove();
+        }
     }
 
     public override void _Process(double delta)
@@ -57,7 +66,7 @@ public partial class Explosion : ShapeCast2D, ISpawnable
         else
         {
             // Instantly detonate if initiator was freed (invalidated)
-            Detonate();
+            Remove();
             return;
         }
         
@@ -69,7 +78,7 @@ public partial class Explosion : ShapeCast2D, ISpawnable
         _fuseTimeSeconds = Max((float)(_fuseTimeSeconds - delta), 0);
         if (_fuseTimeSeconds <= 0)
         {
-            Detonate();
+            Remove();
         }
     }
 
@@ -81,14 +90,12 @@ public partial class Explosion : ShapeCast2D, ISpawnable
 
     public float GetEffectRadiusRatio() => Clamp(_radius / MaxEffectRadius, 0, MaxEffectRadius);
 
-    public void Detonate()
+    private void Detonate()
     {
         PlaySound();
         ShakeScreen();
         ExplosionEffects.Instance.PlayEffect(this);
         ExplosionParticles.Create(this);
-        
-        EmitSignalDetonated();
 
         ForceShapecastUpdate();
         if (!IsColliding())

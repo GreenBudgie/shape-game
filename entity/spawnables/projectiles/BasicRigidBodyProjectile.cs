@@ -7,6 +7,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
     [Export] private AudioStream _wallHitSound = null!;
 
     public event Action<EntityDamagedEvent>? EntityDamaged;
+    public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
 
     public CollisionAreaSampler Area { get; private set; } = null!;
@@ -80,10 +81,16 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
         return true;
     }
 
-    public virtual void Remove()
+    public void Remove()
     {
         LaunchTriggers();
-        QueueFree();
+        Removed?.Invoke();
+        OnRemove();
+    }
+
+    public virtual void OnRemove()
+    {
+        QueueFree();   
     }
 
     protected void LaunchTriggers()

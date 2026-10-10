@@ -21,6 +21,7 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
     private static readonly Color GlowColor = ColorScheme.Yellow;
     
     public event Action<EntityDamagedEvent>? EntityDamaged;
+    public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
 
     private bool _isRemoving;
@@ -100,6 +101,8 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
 
         _crystalAnimations.Play("collect");
         _crystalAnimations.AnimationFinished += _ => QueueFree();
+        
+        Removed?.Invoke();
     }
 
     private void ApplyMagnet()

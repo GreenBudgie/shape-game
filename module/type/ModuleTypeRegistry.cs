@@ -9,16 +9,15 @@ public static class ModuleTypeRegistry
     public static readonly ExtraFireRateModuleType ExtraFireRate = new();
     public static readonly PiercingModuleType Piercing = new();
     public static readonly MassiveShotModuleType MassiveShot = new();
-    public static readonly IgnitionModuleType Ignition = new();
-
     public static readonly BoltModuleType Bolt = new();
     public static readonly MineModuleType Mine = new();
     public static readonly MiniSphereModuleType MiniSphere = new();
     public static readonly BarrierModuleType Barrier = new();
     public static readonly YinYangModuleType YinYang = new();
-    
     public static readonly TriggerModuleType Trigger = new();
     public static readonly EnemyDamageModuleType EnemyDamage = new();
+    public static readonly IgnitionModuleType Ignition = new();
     public static readonly MissileModuleType Missile = new();
     public static readonly TargetingModuleType Targeting = new();
+    public static readonly ExplosionModuleType Explosion = new();
 }

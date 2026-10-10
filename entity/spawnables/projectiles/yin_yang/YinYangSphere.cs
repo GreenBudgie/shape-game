@@ -61,7 +61,7 @@ public partial class YinYangSphere : BasicRigidBodyProjectile
         return isDetached;
     }
 
-    public override void Remove()
+    public override void OnRemove()
     {
         BurstParticleEffect.Create(GlobalPosition)
             .WithAmount(4, 1)

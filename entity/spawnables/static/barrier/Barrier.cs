@@ -14,6 +14,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
     private AudioStream _disappearSound = null!;
     
     public event Action<EntityDamagedEvent>? EntityDamaged;
+    public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
 
     private Sprite2D _sprite = null!;
@@ -175,6 +176,8 @@ public partial class Barrier : RigidBody2D, ISpawnable
         tween.TweenProperty(_glowWrapper, ScaleProperty, new Vector2(0, 1), RemoveDuration);
 
         tween.Finished += QueueFree;
+        
+        Removed?.Invoke();
     }
 
     private const float EffectStartupDuration = 0.15f;

@@ -7,6 +7,11 @@ public interface ISpawnable
     /// Called after entity was damaged by this spawnable
     /// </summary>
     public event Action<EntityDamagedEvent> EntityDamaged;
+    
+    /// <summary>
+    /// Called right after the spawnable has been removed
+    /// </summary>
+    public event Action Removed;
 
     /// <summary>
     /// Filled automatically on context creation. Do not assign a new value to it!
