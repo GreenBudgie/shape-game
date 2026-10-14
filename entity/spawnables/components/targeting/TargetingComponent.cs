@@ -52,8 +52,8 @@ public partial class TargetingComponent : Component
             return;
         }
 
-        const float homingSpeed = 2500f;
-        const float speedChangeRate = 15000f;
+        const float acceleration = 2000f;
+        const float brakingRate = 15000f;
         const float minTurnRate = 5f;
         const float maxTurnRate = 14f;
 
@@ -66,11 +66,12 @@ public partial class TargetingComponent : Component
 
         var distance = GlobalPosition.DistanceTo(Target.GlobalPosition);
         var angle = direction.AngleTo(directionToTarget);
-        var turnRate = Clamp(speed / Max(distance, 1), minTurnRate, maxTurnRate);
+        var turnRate = Clamp(speed * Max(1, 2 * Abs(Sin(angle))) / Max(distance, 1), minTurnRate, maxTurnRate);
         var turn = Clamp(angle, -turnRate * step, turnRate * step);
 
-        var targetSpeed = Min(homingSpeed, maxTurnRate * distance / Max(2 * Abs(Sin(angle)), 0.05f));
-        var desiredVelocity = direction.Rotated(turn) * MoveToward(speed, targetSpeed, speedChangeRate * step);
+        var speedLimit = maxTurnRate * distance / Max(2 * Abs(Sin(angle)), 0.05f);
+        var speedChangeRate = speed > speedLimit ? brakingRate : acceleration;
+        var desiredVelocity = direction.Rotated(turn) * MoveToward(speed, speedLimit, speedChangeRate * step);
         _rigidBodySpawnable.ApplyCentralForce(_rigidBodySpawnable.Mass * (desiredVelocity - velocity) / step);
     }
 
