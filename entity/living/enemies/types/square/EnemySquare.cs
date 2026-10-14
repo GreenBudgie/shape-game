@@ -17,7 +17,7 @@
     {
         base.Setup();
         
-        HealthController.MaxHealth = 20;
+        HealthController.MaxHealth = 12;
     }
     
     protected override void OnActivate()

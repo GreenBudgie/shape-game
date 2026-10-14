@@ -6,6 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://dr5jfdlhatyth" path="res://entity/spawnables/static/explosion/large_explosion.wav" id="4_3kpl1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dew6s"]
+resource_local_to_scene = true
 
 [node name="Explosion" type="ShapeCast2D" unique_id=1546229272]
 enabled = false
