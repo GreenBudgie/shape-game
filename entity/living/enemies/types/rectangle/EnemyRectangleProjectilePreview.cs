@@ -44,8 +44,8 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
         const float initialSpeed = 1500f;
         const float initialSpeedDelta = 250f;
         var speed = RandomUtils.DeltaRange(initialSpeed, initialSpeedDelta);
-        context.Stats.Add(new SpeedStat { Value = speed });
-        context.Stats.Add(new DamageStat { Value = 5 });
+        context.AddStat(new SpeedStat { Value = speed });
+        context.AddStat(new DamageStat { Value = 5 });
         
         context.Spawn();
         QueueFree();

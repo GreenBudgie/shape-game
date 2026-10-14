@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 public class SpawnableContext
@@ -97,7 +98,8 @@ public class SpawnableContext
         set => _originalSource = value;
     }
 
-    public List<SpawnableStat> Stats { get; private set; } = [];
+    private List<SpawnableStat> _stats = [];
+    private bool _isStatModificationAllowed = true;
     
     /// <summary>
     /// Modifiers that are about to be applied to this module when it spawns
@@ -108,11 +110,46 @@ public class SpawnableContext
     /// Modifiers that were already applied
     /// </summary>
     public List<ISpawnableModifier> AppliedModifiers { get; } = [];
-    
-    public List<TStat> GetStats<TStat>() where TStat : SpawnableStat
+
+    private void ValidateStatModificationAllowed()
     {
-        return Stats.OfType<TStat>().ToList();
+        if (!_isStatModificationAllowed)
+        {
+            throw new InvalidOperationException(
+                $"SpawnableContext in current state does not allow stat modifications for spawnable {Spawnable.Node.Name}"
+            );
+        }
     }
+    
+    private void ValidateStatCalculationAllowed()
+    {
+        if (_isStatModificationAllowed)
+        {
+            throw new InvalidOperationException(
+                $"SpawnableContext still allows stat modification for spawnable {Spawnable.Node.Name}, so calculating stats is currently prohibited"
+            );
+        }
+    }
+    
+    public void AddStat(SpawnableStat stat)
+    {
+        ValidateStatModificationAllowed();
+        _stats.Add(stat);
+    }
+    
+    public void AddStats(IEnumerable<SpawnableStat> stats)
+    {
+        ValidateStatModificationAllowed();
+        _stats.AddRange(stats);
+    }
+    
+    public ImmutableList<TStat> GetStats<TStat>() where TStat : SpawnableStat
+    {
+        return _stats.OfType<TStat>().ToImmutableList();
+    }
+
+    private readonly Dictionary<Type, float> _calculatedStats = [];
+    private readonly Dictionary<Type, float> _calculatedStatsWithTriggers = [];
     
     public float CalculateStat<TStat>() where TStat : SpawnableStat
     {
@@ -126,7 +163,21 @@ public class SpawnableContext
     
     private float CalculateStat<TStat>(bool includeTriggers) where TStat : SpawnableStat
     {
-        var statsOfType = Stats.OfType<TStat>().ToList();
+        ValidateStatCalculationAllowed();
+        
+        var statType = typeof(TStat);
+        
+        if (includeTriggers && _calculatedStatsWithTriggers.TryGetValue(statType, out var calculatedStatWithTriggers))
+        {
+            return calculatedStatWithTriggers;
+        }
+        
+        if (!includeTriggers && _calculatedStats.TryGetValue(statType, out var calculatedStat))
+        {
+            return calculatedStat;
+        }
+        
+        var statsOfType = _stats.OfType<TStat>().ToList();
         if (includeTriggers)
         {
             foreach (var trigger in GetTriggerChain())
@@ -150,6 +201,15 @@ public class SpawnableContext
             result = multiplicativeStat.Calculate(result);
         }
 
+        if (includeTriggers)
+        {
+            _calculatedStatsWithTriggers.Add(statType, result);
+        }
+        else
+        {
+            _calculatedStats.Add(statType, result);
+        }
+        
         return result;
     }
 
@@ -164,8 +224,8 @@ public class SpawnableContext
     public void Spawn()
     {
         ApplyModifiers();
-        
-        // No stat modifications after this point
+
+        _isStatModificationAllowed = false;
 
         Spawnable.AddAutoComponents();
         
@@ -202,7 +262,7 @@ public class SpawnableContext
     private void ApplyModifiers()
     {
         var modifierStats = Modifiers.SelectMany(modifier => modifier.Stats);
-        Stats.AddRange(modifierStats);
+        _stats.AddRange(modifierStats);
 
         foreach (var modifier in Modifiers)
         {
@@ -237,7 +297,7 @@ public class SpawnableContext
         Direction = parentContext.Direction;
         Source = parentContext.Source;
         OriginalSource = parentContext.OriginalSource;
-        Stats = parentContext.Stats.ToList();
+        _stats = parentContext._stats.ToList();
         Modifiers = parentContext.Modifiers.ToList();
         // Clone triggers so each inheriting context gets its own fresh spawnable nodes.
         // Sharing them would make several spawnables re-spawn the same one-shot node.
@@ -264,7 +324,7 @@ public class SpawnableContext
             OriginalSource = OriginalSource,
             Modifiers = Modifiers.ToList()
         };
-        clone.Stats.AddRange(Stats);
+        clone._stats.AddRange(_stats);
         clone.Triggers = Triggers.Select(trigger => trigger.Clone()).ToList();
         return clone;
     }

@@ -27,7 +27,7 @@ public partial class HealthController(Entity owner) : Node2D
     /// </summary>
     public bool IsInvulnerable { get; set; }
 
-    public float InvulnerabilityPeriod { get; set; } = 0.01f;
+    public float InvulnerabilityPeriod { get; set; } = 0f;
 
     private Tween? _healthTween;
     private readonly Dictionary<DamageSource, double> _invulnerableUntil = [];
@@ -111,10 +111,11 @@ public partial class HealthController(Entity owner) : Node2D
         if (!IsInvulnerable || delta >= 0)
         {
             Health = Clamp(Health + delta, 0, MaxHealth);
-            if (source.HasValue)
-            {
-                _invulnerableUntil[source.Value] = _elapsedTime + InvulnerabilityPeriod;
-            }
+        }
+        
+        if (delta < 0 && IsZeroApprox(InvulnerabilityPeriod) && source.HasValue)
+        {
+            _invulnerableUntil[source.Value] = _elapsedTime + InvulnerabilityPeriod;
         }
 
         EmitSignalHealthChanged(delta);

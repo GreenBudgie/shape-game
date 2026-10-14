@@ -247,7 +247,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
             return;
         }
 
-        if (body is not CollisionObject2D collisionObject2D)
+        if (body is not CollisionObject2D collisionObject2D || !IsInstanceValid(collisionObject2D))
         {
             return;
         }
@@ -289,7 +289,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
     private void HandlePiercingDetectionAreaBodyExited(Node body)
     {
-        if (body is not CollisionObject2D collisionObject2D)
+        if (body is not CollisionObject2D collisionObject2D || !IsInstanceValid(collisionObject2D))
         {
             return;
         }

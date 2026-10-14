@@ -17,7 +17,7 @@
     {
         base.Setup();
         
-        HealthController.MaxHealth = 12;
+        HealthController.MaxHealth = 20;
     }
     
     protected override void OnActivate()
@@ -76,8 +76,8 @@
             Direction = impulse.Normalized(),
         };
  
-        context.Stats.Add(new SpeedStat { Value = impulseLength });
-        context.Stats.Add(new DamageStat { Value = 2 });
+        context.AddStat(new SpeedStat { Value = impulseLength });
+        context.AddStat(new DamageStat { Value = 2 });
         
         context.Spawn();
 

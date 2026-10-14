@@ -9,4 +9,5 @@ public static class ComponentTypeRegistry
     public static readonly LifetimeComponentType Lifetime = new();
     public static readonly TargetingComponentType Targeting = new();
     public static readonly IgnitionComponentType Ignition = new();
+    public static readonly RemoveExplosionComponentType RemoveExplosion = new();
 }

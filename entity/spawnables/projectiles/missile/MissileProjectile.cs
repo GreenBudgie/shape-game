@@ -13,6 +13,7 @@ public partial class MissileProjectile : BasicRigidBodyProjectile
     {
         base.Setup(context);
         this.AddComponentIfPossible(ComponentTypeRegistry.Targeting);
+        this.AddComponentIfPossible(ComponentTypeRegistry.RemoveExplosion);
     }
 
     protected override void OnReady()

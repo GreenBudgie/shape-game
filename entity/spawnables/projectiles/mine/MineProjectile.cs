@@ -3,6 +3,9 @@ using System.Linq;
 
 public partial class MineProjectile : RigidBody2D, ISpawnable
 {
+    
+    private const float FuseTime = 1f;
+    
     private static readonly Color OversaturatedWhite = new(4, 4, 4);
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://coo3tnuma02fs");
@@ -22,9 +25,19 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
     public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
 
-    private Explosion? _explosion;
     private GlowWrapper _glowWrapper = null!;
     private Sprite2D _sprite = null!;
+
+    public void Setup(SpawnableContext context)
+    {
+        var component = this.AddComponentIfPossible(ComponentTypeRegistry.RemoveExplosion);
+        if (component is not RemoveExplosionComponent explosionComponent)
+        {
+            return;
+        }
+
+        explosionComponent.FuseTime = FuseTime;
+    }
 
     public override void _Ready()
     {
@@ -44,7 +57,6 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
     public void Remove()
     {
         Fuse();
-        // TODO redo this mechanic
         Removed?.Invoke();
     }
 
@@ -72,24 +84,16 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         }
 
         _isFused = true;
-        const float fuseTime = 1f;
-
-        _explosion = Explosion.Create();
-        var explosionContext = new SpawnableContext(_explosion)
-        {
-            Position = GlobalPosition,
-            Source = this,
-            OriginalSource = Context.OriginalSource,
-        };
-
-        explosionContext.Stats.AddRange(Context.GetStats<ExplosionDamageStat>());
-        explosionContext.Stats.AddRange(Context.GetStats<ExplosionRadiusStat>());
-        explosionContext.Stats.Add(new LifetimeStat { Value = fuseTime });
-
-        explosionContext.Spawn();
+        
+        var timer = new Timer();
+        timer.OneShot = true;
+        timer.Autostart = true;
+        timer.WaitTime = FuseTime;
+        timer.Timeout += QueueFree;
+        AddChild(timer);
         
         CreateTween()
-            .TweenProperty(_glowWrapper, IGlow.RadiusProperty, 100, fuseTime)
+            .TweenProperty(_glowWrapper, IGlow.RadiusProperty, 100, FuseTime)
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.In);
 
@@ -97,7 +101,7 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         const int beeps = 4;
         const float pitchIncreasePerBeep = 0.1f;
         var beepDelays = new[] { 0.2f, 0.1f, 0.05f, 0.025f };
-        var initialDelay = fuseTime - beepDelays.Sum() - beepDuration * beeps * 2;
+        var initialDelay = FuseTime - beepDelays.Sum() - beepDuration * beeps * 2;
         var beepScale = new Vector2(1.2f, 1.2f);
 
         var tween = CreateTween();

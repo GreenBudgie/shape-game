@@ -42,8 +42,8 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
             Direction = randomDirection,
         };
 
-        context.Stats.Add(new SpeedStat { Value = randomSpeed });
-        context.Stats.Add(new LifetimeStat { Value = 10f });
+        context.AddStat(new SpeedStat { Value = randomSpeed });
+        context.AddStat(new LifetimeStat { Value = 10f });
 
         context.Spawn();
 

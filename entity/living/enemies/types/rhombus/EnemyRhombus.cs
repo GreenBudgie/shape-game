@@ -147,9 +147,9 @@
         
         const float initialSpeed = 2000f;
         const float lifetimeSeconds = 4;
-        context.Stats.Add(new SpeedStat { Value = initialSpeed });
-        context.Stats.Add(new LifetimeStat { Value = lifetimeSeconds });
-        context.Stats.Add(new DamageStat { Value = 3 });
+        context.AddStat(new SpeedStat { Value = initialSpeed });
+        context.AddStat(new LifetimeStat { Value = lifetimeSeconds });
+        context.AddStat(new DamageStat { Value = 3 });
         
         context.Spawn();
     }

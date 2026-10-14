@@ -85,7 +85,7 @@ public partial class Blaster : Node
             Modifiers = spawnable.Modifiers
         };
         
-        context.Stats.AddRange(spawnable.SpawnableModule.Stats);
+        context.AddStats(spawnable.SpawnableModule.Stats);
 
         foreach (var triggerModule in spawnable.OutgoingTriggers)
         {
