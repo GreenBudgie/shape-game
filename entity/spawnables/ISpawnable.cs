@@ -9,7 +9,9 @@ public interface ISpawnable
     public event Action<EntityDamagedEvent> EntityDamaged;
     
     /// <summary>
-    /// Called right after the spawnable has been removed
+    /// Called right after the spawnable has been removed, or Remove() method has been called.
+    /// This event should NOT be invoked if spawnable is just freed (using QueueFree).
+    /// For that, listen to TreeExiting/TreeExited.
     /// </summary>
     public event Action Removed;
 

@@ -59,12 +59,6 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
     public sealed override void _Process(double delta)
     {
-        if (ShouldRemoveWhenOutsidePlayableArea() && this.IsOutsidePlayableArea())
-        {
-            Remove();
-            return;
-        }
-
         OnProcess(delta);
     }
 
@@ -74,11 +68,6 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
     /// </summary>
     protected virtual void OnProcess(double delta)
     {
-    }
-
-    protected virtual bool ShouldRemoveWhenOutsidePlayableArea()
-    {
-        return true;
     }
 
     public void Remove()

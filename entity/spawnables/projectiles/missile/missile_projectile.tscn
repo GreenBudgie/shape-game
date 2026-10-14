@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://h41qap5l8leg"]
+
+[ext_resource type="Texture2D" uid="uid://cj3s0ip1001kx" path="res://entity/spawnables/projectiles/missile/missile.png" id="1_udkol"]
+[ext_resource type="Script" uid="uid://dsbmf0bjhayjg" path="res://entity/spawnables/projectiles/missile/MissileProjectile.cs" id="1_x6n4j"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_meobd"]
+friction = 0.5
+bounce = 0.5
+
+[node name="MissileProjectile" type="RigidBody2D" unique_id=154781459]
+collision_layer = 2
+collision_mask = 308
+mass = 0.5
+physics_material_override = SubResource("PhysicsMaterial_meobd")
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 5
+linear_damp = 2.0
+script = ExtResource("1_x6n4j")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1843183553]
+texture = ExtResource("1_udkol")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=770952002]
+polygon = PackedVector2Array(-23, 39, -5, -38, 0, -41, 5, -38, 23, 39)

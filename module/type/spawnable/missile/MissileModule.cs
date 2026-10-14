@@ -8,13 +8,13 @@ public partial class MissileModule : SpawnableModule
         new DamageStat { Value = 3 },
         new ExplosionDamageStat { Value = 5 },
         new ExplosionRadiusStat { Value = 200 },
-        new SpeedStat { Value = 2000 },
+        new SpeedStat { Value = 500 },
         new ReloadStat { Value = 1f },
-        new LifetimeStat { Value = 5 },
+        new LifetimeStat { Value = 4 },
     ];
 
     public override ISpawnable CreateSpawnable()
     {
-        return MiniSphereProjectile.Create();
+        return MissileProjectile.Create();
     }
 }

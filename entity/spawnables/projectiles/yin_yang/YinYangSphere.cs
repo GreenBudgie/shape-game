@@ -55,12 +55,6 @@ public partial class YinYangSphere : BasicRigidBodyProjectile
         }
     }
 
-    protected override bool ShouldRemoveWhenOutsidePlayableArea()
-    {
-        var isDetached = _followTarget == null;
-        return isDetached;
-    }
-
     public override void OnRemove()
     {
         BurstParticleEffect.Create(GlobalPosition)
