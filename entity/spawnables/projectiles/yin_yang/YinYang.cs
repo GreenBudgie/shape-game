@@ -60,10 +60,11 @@ public partial class YinYang : Node2D, ISpawnable
 
     private SpawnableContext CreateSphereContext(YinYangType type, Node2D followTarget)
     {
-        var producer = new YinYangSphereProducer(type, followTarget);
+        var producer = new YinYangSphereProducer(Context.SpawnableProducer, type, followTarget);
         
         var context = Context.Clone(producer);
         context.Position = followTarget.GlobalPosition;
+        context.CalculateStats();
         context.CreateSpawnable();
         return context;
     }
@@ -97,9 +98,13 @@ public partial class YinYang : Node2D, ISpawnable
         Removed?.Invoke();
     }
 
-    private class YinYangSphereProducer(YinYangType type, Node2D followTarget) : ISpawnableProducer
+    private class YinYangSphereProducer(
+        ISpawnableProducer parentProducer,
+        YinYangType type,
+        Node2D followTarget
+    ) : ISpawnableProducer
     {
-        public List<SpawnableStat> GetStats() => [];
+        public List<SpawnableStat> GetStats() => parentProducer.GetStats();
 
         public ISpawnable CreateSpawnable()
         {

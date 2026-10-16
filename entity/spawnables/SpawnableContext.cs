@@ -7,6 +7,8 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
 {
 
     public SpawnableContextState State = SpawnableContextState.New;
+    
+    public ISpawnableProducer SpawnableProducer => spawnableProducer;
 
     private List<DelegatorData> _delegators = [];
     
@@ -63,7 +65,15 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
         set => _originalSource = value;
     }
 
-    private List<SpawnableStat> _stats = [];
+    /// <summary>
+    /// Stats that are externally added to the context on its creation
+    /// </summary>
+    private List<SpawnableStat> _customStats = [];
+    
+    /// <summary>
+    /// Stats from spawnable producer, modifiers and delegators
+    /// </summary>
+    private List<SpawnableStat> _bakedStats = [];
     
     /// <summary>
     /// Modifiers that are about to be applied to this module when it spawns
@@ -98,18 +108,19 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
     public void AddStat(SpawnableStat stat)
     {
         ValidateStatModificationAllowed();
-        _stats.Add(stat);
+        _customStats.Add(stat);
     }
     
     public void AddStats(IEnumerable<SpawnableStat> stats)
     {
         ValidateStatModificationAllowed();
-        _stats.AddRange(stats);
+        _customStats.AddRange(stats);
     }
     
     public ImmutableList<TStat> GetStats<TStat>() where TStat : SpawnableStat
     {
-        return _stats.OfType<TStat>().ToImmutableList();
+        ValidateStatRetrievalAllowed();
+        return _customStats.Concat(_bakedStats).OfType<TStat>().ToImmutableList();
     }
 
     private readonly Dictionary<Type, float> _calculatedStats = [];
@@ -141,7 +152,7 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
             return calculatedStat;
         }
         
-        var statsOfType = _stats.OfType<TStat>().ToList();
+        var statsOfType = _customStats.Concat(_bakedStats).OfType<TStat>().ToList();
         if (withDelegated)
         {
             foreach (var delegatedContext in GetAllDelegatedContexts())
@@ -192,13 +203,15 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
             throw new InvalidOperationException("Stats can only be calculated in New state");
         }
         
-        AddStats(spawnableProducer.GetStats());
+        _bakedStats.AddRange(spawnableProducer.GetStats());
         
         var modifierStats = Modifiers.SelectMany(modifier => modifier.GetStats());
-        AddStats(modifierStats);
+        _bakedStats.AddRange(modifierStats);
 
         var delegatorsStats = _delegators.SelectMany(delegator => delegator.Delegator.GetStats());
-        AddStats(delegatorsStats);
+        _bakedStats.AddRange(delegatorsStats);
+
+        State = SpawnableContextState.StatsCalculated;
     }
 
     /// <summary>
@@ -295,10 +308,6 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
         }
     }
 
-    /// <summary>
-    /// Creates a deep copy of this context with the same parameters and independently
-    /// cloned triggers. Used so that a context can be spawned more than once (e.g. one per YinYang sphere).
-    /// </summary>
     public SpawnableContext Clone()
     {
         return Clone(spawnableProducer);
@@ -319,7 +328,7 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
             Direction = Direction,
             Source = Source,
             OriginalSource = OriginalSource,
-            _stats = _stats.ToList(),
+            _customStats = _customStats.ToList(),
             Modifiers = Modifiers.ToList(),
             _delegators = clonedDelegators,
         };
