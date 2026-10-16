@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 public partial class EnemyDamageModule : ModifierModule
 {
 
@@ -28,14 +26,9 @@ public partial class EnemyDamageModule : ModifierModule
         ShowEffect("+1%", ColorScheme.LightGreen);
     }
 
-    public override List<SpawnableStat> GetStats()
+    public override ISpawnableModifier CreateModifier(SpawnableContext context)
     {
-        if (_data.AdditionalDamagePercent == 0)
-        {
-            return [];
-        }
-
-        return [new DamageStat { ValuePercent = _data.AdditionalDamagePercent }];
+        return new EnemyDamageModifier(_data.AdditionalDamagePercent);
     }
 
 }

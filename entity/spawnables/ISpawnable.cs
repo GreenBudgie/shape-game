@@ -30,8 +30,7 @@ public interface ISpawnable
     public void Remove();
     
     /// <summary>
-    /// Called right after an instance is created, before modifiers and components are added to the context.
-    /// Context can still be modified after this point.
+    /// Called right after an instance is created. Context can still be modified after this point.
     /// </summary>
     public void Setup(SpawnableContext context)
     {

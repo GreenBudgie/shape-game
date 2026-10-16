@@ -3,71 +3,35 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-public class SpawnableContext
+public class SpawnableContext(ISpawnableProducer spawnableProducer)
 {
 
-    // Only set for contexts that may be cloned (triggers). Cloning needs a way to build a fresh node.
-    private readonly Func<ISpawnable>? _spawnableFactory;
+    public SpawnableContextState State = SpawnableContextState.New;
 
-    public SpawnableContext(ISpawnable spawnable)
-    {
-        Spawnable = spawnable;
-        Spawnable.Context = this;
-        Spawnable.Setup(this);
-    }
-
-    public SpawnableContext(Func<ISpawnable> spawnableFactory)
-    {
-        _spawnableFactory = spawnableFactory;
-        Spawnable = spawnableFactory();
-        Spawnable.Context = this;
-        Spawnable.Setup(this);
-    }
-
-    public List<SpawnableContext> Triggers { get; private set; } = [];
+    private List<DelegatorData> _delegators = [];
     
-    public List<SpawnableContext> GetTriggerChain()
+    private List<SpawnableContext> GetAllDelegatedContexts()
     {
-        return Triggers.SelectMany(trigger => trigger.GetTriggerChain()).Concat(Triggers).ToList();
-    }
-
-    /// <summary>
-    /// Context that this context was inherited from.
-    /// </summary>
-    public SpawnableContext? ParentContext { get; set; }
-
-    /// <summary>
-    /// Contexts that inherited from this context
-    /// </summary>
-    public List<SpawnableContext> ChildContexts { get; } = [];
-
-    /// <summary>
-    /// Recursively collects all child contexts (children of children, and so on) and returns them as well as the
-    /// current context.
-    ///
-    /// Useful when needed to perform operations on all inherited contexts like they are one spawnable.
-    /// </summary>
-    public List<SpawnableContext> GetContextChain()
-    {
-        return ChildContexts.SelectMany(childContext => childContext.GetContextChain())
-            .Prepend(this)
+        var directDelegatedContexts = _delegators.Select(delegator => delegator.TargetContext).ToList();
+        return directDelegatedContexts.SelectMany(context => context.GetAllDelegatedContexts())
+            .Concat(directDelegatedContexts)
             .ToList();
     }
 
-    /// <summary>
-    /// Adds a component to every spawnable in context chain that supports it.
-    ///
-    /// Only add components on context preparation.
-    /// </summary>
-    public void AddComponentToChain(ComponentType type)
+    public void AddLifecycleDelegator(ISpawnableContextLifecycleDelegator delegator, SpawnableContext targetContext)
     {
-        foreach (var context in GetContextChain())
+        if (State is not SpawnableContextState.New)
         {
-            context.Spawnable.AddComponentIfPossible(type);
+            throw new InvalidOperationException("Delegators can only be added to SpawnableContext in New state");
         }
+        
+        _delegators.Add(new DelegatorData(delegator, targetContext));
     }
-    
-    public ISpawnable Spawnable { get; }
+
+    /// <summary>
+    /// The spawnable itself. Not null if state of the context is not New.
+    /// </summary>
+    public ISpawnable? Spawnable { get; private set; }
 
     /// <summary>
     /// Where the spawnable should be created, in global coords
@@ -99,7 +63,6 @@ public class SpawnableContext
     }
 
     private List<SpawnableStat> _stats = [];
-    private bool _isStatModificationAllowed = true;
     
     /// <summary>
     /// Modifiers that are about to be applied to this module when it spawns
@@ -113,20 +76,20 @@ public class SpawnableContext
 
     private void ValidateStatModificationAllowed()
     {
-        if (!_isStatModificationAllowed)
+        if (State is SpawnableContextState.Preparing or SpawnableContextState.Spawned)
         {
             throw new InvalidOperationException(
-                $"SpawnableContext in current state does not allow stat modifications for spawnable {Spawnable.Node.Name}"
+                $"SpawnableContext in state {State} does not allow stat modifications"
             );
         }
     }
     
     private void ValidateStatCalculationAllowed()
     {
-        if (_isStatModificationAllowed)
+        if (State is SpawnableContextState.New)
         {
             throw new InvalidOperationException(
-                $"SpawnableContext still allows stat modification for spawnable {Spawnable.Node.Name}, so calculating stats is currently prohibited"
+                $"SpawnableContext in state {State} still allows stat modification, so calculating stats is currently prohibited"
             );
         }
     }
@@ -149,40 +112,40 @@ public class SpawnableContext
     }
 
     private readonly Dictionary<Type, float> _calculatedStats = [];
-    private readonly Dictionary<Type, float> _calculatedStatsWithTriggers = [];
+    private readonly Dictionary<Type, float> _calculatedStatsWithDelegated = [];
     
     public float CalculateStat<TStat>() where TStat : SpawnableStat
     {
         return CalculateStat<TStat>(false);
     }
     
-    public float CalculateStatWithTriggers<TStat>() where TStat : SpawnableStat
+    public float CalculateStatWithDelegated<TStat>() where TStat : SpawnableStat
     {
         return CalculateStat<TStat>(true);
     }
     
-    private float CalculateStat<TStat>(bool includeTriggers) where TStat : SpawnableStat
+    private float CalculateStat<TStat>(bool withDelegated) where TStat : SpawnableStat
     {
         ValidateStatCalculationAllowed();
         
         var statType = typeof(TStat);
         
-        if (includeTriggers && _calculatedStatsWithTriggers.TryGetValue(statType, out var calculatedStatWithTriggers))
+        if (withDelegated && _calculatedStatsWithDelegated.TryGetValue(statType, out var calculatedStatWithDelegated))
         {
-            return calculatedStatWithTriggers;
+            return calculatedStatWithDelegated;
         }
         
-        if (!includeTriggers && _calculatedStats.TryGetValue(statType, out var calculatedStat))
+        if (!withDelegated && _calculatedStats.TryGetValue(statType, out var calculatedStat))
         {
             return calculatedStat;
         }
         
         var statsOfType = _stats.OfType<TStat>().ToList();
-        if (includeTriggers)
+        if (withDelegated)
         {
-            foreach (var trigger in GetTriggerChain())
+            foreach (var delegatedContext in GetAllDelegatedContexts())
             {
-                statsOfType.AddRange(trigger.GetStats<TStat>());
+                statsOfType.AddRange(delegatedContext.GetStats<TStat>());
             }
         }
         
@@ -201,9 +164,9 @@ public class SpawnableContext
             result = multiplicativeStat.Calculate(result);
         }
 
-        if (includeTriggers)
+        if (withDelegated)
         {
-            _calculatedStatsWithTriggers.Add(statType, result);
+            _calculatedStatsWithDelegated.Add(statType, result);
         }
         else
         {
@@ -223,9 +186,36 @@ public class SpawnableContext
     /// </summary>
     public void Spawn()
     {
-        ApplyModifiers();
+        if (State is SpawnableContextState.Spawned or SpawnableContextState.Preparing)
+        {
+            throw new InvalidOperationException("A spawnable from SpawnableContext can only be spawned once");
+        }
+        
+        Spawnable = spawnableProducer.CreateSpawnable();
+        Spawnable.Context = this;
 
-        _isStatModificationAllowed = false;
+        AddStats(spawnableProducer.GetStats());
+        
+        var modifierStats = Modifiers.SelectMany(modifier => modifier.GetStats());
+        AddStats(modifierStats);
+
+        var delegatorsStats = _delegators.SelectMany(delegator => delegator.Delegator.GetStats());
+        AddStats(delegatorsStats);
+        
+        foreach (var delegator in _delegators)
+        {
+            delegator.Delegator.DelegateLifecycle(this, delegator.TargetContext);
+        }
+                
+        Spawnable.Setup(this);
+        
+        State = SpawnableContextState.Preparing;
+
+        foreach (var modifier in Modifiers)
+        {
+            modifier.Modify(this);
+            AppliedModifiers.Add(modifier);
+        }
 
         Spawnable.AddAutoComponents();
         
@@ -250,7 +240,10 @@ public class SpawnableContext
 
     private void AddToTree()
     {
-        ShapeGame.Instance.AddChild(Spawnable.Node);
+        ShapeGame.Instance.AddChild(Spawnable!.Node);
+
+        State = SpawnableContextState.Spawned;
+        
         Spawnable.Node.AddToGroup(SpawnableManager.SpawnablesGroupName);
 
         foreach (var component in Spawnable.GetComponents())
@@ -259,74 +252,51 @@ public class SpawnableContext
         }
     }
 
-    private void ApplyModifiers()
-    {
-        var modifierStats = Modifiers.SelectMany(modifier => modifier.Stats);
-        _stats.AddRange(modifierStats);
-
-        foreach (var modifier in Modifiers)
-        {
-            modifier.Modify(this);
-            AppliedModifiers.Add(modifier);
-        }
-    }
-
-    public void LaunchTriggers(Vector2 position, Vector2 direction, Node2D source)
-    {
-        foreach (var trigger in Triggers)
-        {
-            trigger.Position = position;
-            trigger.Direction = direction;
-            trigger.Source = source;
-
-            trigger.Spawn();
-        }
-    }
-    
     /// <summary>
-    /// Inherits ALL parameters from the parent context. Used when a spawnable is created by another spawnable and
-    /// SHOULD inherit its stats and modifiers, like it was created directly. Useful for proxy-like spawnables.
-    /// </summary>
-    /// <param name="parentContext">Context to inherit from</param>
-    public void InheritFrom(SpawnableContext parentContext)
-    {
-        ParentContext = parentContext;
-        parentContext.ChildContexts.Add(this);
-        
-        Position = parentContext.Position;
-        Direction = parentContext.Direction;
-        Source = parentContext.Source;
-        OriginalSource = parentContext.OriginalSource;
-        _stats = parentContext._stats.ToList();
-        Modifiers = parentContext.Modifiers.ToList();
-        // Clone triggers so each inheriting context gets its own fresh spawnable nodes.
-        // Sharing them would make several spawnables re-spawn the same one-shot node.
-        Triggers = parentContext.Triggers.Select(trigger => trigger.Clone()).ToList();
-    }
-
-    /// <summary>
-    /// Creates a deep copy of this context with a freshly created spawnable and independently
+    /// Creates a deep copy of this context with the same parameters and independently
     /// cloned triggers. Used so that a context can be spawned more than once (e.g. one per YinYang sphere).
     /// </summary>
     public SpawnableContext Clone()
     {
-        if (_spawnableFactory == null)
-        {
-            throw new InvalidOperationException(
-                "Cannot clone a SpawnableContext created without a factory. Triggers must use the factory constructor.");
-        }
-
-        var clone = new SpawnableContext(_spawnableFactory)
+        var clonedDelegators = _delegators
+            .Select(delegator => delegator with { TargetContext = delegator.TargetContext.Clone() })
+            .ToList();
+        return new SpawnableContext(spawnableProducer)
         {
             Position = Position,
             Direction = Direction,
             Source = Source,
             OriginalSource = OriginalSource,
-            Modifiers = Modifiers.ToList()
+            _stats = _stats.ToList(),
+            Modifiers = Modifiers.ToList(),
+            _delegators = clonedDelegators,
         };
-        clone._stats.AddRange(_stats);
-        clone.Triggers = Triggers.Select(trigger => trigger.Clone()).ToList();
-        return clone;
     }
+    
+    /// <summary>
+    /// Creates a deep copy of this context with the same parameters, but different spawnable, and independently
+    /// cloned triggers. Used so that a context can be spawned more than once (e.g. one per YinYang sphere).
+    /// </summary>
+    public SpawnableContext Clone(ISpawnableProducer producer)
+    {
+        var clonedDelegators = _delegators
+            .Select(delegator => delegator with { TargetContext = delegator.TargetContext.Clone() })
+            .ToList();
+        return new SpawnableContext(producer)
+        {
+            Position = Position,
+            Direction = Direction,
+            Source = Source,
+            OriginalSource = OriginalSource,
+            _stats = _stats.ToList(),
+            Modifiers = Modifiers.ToList(),
+            _delegators = clonedDelegators,
+        };
+    }
+
+    private readonly record struct DelegatorData(
+        ISpawnableContextLifecycleDelegator Delegator,
+        SpawnableContext TargetContext
+    );
 
 }

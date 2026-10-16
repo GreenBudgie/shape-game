@@ -10,4 +10,5 @@ public static class ComponentTypeRegistry
     public static readonly TargetingComponentType Targeting = new();
     public static readonly IgnitionComponentType Ignition = new();
     public static readonly RemoveExplosionComponentType RemoveExplosion = new();
+    public static readonly RemoveTriggerComponentType RemoveTrigger = new();
 }

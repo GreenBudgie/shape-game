@@ -9,7 +9,7 @@ public class TriggerModuleType : ModuleType
 
     public override string Name => "Trigger";
 
-    public override string Description => "Spawns another projectile when connected projectile expires";
+    public override string Description => "Spawns another projectile when connected projectile is removed";
 
     public override int Price => 15;
 

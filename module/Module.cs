@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public abstract partial class Module : Node, IStatsAware
+public abstract partial class Module : Node
 {
 
     public Module()
@@ -12,10 +12,6 @@ public abstract partial class Module : Node, IStatsAware
     public abstract ModuleType Type { get; }
 
     public bool IsActive { get; private set; }
-    
-    public virtual List<SpawnableStat> GetStats() => [];
-
-    public IEnumerable<SpawnableStat> Stats => GetStats();
 
     public void Activate()
     {

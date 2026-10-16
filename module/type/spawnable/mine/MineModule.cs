@@ -5,17 +5,29 @@ public partial class MineModule : SpawnableModule
 
     public override ModuleType Type => ModuleTypeRegistry.Mine;
 
-    public override List<SpawnableStat> GetStats() => [
-        new SpeedStat { Value = 5000 },
-        new ReloadStat { Value = 3 },
-        new ExplosionDamageStat { Value = 10 },
-        new ExplosionRadiusStat { Value = 400 },
-        new LifetimeStat { Value = 0.5f },
-    ];
-
-    public override ISpawnable CreateSpawnable()
+    public override ISpawnableProducer CreateProducer()
     {
-        return MineProjectile.Create();
+        return MineModuleProducer.Instance;
+    }
+
+    private class MineModuleProducer : ISpawnableProducer
+    {
+
+        public static readonly MineModuleProducer Instance = new();
+
+        public List<SpawnableStat> GetStats() => [
+            new SpeedStat { Value = 5000 },
+            new ReloadStat { Value = 3 },
+            new ExplosionDamageStat { Value = 10 },
+            new ExplosionRadiusStat { Value = 400 },
+            new LifetimeStat { Value = 0.5f },
+        ];
+
+        public ISpawnable CreateSpawnable()
+        {
+            return MineProjectile.Create();
+        }
+
     }
 
 }
