@@ -239,13 +239,13 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
     }
 
     /// <summary>
-    /// Prepares the spawnable and adds it to the tree. This method should only be called after Setup().
+    /// Prepares the spawnable and adds it to the tree. This method should only be called after CreateSpawnable().
     /// </summary>
     public void Spawn()
     {
         if (State is not SpawnableContextState.SpawnableCreated)
         {
-            throw new InvalidOperationException("Spawnable can only be spawned in Preparing state");
+            throw new InvalidOperationException("Spawnable can only be spawned in SpawnableCreated state");
         }
         
         foreach (var modifier in Modifiers)

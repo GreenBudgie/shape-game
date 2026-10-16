@@ -35,7 +35,7 @@ public interface ISpawnable
     public void Remove();
     
     /// <summary>
-    /// Called right after an instance is created. Context can still be modified after this point.
+    /// Called right after an instance is created. Context can still be modified after this point, but stats cannot.
     /// </summary>
     public void Setup(SpawnableContext context)
     {

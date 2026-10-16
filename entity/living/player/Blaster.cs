@@ -83,6 +83,7 @@ public partial class Blaster : Node
             Position = player.GetGlobalNosePosition(),
             Direction = Vector2.FromAngle(player.GetTilt() - Pi / 2),
             Source = player,
+            OriginalSource = player,
             Modifiers = data.Modifiers
         };
 
