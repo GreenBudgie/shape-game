@@ -5,7 +5,7 @@ public partial class IgnitionModule : ModifierModule
 
     public override ModuleType Type => ModuleTypeRegistry.Ignition;
 
-    public override ISpawnableModifier CreateModifier(SpawnableContext context)
+    public override ISpawnableModifier CreateModifier()
     {
         return IgnitionModifier.Instance;
     }

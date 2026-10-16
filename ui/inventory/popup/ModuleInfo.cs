@@ -70,13 +70,13 @@ public partial class ModuleInfo : Control
 
     private void AddStats()
     {
-        if (!_module.Stats.Any())
+        if (_module.GetStats().Count == 0)
         {
             _statsContainer.QueueFree();
             return;
         }
         
-        foreach (var stat in _module.Stats)
+        foreach (var stat in _module.GetStats())
         {
             AddStat(stat);
         }

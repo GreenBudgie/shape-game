@@ -1,6 +1,13 @@
+using System.Collections.Generic;
+
 public abstract partial class ModifierModule : Module
 {
 
-    public abstract ISpawnableModifier CreateModifier(SpawnableContext context);
+    public override List<SpawnableStat> GetStats()
+    {
+        return CreateModifier().GetStats();
+    }
+    
+    public abstract ISpawnableModifier CreateModifier();
 
 }

@@ -5,7 +5,7 @@ public partial class ExtraFireRateModule : ModifierModule
 
     public override ModuleType Type => ModuleTypeRegistry.ExtraFireRate;
 
-    public override ISpawnableModifier CreateModifier(SpawnableContext context)
+    public override ISpawnableModifier CreateModifier()
     {
         return ExtraFireRateModifier.Instance;
     }

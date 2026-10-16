@@ -6,7 +6,7 @@ public partial class ExtraDamageModule : ModifierModule
 
     public override ModuleType Type => ModuleTypeRegistry.ExtraDamage;
 
-    public override ISpawnableModifier CreateModifier(SpawnableContext context)
+    public override ISpawnableModifier CreateModifier()
     {
         return ExtraDamageModifier.Instance;
     }
@@ -27,18 +27,18 @@ public partial class ExtraDamageModule : ModifierModule
             {
                 return;
             }
-
-            var projectiles = context.GetContextChain()
-                .Select(ctx => ctx.Spawnable.Node)
-                .OfType<BasicRigidBodyProjectile>();
-            foreach (var projectile in projectiles)
+            
+            var projectile = context.Spawnable.Node;
+            if (projectile is not RigidBody2D rigidBody)
             {
-                TrailParticles.Create(projectile)
-                    .WithTexture(ParticleTextures.Triangle)
-                    .WithScale(0.4f, 0.1f)
-                    .Color(ColorScheme.Red)
-                    .Spawn();
+                return;
             }
+
+            TrailParticles.Create(rigidBody)
+                .WithTexture(ParticleTextures.Triangle)
+                .WithScale(0.4f, 0.1f)
+                .Color(ColorScheme.Red)
+                .Spawn();
         }
 
     }

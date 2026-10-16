@@ -26,7 +26,7 @@ public partial class EnemyDamageModule : ModifierModule
         ShowEffect("+1%", ColorScheme.LightGreen);
     }
 
-    public override ISpawnableModifier CreateModifier(SpawnableContext context)
+    public override ISpawnableModifier CreateModifier()
     {
         return new EnemyDamageModifier(_data.AdditionalDamagePercent);
     }

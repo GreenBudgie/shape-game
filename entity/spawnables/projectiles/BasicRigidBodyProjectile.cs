@@ -72,7 +72,6 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
     public void Remove()
     {
-        LaunchTriggers();
         Removed?.Invoke();
         OnRemove();
     }
@@ -80,11 +79,6 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
     public virtual void OnRemove()
     {
         QueueFree();   
-    }
-
-    protected void LaunchTriggers()
-    {
-        Context.LaunchTriggers(GlobalPosition, LinearVelocity.Normalized(), this);
     }
 
     public virtual void PlayerShapeEntered(Player player)
@@ -139,7 +133,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
         if (collisionObject2D is Entity entity)
         {
-            var damage = Context.CalculateStat<DamageStat>();
+            var damage = Context.GetStat<DamageStat>();
             entity.HealthController.Damage(DamageSource.Projectile, damage);
             var entityDamagedEvent = new EntityDamagedEvent(entity, damage);
             EntityDamaged?.Invoke(entityDamagedEvent);
@@ -167,7 +161,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
     private void SetupPiercing()
     {
-        ObstaclesToPierce = RoundToInt(Context.CalculateStat<PiercingStat>());
+        ObstaclesToPierce = RoundToInt(Context.GetStat<PiercingStat>());
         
         if (ObstaclesToPierce <= 0)
         {
@@ -259,7 +253,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
         if (collisionObject2D is Entity entity)
         {
-            entity.HealthController.Damage(DamageSource.Projectile, Context.CalculateStat<DamageStat>());
+            entity.HealthController.Damage(DamageSource.Projectile, Context.GetStat<DamageStat>());
         }
 
         OnWallHit(collisionObject2D);

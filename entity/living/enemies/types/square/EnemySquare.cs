@@ -69,7 +69,7 @@
         var impulse = Vector2.Down * velocityLength * 0.5f - LinearVelocity * randomStrength;
         var impulseLength = impulse.Length();
         
-        var context = new SpawnableContext(EnemySquareProjectile.Create())
+        var context = new SpawnableContext(new SingleSpawnableProducer(EnemySquareProjectile.Create()))
         {
             Position = GlobalPosition,
             Source = this,
@@ -79,7 +79,7 @@
         context.AddStat(new SpeedStat { Value = impulseLength });
         context.AddStat(new DamageStat { Value = 2 });
         
-        context.Spawn();
+        context.ForceSpawn();
 
         const float impulseOffset = 10f;
         var randomOffset = new Vector2(

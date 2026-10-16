@@ -47,20 +47,21 @@ public partial class Blaster : Node
             var modifiers = incomingModules
                 .Select(inventoryModule => inventoryModule.Module)
                 .OfType<ModifierModule>()
+                .Select(modifier => modifier.CreateModifier())
                 .ToList();
             
-            var incomingTriggers = incomingModules
-                .Where(inventoryModule => inventoryModule.Module.Type is TriggerModuleType)
+            var incomingDelegators = incomingModules
+                .Where(inventoryModule => inventoryModule.Module.Type is DelegatorModuleType)
                 .ToHashSet();
-            var outgoingTriggers = outgoingModules
-                .Where(inventoryModule => inventoryModule.Module.Type is TriggerModuleType)
+            var outgoingDelegators = outgoingModules
+                .Where(inventoryModule => inventoryModule.Module.Type is DelegatorModuleType)
                 .ToHashSet();
 
-            spawnables.Add(new SpawnableData(module, modifiers, incomingTriggers, outgoingTriggers));
+            spawnables.Add(new SpawnableData(module.CreateProducer(), modifiers, incomingDelegators, outgoingDelegators));
         }
         
-        var spawnablesWithoutTriggers = spawnables.Where(spawnable => spawnable.IncomingTriggers.Count == 0).ToList();
-        foreach (var spawnable in spawnablesWithoutTriggers)
+        var spawnablesWithoutDelegators = spawnables.Where(spawnable => spawnable.IncomingDelegatorModules.Count == 0).ToList();
+        foreach (var spawnable in spawnablesWithoutDelegators)
         {
             var context = CreateContext(spawnables, spawnable);
             Spawn(context);
@@ -69,7 +70,7 @@ public partial class Blaster : Node
         return true;
     }
 
-    private SpawnableContext CreateContext(List<SpawnableData> allSpawnables, SpawnableData spawnable)
+    private SpawnableContext CreateContext(List<SpawnableData> allData, SpawnableData data)
     {
         var player = Player.FindPlayer();
         if (player == null)
@@ -77,45 +78,46 @@ public partial class Blaster : Node
             throw new Exception("Blaster cannot fire - player wasn't found");
         }
 
-        var context = new SpawnableContext(spawnable.SpawnableModule.CreateSpawnable)
+        var context = new SpawnableContext(data.SpawnableProducer)
         {
             Position = player.GetGlobalNosePosition(),
             Direction = Vector2.FromAngle(player.GetTilt() - Pi / 2),
             Source = player,
-            Modifiers = spawnable.Modifiers
+            Modifiers = data.Modifiers
         };
-        
-        context.AddStats(spawnable.SpawnableModule.Stats);
 
-        foreach (var triggerModule in spawnable.OutgoingTriggers)
+        foreach (var delegatorModule in data.OutgoingDelegatorModules)
         {
-            var spawnablesToTrigger = allSpawnables
-                .Where(currentSpawnable => currentSpawnable.IncomingTriggers.Contains(triggerModule))
+            var spawnablesToDelegate = allData
+                .Where(currentData => currentData.IncomingDelegatorModules.Contains(delegatorModule))
                 .ToHashSet();
-            
-            foreach (var spawnableToTrigger in spawnablesToTrigger)
+
+            foreach (var spawnableToDelegate in spawnablesToDelegate)
             {
-                var triggerContext = CreateContext(allSpawnables, spawnableToTrigger);
-                context.Triggers.Add(triggerContext);
+                var delegator = ((DelegatorModule)delegatorModule.Module).CreateDelegator();
+                var delegatedContext = CreateContext(allData, spawnableToDelegate);
+                context.AddLifecycleDelegator(delegator, delegatedContext);
             }
         }
+        
+        context.CalculateStats();
 
         return context;
     }
 
     private void Spawn(SpawnableContext context)
     {
-        context.Spawn();
+        context.ForceSpawn();
 
-        var reload = context.CalculateStatWithDelegated<ReloadStat>();
+        var reload = context.GetStatWithDelegated<ReloadStat>();
         Delay += Max(reload, MinDelay);
     }
 
     private readonly record struct SpawnableData(
-        SpawnableModule SpawnableModule,
-        List<ModifierModule> Modifiers,
-        HashSet<InventoryModule> IncomingTriggers,
-        HashSet<InventoryModule> OutgoingTriggers
+        ISpawnableProducer SpawnableProducer,
+        List<ISpawnableModifier> Modifiers,
+        HashSet<InventoryModule> IncomingDelegatorModules,
+        HashSet<InventoryModule> OutgoingDelegatorModules
     );
 
 }

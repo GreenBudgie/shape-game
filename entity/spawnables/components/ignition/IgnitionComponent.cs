@@ -16,7 +16,7 @@ public partial class IgnitionComponent : Component
 
     private void OnEntityDamaged(EntityDamagedEvent @event)
     {
-        var burningSeconds = Spawnable.Context.CalculateStat<BurningStat>();
+        var burningSeconds = Spawnable.Context.GetStat<BurningStat>();
         if (burningSeconds > 0)
         {
             @event.Entity.EffectController.AddEffect(EntityEffectTypeRegistry.Burning, burningSeconds);

@@ -9,7 +9,7 @@ public partial class LifetimeComponent : Component
         var lifetimeTimer = new Timer();
         lifetimeTimer.OneShot = true;
         lifetimeTimer.Autostart = true;
-        lifetimeTimer.WaitTime = context.CalculateStat<LifetimeStat>();
+        lifetimeTimer.WaitTime = context.GetStat<LifetimeStat>();
         
         lifetimeTimer.Timeout += spawnable.Remove;
         

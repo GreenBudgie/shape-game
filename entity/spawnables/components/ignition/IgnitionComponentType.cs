@@ -12,6 +12,6 @@ public class IgnitionComponentType : ComponentType
 
     public override bool ShouldAutoAdd(ISpawnable spawnable)
     {
-        return spawnable.Context.CalculateStat<BurningStat>() > 0;
+        return spawnable.Context.GetStat<BurningStat>() > 0;
     }
 }

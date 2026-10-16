@@ -1,10 +1,13 @@
-public partial class TriggerModule : ConnectorModule
+using System;
+
+public partial class TriggerModule : DelegatorModule
 {
 
     public override ModuleType Type => ModuleTypeRegistry.Trigger;
 
-    public override ISpawnableContextLifecycleDelegator CreateConnector(SpawnableContext context)
+    public override ISpawnableContextLifecycleDelegator CreateDelegator()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
+
 }

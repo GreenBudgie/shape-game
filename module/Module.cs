@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 
-public abstract partial class Module : Node
+public abstract partial class Module : Node, IStatsAware
 {
 
     public Module()
     {
         ShapeGame.Instance.AddChild(this);
     }
-    
+
+    public abstract List<SpawnableStat> GetStats();
+
     public abstract ModuleType Type { get; }
 
     public bool IsActive { get; private set; }

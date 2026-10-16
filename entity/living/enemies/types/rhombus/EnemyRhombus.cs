@@ -138,7 +138,7 @@
 
     private void FireProjectile(Vector2 spawnPosition)
     {
-        var context = new SpawnableContext(EnemyRhombusProjectile.Create())
+        var context = new SpawnableContext(new SingleSpawnableProducer(EnemyRhombusProjectile.Create()))
         {
             Position = spawnPosition,
             Source = this,
@@ -151,6 +151,6 @@
         context.AddStat(new LifetimeStat { Value = lifetimeSeconds });
         context.AddStat(new DamageStat { Value = 3 });
         
-        context.Spawn();
+        context.ForceSpawn();
     }
 }

@@ -12,7 +12,7 @@ public partial class RemoveExplosionComponent : Component
     public void Explode()
     {
         var explosion = Explosion.Create();
-        var explosionContext = new SpawnableContext(explosion)
+        var explosionContext = new SpawnableContext(new SingleSpawnableProducer(explosion))
         {
             Position = GlobalPosition,
             Source = Spawnable.Node,
@@ -27,7 +27,7 @@ public partial class RemoveExplosionComponent : Component
             explosionContext.AddStat(new LifetimeStat { Value = FuseTime });
         }
 
-        explosionContext.Spawn();
+        explosionContext.ForceSpawn();
     }
     
 }

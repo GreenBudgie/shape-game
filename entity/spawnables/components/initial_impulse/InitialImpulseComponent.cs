@@ -13,7 +13,7 @@ public partial class InitialImpulseComponent : Component
             return;
         }
 
-        var initialSpeed = context.CalculateStat<SpeedStat>();
+        var initialSpeed = context.GetStat<SpeedStat>();
         if (IsEqualApprox(initialSpeed, 0))
         {
             return;

@@ -15,6 +15,17 @@ public static class ComponentManager
         spawnable.Node.AddChild(createdComponent);
         return createdComponent;
     }
+
+    public static Component? GetOrAddSingleComponentIfPossible(this ISpawnable spawnable, ComponentType type)
+    {
+        var components = spawnable.GetComponents().Where(component => component.Type == type).ToList();
+        if (components.Count == 0)
+        {
+            return spawnable.AddComponentIfPossible(type);
+        }
+        
+        return components.Single();
+    }
     
     public static IEnumerable<Component> GetComponents(this ISpawnable projectile)
     {

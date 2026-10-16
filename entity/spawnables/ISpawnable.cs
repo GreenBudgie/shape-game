@@ -53,4 +53,10 @@ public interface ISpawnable
         return true;
     }
 
+    /// <summary>
+    /// Whether this spawnable is considered a proxy for creating other spawnables or is not interactable in
+    /// any meaningful way. Some systems, like triggers, may filter out spawnables like this.
+    /// </summary>
+    public bool IsProxy => false;
+
 }

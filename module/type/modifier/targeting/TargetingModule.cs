@@ -5,7 +5,7 @@ public partial class TargetingModule : ModifierModule
 
     public override ModuleType Type => ModuleTypeRegistry.Targeting;
 
-    public override ISpawnableModifier CreateModifier(SpawnableContext context)
+    public override ISpawnableModifier CreateModifier()
     {
         return TargetingModifier.Instance;
     }
@@ -22,7 +22,7 @@ public partial class TargetingModule : ModifierModule
         
         public void Modify(SpawnableContext context)
         {
-            context.AddComponentToChain(ComponentTypeRegistry.Targeting);
+            context.Spawnable.AddComponentIfPossible(ComponentTypeRegistry.Targeting);
         }
         
     }

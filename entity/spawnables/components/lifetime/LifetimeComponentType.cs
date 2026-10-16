@@ -12,6 +12,6 @@ public class LifetimeComponentType : ComponentType
 
     public override bool ShouldAutoAdd(ISpawnable spawnable)
     {
-        return spawnable.Context.CalculateStat<LifetimeStat>() > 0;
+        return spawnable.Context.GetStat<LifetimeStat>() > 0;
     }
 }

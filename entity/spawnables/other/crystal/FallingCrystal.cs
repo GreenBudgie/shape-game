@@ -36,7 +36,7 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
         var randomAngle = GD.RandRange(5 * Pi / 4, 7 * Pi / 4);
         var randomDirection = Vector2.FromAngle((float)randomAngle);
 
-        var context = new SpawnableContext(crystal)
+        var context = new SpawnableContext(new SingleSpawnableProducer(crystal))
         {
             Position = globalPosition,
             Direction = randomDirection,
@@ -45,7 +45,7 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
         context.AddStat(new SpeedStat { Value = randomSpeed });
         context.AddStat(new LifetimeStat { Value = 10f });
 
-        context.Spawn();
+        context.ForceSpawn();
 
         return crystal;
     }

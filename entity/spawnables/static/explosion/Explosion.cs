@@ -33,13 +33,13 @@ public partial class Explosion : ShapeCast2D, ISpawnable
 
     public void Prepare(SpawnableContext context)
     {
-        _radius = Context.CalculateStat<ExplosionRadiusStat>();
+        _radius = Context.GetStat<ExplosionRadiusStat>();
         var circleShape = (CircleShape2D)Shape;
         circleShape.Radius = _radius;
         
-        _damage = Context.CalculateStat<ExplosionDamageStat>();
+        _damage = Context.GetStat<ExplosionDamageStat>();
         
-        _fuseTimeSeconds = Context.CalculateStat<LifetimeStat>();
+        _fuseTimeSeconds = Context.GetStat<LifetimeStat>();
         IsInstant = _fuseTimeSeconds <= 0;
         ExplosionRadiusPreview.Create(this);
     }

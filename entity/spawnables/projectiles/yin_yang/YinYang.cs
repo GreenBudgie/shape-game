@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public partial class YinYang : Node2D, ISpawnable
 {
@@ -30,17 +31,22 @@ public partial class YinYang : Node2D, ISpawnable
         return node;
     }
 
+    public bool IsProxy => true;
+
     public override void _Ready()
     {
         _direction = Context.Direction;
-        _speed = Context.CalculateStat<SpeedStat>();
+        _speed = Context.GetStat<SpeedStat>();
         _rotationSpeed = (float)GD.RandRange(RotationSpeedMin, RotationSpeedMax) * RandomUtils.RandomSign();
 
         _yinFollowTarget = GetNode<Node2D>("YinFollowTarget");
         _yangFollowTarget = GetNode<Node2D>("YangFollowTarget");
 
-        _yinSphere= YinYangSphere.Create(YinYangType.Yin, _yinFollowTarget);
-        _yangSphere = YinYangSphere.Create(YinYangType.Yang, _yangFollowTarget);
+        var yinSphereContext = CreateSphereContext(YinYangType.Yin, _yinFollowTarget);
+        var yangSphereContext = CreateSphereContext(YinYangType.Yang, _yangFollowTarget);
+        
+        _yinSphere = (YinYangSphere)yinSphereContext.Spawnable;
+        _yangSphere = (YinYangSphere)yangSphereContext.Spawnable;
 
         _yinSphere.OtherSphere = _yangSphere;
         _yangSphere.OtherSphere = _yinSphere;
@@ -48,18 +54,18 @@ public partial class YinYang : Node2D, ISpawnable
         _yinSphere.TreeExiting += Remove;
         _yangSphere.TreeExiting += Remove;
 
-        SpawnSphere(_yinSphere, _yinFollowTarget);
-        SpawnSphere(_yangSphere, _yangFollowTarget);
+        yinSphereContext.Spawn();
+        yangSphereContext.Spawn();
     }
 
-    private void SpawnSphere(YinYangSphere sphere, Node2D followTarget)
+    private SpawnableContext CreateSphereContext(YinYangType type, Node2D followTarget)
     {
-        var context = new SpawnableContext(sphere);
+        var producer = new YinYangSphereProducer(type, followTarget);
         
-        context.InheritFrom(Context);
+        var context = Context.Clone(producer);
         context.Position = followTarget.GlobalPosition;
-
-        context.Spawn();
+        context.CreateSpawnable();
+        return context;
     }
 
     public override void _Process(double delta)
@@ -89,5 +95,15 @@ public partial class YinYang : Node2D, ISpawnable
         
         QueueFree();
         Removed?.Invoke();
+    }
+
+    private class YinYangSphereProducer(YinYangType type, Node2D followTarget) : ISpawnableProducer
+    {
+        public List<SpawnableStat> GetStats() => [];
+
+        public ISpawnable CreateSpawnable()
+        {
+            return YinYangSphere.Create(type, followTarget);
+        }
     }
 }

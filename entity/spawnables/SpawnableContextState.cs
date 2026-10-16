@@ -6,12 +6,18 @@ public enum SpawnableContextState
     /// will be changed in the future.
     /// </summary>
     New,
+    
+    /// <summary>
+    /// All stats were added from spawnable, modifiers and other places. Stat modifications are prohibited.
+    /// But the spawnable itself was not yet produced, thus null.
+    /// </summary>
+    StatsCalculated,
 
     /// <summary>
     /// Spawnable is produced and prepared to be spawned, but not yet added to the tree. Context modifications are NOT
     /// allowed. It is NOT allowed to add stats, but IS allowed to change the spawnable itself.
     /// </summary>
-    Preparing,
+    SpawnableCreated,
     
     /// <summary>
     /// Spawnable has been added to the tree. Context modifications are not allowed, spawning it again is not allowed.

@@ -12,6 +12,6 @@ public class InitialImpulseComponentType : ComponentType
 
     public override bool ShouldAutoAdd(ISpawnable spawnable)
     {
-        return spawnable.Context.CalculateStat<SpeedStat>() > 0;
+        return spawnable.Context.GetStat<SpeedStat>() > 0;
     }
 }

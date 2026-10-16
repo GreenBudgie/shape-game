@@ -6,7 +6,7 @@ public partial class PiercingModule : ModifierModule
 
     public override ModuleType Type => ModuleTypeRegistry.Piercing;
 
-    public override ISpawnableModifier CreateModifier(SpawnableContext context)
+    public override ISpawnableModifier CreateModifier()
     {
         return PiercingModifier.Instance;
     }
@@ -28,18 +28,17 @@ public partial class PiercingModule : ModifierModule
                 return;
             }
 
-            var projectiles = context.GetContextChain()
-                .Select(ctx => ctx.Spawnable.Node)
-                .OfType<BasicRigidBodyProjectile>();
-
-            foreach (var projectile in projectiles)
+            var projectile = context.Spawnable.Node;
+            if (projectile is not BasicRigidBodyProjectile rigidBodyProjectile)
             {
-                TrailParticles.Create(projectile)
-                    .WithTexture(ParticleTextures.Triangle)
-                    .WithScale(0.4f, 0.1f)
-                    .Color(ColorScheme.LightBlue)
-                    .Spawn();
+                return;
             }
+
+            TrailParticles.Create(rigidBodyProjectile)
+                .WithTexture(ParticleTextures.Triangle)
+                .WithScale(0.4f, 0.1f)
+                .Color(ColorScheme.LightBlue)
+                .Spawn();
         }
 
     }

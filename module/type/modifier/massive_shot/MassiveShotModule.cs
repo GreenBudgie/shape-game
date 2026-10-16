@@ -6,7 +6,7 @@ public partial class MassiveShotModule : ModifierModule
 
     public override ModuleType Type => ModuleTypeRegistry.MassiveShot;
 
-    public override ISpawnableModifier CreateModifier(SpawnableContext context)
+    public override ISpawnableModifier CreateModifier()
     {
         return MassiveShotModifier.Instance;
     }
@@ -25,30 +25,25 @@ public partial class MassiveShotModule : ModifierModule
 
         public void Modify(SpawnableContext context)
         {
-            var projectiles = context.GetContextChain()
-                .Select(ctx => ctx.Spawnable.Node)
-                .OfType<RigidBody2D>()
-                .ToList();
-
-            foreach (var projectile in projectiles)
+            var projectile = context.Spawnable.Node;
+            if (projectile is not RigidBody2D rigidBody)
             {
-                projectile.GravityScale += GravityScaleFactor;
-                projectile.Mass += MassFactor;
+                return;
             }
+
+            rigidBody.GravityScale += GravityScaleFactor;
+            rigidBody.Mass += MassFactor;
 
             if (context.IsModifierTypeApplied<MassiveShotModifier>())
             {
                 return;
             }
 
-            foreach (var projectile in projectiles)
-            {
-                TrailParticles.Create(projectile)
-                    .WithTexture(ParticleTextures.Triangle)
-                    .WithScale(0.6f, 0.1f)
-                    .Color(ColorScheme.Red)
-                    .Spawn();
-            }
+            TrailParticles.Create(rigidBody)
+                .WithTexture(ParticleTextures.Triangle)
+                .WithScale(0.6f, 0.1f)
+                .Color(ColorScheme.Red)
+                .Spawn();
         }
 
     }

@@ -29,9 +29,10 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
     }
 
     /// <summary>
-    /// The spawnable itself. Not null if state of the context is not New.
+    /// The spawnable itself. Not null if state of the context is not New. For outside callers this is almost always
+    /// true, so it's not null for convenience. 
     /// </summary>
-    public ISpawnable? Spawnable { get; private set; }
+    public ISpawnable Spawnable { get; private set; } = null!;
 
     /// <summary>
     /// Where the spawnable should be created, in global coords
@@ -76,7 +77,7 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
 
     private void ValidateStatModificationAllowed()
     {
-        if (State is SpawnableContextState.Preparing or SpawnableContextState.Spawned)
+        if (State is not SpawnableContextState.New)
         {
             throw new InvalidOperationException(
                 $"SpawnableContext in state {State} does not allow stat modifications"
@@ -84,12 +85,12 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
         }
     }
     
-    private void ValidateStatCalculationAllowed()
+    private void ValidateStatRetrievalAllowed()
     {
         if (State is SpawnableContextState.New)
         {
             throw new InvalidOperationException(
-                $"SpawnableContext in state {State} still allows stat modification, so calculating stats is currently prohibited"
+                $"SpawnableContext in state {State} still allows stat modification, so retrieving stats is currently prohibited"
             );
         }
     }
@@ -114,19 +115,19 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
     private readonly Dictionary<Type, float> _calculatedStats = [];
     private readonly Dictionary<Type, float> _calculatedStatsWithDelegated = [];
     
-    public float CalculateStat<TStat>() where TStat : SpawnableStat
+    public float GetStat<TStat>() where TStat : SpawnableStat
     {
-        return CalculateStat<TStat>(false);
+        return GetStat<TStat>(false);
     }
     
-    public float CalculateStatWithDelegated<TStat>() where TStat : SpawnableStat
+    public float GetStatWithDelegated<TStat>() where TStat : SpawnableStat
     {
-        return CalculateStat<TStat>(true);
+        return GetStat<TStat>(true);
     }
     
-    private float CalculateStat<TStat>(bool withDelegated) where TStat : SpawnableStat
+    private float GetStat<TStat>(bool withDelegated) where TStat : SpawnableStat
     {
-        ValidateStatCalculationAllowed();
+        ValidateStatRetrievalAllowed();
         
         var statType = typeof(TStat);
         
@@ -182,18 +183,15 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
     }
 
     /// <summary>
-    /// Performs all the preparation logic and adds the spawnable to the tree
+    /// Calculates stats without creating the spawnable. Only possible for New context.
     /// </summary>
-    public void Spawn()
+    public void CalculateStats()
     {
-        if (State is SpawnableContextState.Spawned or SpawnableContextState.Preparing)
+        if (State is not SpawnableContextState.New)
         {
-            throw new InvalidOperationException("A spawnable from SpawnableContext can only be spawned once");
+            throw new InvalidOperationException("Stats can only be calculated in New state");
         }
         
-        Spawnable = spawnableProducer.CreateSpawnable();
-        Spawnable.Context = this;
-
         AddStats(spawnableProducer.GetStats());
         
         var modifierStats = Modifiers.SelectMany(modifier => modifier.GetStats());
@@ -201,16 +199,42 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
 
         var delegatorsStats = _delegators.SelectMany(delegator => delegator.Delegator.GetStats());
         AddStats(delegatorsStats);
+    }
+
+    /// <summary>
+    /// Creates the spawnable and changes State to SpawnableCreated. Does not add the spawnable to the tree.
+    /// Spawn() must be called if this method was used, otherwise the created spawnable will be leaked.
+    /// </summary>
+    public void CreateSpawnable()
+    {
+        if (State is not SpawnableContextState.StatsCalculated)
+        {
+            throw new InvalidOperationException("Spawnable can only created after StatsCalculated state");
+        }
         
+        Spawnable = spawnableProducer.CreateSpawnable();
+        Spawnable.Context = this;
+
         foreach (var delegator in _delegators)
         {
             delegator.Delegator.DelegateLifecycle(this, delegator.TargetContext);
         }
                 
         Spawnable.Setup(this);
-        
-        State = SpawnableContextState.Preparing;
+                
+        State = SpawnableContextState.SpawnableCreated;
+    }
 
+    /// <summary>
+    /// Prepares the spawnable and adds it to the tree. This method should only be called after Setup().
+    /// </summary>
+    public void Spawn()
+    {
+        if (State is not SpawnableContextState.SpawnableCreated)
+        {
+            throw new InvalidOperationException("Spawnable can only be spawned in Preparing state");
+        }
+        
         foreach (var modifier in Modifiers)
         {
             modifier.Modify(this);
@@ -238,6 +262,25 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
         }
     }
 
+    /// <summary>
+    /// Performs all the remaining preparation logic and adds the spawnable to the tree.
+    /// Use this method if precise control on context lifecycle is not required.
+    /// </summary>
+    public void ForceSpawn()
+    {
+        if (State is SpawnableContextState.New)
+        {
+            CalculateStats();
+        }
+
+        if (State is SpawnableContextState.StatsCalculated)
+        {
+            CreateSpawnable();
+        }
+
+        Spawn();
+    }
+
     private void AddToTree()
     {
         ShapeGame.Instance.AddChild(Spawnable!.Node);
@@ -258,19 +301,7 @@ public class SpawnableContext(ISpawnableProducer spawnableProducer)
     /// </summary>
     public SpawnableContext Clone()
     {
-        var clonedDelegators = _delegators
-            .Select(delegator => delegator with { TargetContext = delegator.TargetContext.Clone() })
-            .ToList();
-        return new SpawnableContext(spawnableProducer)
-        {
-            Position = Position,
-            Direction = Direction,
-            Source = Source,
-            OriginalSource = OriginalSource,
-            _stats = _stats.ToList(),
-            Modifiers = Modifiers.ToList(),
-            _delegators = clonedDelegators,
-        };
+        return Clone(spawnableProducer);
     }
     
     /// <summary>
