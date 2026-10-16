@@ -13,9 +13,27 @@ public partial class RemoveTriggerComponent : Component
 
     public void LaunchTriggers()
     {
-        foreach (var contextsToSpawn in ContextsToSpawn)
+        var position = Spawnable.Node.GlobalPosition;
+        
+        Vector2 direction;
+        if (Spawnable.Node is RigidBody2D rigidBody)
         {
-            contextsToSpawn.ForceSpawn();
+            direction = rigidBody.LinearVelocity.Normalized();
+        }
+        else
+        {
+            direction = Vector2.Up;
+        }
+
+        var source = Spawnable.Node;
+        
+        foreach (var contextToSpawn in ContextsToSpawn)
+        {
+            contextToSpawn.Position = position;
+            contextToSpawn.Direction = direction;
+            contextToSpawn.Source = source;
+
+            contextToSpawn.ForceSpawn();
         }
     }
     
