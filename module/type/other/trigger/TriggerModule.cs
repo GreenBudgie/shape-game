@@ -7,7 +7,7 @@ public partial class TriggerModule : DelegatorModule
 
     public override ISpawnableContextLifecycleDelegator CreateDelegator()
     {
-        throw new NotImplementedException();
+        return new TriggerDelegator();
     }
 
 }

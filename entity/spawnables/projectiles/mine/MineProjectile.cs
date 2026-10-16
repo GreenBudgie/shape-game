@@ -24,6 +24,7 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
     public event Action<EntityDamagedEvent>? EntityDamaged;
     public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
+    public bool IsRemoving { get; private set; }
 
     private GlowWrapper _glowWrapper = null!;
     private Sprite2D _sprite = null!;
@@ -51,11 +52,16 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         _sprite = _glowWrapper.GetNode<Sprite2D>("MineSprite");
     }
 
-    private bool _isFused;
-
     // Fuse instead of removing instantly, that's a feature of mine
     public void Remove()
     {
+        if (IsRemoving)
+        {
+            return;
+        }
+
+        IsRemoving = true;
+        
         Fuse();
         Removed?.Invoke();
     }
@@ -78,13 +84,6 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
 
     private void Fuse()
     {
-        if (_isFused)
-        {
-            return;
-        }
-
-        _isFused = true;
-        
         var timer = new Timer();
         timer.OneShot = true;
         timer.Autostart = true;

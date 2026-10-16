@@ -66,7 +66,7 @@ public partial class YinYangSphere : BasicRigidBodyProjectile
             .WithScale(0.5f, 0.2f)
             .Spawn();
         
-        base.Remove();
+        QueueFree();
     }
 
     public override void _PhysicsProcess(double delta)

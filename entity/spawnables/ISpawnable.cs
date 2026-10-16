@@ -23,6 +23,11 @@ public interface ISpawnable
     public SpawnableContext Context { get; set; }
 
     /// <summary>
+    /// Whether this spawnable is currently removing 
+    /// </summary>
+    public bool IsRemoving => Node.IsQueuedForDeletion();
+
+    /// <summary>
     /// The spawnable itself, cast to Node2D. Every spawnable is expected to be a Node2D.
     /// </summary>
     public Node2D Node => (Node2D)this;

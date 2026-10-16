@@ -19,6 +19,8 @@ public partial class Explosion : ShapeCast2D, ISpawnable
     public event Action<EntityDamagedEvent>? EntityDamaged;
     public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
+    
+    public bool IsRemoving { get; private set; }
 
     public bool IsInstant { get; private set; }
     
@@ -46,6 +48,13 @@ public partial class Explosion : ShapeCast2D, ISpawnable
 
     public void Remove()
     {
+        if (IsRemoving)
+        {
+            return;
+        }
+        
+        IsRemoving = true;
+        
         Detonate();
         Removed?.Invoke();
     }

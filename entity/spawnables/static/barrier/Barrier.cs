@@ -16,6 +16,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
     public event Action<EntityDamagedEvent>? EntityDamaged;
     public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
+    public bool IsRemoving { get; private set; }
 
     private Sprite2D _sprite = null!;
     private Mask _spriteMask = null!;
@@ -146,16 +147,15 @@ public partial class Barrier : RigidBody2D, ISpawnable
         ApplyTorque(torque * direction);
     }
 
-    private bool _isRemoving;
     private const float RemoveDuration = 0.25f;
 
     public void Remove()
     {
-        if (_isRemoving)
+        if (IsRemoving)
         {
             return;
         }
-        _isRemoving = true;
+        IsRemoving = true;
         
         SoundManager.Instance.PlayPositionalSound(this, _disappearSound)
             .RandomizePitchOffset(0.1f);

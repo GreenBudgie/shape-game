@@ -11,7 +11,9 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
     public SpawnableContext Context { get; set; } = null!;
 
     public CollisionAreaSampler Area { get; private set; } = null!;
-    
+
+    public bool IsRemoving { get; private set; }
+
     protected int ObstaclesToPierce;
 
     private Area2D? _piercingDetectionArea;
@@ -72,6 +74,12 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
 
     public void Remove()
     {
+        if (IsRemoving)
+        {
+            return;
+        }
+        
+        IsRemoving = true;
         Removed?.Invoke();
         OnRemove();
     }

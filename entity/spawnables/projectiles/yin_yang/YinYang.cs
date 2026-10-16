@@ -11,6 +11,8 @@ public partial class YinYang : Node2D, ISpawnable
     public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
 
+    public bool IsRemoving { get; private set; }
+
     private Node2D _yinFollowTarget = null!;
     private Node2D _yangFollowTarget = null!;
     private YinYangSphere _yinSphere = null!;
@@ -80,16 +82,14 @@ public partial class YinYang : Node2D, ISpawnable
         GlobalPosition += (float)delta * _speed * _direction;
     }
 
-    private bool _isRemoving;
-
     public void Remove()
     {
-        if (_isRemoving)
+        if (IsRemoving)
         {
             return;
         }
         
-        _isRemoving = true;
+        IsRemoving = true;
 
         _yinSphere.Detach();
         _yangSphere.Detach();

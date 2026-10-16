@@ -20,16 +20,8 @@ public partial class MiniSphereProjectile : BasicRigidBodyProjectile
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
     }
 
-    private bool _isRemoving;
-
     public override void OnRemove()
     {
-        if (_isRemoving)
-        {
-            return;
-        }
-        
-        _isRemoving = true;
         CollisionLayer = 0;
         CollisionMask = 0;
         LinearDamp = 4;

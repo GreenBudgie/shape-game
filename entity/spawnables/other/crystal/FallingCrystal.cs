@@ -23,8 +23,8 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
     public event Action<EntityDamagedEvent>? EntityDamaged;
     public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
-
-    private bool _isRemoving;
+    public bool IsRemoving { get; private set; }
+    
     private Glow _glow = null!;
     private AnimationPlayer _crystalAnimations = null!;
     
@@ -89,7 +89,12 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
 
     public void Remove()
     {
-        _isRemoving = true;
+        if (IsRemoving)
+        {
+            return;
+        }
+        
+        IsRemoving = true;
         CollisionLayer = 0;
         CollisionMask = 0;
 
@@ -127,7 +132,7 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
 
         var direction = GlobalPosition.DirectionTo(player.GlobalPosition);
 
-        if (_isRemoving)
+        if (IsRemoving)
         {
             LinearDamp = CollectedDamp;
             SetGravityScale(0);
