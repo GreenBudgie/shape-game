@@ -4,15 +4,26 @@ public partial class RemoveTriggerComponent : Component
 {
     public override ComponentType Type => ComponentTypeRegistry.RemoveTrigger;
 
-    public readonly List<SpawnableContext> ContextsToSpawn = [];
+    public SpawnableContext? ContextToTrigger { get; set; }
 
     public override void Prepare(SpawnableContext context)
     {
+        if (ContextToTrigger == null)
+        {
+            QueueFree();
+            return;
+        }
+        
         context.Spawnable.Removed += LaunchTriggers;
     }
 
     public void LaunchTriggers()
     {
+        if (ContextToTrigger == null)
+        {
+            return;
+        }
+        
         var position = Spawnable.Node.GlobalPosition;
         
         Vector2 direction;
@@ -27,14 +38,12 @@ public partial class RemoveTriggerComponent : Component
 
         var source = Spawnable.Node;
         
-        foreach (var contextToSpawn in ContextsToSpawn)
-        {
-            contextToSpawn.Position = position;
-            contextToSpawn.Direction = direction;
-            contextToSpawn.Source = source;
 
-            contextToSpawn.ForceSpawn();
-        }
+        ContextToTrigger.Position = position;
+        ContextToTrigger.Direction = direction;
+        ContextToTrigger.Source = source;
+
+        ContextToTrigger.ForceSpawn();
     }
     
 }

@@ -4,4 +4,9 @@ public class RemoveExplosionComponentType : ComponentType
     {
         return new RemoveExplosionComponent { Spawnable = spawnable };
     }
+
+    public override bool Supports(ISpawnable spawnable)
+    {
+        return !spawnable.IsProxy;
+    }
 }

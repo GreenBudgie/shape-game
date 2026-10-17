@@ -1,12 +1,11 @@
-using System.Collections.Generic;
+using System;
 
-public partial class TetherModule : Module
+public partial class TetherModule : DelegatorModule
 {
-    public override List<SpawnableStat> GetStats()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public override ModuleType Type => ModuleTypeRegistry.Tether;
 
+    public override ISpawnableContextLifecycleDelegator CreateDelegator()
+    {
+        return new TetherDelegator();
+    }
 }

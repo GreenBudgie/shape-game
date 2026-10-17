@@ -11,4 +11,5 @@ public static class ComponentTypeRegistry
     public static readonly IgnitionComponentType Ignition = new();
     public static readonly RemoveExplosionComponentType RemoveExplosion = new();
     public static readonly RemoveTriggerComponentType RemoveTrigger = new();
+    public static readonly TetherComponentType Tether = new();
 }

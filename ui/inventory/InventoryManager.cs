@@ -83,7 +83,9 @@ public partial class InventoryManager : Control, IScreen
 
     private void PostSetup()
     {
-        AddModule(ModuleTypeRegistry.Missile.CreateModule(), LeftBlasterInventory);
+        AddModule(ModuleTypeRegistry.Bolt.CreateModule(), LeftBlasterInventory);
+        AddModule(ModuleTypeRegistry.Bolt.CreateModule(), LeftBlasterInventory);
+        AddModule(ModuleTypeRegistry.Tether.CreateModule(), LeftBlasterInventory);
         AddModule(ModuleTypeRegistry.MiniSphere.CreateModule(), RightBlasterInventory);
         
         Close(playSound: false);

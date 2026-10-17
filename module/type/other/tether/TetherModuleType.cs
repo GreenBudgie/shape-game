@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class TetherModuleType : ModuleType
+public class TetherModuleType : DelegatorModuleType
 {
 
     // TODO fix
@@ -14,13 +14,9 @@ public class TetherModuleType : ModuleType
 
     public override int Price => 15;
 
-    public override Color Color => ColorScheme.LightBlue;
-
-    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right * 2];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right];
 
     public override HashSet<HexCoordinates> IncomingConnections => [HexCoordinates.Left];
-
-    public override bool InterruptsConnections => true;
 
     public override Module CreateModule()
     {
