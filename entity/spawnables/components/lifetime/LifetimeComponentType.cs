@@ -7,7 +7,7 @@ public class LifetimeComponentType : ComponentType
 
     public override bool Supports(ISpawnable spawnable)
     {
-        return spawnable.Node is RigidBody2D;
+        return true;
     }
 
     public override bool ShouldAutoAdd(ISpawnable spawnable)
