@@ -26,18 +26,18 @@ public partial class BodyTether : Node2D
 
         AddChild(joint);
 
-        _beam = Beam.Create()
-            .SetFromTo(source.GlobalPosition, target.GlobalPosition)
-            .SetEnergy(0)
-            .SetProgress(0)
-            .SetThickness(20)
-            .SetOutlineThickness(50)
-            .SetOutlineColor(ColorScheme.Orange)
-            .SetBeamColor(ColorScheme.Orange.Lightened(0.5f));
+        _beam = Beam.Create();
+        _beam.SetFromTo(source.GlobalPosition, target.GlobalPosition);
+        _beam.Energy = 0;
+        _beam.Progress = 0;
+        _beam.Thickness = 20;
+        _beam.OutlineThickness = 50;
+        _beam.OutlineColor = ColorScheme.Orange;
+        _beam.BeamColor = ColorScheme.Orange.Lightened(0.5f);
         _beam.ZIndex -= 1;
 
         _tween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-        _tween.TweenProperty(_beam.ShaderMaterial, Beam.ProgressShaderParam, 1, 0.2f);
+        _tween.TweenProperty(_beam, Beam.ProgressProperty, 1f, 0.2f);
 
         ShapeGame.Instance.AddChild(_beam);
     }
@@ -46,7 +46,7 @@ public partial class BodyTether : Node2D
     {
         _tween.Kill();
         var beamTween = _beam.CreateTween().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
-        beamTween.TweenProperty(_beam.ShaderMaterial, Beam.ProgressShaderParam, 0, 0.2f);
+        beamTween.TweenProperty(_beam, Beam.ProgressProperty, 0f, 0.2f);
         beamTween.Finished += _beam.QueueFree;
     }
 

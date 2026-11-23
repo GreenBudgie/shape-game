@@ -117,7 +117,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
         var source = Context.Source;
         if (!IsInstanceValid(source))
         {
-            beam.SetTo(globalPos);
+            beam.To = globalPos;
             return;
         }
 
@@ -228,19 +228,19 @@ public partial class Barrier : RigidBody2D, ISpawnable
 
     private Beam CreateAndAnimateBeam(Node2D source)
     {
-        var beam = Beam.Create()
-            .SetFromTo(source.GlobalPosition, GlobalPosition)
-            .SetEnergy(0)
-            .SetProgress(0)
-            .SetOutlineThickness(100)
-            .SetOutlineColor(ColorScheme.LightBlueGreen)
-            .SetBeamColor(ColorScheme.LightBlueGreen.Lightened(0.5f));
+        var beam = Beam.Create();
+        beam.SetFromTo(source.GlobalPosition, GlobalPosition);
+        beam.Energy = 0;
+        beam.Progress = 0;
+        beam.OutlineThickness = 100;
+        beam.OutlineColor = ColorScheme.LightBlueGreen;
+        beam.BeamColor = ColorScheme.LightBlueGreen.Lightened(0.5f);
 
         var tween = beam.CreateTween();
-        tween.TweenProperty(beam.ShaderMaterial, Beam.ProgressShaderParam, 1, EffectStartupDuration)
+        tween.TweenProperty(beam, Beam.ProgressProperty, 1f, EffectStartupDuration)
             .SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(beam.ShaderMaterial, Beam.ProgressShaderParam, 0, EffectEndDuration)
+        tween.TweenProperty(beam, Beam.ProgressProperty, 0f, EffectEndDuration)
             .SetDelay(EffectDuration)
             .SetEase(Tween.EaseType.In)
             .SetTrans(Tween.TransitionType.Quad);

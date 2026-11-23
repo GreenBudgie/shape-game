@@ -17,7 +17,7 @@ public partial class LaserModule : SpawnableModule
 
         public List<SpawnableStat> GetStats() => [
             new ReloadStat { Value = 1f },
-            new LifetimeStat { Value = 2f },
+            new LifetimeStat { Value = 1.4f },
         ];
 
         public ISpawnable CreateSpawnable()

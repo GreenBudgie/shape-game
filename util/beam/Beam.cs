@@ -3,7 +3,6 @@ public partial class Beam : ColorRect
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://g21wng36wpva");
 
-    // StringName constants for shader parameters
     private static readonly StringName BeamsParam = "beams";
     private static readonly StringName EnergyParam = "energy";
     private static readonly StringName RoughnessParam = "roughness";
@@ -12,40 +11,34 @@ public partial class Beam : ColorRect
     private static readonly StringName ThicknessParam = "thickness";
     private static readonly StringName OutlineThicknessParam = "outline_thickness";
     private static readonly StringName BeamDifferenceParam = "beam_difference";
-    private static readonly StringName GlowParam = "glow";
-    private static readonly StringName OutlineGlowParam = "outline_glow";
     private static readonly StringName ColorParam = "color";
     private static readonly StringName OutlineColorParam = "outline_color";
     private static readonly StringName ProgressParam = "progress";
     private static readonly StringName BeamLengthParam = "beam_length";
     private static readonly StringName FadeDistanceParam = "fade_distance";
 
-    public static readonly NodePath BeamsShaderParam = ShaderParameter(BeamsParam);
-    public static readonly NodePath EnergyShaderParam = ShaderParameter(EnergyParam);
-    public static readonly NodePath RoughnessShaderParam = ShaderParameter(RoughnessParam);
-    public static readonly NodePath FrequencyShaderParam = ShaderParameter(FrequencyParam);
-    public static readonly NodePath SpeedShaderParam = ShaderParameter(SpeedParam);
-    public static readonly NodePath ThicknessShaderParam = ShaderParameter(ThicknessParam);
-    public static readonly NodePath OutlineThicknessShaderParam = ShaderParameter(OutlineThicknessParam);
-    public static readonly NodePath BeamDifferenceShaderParam = ShaderParameter(BeamDifferenceParam);
-    public static readonly NodePath GlowShaderParam = ShaderParameter(GlowParam);
-    public static readonly NodePath OutlineGlowShaderParam = ShaderParameter(OutlineGlowParam);
-    public static readonly NodePath ColorShaderParam = ShaderParameter(ColorParam);
-    public static readonly NodePath OutlineColorShaderParam = ShaderParameter(OutlineColorParam);
-    public static readonly NodePath ProgressShaderParam = ShaderParameter(ProgressParam);
-    public static readonly NodePath BeamLengthShaderParam = ShaderParameter(BeamLengthParam);
-    public static readonly NodePath FadeDistanceShaderParam = ShaderParameter(FadeDistanceParam);
+    public static readonly NodePath FromProperty = nameof(From);
+    public static readonly NodePath ToProperty = nameof(To);
+    public static readonly NodePath BeamCountProperty = nameof(BeamCount);
+    public static readonly NodePath EnergyProperty = nameof(Energy);
+    public static readonly NodePath RoughnessProperty = nameof(Roughness);
+    public static readonly NodePath FrequencyProperty = nameof(Frequency);
+    public static readonly NodePath SpeedProperty = nameof(Speed);
+    public static readonly NodePath ProgressProperty = nameof(Progress);
+    public static readonly NodePath ThicknessProperty = nameof(Thickness);
+    public static readonly NodePath OutlineThicknessProperty = nameof(OutlineThickness);
+    public static readonly NodePath BeamDifferenceProperty = nameof(BeamDifference);
+    public static readonly NodePath BeamColorProperty = nameof(BeamColor);
+    public static readonly NodePath OutlineColorProperty = nameof(OutlineColor);
+    public static readonly NodePath LengthProperty = nameof(Length);
+    public static readonly NodePath FadeDistanceProperty = nameof(FadeDistance);
 
     private const float BaseSizeMultiplier = 1.5f;
-    private static readonly Vector2 BaseSize = ShapeGame.WindowSize * BaseSizeMultiplier; // (5760, 3240)
+    private static readonly Vector2 BaseSize = ShapeGame.WindowSize * BaseSizeMultiplier;
+    private static readonly float PixelsPerThicknessUnit = BaseSize.Y * 2;
 
-    public ShaderMaterial ShaderMaterial { get; private set; }
+    public ShaderMaterial ShaderMaterial => (ShaderMaterial)Material;
 
-    public Beam()
-    {
-        ShaderMaterial = (ShaderMaterial)Material;
-    }
-    
     public static Beam Create()
     {
         var beam = Scene.Instantiate<Beam>();
@@ -57,193 +50,121 @@ public partial class Beam : ColorRect
     private Vector2 _from;
     private Vector2 _to;
 
-    /// <summary>
-    /// Sets the start and end point for the bean in global coordinates
-    /// </summary>
-    /// <param name="from">From position, in global coords</param>
-    /// <param name="to">To position, in global coords</param>
-    public Beam SetFromTo(Vector2 from, Vector2 to)
+    /// <summary>Start point in global coordinates.</summary>
+    public Vector2 From
+    {
+        get => _from;
+        set => SetFromTo(value, _to);
+    }
+
+    /// <summary>End point in global coordinates.</summary>
+    public Vector2 To
+    {
+        get => _to;
+        set => SetFromTo(_from, value);
+    }
+
+    /// <summary>Updates both endpoints and recalculates the beam geometry once.</summary>
+    public void SetFromTo(Vector2 from, Vector2 to)
     {
         _from = from;
         _to = to;
         Position = from - new Vector2(0, BaseSize.Y / 2);
         Rotation = from.AngleToPoint(to);
         var length = from.DistanceTo(to) / Size.X;
-        SetLength(length);
+        Length = length;
 
-        const float fadeDistanceToLengthFactor = 0.2f;
-        SetFadeDistance(length * fadeDistanceToLengthFactor);
-        return this;
-    }
-    
-    /// <summary>
-    /// Sets the end point for the bean in global coordinates
-    /// </summary>
-    /// <param name="to">To position, in global coords</param>
-    public Beam SetTo(Vector2 to)
-    {
-        SetFromTo(_from, to);
-        return this;
-    }
-    
-    /// <summary>
-    /// Sets the start point for the bean in global coordinates
-    /// </summary>
-    /// <param name="from">From position, in global coords</param>
-    public Beam SetFrom(Vector2 from)
-    {
-        SetFromTo(from, _to);
-        return this;
+        // const float fadeDistanceToLengthFactor = 0.2f;
+        // FadeDistance = length * fadeDistanceToLengthFactor;
     }
 
-    public Vector2 GetFrom()
+    /// <summary>Number of beams to draw. Defaults to 2.</summary>
+    public int BeamCount
     {
-        return _from;
-    }
-    
-    public Vector2 GetTo()
-    {
-        return _to;
+        get => (int)ShaderMaterial.GetShaderParameter(BeamsParam);
+        set => ShaderMaterial.SetShaderParameter(BeamsParam, value);
     }
 
-    /// <summary>
-    /// Sets the number of beams
-    ///
-    /// <p>Default: 2</p>
-    /// </summary>
-    public Beam SetBeamCount(int count)
+    /// <summary>Amplitude of the beam's vertical motion. Defaults to 3.</summary>
+    public float Energy
     {
-        ShaderMaterial.SetShaderParameter(BeamsParam, count);
-        return this;
+        get => (float)ShaderMaterial.GetShaderParameter(EnergyParam);
+        set => ShaderMaterial.SetShaderParameter(EnergyParam, value);
     }
 
-    /// <summary>
-    /// Sets the energy - how much the beams will travel up and down.
-    /// If zero, the beam will not move.
-    /// 
-    /// <p>Default: 3.0</p>
-    /// </summary>
-    public Beam SetEnergy(float energy)
+    /// <summary>Number of noise octaves. Higher values make the beam rougher. Defaults to 3.</summary>
+    public int Roughness
     {
-        ShaderMaterial.SetShaderParameter(EnergyParam, energy);
-        return this;
+        get => (int)ShaderMaterial.GetShaderParameter(RoughnessParam);
+        set => ShaderMaterial.SetShaderParameter(RoughnessParam, value);
     }
 
-    /// <summary>
-    /// Sets the roughness - how "noisy" the beam is. Higher values produce more chaotic beams.
-    /// If zero, the beam will not move.
-    /// 
-    /// <p>Default: 3</p>
-    /// </summary>
-    public Beam SetRoughness(int roughness)
+    /// <summary>Frequency of ripples along the beam. Defaults to 3.</summary>
+    public int Frequency
     {
-        ShaderMaterial.SetShaderParameter(RoughnessParam, roughness);
-        return this;
+        get => (int)ShaderMaterial.GetShaderParameter(FrequencyParam);
+        set => ShaderMaterial.SetShaderParameter(FrequencyParam, value);
     }
 
-    /// <summary>
-    /// Sets the frequency - amount of "ripples" in the beams.
-    /// If zero, the beam will not move.
-    /// 
-    /// <p>Default: 3</p>
-    /// </summary>
-    public Beam SetFrequency(int frequency)
+    /// <summary>Animation speed. Set to zero to freeze the noise animation. Defaults to 1.</summary>
+    public float Speed
     {
-        ShaderMaterial.SetShaderParameter(FrequencyParam, frequency);
-        return this;
+        get => (float)ShaderMaterial.GetShaderParameter(SpeedParam);
+        set => ShaderMaterial.SetShaderParameter(SpeedParam, value);
     }
 
-    /// <summary>
-    /// Sets the animation speed.
-    /// If zero, the beam will be frozen, but still can be distorted by other parameters.
-    /// 
-    /// <p>Default: 1</p>
-    /// </summary>
-    public Beam SetSpeed(float speed)
+    /// <summary>Visibility of the beam, from 0 (hidden) to 1 (fully visible).</summary>
+    public float Progress
     {
-        ShaderMaterial.SetShaderParameter(SpeedParam, speed);
-        return this;
+        get => (float)ShaderMaterial.GetShaderParameter(ProgressParam);
+        set => ShaderMaterial.SetShaderParameter(ProgressParam, value);
     }
 
-    /// <summary>
-    /// Sets the progress, or the amount of beam visible on screen. Can be used to slowly show the beam.
-    /// If zero, the beam will be hidden.
-    /// 
-    /// <p>Default: 1</p>
-    /// </summary>
-    public Beam SetProgress(float progress)
+    /// <summary>Thickness of the beam center in pixels. Defaults to approximately 30 pixels.</summary>
+    public float Thickness
     {
-        ShaderMaterial.SetShaderParameter(ProgressParam, progress);
-        return this;
+        get => (float)ShaderMaterial.GetShaderParameter(ThicknessParam) * PixelsPerThicknessUnit;
+        set => ShaderMaterial.SetShaderParameter(ThicknessParam, value / PixelsPerThicknessUnit);
     }
 
-    /// <summary>
-    /// Sets the thickness of the beam (center part of it), in pixels.
-    /// If zero, the beam center part will not be visible.
-    ///
-    /// <p>Default: ~30px (set in UV in shader, equal to 0.0045)</p>
-    /// </summary>
-    public Beam SetThickness(float thickness)
+    /// <summary>Outline thickness in pixels, independent of the center thickness. Defaults to approximately 150 pixels.</summary>
+    public float OutlineThickness
     {
-        var realThickness = thickness / BaseSize.Y / 2;
-        ShaderMaterial.SetShaderParameter(ThicknessParam, realThickness);
-        return this;
+        get => (float)ShaderMaterial.GetShaderParameter(OutlineThicknessParam) * PixelsPerThicknessUnit;
+        set => ShaderMaterial.SetShaderParameter(OutlineThicknessParam, value / PixelsPerThicknessUnit);
     }
 
-    /// <summary>
-    /// Sets the outline thickness of the beam, in pixels. This is an absolute value and is not relative to beam
-    /// center part thickness.
-    /// Minimum noticeable width is 150px, otherwise it's too dim.
-    ///
-    /// <p>Default: ~150px (set in UV in shader, equal to 0.023)</p>
-    /// </summary>
-    public Beam SetOutlineThickness(float outlineThickness)
+    /// <summary>Values closer to 1 make additional beams closer in thickness to the main beam. Defaults to 0.</summary>
+    public float BeamDifference
     {
-        var realThickness = outlineThickness / BaseSize.Y / 2;
-        ShaderMaterial.SetShaderParameter(OutlineThicknessParam, realThickness);
-        return this;
+        get => (float)ShaderMaterial.GetShaderParameter(BeamDifferenceParam);
+        set => ShaderMaterial.SetShaderParameter(BeamDifferenceParam, value);
     }
 
-    /// <summary>
-    /// The thickness difference between the main beam and the other, if there are more than one beam.
-    /// The closer to 1 the smaller the thickness difference.
-    ///
-    /// <p>Default: 0</p>
-    /// </summary>
-    public Beam SetBeamDifference(float difference)
+    public Color BeamColor
     {
-        ShaderMaterial.SetShaderParameter(BeamDifferenceParam, difference);
-        return this;
+        get => (Color)ShaderMaterial.GetShaderParameter(ColorParam);
+        set => ShaderMaterial.SetShaderParameter(ColorParam, value);
     }
 
-    /// <summary>
-    /// Sets the color of the beam (its center part). 
-    /// </summary>
-    public Beam SetBeamColor(Color color)
+    public Color OutlineColor
     {
-        ShaderMaterial.SetShaderParameter(ColorParam, color);
-        return this;
+        get => (Color)ShaderMaterial.GetShaderParameter(OutlineColorParam);
+        set => ShaderMaterial.SetShaderParameter(OutlineColorParam, value);
     }
 
-    /// <summary>
-    /// Sets the outline color
-    /// </summary>
-    public Beam SetOutlineColor(Color color)
+    /// <summary>Length of the beam as a fraction of the rect width.</summary>
+    public float Length
     {
-        ShaderMaterial.SetShaderParameter(OutlineColorParam, color);
-        return this;
+        get => (float)ShaderMaterial.GetShaderParameter(BeamLengthParam);
+        set => ShaderMaterial.SetShaderParameter(BeamLengthParam, value);
     }
 
-    public Beam SetLength(float length)
+    /// <summary>Fade distance at each end as a fraction of the rect width.</summary>
+    public float FadeDistance
     {
-        ShaderMaterial.SetShaderParameter(BeamLengthParam, length);
-        return this;
-    }
-
-    public Beam SetFadeDistance(float distance)
-    {
-        ShaderMaterial.SetShaderParameter(FadeDistanceParam, distance);
-        return this;
+        get => (float)ShaderMaterial.GetShaderParameter(FadeDistanceParam);
+        set => ShaderMaterial.SetShaderParameter(FadeDistanceParam, value);
     }
 
 }
