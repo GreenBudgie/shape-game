@@ -21,4 +21,6 @@ public static class ModuleTypeRegistry
     public static readonly TargetingModuleType Targeting = new();
     public static readonly ExplosionModuleType Explosion = new();
     public static readonly TetherModuleType Tether = new();
+    public static readonly ExtraSpeedModuleType ExtraSpeed = new();
+    public static readonly LessSpeedModuleType LessSpeed = new();
 }
