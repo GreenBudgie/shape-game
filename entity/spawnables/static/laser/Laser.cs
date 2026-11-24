@@ -1,10 +1,15 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-public partial class Laser : Node2D, ISpawnable
+public partial class Laser : Area2D, ISpawnable
 {
 
     private const float DelayBeforeImpact = 0.33f;
     private const float RemoveDuration = 0.2f;
+    private const float LaserWidth = 75;
+
+    private static readonly float LaserLength = ShapeGame.WindowSize.X + 100;
     
     private static readonly AudioStream FireSound = GD.Load<AudioStream>("uid://clklvhoo0gk4o");
 
@@ -16,6 +21,22 @@ public partial class Laser : Node2D, ISpawnable
 
     private Beam _beam = null!;
     private Tween? _tween;
+    private float _damage;
+    private float _direction;
+    private bool _registerDamage;
+    private readonly HashSet<Entity> _damagedEntities = [];
+
+    public Laser()
+    {
+        var rectangleShape = new RectangleShape2D();
+        rectangleShape.Size = new Vector2(LaserWidth, LaserLength);
+
+        var shape = new CollisionShape2D();
+        shape.Position = new Vector2(0, -LaserLength / 2);
+        shape.Shape = rectangleShape;
+        
+        AddChild(shape);
+    }
 
     public override void _Ready()
     {
@@ -25,7 +46,24 @@ public partial class Laser : Node2D, ISpawnable
             return;
         }
 
+        _damage = Context.GetStat<DamageStat>();
+
+        CollisionLayer = 0;
+        CollisionMask = 0;
+        
+        if (Context.OriginalSource is not Enemy)
+        {
+            this.EnableCollisionMask(CollisionLayers.Enemies);
+        }
+        
+        if (Context.OriginalSource is not Player)
+        {
+            this.EnableCollisionMask(CollisionLayers.Player);
+        }
+
         GlobalPosition = GetSourcePosition();
+        _direction = Context.Direction.Angle();
+        Rotation = _direction + Pi / 2;
                 
         var sound = SoundManager.Instance.PlayPositionalSound(this, FireSound);
         sound.RandomizePitchOffset(0.1f);
@@ -34,8 +72,8 @@ public partial class Laser : Node2D, ISpawnable
         _beam.SetFromTo(GlobalPosition, GetTargetPosition());
         _beam.Energy = 0;
         _beam.Progress = 0;
-        _beam.Thickness = 100;
-        _beam.OutlineThickness = 300;
+        _beam.Thickness = 75;
+        _beam.OutlineThickness = 200;
         _beam.OutlineColor = ColorScheme.Red;
         _beam.BeamColor = Colors.White;
         _beam.FadeDistance = 0.01f;
@@ -51,6 +89,16 @@ public partial class Laser : Node2D, ISpawnable
         _tween.Finished += PlayImpact;
 
         ShapeGame.Instance.AddChild(_beam);
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!_registerDamage)
+        {
+            return;
+        }
+        
+        Damage();
     }
 
     public override void _Process(double delta)
@@ -69,6 +117,8 @@ public partial class Laser : Node2D, ISpawnable
 
     public void Remove()
     {
+        _registerDamage = false;
+        
         _tween?.Kill();
         _tween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
 
@@ -81,6 +131,8 @@ public partial class Laser : Node2D, ISpawnable
 
     private void PlayImpact()
     {
+        _registerDamage = true;
+        
         ScreenShake.Instance.Shake(ShakeStrength.Low);
 
         var impactDuration = Context.GetStat<LifetimeStat>() - DelayBeforeImpact;
@@ -88,14 +140,30 @@ public partial class Laser : Node2D, ISpawnable
         _tween?.Kill();
         _tween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
 
-        _tween.TweenProperty(_beam, Beam.ThicknessProperty, 50, impactDuration);
-        _tween.TweenProperty(_beam, Beam.OutlineThicknessProperty, 200, impactDuration);
+        _tween.TweenProperty(_beam, Beam.ThicknessProperty, 40, impactDuration);
+        _tween.TweenProperty(_beam, Beam.OutlineThicknessProperty, 150, impactDuration);
         _tween.TweenProperty(_beam, Beam.EnergyProperty, 2f, impactDuration);
+    }
+
+    private void Damage()
+    {
+        var entities = GetOverlappingBodies().OfType<Entity>().Where(entity => !_damagedEntities.Contains(entity));
+        foreach (var entity in entities)
+        {
+            entity.HealthController.Damage(DamageSource.Explosion, _damage);
+            var entityDamagedEvent = new EntityDamagedEvent(entity, _damage);
+            EntityDamaged?.Invoke(entityDamagedEvent);
+
+            _damagedEntities.Add(entity);
+
+            const float impulseStrength = 1000f;
+            entity.ApplyCentralImpulse(Vector2.Up * impulseStrength);
+        }
     }
 
     private Vector2 GetTargetPosition()
     {
-        return new Vector2(GlobalPosition.X, ShapeGame.PlayableArea.Position.Y - 100);
+        return GlobalPosition + Vector2.FromAngle(_direction) * LaserLength;
     }
 
     private Vector2 _prevPosition = ShapeGame.Center;
