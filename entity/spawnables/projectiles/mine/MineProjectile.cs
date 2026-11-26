@@ -26,9 +26,6 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
     public SpawnableContext Context { get; set; } = null!;
     public bool IsRemoving { get; private set; }
 
-    private GlowWrapper _glowWrapper = null!;
-    private Sprite2D _sprite = null!;
-
     public void Setup(SpawnableContext context)
     {
         var component = this.AddComponentIfPossible(ComponentTypeRegistry.RemoveExplosion);
@@ -44,12 +41,6 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
     {
         SoundManager.Instance.PlayPositionalSound(this, _shotSound).RandomizePitchOffset(0.1f);
         BodyEntered += HandleBodyEntered;
-
-        _glowWrapper = GetNode<GlowWrapper>("Glow")
-            .SetColor(ColorScheme.Red)
-            .SetStrength(2)
-            .SetRadius(0);
-        _sprite = _glowWrapper.GetNode<Sprite2D>("MineSprite");
     }
 
     // Fuse instead of removing instantly, that's a feature of mine
@@ -91,8 +82,14 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         timer.Timeout += QueueFree;
         AddChild(timer);
         
+        var sprite = GetNode<Sprite2D>("MineSprite");
+        var effects = VisualEffects.Attach(sprite);
+        effects.GlowEnabled = true;
+        effects.GlowColor = ColorScheme.Red;
+        effects.GlowRadius = 0f;
+        effects.GlowStrength = 2f;
         CreateTween()
-            .TweenProperty(_glowWrapper, IGlow.RadiusProperty, 100, FuseTime)
+            .TweenProperty(effects.Material, VisualEffects.GlowRadiusProperty, 100f, FuseTime)
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.In);
 
@@ -101,19 +98,18 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         const float pitchIncreasePerBeep = 0.1f;
         var beepDelays = new[] { 0.2f, 0.1f, 0.05f, 0.025f };
         var initialDelay = FuseTime - beepDelays.Sum() - beepDuration * beeps * 2;
-        var beepScale = new Vector2(1.2f, 1.2f);
 
         var tween = CreateTween();
         for (var i = 0; i < beeps; i++)
         {
             var delay = i == 0 ? initialDelay : beepDelays[i];
             var pitch = 1 + pitchIncreasePerBeep * i;
-            tween.TweenProperty(_sprite, ScaleProperty, beepScale, beepDuration)
+            tween.TweenScale(sprite, 1.2f, beepDuration)
                 .SetDelay(delay);
-            tween.Parallel().TweenProperty(_sprite, ModulateProperty, OversaturatedWhite, beepDuration);
+            tween.Parallel().TweenProperty(effects.Material, VisualEffects.BaseTintProperty, OversaturatedWhite, beepDuration);
             tween.TweenCallback(Callable.From(() => PlayBeepSound(pitch)));
-            tween.TweenProperty(_sprite, ScaleProperty, Vector2.One, beepDuration);
-            tween.Parallel().TweenProperty(_sprite, ModulateProperty, Colors.White, beepDuration);
+            tween.TweenScaleReset(sprite, beepDuration);
+            tween.Parallel().TweenProperty(effects.Material, VisualEffects.BaseTintProperty, Colors.White, beepDuration);
         }
     }
 

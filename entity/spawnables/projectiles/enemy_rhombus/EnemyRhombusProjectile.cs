@@ -64,7 +64,7 @@ public partial class EnemyRhombusProjectile : BasicRigidBodyProjectile
         LinearDamp = 5;
         CollisionLayer = 0;
         CollisionMask = 0;
-        DissolveEffect.DissolveAndRemove(this, GetNode<Sprite2D>("Sprite2D"));
+        DissolveAndRemove(GetNode<Sprite2D>("Sprite2D"));
         _isDissolving = true;
     }
 }

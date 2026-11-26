@@ -15,18 +15,23 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
     private const float MaxLinearDamp = 4;
     private const float CollectedDamp = 10;
     private const float CollectedMagnetForce = 3000;
+    private const float CollectDuration = 0.2f;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://bu4bb10k0x66d");
 
     private static readonly Color GlowColor = ColorScheme.Yellow;
+    private static readonly Callable CollectScaleEase = BezierEase(Vector2.Zero, new Vector2(0.5f, 1f));
+    private static readonly Callable CollectAlphaEase = BezierEase(new Vector2(1f / 3f, 0.255997f), new Vector2(0.5f, 0.9315711f));
+    private static readonly Callable CollectDissolveEase = BezierEase(new Vector2(1f / 6f, 0.4266084f), new Vector2(0.506401f, 0.783497f));
     
     public event Action<EntityDamagedEvent>? EntityDamaged;
     public event Action? Removed;
     public SpawnableContext Context { get; set; } = null!;
     public bool IsRemoving { get; private set; }
     
-    private Glow _glow = null!;
-    private AnimationPlayer _crystalAnimations = null!;
+    private Sprite2D _sprite = null!;
+    private VisualEffects _effects = null!;
+    private float _glowProgress = -1f;
     
     public static FallingCrystal Spawn(Vector2 globalPosition)
     {
@@ -52,11 +57,11 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
 
     public override void _Ready()
     {
-        var sprite = GetNode<Sprite2D>("Sprite2D");
-        _glow = Glow.AddGlow(sprite).SetColor(GlowColor);
-        ResetGlowToMin();
-
-        _crystalAnimations = GetNode<AnimationPlayer>("CrystalAnimations");
+        _sprite = GetNode<Sprite2D>("Sprite2D");
+        _effects = VisualEffects.Attach(_sprite);
+        _effects.GlowEnabled = true;
+        _effects.GlowColor = GlowColor;
+        UpdateGlow(0f);
         
         var pointer = new PointerArea(this)
         {
@@ -98,14 +103,14 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
         CollisionLayer = 0;
         CollisionMask = 0;
 
-        var fadeOutTween = _glow.CreateTween();
-        var setColorAction = _glow.SetColor;
-        var finalGlowColor = _glow.GetColor();
-        finalGlowColor.A = 0;
-        fadeOutTween.TweenMethod(Callable.From(setColorAction), _glow.GetColor(), finalGlowColor, 0.15);
-
-        _crystalAnimations.Play("collect");
-        _crystalAnimations.AnimationFinished += _ => QueueFree();
+        _effects.DissolveEnabled = true;
+        var tween = CreateTween().SetParallel();
+        tween.TweenScale(_sprite, 0.25f, CollectDuration).SetCustomInterpolator(CollectScaleEase);
+        tween.FadeOut(_sprite, CollectDuration).SetCustomInterpolator(CollectAlphaEase);
+        tween.TweenProperty(_effects.Material, VisualEffects.DissolveValueProperty, 0f, CollectDuration)
+            .SetCustomInterpolator(CollectDissolveEase);
+        tween.TweenProperty(_effects.Material, VisualEffects.GlowColorAlphaProperty, 0f, 0.15f);
+        tween.Finished += QueueFree;
         
         Removed?.Invoke();
     }
@@ -117,7 +122,7 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
         {
             LinearDamp = 0;
             SetGravityScale(1);
-            ResetGlowToMin();
+            UpdateGlow(0f);
             return;
         }
 
@@ -126,7 +131,7 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
         {
             LinearDamp = 0;
             SetGravityScale(1);
-            ResetGlowToMin();
+            UpdateGlow(0f);
             return;
         }
 
@@ -148,14 +153,27 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
         SetGravityScale(distancePercent);
         ApplyCentralForce(forceVector);
 
-        _glow.SetStrength(Lerp(MinGlowStrength, MaxGlowStrength, distancePercent));
-        _glow.SetRadius(Lerp(MinGlowRadius, MaxGlowRadius, distancePercent));
+        UpdateGlow(distancePercent);
     }
 
-    private void ResetGlowToMin()
+    private void UpdateGlow(float progress)
     {
-        _glow.SetStrength(MinGlowStrength);
-        _glow.SetRadius(MinGlowRadius);
+        if (IsEqualApprox(_glowProgress, progress))
+        {
+            return;
+        }
+        _glowProgress = progress;
+        _effects.GlowStrength = Lerp(MinGlowStrength, MaxGlowStrength, progress);
+        _effects.GlowRadius = Lerp(MinGlowRadius, MaxGlowRadius, progress);
+    }
+
+    private static Callable BezierEase(Vector2 first, Vector2 second)
+    {
+        var curve = new Animation();
+        var track = curve.AddTrack(Animation.TrackType.Bezier);
+        curve.BezierTrackInsertKey(track, 0, 0f, outHandle: first);
+        curve.BezierTrackInsertKey(track, 1, 1f, inHandle: second - Vector2.One);
+        return Callable.From<float, float>(progress => curve.BezierTrackInterpolate(track, progress));
     }
 
     private void HandleCollision(Node node)

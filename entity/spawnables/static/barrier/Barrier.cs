@@ -19,7 +19,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
     public bool IsRemoving { get; private set; }
 
     private Sprite2D _sprite = null!;
-    private Mask _spriteMask = null!;
+    private VisualEffects _effects = null!;
     private GpuParticles2D _particles = null!;
     private Vector2 _initialPosition;
 
@@ -35,15 +35,19 @@ public partial class Barrier : RigidBody2D, ISpawnable
         _particles = GetNode<GpuParticles2D>("GPUParticles2D");
         _particles.Emitting = false;
         
-        _sprite = GetNode<Sprite2D>("Glow/Sprite2D");
-        _spriteMask = Mask.Attach(_sprite).Axis(MaskAxis.Horizontal).Origin(MaskOrigin.Center);
-        _spriteMask.Progress = 0;
+        _sprite = GetNode<Sprite2D>("Sprite2D");
+        _effects = VisualEffects.Attach(_sprite);
+        _effects.MaskEnabled = true;
+        _effects.MaskProgress = 0f;
+        _effects.GlowEnabled = true;
+        _effects.GlowColor = ColorScheme.LightBlueGreen;
+        _effects.GlowStrength = 1f;
+        _effects.GlowRadius = 30f;
 
         const float yOffset = 250f;
         GlobalPosition += new Vector2(0, -yOffset);
     }
 
-    private GlowWrapper _glowWrapper = null!;
     private uint _initialCollisionLayer;
     private uint _initialCollisionMask;
     
@@ -55,11 +59,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
         CollisionLayer = 0;
         CollisionMask = 0;
         
-        _glowWrapper = GetNode<GlowWrapper>("Glow");
-        _glowWrapper.Scale = new Vector2(0, 1);
-        _glowWrapper.SetColor(ColorScheme.LightBlueGreen)
-            .SetStrength(1)
-            .SetRadius(30);
+        _sprite.Scale = new Vector2(0, 1);
 
         var source = Context.Source;
         if (IsInstanceValid(source))
@@ -172,8 +172,8 @@ public partial class Barrier : RigidBody2D, ISpawnable
             .SetParallel()
             .SetEase(Tween.EaseType.InOut)
             .SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(_spriteMask.Material, Mask.ProgressShaderParam, 0f, RemoveDuration);
-        tween.TweenProperty(_glowWrapper, ScaleProperty, new Vector2(0, 1), RemoveDuration);
+        tween.TweenProperty(_effects.Material, VisualEffects.MaskProgressProperty, 0f, RemoveDuration);
+        tween.TweenScale(_sprite, new Vector2(0, 1), RemoveDuration);
 
         tween.Finished += QueueFree;
         
@@ -193,10 +193,10 @@ public partial class Barrier : RigidBody2D, ISpawnable
             .SetParallel()
             .SetEase(Tween.EaseType.InOut)
             .SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(_spriteMask.Material, Mask.ProgressShaderParam, 1f, EffectDuration)
+        tween.TweenProperty(_effects.Material, VisualEffects.MaskProgressProperty, 1f, EffectDuration)
             .SetDelay(EffectStartupDuration);
         
-        tween.TweenProperty(_glowWrapper, ScaleProperty, Vector2.One, EffectDuration)
+        tween.TweenScaleReset(_sprite, EffectDuration)
             .SetDelay(EffectStartupDuration);
         
         tween.Finished += OnAppear;

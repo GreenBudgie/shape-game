@@ -89,6 +89,15 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
         QueueFree();   
     }
 
+    protected void DissolveAndRemove(Sprite2D sprite, float duration = 0.5f)
+    {
+        var effects = VisualEffects.Attach(sprite);
+        effects.DissolveEnabled = true;
+        var tween = CreateTween();
+        tween.TweenProperty(effects.Material, VisualEffects.DissolveValueProperty, 0f, duration);
+        tween.Finished += QueueFree;
+    }
+
     public virtual void PlayerShapeEntered(Player player)
     {
         HandleBodyEntered(player);
