@@ -13,7 +13,7 @@ public partial class InventorySlot : TextureButton
     public List<InventoryModuleConnection> Connections { get; private set; } = [];
     
     private Vector2 _centerOffsetPosition;
-    private Glow _glow = null!;
+    private VisualEffects _effects = null!;
 
     private static readonly PackedScene Scene = GD.Load<PackedScene>("uid://dilsv34jaqcrd");
 
@@ -27,10 +27,11 @@ public partial class InventorySlot : TextureButton
 
     public override void _Ready()
     {
-        _glow = Glow.AddGlow(this)
-            .SetColor(ColorScheme.LightBlue)
-            .SetStrength(1)
-            .SetRadius(0);
+        _effects = VisualEffects.Attach(this);
+        _effects.GlowEnabled = true;
+        _effects.GlowColor = ColorScheme.LightBlue;
+        _effects.GlowStrength = 1f;
+        _effects.GlowRadius = 0f;
 
         InventoryManager.Instance.Connect(InventoryManager.SignalName.InventoryClosed, Callable.From(SetIdleState));
         InventoryManager.Instance.Connect(InventoryManager.SignalName.SlotsStateReset, Callable.From(SetIdleState));
@@ -64,8 +65,8 @@ public partial class InventorySlot : TextureButton
         _stateTween = CreateTween().SetParallel().SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
 
         _stateTween.TweenOffsetScaleReset(this, StateChangeDuration);
-        _stateTween.TweenGlowColor(_glow, ColorScheme.LightBlue, StateChangeDuration);
-        _stateTween.TweenGlowRadius(_glow, 0, StateChangeDuration);
+        _stateTween.TweenGlowColor(_effects, ColorScheme.LightBlue, StateChangeDuration);
+        _stateTween.TweenGlowRadius(_effects, 0, StateChangeDuration);
     }
     
     public void SetHoveredState()
@@ -81,8 +82,8 @@ public partial class InventorySlot : TextureButton
         _stateTween = CreateTween().SetParallel().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
 
         _stateTween.TweenOffsetScale(this, StateScale, StateChangeDuration);
-        _stateTween.TweenGlowColor(_glow, ColorScheme.LightBlue, StateChangeDuration);
-        _stateTween.TweenGlowRadius(_glow, GlowRadius, StateChangeDuration);
+        _stateTween.TweenGlowColor(_effects, ColorScheme.LightBlue, StateChangeDuration);
+        _stateTween.TweenGlowRadius(_effects, GlowRadius, StateChangeDuration);
     }
     
     public void SetShowsCycleState()
@@ -98,8 +99,8 @@ public partial class InventorySlot : TextureButton
         _stateTween = CreateTween().SetParallel().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
 
         _stateTween.TweenOffsetScale(this, StateScale, StateChangeDuration);
-        _stateTween.TweenGlowColor(_glow, ColorScheme.Red, StateChangeDuration);
-        _stateTween.TweenGlowRadius(_glow, GlowRadius, StateChangeDuration);
+        _stateTween.TweenGlowColor(_effects, ColorScheme.Red, StateChangeDuration);
+        _stateTween.TweenGlowRadius(_effects, GlowRadius, StateChangeDuration);
     }
     
     public void SetShowsConnectionsState()
@@ -115,8 +116,8 @@ public partial class InventorySlot : TextureButton
         _stateTween = CreateTween().SetParallel().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
 
         _stateTween.TweenOffsetScale(this, StateScale, StateChangeDuration);
-        _stateTween.TweenGlowColor(_glow, ColorScheme.Yellow, StateChangeDuration);
-        _stateTween.TweenGlowRadius(_glow, GlowRadius, StateChangeDuration);
+        _stateTween.TweenGlowColor(_effects, ColorScheme.Yellow, StateChangeDuration);
+        _stateTween.TweenGlowRadius(_effects, GlowRadius, StateChangeDuration);
     }
 
     /// <summary>

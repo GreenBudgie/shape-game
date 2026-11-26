@@ -9,7 +9,7 @@ public partial class DropArea : TextureButton
     [Signal]
     public delegate void UnhoveredEventHandler();
 
-    private Glow _glow = null!;
+    private VisualEffects _effects = null!;
     private Tween? _animationTween;
     
     public DropArea()
@@ -19,10 +19,11 @@ public partial class DropArea : TextureButton
     
     public override void _Ready()
     {
-        _glow = Glow.AddGlow(this)
-            .SetColor(ColorScheme.Red)
-            .SetStrength(1)
-            .SetRadius(0);
+        _effects = VisualEffects.Attach(this);
+        _effects.GlowEnabled = true;
+        _effects.GlowColor = ColorScheme.Red;
+        _effects.GlowStrength = 1f;
+        _effects.GlowRadius = 0f;
 
         Modulate = Colors.Transparent;
         OffsetTransformScale = new Vector2(0.75f, 0.75f);
@@ -59,7 +60,7 @@ public partial class DropArea : TextureButton
         _animationTween?.Kill();
 
         _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out).SetParallel();
-        _animationTween.TweenGlowRadius(_glow, 30, AnimationDuration);
+        _animationTween.TweenGlowRadius(_effects, 30, AnimationDuration);
         _animationTween.TweenOffsetScale(this, 1.1f, AnimationDuration);
         _animationTween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, 0.1f), AnimationDuration);
         
@@ -71,7 +72,7 @@ public partial class DropArea : TextureButton
         _animationTween?.Kill();
 
         _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
-        _animationTween.TweenGlowRadius(_glow, 0, AnimationDuration);
+        _animationTween.TweenGlowRadius(_effects, 0, AnimationDuration);
         _animationTween.TweenOffsetScaleReset(this, AnimationDuration);
         _animationTween.TweenOffsetRotationReset(this, AnimationDuration);
         
@@ -86,7 +87,7 @@ public partial class DropArea : TextureButton
 
         _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out).SetParallel();
         _animationTween.FadeIn(this, AnimationDuration);
-        _animationTween.TweenGlowRadius(_glow, 0, AnimationDuration);
+        _animationTween.TweenGlowRadius(_effects, 0, AnimationDuration);
         _animationTween.TweenOffsetScaleReset(this, AnimationDuration);
         _animationTween.TweenOffsetRotationReset(this, AnimationDuration);
     }
@@ -99,7 +100,7 @@ public partial class DropArea : TextureButton
 
         _animationTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
         _animationTween.FadeOut(this, AnimationDuration);
-        _animationTween.TweenGlowRadius(_glow, 0, AnimationDuration);
+        _animationTween.TweenGlowRadius(_effects, 0, AnimationDuration);
         _animationTween.TweenOffsetScale(this, 0.75f, AnimationDuration);
         _animationTween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, 0.1f), AnimationDuration);
     }

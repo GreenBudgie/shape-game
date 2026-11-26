@@ -123,7 +123,6 @@ size_flags_horizontal = 4
 offset_transform_enabled = true
 step = 0.01
 fill_mode = 1
-texture_under = ExtResource("1_b3mny")
 texture_over = ExtResource("2_pc3ud")
 texture_progress = ExtResource("3_yw7c2")
 texture_progress_offset = Vector2(5, 1)
@@ -131,6 +130,11 @@ tint_under = Color(0.037400004, 0.17, 0.14348, 1)
 tint_over = Color(0.21176471, 0.94509804, 0.8039216, 1)
 tint_progress = Color(0.21176471, 0.94509804, 0.8039216, 1)
 script = ExtResource("8_pc3ud")
+
+[node name="Background" type="TextureRect" parent="Health/VBoxContainer/HealthBar"]
+show_behind_parent = true
+mouse_filter = 2
+texture = ExtResource("1_b3mny")
 
 [node name="Particles" type="GPUParticles2D" parent="Health/VBoxContainer/HealthBar" unique_id=1567074917]
 modulate = Color(0.937255, 0.356863, 0.356863, 1)

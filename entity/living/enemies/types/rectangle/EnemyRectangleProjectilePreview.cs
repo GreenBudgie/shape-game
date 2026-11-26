@@ -53,7 +53,11 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
 
     private void Remove()
     {
-        DissolveEffect.DissolveAndRemove(this, this, 0.25f);
+        var effects = VisualEffects.Attach(this);
+        effects.DissolveEnabled = true;
+        var tween = CreateTween();
+        tween.TweenProperty(effects.Material, VisualEffects.DissolveValueProperty, 0f, 0.25f);
+        tween.Finished += QueueFree;
     }
 
 }

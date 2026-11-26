@@ -1,16 +1,14 @@
 public partial class HealthBar : TextureProgressBar
 {
     
-    private Glow _glow = null!;
+    private VisualEffects _effects = null!;
     
     public override void _Ready()
     {
-        _glow = Glow.AddGlow(this)
-            .SetColor(ColorScheme.Red)
-            .SetStrength(2)
-            .SetRadius(0)
-            .EnablePulsing()
-            .SetPulseStrengthDelta(1f);
+        _effects = VisualEffects.Attach(GetNode<TextureRect>("Background"));
+        _effects.BaseTint = TintUnder;
+        _effects.GlowColor = ColorScheme.Red;
+        _effects.PulseEnabled = true;
         
         ShapeGame.Instance.PostSetup += PostSetup;
 
@@ -50,12 +48,12 @@ public partial class HealthBar : TextureProgressBar
         var rawRatio = (float)Clamp(MaxValue > 0 ? health / MaxValue : 0, 0, 1);
         var ratio = 1f - Clamp(rawRatio * (1 / dangerThreshold), 0, 1);
         
-        _glow?
-            .SetRadius(40f * ratio)
-            .SetStrength(2f * ratio)
-            .SetPulseRadiusDelta(20f * ratio)
-            .SetPulseStrengthDelta(ratio)
-            .SetPulsesPerSecond(1f + ratio);
+        _effects.GlowEnabled = ratio > 0f;
+        _effects.GlowRadius = 40f * ratio;
+        _effects.GlowStrength = 2f * ratio;
+        _effects.PulseRadiusDelta = 20f * ratio;
+        _effects.PulseStrengthDelta = ratio;
+        _effects.PulsesPerSecond = 1f + ratio;
         
         const float startDuration = 0.1f;
         const float endDuration = 0.2f;

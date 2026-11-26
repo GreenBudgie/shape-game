@@ -1,15 +1,16 @@
 public partial class CrystalIcon : TextureRect
 {
 
-    private Glow _glow = null!;
+    private VisualEffects _effects = null!;
     private Tween? _tween;
     
     public override void _Ready()
     {
-        _glow = Glow.AddGlow(this)
-            .SetColor(ColorScheme.Yellow)
-            .SetStrength(1)
-            .SetRadius(0);
+        _effects = VisualEffects.Attach(this);
+        _effects.GlowEnabled = true;
+        _effects.GlowColor = ColorScheme.Yellow;
+        _effects.GlowStrength = 1f;
+        _effects.GlowRadius = 0f;
         
         CrystalManager.Instance.CrystalAmountChanged += OnCrystalAmountChanged;
     }
@@ -35,11 +36,11 @@ public partial class CrystalIcon : TextureRect
         _tween.Parallel()
             .TweenOffsetRotation(this, Min(OffsetTransformRotation + rotationStep, maxRotation), startDuration);
         _tween.Parallel()
-            .TweenGlowRadius(_glow, Min(_glow.Radius + maxGlowRadius, maxGlowRadius), startDuration);
+            .TweenGlowRadius(_effects, maxGlowRadius, startDuration);
         
         _tween.TweenOffsetScaleReset(this, endDuration);
         _tween.Parallel().TweenOffsetRotationReset(this, endDuration);
-        _tween.Parallel().TweenGlowRadius(_glow, 0, endDuration);
+        _tween.Parallel().TweenGlowRadius(_effects, 0, endDuration);
     }
     
 }

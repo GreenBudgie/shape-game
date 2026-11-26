@@ -100,28 +100,21 @@ public partial class Barrier : RigidBody2D, ISpawnable
 
         if (IsInstanceValid(_leftBeam))
         {
-            UpdateBeamFromTo(_leftBeam, LeftCornerPosition);
+            UpdateBeamFromTo(_leftBeam, source.GlobalPosition, LeftCornerPosition);
         }
 
         if (IsInstanceValid(_rightBeam))
         {
-            UpdateBeamFromTo(_rightBeam, RightCornerPosition);
+            UpdateBeamFromTo(_rightBeam, source.GlobalPosition, RightCornerPosition);
         }
     }
     
     
-    private void UpdateBeamFromTo(Beam beam, Vector2 toPosition)
+    private void UpdateBeamFromTo(Beam beam, Vector2 from, Vector2 toPosition)
     {
         var globalPos = ToGlobal(toPosition * _animationProgress);
-
-        var source = Context.Source;
-        if (!IsInstanceValid(source))
-        {
-            beam.To = globalPos;
-            return;
-        }
-
-        beam.SetFromTo(source.GlobalPosition, globalPos);
+        beam.SetFromTo(from, globalPos);
+        beam.FadeDistance = beam.Length * 0.2f;
     }
 
     private void RetainPosition()
@@ -229,7 +222,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
     private Beam CreateAndAnimateBeam(Node2D source)
     {
         var beam = Beam.Create();
-        beam.SetFromTo(source.GlobalPosition, GlobalPosition);
+        UpdateBeamFromTo(beam, source.GlobalPosition, Vector2.Zero);
         beam.Energy = 0;
         beam.Progress = 0;
         beam.OutlineThickness = 100;

@@ -28,8 +28,8 @@ public partial class LevelBoundary : StaticBody2D
         _glowTween = CreateTween().SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quad);
         foreach (var glow in Glows)
         {
-            _glowTween.TweenGlowStrength(glow, 0, TweenDuration);
-            _glowTween.TweenGlowRadius(glow, 0, TweenDuration);
+            _glowTween.TweenProperty(glow, RectGlow.StrengthProperty, 0, TweenDuration);
+            _glowTween.TweenProperty(glow, RectGlow.RadiusProperty, 0, TweenDuration);
         }
     }
 
@@ -46,9 +46,9 @@ public partial class LevelBoundary : StaticBody2D
                 glow.Color = color.AsTransparent();
             }
             
-            _glowTween.TweenGlowStrength(glow, DefaultGlowStrength, TweenDuration);
-            _glowTween.TweenGlowRadius(glow, DefaultGlowRadius, TweenDuration);
-            _glowColorTween.TweenGlowColor(glow, color, GlowTweenDuration);
+            _glowTween.TweenProperty(glow, RectGlow.StrengthProperty, DefaultGlowStrength, TweenDuration);
+            _glowTween.TweenProperty(glow, RectGlow.RadiusProperty, DefaultGlowRadius, TweenDuration);
+            _glowColorTween.TweenProperty(glow, RectGlow.GlowColorProperty, color, GlowTweenDuration);
         }
     }
 

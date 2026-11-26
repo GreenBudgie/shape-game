@@ -3,8 +3,12 @@
 /// Emulates the outer glow of a solid white rectangle, so no texture is needed.
 /// The shader is fed the node's size via the rect_size uniform.
 /// </summary>
-public partial class RectGlow : ColorRect, IGlow
+public partial class RectGlow : ColorRect
 {
+    public static readonly NodePath GlowColorProperty = nameof(Color);
+    public static readonly NodePath RadiusProperty = nameof(Radius);
+    public static readonly NodePath StrengthProperty = nameof(Strength);
+
     private static readonly StringName GlowColorName = "glow_color";
     private static readonly StringName GlowRadiusName = "glow_radius";
     private static readonly StringName GlowStrengthName = "glow_strength";
@@ -92,21 +96,6 @@ public partial class RectGlow : ColorRect, IGlow
         _baseStrength = positiveStrength;
         _shaderMaterial.SetShaderParameter(GlowStrengthName, positiveStrength);
         return this;
-    }
-
-    /// <summary>
-    /// Sets the strength and radius of the glow to zero, turning it off.
-    /// </summary>
-    public RectGlow TurnOff()
-    {
-        SetRadius(0);
-        SetStrength(0);
-        return this;
-    }
-
-    void IGlow.TurnOff()
-    {
-        TurnOff();
     }
 
     /// <summary>

@@ -5,7 +5,7 @@ public partial class InventoryModuleConnection : Node2D
     
     private Sprite2D _arrow = null!;
     private Sprite2D _connector = null!;
-    private Glow _arrowGlow = null!;
+    private VisualEffects _arrowEffects = null!;
 
     public InventoryModule InventoryModule { get; private set; } = null!;
     public InventorySlot? Slot { get; set; }
@@ -45,10 +45,11 @@ public partial class InventoryModuleConnection : Node2D
         Hide();
         HideConnector(true);
 
-        _arrowGlow = Glow.AddGlow(_arrow)
-            .SetColor(_arrow.Modulate)
-            .SetRadius(0)
-            .SetStrength(1);
+        _arrowEffects = VisualEffects.Attach(_arrow);
+        _arrowEffects.GlowEnabled = true;
+        _arrowEffects.GlowColor = _arrow.Modulate;
+        _arrowEffects.GlowStrength = 1f;
+        _arrowEffects.GlowRadius = 0f;
 
         InventoryModule.Connect(InventoryModule.SignalName.StoppedFollowingCursor, Callable.From(OnModuleStoppedFollowingCursor));
         InventoryModule.Connect(InventoryModule.SignalName.ShowAnimationFinished, Callable.From(ShowConnector));
@@ -128,8 +129,8 @@ public partial class InventoryModuleConnection : Node2D
 
         _arrowTween.TweenModulate(_arrow, ColorScheme.Red, StateChangeDuration);
         _arrowTween.TweenScaleReset(_arrow, StateChangeDuration);
-        _arrowTween.TweenGlowColor(_arrowGlow, ColorScheme.Red, StateChangeDuration);
-        _arrowTween.TweenGlowRadius(_arrowGlow, GlowRadius, StateChangeDuration);
+        _arrowTween.TweenGlowColor(_arrowEffects, ColorScheme.Red, StateChangeDuration);
+        _arrowTween.TweenGlowRadius(_arrowEffects, GlowRadius, StateChangeDuration);
     }
     
     public void SetIdleState()
@@ -146,8 +147,8 @@ public partial class InventoryModuleConnection : Node2D
 
         _arrowTween.TweenModulate(_arrow, InventoryModule.Module.Type.Color, StateChangeDuration);
         _arrowTween.TweenScaleReset(_arrow, StateChangeDuration);
-        _arrowTween.TweenGlowColor(_arrowGlow, InventoryModule.Module.Type.Color, StateChangeDuration);
-        _arrowTween.TweenGlowRadius(_arrowGlow, 0, StateChangeDuration);
+        _arrowTween.TweenGlowColor(_arrowEffects, InventoryModule.Module.Type.Color, StateChangeDuration);
+        _arrowTween.TweenGlowRadius(_arrowEffects, 0, StateChangeDuration);
     }
     
     public void SetNewConnectionState()
@@ -164,8 +165,8 @@ public partial class InventoryModuleConnection : Node2D
 
         _arrowTween.TweenModulate(_arrow, InventoryModule.Module.Type.Color, StateChangeDuration);
         _arrowTween.TweenScale(_arrow, 1.25f, StateChangeDuration);
-        _arrowTween.TweenGlowColor(_arrowGlow, InventoryModule.Module.Type.Color, StateChangeDuration);
-        _arrowTween.TweenGlowRadius(_arrowGlow, GlowRadius, StateChangeDuration);
+        _arrowTween.TweenGlowColor(_arrowEffects, InventoryModule.Module.Type.Color, StateChangeDuration);
+        _arrowTween.TweenGlowRadius(_arrowEffects, GlowRadius, StateChangeDuration);
     }
 
     private const float ConnectorTweenDuration = 0.15f;

@@ -45,15 +45,12 @@ public partial class InventoryModule : TextureButton
     [Signal]
     public delegate void FirstInsertedEventHandler();
 
-    private ShaderMaterial _material = null!;
+    private VisualEffects _effects = null!;
     private ModuleInfo? _moduleInfo;
     private HexCoordinates? _mousePivot;
     private Dictionary<HexCoordinates, HexData> _hexes = [];
     private bool _isFirstInsert = true;
     private bool _isFirstFrame = true;
-    
-    // Nullable since it uses a deferred call 
-    private Glow? _glow;
     
     private Vector2? _targetPosition;
     private float _targetRotation;
@@ -86,18 +83,17 @@ public partial class InventoryModule : TextureButton
         _outline.Texture = Module.Type.Shape.OutlineTexture;
         _outline.Modulate = Module.Type.Color;
 
-        SelfModulate = ColorScheme.DarkOrange;
         TextureNormal = Module.Type.Shape.FillTexture;
         _moduleTexture.Texture = Module.Type.Texture;
-        _material = (ShaderMaterial)Material;
         TextureClickMask = Module.Type.Shape.Bitmap;
 
-        Callable.From(() =>
-            _glow = Glow.AddGlow(this)
-                .SetColor(Module.Type.Color)
-                .SetRadius(0)
-                .SetStrength(1)
-        ).CallDeferred();
+        _effects = VisualEffects.Attach(this);
+        _effects.BaseTint = ColorScheme.DarkOrange;
+        _effects.GlowEnabled = true;
+        _effects.GlowColor = Module.Type.Color;
+        _effects.GlowRadius = 0f;
+        _effects.GlowStrength = 1f;
+        _effects.StretchEnabled = true;
 
         foreach (var moduleHex in Module.Type.Shape.PixelHexPositions)
         {
@@ -236,11 +232,8 @@ public partial class InventoryModule : TextureButton
         _animationTween.TweenOffsetRotation(this, RandomUtils.RandomSign(0.3f), duration);
         _animationTween.FadeOut(this, duration);
         
-        if (_glow != null)
-        {
-            _animationTween.TweenGlowColor(_glow, _glow.Color.AsTransparent(), duration / 3);
-            _animationTween.TweenGlowRadius(_glow, 0, duration / 3);
-        }
+        _animationTween.TweenGlowFadeOut(_effects, duration / 3);
+        _animationTween.TweenGlowRadius(_effects, 0, duration / 3);
 
         _animationTween.Finished += QueueFree;
         
@@ -298,10 +291,7 @@ public partial class InventoryModule : TextureButton
 
         _animationTween.TweenOffsetScale(this, 1.04f, AnimationTweenDuration);
 
-        if (_glow != null)
-        {
-            _animationTween.TweenGlowRadius(_glow, 30, AnimationTweenDuration);
-        }
+        _animationTween.TweenGlowRadius(_effects, 30, AnimationTweenDuration);
     }
 
     private void OnMouseExit()
@@ -324,10 +314,7 @@ public partial class InventoryModule : TextureButton
         _animationTween.TweenOffsetScaleReset(this, AnimationTweenDuration);
         _animationTween.TweenOffsetRotationReset(this, AnimationTweenDuration);
 
-        if (_glow != null)
-        {
-            _animationTween.TweenGlowRadius(_glow, 0, AnimationTweenDuration);
-        }
+        _animationTween.TweenGlowRadius(_effects, 0, AnimationTweenDuration);
     }
 
     public override void _ExitTree()
@@ -1128,11 +1115,8 @@ public partial class InventoryModule : TextureButton
         _appearTween.FadeIn(this, InventoryManager.ModuleAnimationDuration)
             .SetDelay(InventoryManager.ModuleShowDelay);
 
-        if (_glow != null)
-        {
-            _appearTween.FadeIn(_glow, InventoryManager.ModuleAnimationDuration)
-                .SetDelay(InventoryManager.ModuleShowDelay);
-        }
+        _appearTween.TweenGlowFadeIn(_effects, InventoryManager.ModuleAnimationDuration)
+            .SetDelay(InventoryManager.ModuleShowDelay);
 
         _appearTween.Finished += FullyShow;
     }
@@ -1147,11 +1131,8 @@ public partial class InventoryModule : TextureButton
         _appearTween.TweenOffsetRotation(this, RandomUtils.DeltaRange(0, Pi / 8), InventoryManager.ModuleAnimationDuration);
         _appearTween.FadeOut(this, InventoryManager.ModuleAnimationDuration);
 
-        if (_glow != null)
-        {
-            _appearTween.TweenGlowRadius(_glow, 0, InventoryManager.ModuleAnimationDuration);
-            _appearTween.FadeOut(_glow, InventoryManager.ModuleAnimationDuration / 2f);
-        }
+        _appearTween.TweenGlowRadius(_effects, 0, InventoryManager.ModuleAnimationDuration);
+        _appearTween.TweenGlowFadeOut(_effects, InventoryManager.ModuleAnimationDuration / 2f);
     }
 
     private void FullyShow()
@@ -1159,10 +1140,7 @@ public partial class InventoryModule : TextureButton
         Modulate = Modulate.AsOpaque();
         OffsetTransformRotation = 0;
 
-        if (_glow != null)
-        {
-            _glow.Modulate = _glow.Modulate.AsOpaque();
-        }
+        _effects.GlowColor = _effects.GlowColor.AsOpaque();
 
         EmitSignalShowAnimationFinished();
     }
