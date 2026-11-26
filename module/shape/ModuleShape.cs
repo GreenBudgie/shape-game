@@ -7,23 +7,23 @@ public abstract class ModuleShape
     public const float TexturePadding = 8f;
     public const float Size = 144f;
     
-    // Exported texture has rounded corners. After applying padding in godot, the pointy-top part of the hexagon
-    // is a little shifted because of that. This factor accounts for this shift.
-    private const float HeightCorrectionFactor = 3.094f;
+    // The rounded left and right corners shorten the exported hexagon.
+    private const float WidthCorrectionFactor = 3.094f;
 
-    public static readonly Vector2 HexSize = new(Size / 2f * Sqrt(3), Size);
-    private static readonly Vector2 CornerGap = HexSize / 2f + new Vector2(TexturePadding, TexturePadding - HeightCorrectionFactor);
+    public static readonly Vector2 HexSize = new(Size, Size / 2f * Sqrt(3));
+    private static readonly Vector2 CornerGap = HexSize / 2f + new Vector2(TexturePadding - WidthCorrectionFactor, TexturePadding);
     
     public abstract Texture2D OutlineTexture { get; }
     public abstract Texture2D FillTexture { get; }
 
     /// <summary>
-    /// Hexes of this figure. For now, expects the zero hex to be present at the top-left.
+    /// Hexes of this figure. The zero hex is at the bottom-left of the texture.
     /// </summary>
     public abstract List<HexCoordinates> Hexes { get; }
 
     private Dictionary<HexCoordinates, Vector2>? _pixelHexPositions;
     private Dictionary<HexCoordinates, Vector2>? _centeredPixelHexPositions;
+    private Vector2? _textureOrigin;
     private Bitmap? _bitmap;
     private Vector2? _pixelSize;
     
@@ -90,9 +90,10 @@ public abstract class ModuleShape
         }
     }
 
-    public static Vector2 GetVisualHexPosition(HexCoordinates hex)
+    public Vector2 GetVisualHexPosition(HexCoordinates hex)
     {
-        return hex.ToPixel() + CornerGap;
+        var origin = _textureOrigin ??= new Vector2(CornerGap.X, FillTexture.GetHeight() - CornerGap.Y);
+        return origin + hex.ToPixel();
     }
     
 }

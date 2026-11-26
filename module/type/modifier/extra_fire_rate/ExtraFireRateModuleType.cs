@@ -13,7 +13,7 @@ public class ExtraFireRateModuleType : ModifierModuleType
 
     public override int Price => 10;
 
-    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right * 2];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Top * 2];
 
     public override Module CreateModule()
     {

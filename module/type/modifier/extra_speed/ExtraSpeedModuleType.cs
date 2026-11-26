@@ -13,7 +13,7 @@ public class ExtraSpeedModuleType : ModifierModuleType
 
     public override int Price => 10;
 
-    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Top];
 
     public override Module CreateModule()
     {

@@ -13,7 +13,7 @@ public class TargetingModuleType : ModifierModuleType
 
     public override int Price => 15;
 
-    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right * 2];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Top * 2];
 
     public override Module CreateModule()
     {

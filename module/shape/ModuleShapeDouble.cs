@@ -8,5 +8,5 @@ public class ModuleShapeDouble : ModuleShape
     public override Texture2D OutlineTexture => GD.Load<Texture2D>(OutlineTexturePath);
     public override Texture2D FillTexture => GD.Load<Texture2D>(FillTexturePath);
 
-    public override List<HexCoordinates> Hexes => [HexCoordinates.Zero, HexCoordinates.Right];
+    public override List<HexCoordinates> Hexes => [HexCoordinates.Zero, HexCoordinates.Top];
 }

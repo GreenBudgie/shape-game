@@ -10,7 +10,7 @@ public class ModuleShapeTriple : ModuleShape
 
     public override List<HexCoordinates> Hexes => [
         HexCoordinates.Zero,
-        HexCoordinates.Right,
-        HexCoordinates.BottomRight
+        HexCoordinates.Top,
+        HexCoordinates.TopRight
     ];
 }

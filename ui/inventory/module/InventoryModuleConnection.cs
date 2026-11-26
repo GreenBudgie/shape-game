@@ -30,7 +30,7 @@ public partial class InventoryModuleConnection : Node2D
 
         if (Type == ConnectionType.Incoming)
         {
-            _arrow.Scale = new Vector2(-1, 1);
+            _arrow.FlipV = true;
             _arrow.Modulate = ColorScheme.Orange;
         }
         else
@@ -46,6 +46,7 @@ public partial class InventoryModuleConnection : Node2D
         HideConnector(true);
 
         _arrowEffects = VisualEffects.Attach(_arrow);
+        _arrowEffects.SetLocalRect(_arrow.GetRect());
         _arrowEffects.GlowEnabled = true;
         _arrowEffects.GlowColor = _arrow.Modulate;
         _arrowEffects.GlowStrength = 1f;
@@ -212,7 +213,7 @@ public partial class InventoryModuleConnection : Node2D
         
         _connectorTween?.Kill();
         _connectorTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
-        _connectorTween.TweenScale(_connector, new Vector2(1, 0.1f), ConnectorTweenDuration);
+        _connectorTween.TweenScale(_connector, new Vector2(0.1f, 1), ConnectorTweenDuration);
         _connectorTween.FadeOut(_connector, ConnectorTweenDuration / 2).SetDelay(ConnectorTweenDuration / 2);
         
         if (hideArrow)
@@ -237,7 +238,7 @@ public partial class InventoryModuleConnection : Node2D
         
         _connectorTween?.Kill();
         _connectorTween = CreateTween().SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In).SetParallel();
-        _connectorTween.TweenScale(_connector, new Vector2(1, 0.1f), duration);
+        _connectorTween.TweenScale(_connector, new Vector2(0.1f, 1), duration);
         _connectorTween.FadeOut(_connector, duration);
         _connectorTween.FadeOut(_arrow, duration);
         _connectorTween.Finished += QueueFree;

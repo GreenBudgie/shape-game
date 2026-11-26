@@ -139,7 +139,7 @@ public partial class InventoryModule : TextureButton
 
         _hexes.Add(
             connectionHex,
-            new HexData(ModuleShape.GetVisualHexPosition(connectionHex), connection)
+            new HexData(Module.Type.Shape.GetVisualHexPosition(connectionHex), connection)
         );
 
         var sourcePosition = _hexes[source.Value].RealPosition;

@@ -18,28 +18,28 @@ public readonly record struct HexCoordinates(int Q, int R, int S)
 
     public static readonly HexCoordinates Zero = new(0, 0, 0);
 
-    public static readonly HexCoordinates Right = new(1, 0, -1);
+    public static readonly HexCoordinates Top = new(0, -1, 1);
     public static readonly HexCoordinates TopRight = new(1, -1, 0);
-    public static readonly HexCoordinates TopLeft = new(0, -1, 1);
-    public static readonly HexCoordinates Left = new(-1, 0, 1);
+    public static readonly HexCoordinates TopLeft = new(-1, 0, 1);
+    public static readonly HexCoordinates Bottom = new(0, 1, -1);
     public static readonly HexCoordinates BottomLeft = new(-1, 1, 0);
-    public static readonly HexCoordinates BottomRight = new(0, 1, -1);
+    public static readonly HexCoordinates BottomRight = new(1, 0, -1);
 
-    private static readonly Vector2 BottomRightVector = Vector2.FromAngle(Pi / 3);
+    private static readonly Vector2 BottomRightVector = Vector2.FromAngle(Pi / 6);
 
     public static readonly ImmutableList<HexCoordinates> Directions =
     [
-        Right,
-        TopRight,
+        Top,
         TopLeft,
-        Left,
         BottomLeft,
-        BottomRight
+        Bottom,
+        BottomRight,
+        TopRight
     ];
 
     public Vector2 ToVector()
     {
-        return Q * Vector2.Right + R * BottomRightVector;
+        return Q * BottomRightVector + R * Vector2.Down;
     }
     
     public Vector2 ToPixel() => ToVector() * PixelSpacing;
@@ -125,12 +125,12 @@ public readonly record struct HexCoordinates(int Q, int R, int S)
     }
 
     /**
-     * Produces a closed loop of HexCoordinates, forming a hexagon of specified radius, starting from bottom-left
+     * Produces a closed loop of HexCoordinates, forming a hexagon of specified radius, starting from bottom-right
      * and going counter-clockwise
      */
     public static IEnumerable<HexCoordinates> Ring(int radius)
     {
-        var hex = BottomLeft * radius;
+        var hex = BottomRight * radius;
         for (var i = 0; i < HexEdges; i++)
         {
             for (var j = 0; j < radius; j++)

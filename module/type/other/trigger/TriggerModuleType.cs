@@ -13,9 +13,9 @@ public class TriggerModuleType : DelegatorModuleType
 
     public override int Price => 15;
 
-    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Right * 2];
+    public override HashSet<HexCoordinates> OutgoingConnections => [HexCoordinates.Top * 2];
 
-    public override HashSet<HexCoordinates> IncomingConnections => [HexCoordinates.Left];
+    public override HashSet<HexCoordinates> IncomingConnections => [HexCoordinates.Bottom];
 
     public override Module CreateModule()
     {
