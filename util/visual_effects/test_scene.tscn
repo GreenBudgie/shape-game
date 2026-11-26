@@ -1,33 +1,9 @@
 [gd_scene format=3 uid="uid://ntv1ejeqilq8"]
 
-[ext_resource type="Shader" uid="uid://lmxpktqjq24x" path="res://util/visual_effects/texture.gdshader" id="1_oaklb"]
 [ext_resource type="Texture2D" uid="uid://bgjjpekhwu1c5" path="res://icon.svg" id="2_wsqu0"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4nji0"]
-shader = ExtResource("1_oaklb")
-shader_parameter/base_tint = Color(1, 1, 1, 1)
-shader_parameter/local_rect = Vector4(0, 0, 0, 0)
-shader_parameter/glow_enabled = false
-shader_parameter/glow_color = Color(0.937, 0.357, 0.357, 1)
-shader_parameter/glow_radius = 12.0
-shader_parameter/glow_strength = 2.0
-shader_parameter/pulse_enabled = false
-shader_parameter/pulse_radius_delta = 0.0
-shader_parameter/pulse_strength_delta = 0.0
-shader_parameter/pulses_per_second = 1.0
-shader_parameter/mask_enabled = false
-shader_parameter/mask_progress = 1.0
-shader_parameter/mask_axis = 0
-shader_parameter/mask_origin = 0
-shader_parameter/dissolve_enabled = false
-shader_parameter/dissolve_value = 1.0
-shader_parameter/stretch_enabled = false
-shader_parameter/stretch_amount = 0.0
-shader_parameter/stretch_direction = Vector2(1, 0)
 
 [node name="TestScene" type="Node2D" unique_id=1826650221]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=828975926]
-material = SubResource("ShaderMaterial_4nji0")
 position = Vector2(320, 129)
 texture = ExtResource("2_wsqu0")
