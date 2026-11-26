@@ -1,7 +1,5 @@
 public abstract partial class Entity : RigidBody2D, IAreaAware
 {
-    private static readonly Texture2D DissolveNoise = GD.Load<Texture2D>("uid://dv7focnbevck5");
-
     public HealthController HealthController { get; }
     public EntityEffectController EffectController { get; }
     public CollisionAreaSampler Area { get; }
@@ -21,7 +19,6 @@ public abstract partial class Entity : RigidBody2D, IAreaAware
         VisualEffectsGroup = GetNode<CanvasGroup>("VisualEffectsGroup");
         Sprite = VisualEffectsGroup.GetNode<Sprite2D>("Sprite");
         Effects = VisualEffects.Attach(VisualEffectsGroup);
-        Effects.DissolveTexture = DissolveNoise;
         Effects.PulseEnabled = true;
         Setup();
 

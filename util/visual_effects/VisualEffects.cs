@@ -22,6 +22,7 @@ public sealed class VisualEffects
     private static readonly StringName DissolveEnabledParam = "dissolve_enabled";
     private static readonly StringName DissolveValueParam = "dissolve_value";
     private static readonly StringName DissolveTextureParam = "dissolve_texture";
+    private static readonly StringName DissolveNoiseOriginParam = "dissolve_noise_origin";
     private static readonly StringName StretchEnabledParam = "stretch_enabled";
     private static readonly StringName StretchAmountParam = "stretch_amount";
     private static readonly StringName StretchDirectionParam = "stretch_direction";
@@ -43,6 +44,7 @@ public sealed class VisualEffects
     public static readonly NodePath DissolveEnabledProperty = ShaderParameter(DissolveEnabledParam);
     public static readonly NodePath DissolveValueProperty = ShaderParameter(DissolveValueParam);
     public static readonly NodePath DissolveTextureProperty = ShaderParameter(DissolveTextureParam);
+    public static readonly NodePath DissolveNoiseOriginProperty = ShaderParameter(DissolveNoiseOriginParam);
     public static readonly NodePath StretchEnabledProperty = ShaderParameter(StretchEnabledParam);
     public static readonly NodePath StretchAmountProperty = ShaderParameter(StretchAmountParam);
     public static readonly NodePath StretchDirectionProperty = ShaderParameter(StretchDirectionParam);
@@ -158,6 +160,12 @@ public sealed class VisualEffects
         set => Material.SetShaderParameter(DissolveTextureParam, value is null ? default(Variant) : value);
     }
 
+    public Vector2 DissolveNoiseOrigin
+    {
+        get => (Vector2)Material.GetShaderParameter(DissolveNoiseOriginParam);
+        set => Material.SetShaderParameter(DissolveNoiseOriginParam, value);
+    }
+
     public bool StretchEnabled
     {
         get => (bool)Material.GetShaderParameter(StretchEnabledParam);
@@ -197,6 +205,6 @@ public sealed class VisualEffects
         material.GetPropertyList();
         node.Material = material;
         node.UseParentMaterial = false;
-        return new VisualEffects(material);
+        return new VisualEffects(material) { DissolveNoiseOrigin = new Vector2(GD.Randf(), GD.Randf()) };
     }
 }

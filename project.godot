@@ -180,6 +180,10 @@ environment/defaults/default_clear_color=Color(0.145098, 0.145098, 0.129412, 1)
 
 [shader_globals]
 
+visual_effects_dissolve_noise={
+"type": "sampler2D",
+"value": "res://util/dissolve/dissolve_noise.tres"
+}
 visual_effects_time={
 "type": "float",
 "value": -1.0

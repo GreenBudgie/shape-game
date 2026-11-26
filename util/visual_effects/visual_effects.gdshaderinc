@@ -1,4 +1,5 @@
 global uniform float visual_effects_time;
+global uniform sampler2D visual_effects_dissolve_noise : repeat_disable;
 uniform vec4 base_tint : source_color = vec4(1.0);
 
 group_uniforms Glow;
@@ -20,9 +21,10 @@ uniform int mask_origin : hint_enum("Center", "Left or top", "Right or bottom") 
 group_uniforms Dissolve;
 uniform bool dissolve_enabled = false;
 uniform float dissolve_value : hint_range(0.0, 1.0) = 1.0;
-/** Optional NoiseTexture2D. Opaque texels supply the threshold in their red channel.
- * Transparent texels use the built-in noise. */
+/** Optional override. Transparent texels use the shared dissolve noise. */
 uniform sampler2D dissolve_texture : hint_default_transparent, repeat_disable;
+/** Selects a region of the shared noise. Both coordinates range from 0 to 1. */
+uniform vec2 dissolve_noise_origin = vec2(0.5);
 
 group_uniforms Stretch;
 uniform bool stretch_enabled = false;
@@ -100,42 +102,28 @@ void vertex() {
 }
 #endif
 
-float noise_hash(vec2 cell) {
-	vec3 p = fract(cell.xyx * vec3(0.1031, 0.1030, 0.0973));
-	p += dot(p, p.yzx + 33.33);
-	return fract((p.x + p.y) * p.z);
+float dissolve_noise_at(vec2 uv) {
+	vec4 custom = textureLod(dissolve_texture, uv, 0.0);
+	if (custom.a > 0.0) {
+		return custom.r;
+	}
+	// Select a different region of the same texture without crossing its edges.
+	vec2 noise_uv = mix(uv, dissolve_noise_origin, 0.125);
+	return textureLod(visual_effects_dissolve_noise, noise_uv, 0.0).r;
 }
 
 // The sprite keeps a sharp dissolve edge. For glow, estimate how much of a
 // sampling cell survives the threshold so a whole cell does not blink on/off.
 float dissolve_coverage(vec2 uv, vec2 footprint, bool filter_cell) {
-	vec4 sample_value = textureLod(dissolve_texture, uv, 0.0);
-	float value = sample_value.r;
-	float width = 0.0;
-	if (sample_value.a > 0.0) {
-		if (filter_cell) {
-			vec4 sample_x = textureLod(dissolve_texture, uv + vec2(footprint.x * 0.5, 0.0), 0.0);
-			vec4 sample_y = textureLod(dissolve_texture, uv + vec2(0.0, footprint.y * 0.5), 0.0);
-			width = 2.0 * (abs(sample_x.r - value) * step(0.00001, sample_x.a) + abs(sample_y.r - value) * step(0.00001, sample_y.a));
-		}
-	} else {
-		vec2 grid = uv * 32.0;
-		vec2 cell = floor(grid);
-		vec2 f = fract(grid);
-		vec2 t = f * f * (3.0 - 2.0 * f);
-		float a = noise_hash(cell);
-		float b = noise_hash(cell + vec2(1, 0));
-		float c = noise_hash(cell + vec2(0, 1));
-		float d = noise_hash(cell + vec2(1, 1));
-		value = mix(mix(a, b, t.x), mix(c, d, t.x), t.y);
-		if (filter_cell) {
-			vec2 slope = vec2(mix(b - a, d - c, t.y), mix(c - a, d - b, t.x));
-			// Chain rule for smoothstep interpolation on the 32-cell noise grid.
-			width = dot(abs(slope) * (6.0 * f * (1.0 - f)), footprint * 32.0);
-		}
-	}
+	float value = dissolve_noise_at(uv);
 	float threshold = 1.0 - dissolve_value;
-	if (!filter_cell || width <= 0.00001) {
+	if (!filter_cell) {
+		return step(threshold, value);
+	}
+	float sample_x = dissolve_noise_at(uv + vec2(footprint.x * 0.5, 0.0));
+	float sample_y = dissolve_noise_at(uv + vec2(0.0, footprint.y * 0.5));
+	float width = 2.0 * (abs(sample_x - value) + abs(sample_y - value));
+	if (width <= 0.00001) {
 		return step(threshold, value);
 	}
 	vec2 range = clamp(value + vec2(-0.5, 0.5) * width, vec2(0.0), vec2(1.0));
