@@ -3,8 +3,7 @@ using System.Collections.Generic;
 public class TetherModuleType : DelegatorModuleType
 {
 
-    // TODO fix
-    public override Texture2D Texture => GD.Load<Texture2D>("uid://d3af7qu2ct723");
+    public override Texture2D Texture => GD.Load<Texture2D>("uid://sctref0ybegm");
 
     public override ModuleShape Shape => ModuleShapeRegistry.Single;
 
