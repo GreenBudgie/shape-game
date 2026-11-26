@@ -2,18 +2,9 @@
 
 [ext_resource type="Script" uid="uid://g81fbebdevf3" path="res://entity/living/enemies/types/rhombus/EnemyRhombus.cs" id="1_hl3kr"]
 [ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://entity/spawnables/projectiles/enemy_square/enemy_square_shot.wav" id="2_m8fef"]
-[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_bqlvi"]
-[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_0q3mv"]
 [ext_resource type="Texture2D" uid="uid://cngnn50r7k8a" path="res://entity/living/enemies/types/rhombus/rhombus.png" id="6_8h5ga"]
 [ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/living/eyes/eyes_controller.tscn" id="12_dcbt4"]
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/living/eyes/eye.tscn" id="13_enuh4"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4iur"]
-resource_local_to_scene = true
-shader = ExtResource("6_0q3mv")
-shader_parameter/glow_color = Color(0.18039216, 0.40784314, 0.8980392, 1)
-shader_parameter/glow_radius = 12.0
-shader_parameter/glow_strength = 2.0
 
 [node name="EnemyRhombus" type="RigidBody2D" unique_id=486178072 node_paths=PackedStringArray("_leftProjectileSpawnPosition", "_rightProjectileSpawnPosition")]
 collision_layer = 4
@@ -27,10 +18,10 @@ _leftProjectileSpawnPosition = NodePath("LeftProjectileSpawnPosition")
 _rightProjectileSpawnPosition = NodePath("RightProjectileSpawnPosition")
 Color = Color(0.180392, 0.407843, 0.898039, 1)
 
-[node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_bqlvi")]
-material = SubResource("ShaderMaterial_g4iur")
+[node name="VisualEffectsGroup" type="CanvasGroup" parent="." unique_id=1457896962]
+show_behind_parent = true
 
-[node name="Sprite" type="Sprite2D" parent="Glow" unique_id=2014269221]
+[node name="Sprite" type="Sprite2D" parent="VisualEffectsGroup" unique_id=2014269221]
 texture = ExtResource("6_8h5ga")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=150163414]

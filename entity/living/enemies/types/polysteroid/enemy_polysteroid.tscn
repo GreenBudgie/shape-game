@@ -1,20 +1,11 @@
 [gd_scene format=3 uid="uid://dwf11f6da31jj"]
 
 [ext_resource type="Script" uid="uid://c1ktve1ew1wua" path="res://entity/living/enemies/types/polysteroid/EnemyPolysteroid.cs" id="1_er0db"]
-[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="4_5xt0b"]
 [ext_resource type="Texture2D" uid="uid://1dpobmb33rix" path="res://entity/living/enemies/types/polysteroid/sizes/big/sprite.png" id="4_er0db"]
-[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="5_qyujg"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_er0db"]
 friction = 0.3
 bounce = 0.8
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_n7cso"]
-resource_local_to_scene = true
-shader = ExtResource("5_qyujg")
-shader_parameter/glow_color = Color(0.9372549, 0.35686275, 0.35686275, 1)
-shader_parameter/glow_radius = 0.0
-shader_parameter/glow_strength = 2.0
 
 [node name="EnemyPolysteroid" type="RigidBody2D" unique_id=1623612089]
 collision_layer = 4
@@ -29,9 +20,9 @@ angular_damp = 0.2
 script = ExtResource("1_er0db")
 Color = Color(0.9372549, 0.35686275, 0.35686275, 1)
 
-[node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("4_5xt0b")]
-material = SubResource("ShaderMaterial_n7cso")
+[node name="VisualEffectsGroup" type="CanvasGroup" parent="." unique_id=1457896962]
+show_behind_parent = true
 
-[node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1360807856]
+[node name="Sprite" type="Sprite2D" parent="VisualEffectsGroup" unique_id=1360807856]
 unique_name_in_owner = true
 texture = ExtResource("4_er0db")

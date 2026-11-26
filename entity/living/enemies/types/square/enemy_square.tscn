@@ -3,17 +3,8 @@
 [ext_resource type="Script" uid="uid://cvwlgievjuvu7" path="res://entity/living/enemies/types/square/EnemySquare.cs" id="1_qo6cg"]
 [ext_resource type="AudioStream" uid="uid://dc18dklo4du01" path="res://entity/spawnables/projectiles/enemy_square/enemy_square_shot.wav" id="2_7g7p5"]
 [ext_resource type="Texture2D" uid="uid://cd3tf8mpauaks" path="res://entity/living/enemies/types/square/enemy_square.png" id="3_7g7p5"]
-[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="5_agby6"]
-[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="6_ebwh1"]
 [ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/living/eyes/eyes_controller.tscn" id="11_imqh1"]
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/living/eyes/eye.tscn" id="12_imqh1"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2nu0d"]
-resource_local_to_scene = true
-shader = ExtResource("6_ebwh1")
-shader_parameter/glow_color = Color(0.22352941, 0.627451, 0.92941177, 1)
-shader_parameter/glow_radius = 12.0
-shader_parameter/glow_strength = 2.0
 
 [node name="EnemySquare" type="RigidBody2D" unique_id=288018146]
 collision_layer = 4
@@ -24,10 +15,10 @@ script = ExtResource("1_qo6cg")
 _shotSound = ExtResource("2_7g7p5")
 Color = Color(0.223529, 0.627451, 0.929412, 1)
 
-[node name="Glow" parent="." unique_id=1457896962 instance=ExtResource("5_agby6")]
-material = SubResource("ShaderMaterial_2nu0d")
+[node name="VisualEffectsGroup" type="CanvasGroup" parent="." unique_id=1457896962]
+show_behind_parent = true
 
-[node name="Sprite" type="Sprite2D" parent="Glow" unique_id=1063206879]
+[node name="Sprite" type="Sprite2D" parent="VisualEffectsGroup" unique_id=1063206879]
 texture = ExtResource("3_7g7p5")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=790942501]

@@ -1,6 +1,9 @@
 ﻿public partial class PauseManager : Node
 {
     
+    private static readonly StringName VisualEffectsTime = "visual_effects_time";
+    private double _visualEffectsTime;
+
     [Signal]
     public delegate void GamePauseEventHandler();
     
@@ -17,10 +20,17 @@
     public override void _Ready()
     {
         ProcessMode = ProcessModeEnum.Always;
+        RenderingServer.GlobalShaderParameterSet(VisualEffectsTime, 0f);
     }
 
     public override void _Process(double delta)
     {
+        if (!IsPaused())
+        {
+            _visualEffectsTime += delta;
+            RenderingServer.GlobalShaderParameterSet(VisualEffectsTime, (float)_visualEffectsTime);
+        }
+
         if (Input.IsActionJustPressed("ui_cancel"))
         {
             TogglePause();

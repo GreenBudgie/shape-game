@@ -76,7 +76,7 @@ public partial class Player : Entity
 
     protected override void Setup()
     {
-        Sprite = GetNode<Sprite2D>("GlowWrapper/PlayerSprite");
+        Effects.GlowColor = ColorScheme.LightBlueGreen;
 
         _leftBlaster = Blaster.Create(InventoryManager.Instance.LeftBlasterInventory);
         AddChild(_leftBlaster);
@@ -86,17 +86,10 @@ public partial class Player : Entity
         _playerCollisionDetector = GetNode<ShapeCast2D>("PlayerCollisionDetector");
         Callable.From(SetupCollisionDetector).CallDeferred();
         
-        Glow = GetNode<GlowWrapper>("GlowWrapper")
-            .SetColor(ColorScheme.LightBlueGreen)
-            .SetStrength(0)
-            .SetRadius(0)
-            .EnablePulsing();
-
         _prevPosition = Position;
 
         HealthController.MaxHealth = 10;
         HealthController.InvulnerabilityPeriod = 0.1f;
-        HealthController.DestroyAnimationFinished += QueueFree;
         HealthController.Destroyed += OnDestroy;
         HealthController.HealthChanged += OnHealthChanged;
     }
@@ -174,15 +167,15 @@ public partial class Player : Entity
 
     private void HandleTilt(double delta, double tiltDegrees)
     {
-        Sprite.RotationDegrees *= Clamp(1 - (float)(delta * TiltDecreaseFactor), 0, 1);
-        Sprite.RotationDegrees = (float)Clamp(
-            Sprite.RotationDegrees + tiltDegrees,
+        VisualEffectsGroup.RotationDegrees *= Clamp(1 - (float)(delta * TiltDecreaseFactor), 0, 1);
+        VisualEffectsGroup.RotationDegrees = (float)Clamp(
+            VisualEffectsGroup.RotationDegrees + tiltDegrees,
             -MaxTiltDegrees,
             MaxTiltDegrees
         );
-        if (Abs(Sprite.RotationDegrees) <= RotationDegreesEpsilon)
+        if (Abs(VisualEffectsGroup.RotationDegrees) <= RotationDegreesEpsilon)
         {
-            Sprite.RotationDegrees = 0;
+            VisualEffectsGroup.RotationDegrees = 0;
         }
     }
 
@@ -290,12 +283,12 @@ public partial class Player : Entity
 
     public float GetTilt()
     {
-        return Sprite.Rotation;
+        return VisualEffectsGroup.Rotation;
     }
     
     public float GetTiltDegrees()
     {
-        return Sprite.RotationDegrees;
+        return VisualEffectsGroup.RotationDegrees;
     }
 
 }

@@ -1,3 +1,4 @@
+global uniform float visual_effects_time;
 uniform vec4 base_tint : source_color = vec4(1.0);
 
 group_uniforms Glow;
@@ -49,7 +50,8 @@ vec2 glow_parameters(float time) {
 	}
 	float pulse = 0.0;
 	if (pulse_enabled) {
-		pulse = 0.5 + 0.5 * sin(time * TAU * pulses_per_second);
+		float pulse_time = visual_effects_time >= 0.0 ? visual_effects_time : time;
+		pulse = 0.5 + 0.5 * sin(pulse_time * TAU * pulses_per_second);
 	}
 	vec2 result = vec2(glow_radius, glow_strength) + pulse * vec2(pulse_radius_delta, pulse_strength_delta);
 	return (result.x >= 0.5 && result.y >= 0.01) ? result : vec2(0.0);
@@ -149,6 +151,7 @@ struct SourceMap {
 	vec2 origin;
 	mat2 axes;
 	vec2 half_texel; // inset for atlas regions
+	vec2 grid_origin; // local origin in effect UV
 };
 
 vec2 source_uv(SourceMap source, vec2 uv) {
@@ -165,7 +168,7 @@ vec2 group_uv(vec2 quad_uv) {
 SourceMap map_group(vec2 uv, vec2 screen_uv, out vec2 pixel_size) {
 	pixel_size = fwidth(uv) / max(fwidth(original_position), vec2(0.000001));
 	mat2 axes = mat2(dFdx(screen_uv), dFdy(screen_uv)) * inverse(mat2(dFdx(uv), dFdy(uv)));
-	return SourceMap(screen_uv - axes * uv, axes, vec2(0.0));
+	return SourceMap(screen_uv - axes * uv, axes, vec2(0.0), uv - original_position * pixel_size);
 }
 #else
 SourceMap map_texture(vec2 tex_uv, vec4 region, vec2 texel, out vec2 uv, out vec2 pixel_size) {
@@ -175,28 +178,28 @@ SourceMap map_texture(vec2 tex_uv, vec4 region, vec2 texel, out vec2 uv, out vec
 	uv += padding * sign(region.zw) * pixel_size;
 	bool atlas = any(notEqual(size, vec2(1.0)));
 	return SourceMap(region.xy, mat2(vec2(size.x, 0), vec2(0, size.y)),
-			atlas ? 0.5 * texel / size : vec2(0.0));
+			atlas ? 0.5 * texel / size : vec2(0.0), vec2(0.0));
 }
 #endif
 
-// Neighboring output pixels share samples anchored to the source image.
+// Neighboring output pixels share samples anchored to the object.
 // The kernel weight falls smoothly to zero at the edge of the glow.
 float integrate_glow(sampler2D image, SourceMap source, vec2 p, vec2 texel, bool dissolved,
 		vec2 cell, vec2 uv_min, vec2 uv_max, mat2 to_kernel) {
+	#ifndef CANVAS_GROUP_SOURCE
 	float lod = 0.0;
-#ifndef CANVAS_GROUP_SOURCE
-	// Atlas mip levels can mix adjacent frames. CanvasGroup uses its base level.
+	// Atlas mip levels can mix adjacent frames.
 	if (all(equal(source.half_texel, vec2(0.0)))) {
 		vec2 footprint = abs(source.axes[0] * cell.x) + abs(source.axes[1] * cell.y);
 		vec2 texels = footprint / texel;
 		lod = max(log2(max(texels.x, texels.y)) - 0.5, 0.0);
 	}
 #endif
-	vec2 lower = effect_bounds.xy / cell;
-	vec2 upper = effect_bounds.zw / cell;
-	vec2 first = uv_min / cell;
-	vec2 last = uv_max / cell;
-	vec2 center = p / cell;
+	vec2 lower = (effect_bounds.xy - source.grid_origin) / cell;
+	vec2 upper = (effect_bounds.zw - source.grid_origin) / cell;
+	vec2 first = (uv_min - source.grid_origin) / cell;
+	vec2 last = (uv_max - source.grid_origin) / cell;
+	vec2 center = (p - source.grid_origin) / cell;
 	mat2 step_in_kernel = mat2(to_kernel[0] * cell.x, to_kernel[1] * cell.y);
 	float sum = 0.0;
 	// Clip the boundary cells to the visible rectangle, including a partial mask.
@@ -212,10 +215,22 @@ float integrate_glow(sampler2D image, SourceMap source, vec2 p, vec2 texel, bool
 			vec2 d = dy + step_in_kernel[0] * (mid_x - center.x);
 			float weight = 1.0 - dot(d, d);
 			if (weight > 0.0) {
-				vec2 uv = vec2(mid_x, mid_y) * cell;
+				vec2 uv = source.grid_origin + vec2(mid_x, mid_y) * cell;
+				vec2 cell_size = cell * vec2(span_x.y - span_x.x, span_y.y - span_y.x);
+#ifdef CANVAS_GROUP_SOURCE
+				// The group has no texture mip chain. Filter its screen alpha over the cell.
+				vec2 mid = source.origin + source.axes * uv;
+				vec2 axis_x = source.axes[0] * (cell_size.x * 0.125);
+				vec2 axis_y = source.axes[1] * (cell_size.y * 0.125);
+				vec2 a = 3.0 * axis_x + axis_y;
+				vec2 b = axis_x - 3.0 * axis_y;
+				float alpha = 0.25 * (textureLod(image, mid + a, 0.0).a + textureLod(image, mid - a, 0.0).a
+						+ textureLod(image, mid + b, 0.0).a + textureLod(image, mid - b, 0.0).a);
+#else
 				float alpha = textureLod(image, source_uv(source, uv), lod).a;
+#endif
 				if (dissolved && alpha > 0.0) {
-					alpha *= dissolve_coverage(uv, cell * vec2(span_x.y - span_x.x, span_y.y - span_y.x), true);
+					alpha *= dissolve_coverage(uv, cell_size, true);
 				}
 				row += alpha * weight * weight * (span_x.y - span_x.x);
 			}

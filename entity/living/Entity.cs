@@ -1,14 +1,13 @@
-using System;
-
 public abstract partial class Entity : RigidBody2D, IAreaAware
 {
+    private static readonly Texture2D DissolveNoise = GD.Load<Texture2D>("uid://dv7focnbevck5");
 
     public HealthController HealthController { get; }
     public EntityEffectController EffectController { get; }
     public CollisionAreaSampler Area { get; }
-
-    public Sprite2D Sprite { get; protected set; } = null!;
-    public GlowWrapper Glow { get; protected set; } = null!;
+    public CanvasGroup VisualEffectsGroup { get; private set; } = null!;
+    public VisualEffects Effects { get; private set; } = null!;
+    public Sprite2D Sprite { get; private set; } = null!;
 
     public Entity()
     {
@@ -19,28 +18,17 @@ public abstract partial class Entity : RigidBody2D, IAreaAware
 
     public sealed override void _Ready()
     {
+        VisualEffectsGroup = GetNode<CanvasGroup>("VisualEffectsGroup");
+        Sprite = VisualEffectsGroup.GetNode<Sprite2D>("Sprite");
+        Effects = VisualEffects.Attach(VisualEffectsGroup);
+        Effects.DissolveTexture = DissolveNoise;
+        Effects.PulseEnabled = true;
         Setup();
-        
+
+        HealthController.DestroyAnimationFinished += QueueFree;
         AddChild(HealthController);
         AddChild(EffectController);
-        
-        Validate();
     }
 
-    protected virtual void Setup()
-    {
-    }
-
-    private void Validate()
-    {
-        if (Sprite == null)
-        {
-            throw new Exception($"Sprite reference is not set for an entity {GetType().Name}");
-        }
-        if (Glow == null)
-        {
-            throw new Exception($"Glow reference is not set for an entity {GetType().Name}");
-        }
-    }
-    
+    protected abstract void Setup();
 }

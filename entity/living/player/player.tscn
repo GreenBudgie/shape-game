@@ -1,22 +1,13 @@
 [gd_scene format=3 uid="uid://bw1n7eocfhsbo"]
 
 [ext_resource type="Script" uid="uid://by6dk3wis2abt" path="res://entity/living/player/Player.cs" id="1_3uijo"]
-[ext_resource type="PackedScene" uid="uid://c3qvnso7dnntg" path="res://util/glow/glow_wrapper.tscn" id="2_4btn6"]
 [ext_resource type="Texture2D" uid="uid://d0qbwccjscr4n" path="res://entity/living/player/Player.png" id="2_rkbax"]
 [ext_resource type="PackedScene" uid="uid://dyjd1gu15wgat" path="res://entity/living/eyes/eye.tscn" id="3_4pl66"]
 [ext_resource type="PackedScene" uid="uid://bd4hml53bbpkn" path="res://entity/living/eyes/eyes_controller.tscn" id="3_482rp"]
-[ext_resource type="Shader" uid="uid://b5llrlesa8ji2" path="res://util/glow/glow_wrapper.gdshader" id="3_t2ln0"]
 [ext_resource type="Script" uid="uid://4vsmmdvy62y" path="res://entity/living/eyes/target/NearestEnemyEyeTargetStrategy.cs" id="4_bgq54"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_482rp"]
 friction = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2jeou"]
-resource_local_to_scene = true
-shader = ExtResource("3_t2ln0")
-shader_parameter/glow_color = Color(0.937, 0.357, 0.357, 1)
-shader_parameter/glow_radius = 12.0
-shader_parameter/glow_strength = 2.0
 
 [sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_rkbax"]
 points = PackedVector2Array(0, -46, -8, -42, -48, 38, -48, 48, -42, 54, 42, 54, 48, 48, 48, 38, 8, -42)
@@ -34,10 +25,10 @@ lock_rotation = true
 linear_damp = 40.0
 script = ExtResource("1_3uijo")
 
-[node name="GlowWrapper" parent="." unique_id=1457896962 instance=ExtResource("2_4btn6")]
-material = SubResource("ShaderMaterial_2jeou")
+[node name="VisualEffectsGroup" type="CanvasGroup" parent="." unique_id=1457896962]
+show_behind_parent = true
 
-[node name="PlayerSprite" type="Sprite2D" parent="GlowWrapper" unique_id=215823694]
+[node name="Sprite" type="Sprite2D" parent="VisualEffectsGroup" unique_id=215823694]
 texture = ExtResource("2_rkbax")
 offset = Vector2(0, -4)
 

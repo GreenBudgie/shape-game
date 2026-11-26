@@ -3,6 +3,9 @@ using System.Globalization;
 
 public partial class HealthController(Entity owner) : Node2D
 {
+    private const float HitScale = 1.2f;
+    private const float DeathScale = 1.75f;
+
     [Signal]
     public delegate void HealthChangedEventHandler(float delta);
 
@@ -29,6 +32,7 @@ public partial class HealthController(Entity owner) : Node2D
 
     public float InvulnerabilityPeriod { get; set; } = 0f;
 
+    private float _glowExtent;
     private Tween? _healthTween;
     private readonly Dictionary<DamageSource, double> _invulnerableUntil = [];
     private double _elapsedTime;
@@ -36,6 +40,8 @@ public partial class HealthController(Entity owner) : Node2D
     public override void _Ready()
     {
         Health = MaxHealth;
+        UpdateGlow(0f);
+        GetViewport().SizeChanged += UpdateGlowMargin;
     }
 
     public override void _Process(double delta)
@@ -128,21 +134,30 @@ public partial class HealthController(Entity owner) : Node2D
 
         var dangerLevel = 1f - GetHealthRatio();
 
-        OwnerEntity.Glow
-            .SetRadius(40f * dangerLevel)
-            .SetStrength(2f * dangerLevel)
-            .SetPulseRadiusDelta(20f * dangerLevel)
-            .SetPulseStrengthDelta(dangerLevel)
-            .SetPulsesPerSecond(1f + dangerLevel * (3f - 1f));
+        UpdateGlow(dangerLevel);
+        PlayHealthEffect(dangerLevel, delta > 0f);
+    }
 
-        if (delta <= 0)
-        {
-            PlayDamageEffect(dangerLevel);
-        }
-        else
-        {
-            PlayHealEffect(dangerLevel);
-        }
+    private void UpdateGlow(float dangerLevel)
+    {
+        var effects = OwnerEntity.Effects;
+        var glowing = dangerLevel > 0f;
+        var radius = 40f * dangerLevel;
+        var pulseRadius = glowing ? 10f + 20f * dangerLevel : 0f;
+        effects.GlowEnabled = glowing;
+        effects.GlowRadius = radius;
+        effects.GlowStrength = 2f * dangerLevel;
+        effects.PulseRadiusDelta = pulseRadius;
+        effects.PulseStrengthDelta = glowing ? 0.65f + dangerLevel : 0f;
+        effects.PulsesPerSecond = 1f + 2f * dangerLevel;
+        _glowExtent = (radius + pulseRadius) * HitScale;
+        UpdateGlowMargin();
+    }
+
+    private void UpdateGlowMargin()
+    {
+        var transform = OwnerEntity.GetViewportTransform() * OwnerEntity.GlobalTransform;
+        OwnerEntity.VisualEffectsGroup.FitMargin = Ceil(_glowExtent * Max(transform.X.Length(), transform.Y.Length())) + 4f;
     }
 
     private void CreateHealthLabel(float healthDelta)
@@ -178,62 +193,35 @@ public partial class HealthController(Entity owner) : Node2D
         PopupLabel.Create(position, text).SetColor(color);
     }
 
-    private void PlayHealEffect(float dangerLevel)
+    private void PlayHealthEffect(float dangerLevel, bool healing)
     {
-        var sound = SoundManager.Instance.PlayPositionalSound(this, HealthSounds.HealSound);
+        var sound = SoundManager.Instance.PlayPositionalSound(this, healing ? HealthSounds.HealSound : HealthSounds.DamageSound);
         sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
-
-        var sprite = OwnerEntity.Sprite;
 
         const float duration = 0.25f;
         const float inDuration = duration / 4f;
+        var group = OwnerEntity.VisualEffectsGroup;
+        var material = OwnerEntity.Effects.Material;
+        var tint = healing ? Colors.LightGreen * 5f : new Color(5f, 5f, 5f);
 
         _healthTween?.Kill();
-        _healthTween = sprite.CreateTween().SetTrans(Tween.TransitionType.Cubic);
-
-        _healthTween.TweenScale(sprite, 1.2f, inDuration)
+        _healthTween = group.CreateTween().SetTrans(Tween.TransitionType.Cubic);
+        _healthTween.TweenScale(group, HitScale, inDuration).SetEase(Tween.EaseType.Out);
+        _healthTween.Parallel().TweenProperty(material, VisualEffects.BaseTintProperty, tint, inDuration)
             .SetEase(Tween.EaseType.Out);
-        _healthTween.Parallel()
-            .TweenRotationDegrees(sprite, 20f, inDuration)
-            .SetEase(Tween.EaseType.Out);
-        _healthTween.Parallel()
-            .TweenModulate(sprite, Colors.LightGreen * 5f, inDuration)
-            .SetEase(Tween.EaseType.Out);
+        if (healing)
+        {
+            _healthTween.Parallel().TweenRotationDegrees(group, 20f, inDuration).SetEase(Tween.EaseType.Out);
+        }
 
-        _healthTween.TweenScale(sprite, 1f, duration - inDuration)
+        const float outDuration = duration - inDuration;
+        _healthTween.TweenScaleReset(group, outDuration).SetEase(Tween.EaseType.In);
+        _healthTween.Parallel().TweenProperty(material, VisualEffects.BaseTintProperty, Colors.White, outDuration)
             .SetEase(Tween.EaseType.In);
-        _healthTween.Parallel()
-            .TweenRotationReset(sprite, duration - inDuration)
-            .SetEase(Tween.EaseType.In);
-        _healthTween.Parallel()
-            .TweenModulateReset(sprite, duration - inDuration)
-            .SetEase(Tween.EaseType.In);
-    }
-
-    private void PlayDamageEffect(float dangerLevel)
-    {
-        var sound = SoundManager.Instance.PlayPositionalSound(this, HealthSounds.DamageSound);
-        sound.PitchScale = Lerp(0.75f, 1.25f, dangerLevel);
-
-        var sprite = OwnerEntity.Sprite;
-
-        const float duration = 0.25f;
-        const float inDuration = duration / 4f;
-
-        _healthTween?.Kill();
-        _healthTween = sprite.CreateTween().SetTrans(Tween.TransitionType.Cubic);
-
-        _healthTween.TweenScale(sprite, 1.2f, inDuration)
-            .SetEase(Tween.EaseType.Out);
-        _healthTween.Parallel()
-            .TweenModulate(sprite, 5f, inDuration)
-            .SetEase(Tween.EaseType.Out);
-
-        _healthTween.TweenScaleReset(sprite, duration - inDuration)
-            .SetEase(Tween.EaseType.In);
-        _healthTween.Parallel()
-            .TweenModulateReset(sprite, duration - inDuration)
-            .SetEase(Tween.EaseType.In);
+        if (healing)
+        {
+            _healthTween.Parallel().TweenRotationReset(group, outDuration).SetEase(Tween.EaseType.In);
+        }
     }
 
     public void Destroy()
@@ -269,21 +257,21 @@ public partial class HealthController(Entity owner) : Node2D
         SoundManager.Instance.PlayPositionalSound(this, HealthSounds.DestroySound);
         const float duration = 0.4f;
         
-        var sprite = OwnerEntity.Sprite;
-        var glowWrapper = OwnerEntity.Glow;
+        _healthTween?.Kill();
+        var group = OwnerEntity.VisualEffectsGroup;
+        var effects = OwnerEntity.Effects;
+        effects.PulseEnabled = false;
+        effects.DissolveEnabled = true;
+        _glowExtent = effects.GlowRadius * DeathScale;
+        UpdateGlowMargin();
 
-        glowWrapper.DisablePulsing();
-        var fadeOutTween = glowWrapper.CreateTween();
-        fadeOutTween.TweenProperty(glowWrapper, "Color:a", 0, duration);
-
-        var destroyTween = sprite.CreateTween()
-            .SetTrans(Tween.TransitionType.Cubic)
-            .SetEase(Tween.EaseType.Out);
-        destroyTween.TweenProperty(sprite, ModulateProperty, new Color(5f, 5f, 5f, 0f), duration);
-        destroyTween.Parallel()
-            .TweenProperty(sprite, ScaleProperty, new Vector2(1.75f, 1.75f), duration);
-        DissolveEffect.DissolveSprite(sprite, duration);
-
+        var destroyTween = group.CreateTween().SetParallel();
+        destroyTween.TweenProperty(effects.Material, VisualEffects.GlowColorAlphaProperty, 0f, duration);
+        destroyTween.TweenProperty(effects.Material, VisualEffects.DissolveValueProperty, 0f, duration);
+        destroyTween.TweenProperty(effects.Material, VisualEffects.BaseTintProperty, new Color(5f, 5f, 5f, 0f), duration)
+            .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+        destroyTween.TweenScale(group, DeathScale, duration)
+            .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
         destroyTween.Finished += EmitSignalDestroyAnimationFinished;
     }
 }

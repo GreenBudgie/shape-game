@@ -1,8 +1,5 @@
-﻿using System;
-
 public abstract partial class Enemy : Entity
 {
-    
     [Export] public Color Color { get; private set; }
     
     protected bool IsActive { get; private set; }
@@ -19,12 +16,7 @@ public abstract partial class Enemy : Entity
     {
         AddToGroup(EnemyManager.AliveEnemiesGroup);
         
-        Glow = GetNode<GlowWrapper>("Glow")
-            .SetColor(Color)
-            .SetStrength(0)
-            .SetRadius(0)
-            .EnablePulsing();
-        Sprite = GetNode<Sprite2D>("Glow/Sprite");
+        Effects.GlowColor = Color;
 
         var pointer = new PointerArea(this)
         {
@@ -40,7 +32,6 @@ public abstract partial class Enemy : Entity
         }
         
         HealthController.Destroyed += OnDestroy;
-        HealthController.DestroyAnimationFinished += QueueFree;
     }
     
     private void Deactivate()
