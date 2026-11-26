@@ -94,7 +94,7 @@ public abstract partial class BasicRigidBodyProjectile : RigidBody2D, ISpawnable
         var effects = VisualEffects.Attach(sprite);
         effects.DissolveEnabled = true;
         var tween = CreateTween();
-        tween.TweenProperty(effects.Material, VisualEffects.DissolveValueProperty, 0f, duration);
+        tween.TweenDissolveValue(effects, 0f, duration);
         tween.Finished += QueueFree;
     }
 

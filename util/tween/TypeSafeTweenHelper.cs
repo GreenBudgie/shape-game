@@ -114,26 +114,6 @@ public static class TypeSafeTweenHelper
         return tween.TweenProperty(node, OffsetTransformScaleProperty, Vector2.One, duration);
     }
     
-    public static PropertyTweener TweenGlowColor(this Tween tween, VisualEffects effects, Color color, float duration)
-    {
-        return tween.TweenProperty(effects.Material, VisualEffects.GlowColorProperty, color, duration);
-    }
-
-    public static PropertyTweener TweenGlowRadius(this Tween tween, VisualEffects effects, float radius, float duration)
-    {
-        return tween.TweenProperty(effects.Material, VisualEffects.GlowRadiusProperty, radius, duration);
-    }
-
-    public static PropertyTweener TweenGlowFadeIn(this Tween tween, VisualEffects effects, float duration)
-    {
-        return tween.TweenProperty(effects.Material, VisualEffects.GlowColorAlphaProperty, 1f, duration);
-    }
-
-    public static PropertyTweener TweenGlowFadeOut(this Tween tween, VisualEffects effects, float duration)
-    {
-        return tween.TweenProperty(effects.Material, VisualEffects.GlowColorAlphaProperty, 0f, duration);
-    }
-
     public static PropertyTweener TweenRangeValue(this Tween tween, Range node, float finalVal, float duration)
     {
         return tween.TweenProperty(node, ValueProperty, finalVal, duration);

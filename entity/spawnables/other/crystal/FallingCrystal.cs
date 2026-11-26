@@ -107,9 +107,9 @@ public partial class FallingCrystal : RigidBody2D, ISpawnable
         var tween = CreateTween().SetParallel();
         tween.TweenScale(_sprite, 0.25f, CollectDuration).SetCustomInterpolator(CollectScaleEase);
         tween.FadeOut(_sprite, CollectDuration).SetCustomInterpolator(CollectAlphaEase);
-        tween.TweenProperty(_effects.Material, VisualEffects.DissolveValueProperty, 0f, CollectDuration)
+        tween.TweenDissolveValue(_effects, 0f, CollectDuration)
             .SetCustomInterpolator(CollectDissolveEase);
-        tween.TweenProperty(_effects.Material, VisualEffects.GlowColorAlphaProperty, 0f, 0.15f);
+        tween.TweenGlowFadeOut(_effects, 0.15f);
         tween.Finished += QueueFree;
         
         Removed?.Invoke();

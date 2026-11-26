@@ -56,7 +56,7 @@ public partial class EnemyRectangleProjectilePreview : Sprite2D
         var effects = VisualEffects.Attach(this);
         effects.DissolveEnabled = true;
         var tween = CreateTween();
-        tween.TweenProperty(effects.Material, VisualEffects.DissolveValueProperty, 0f, 0.25f);
+        tween.TweenDissolveValue(effects, 0f, 0.25f);
         tween.Finished += QueueFree;
     }
 

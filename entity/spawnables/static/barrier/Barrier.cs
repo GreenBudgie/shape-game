@@ -165,7 +165,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
             .SetParallel()
             .SetEase(Tween.EaseType.InOut)
             .SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(_effects.Material, VisualEffects.MaskProgressProperty, 0f, RemoveDuration);
+        tween.TweenMaskProgress(_effects, 0f, RemoveDuration);
         tween.TweenScale(_sprite, new Vector2(0, 1), RemoveDuration);
 
         tween.Finished += QueueFree;
@@ -186,7 +186,7 @@ public partial class Barrier : RigidBody2D, ISpawnable
             .SetParallel()
             .SetEase(Tween.EaseType.InOut)
             .SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(_effects.Material, VisualEffects.MaskProgressProperty, 1f, EffectDuration)
+        tween.TweenMaskProgress(_effects, 1f, EffectDuration)
             .SetDelay(EffectStartupDuration);
         
         tween.TweenScaleReset(_sprite, EffectDuration)

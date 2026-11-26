@@ -201,13 +201,13 @@ public partial class HealthController(Entity owner) : Node2D
         const float duration = 0.25f;
         const float inDuration = duration / 4f;
         var group = OwnerEntity.VisualEffectsGroup;
-        var material = OwnerEntity.Effects.Material;
+        var effects = OwnerEntity.Effects;
         var tint = healing ? Colors.LightGreen * 5f : new Color(5f, 5f, 5f);
 
         _healthTween?.Kill();
         _healthTween = group.CreateTween().SetTrans(Tween.TransitionType.Cubic);
         _healthTween.TweenScale(group, HitScale, inDuration).SetEase(Tween.EaseType.Out);
-        _healthTween.Parallel().TweenProperty(material, VisualEffects.BaseTintProperty, tint, inDuration)
+        _healthTween.Parallel().TweenBaseTint(effects, tint, inDuration)
             .SetEase(Tween.EaseType.Out);
         if (healing)
         {
@@ -216,7 +216,7 @@ public partial class HealthController(Entity owner) : Node2D
 
         const float outDuration = duration - inDuration;
         _healthTween.TweenScaleReset(group, outDuration).SetEase(Tween.EaseType.In);
-        _healthTween.Parallel().TweenProperty(material, VisualEffects.BaseTintProperty, Colors.White, outDuration)
+        _healthTween.Parallel().TweenBaseTint(effects, Colors.White, outDuration)
             .SetEase(Tween.EaseType.In);
         if (healing)
         {
@@ -266,9 +266,9 @@ public partial class HealthController(Entity owner) : Node2D
         UpdateGlowMargin();
 
         var destroyTween = group.CreateTween().SetParallel();
-        destroyTween.TweenProperty(effects.Material, VisualEffects.GlowColorAlphaProperty, 0f, duration);
-        destroyTween.TweenProperty(effects.Material, VisualEffects.DissolveValueProperty, 0f, duration);
-        destroyTween.TweenProperty(effects.Material, VisualEffects.BaseTintProperty, new Color(5f, 5f, 5f, 0f), duration)
+        destroyTween.TweenGlowFadeOut(effects, duration);
+        destroyTween.TweenDissolveValue(effects, 0f, duration);
+        destroyTween.TweenBaseTint(effects, new Color(5f, 5f, 5f, 0f), duration)
             .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
         destroyTween.TweenScale(group, DeathScale, duration)
             .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);

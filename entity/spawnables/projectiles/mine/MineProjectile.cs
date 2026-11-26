@@ -89,7 +89,7 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
         effects.GlowRadius = 0f;
         effects.GlowStrength = 2f;
         CreateTween()
-            .TweenProperty(effects.Material, VisualEffects.GlowRadiusProperty, 100f, FuseTime)
+            .TweenGlowRadius(effects, 100f, FuseTime)
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.In);
 
@@ -106,10 +106,10 @@ public partial class MineProjectile : RigidBody2D, ISpawnable
             var pitch = 1 + pitchIncreasePerBeep * i;
             tween.TweenScale(sprite, 1.2f, beepDuration)
                 .SetDelay(delay);
-            tween.Parallel().TweenProperty(effects.Material, VisualEffects.BaseTintProperty, OversaturatedWhite, beepDuration);
+            tween.Parallel().TweenBaseTint(effects, OversaturatedWhite, beepDuration);
             tween.TweenCallback(Callable.From(() => PlayBeepSound(pitch)));
             tween.TweenScaleReset(sprite, beepDuration);
-            tween.Parallel().TweenProperty(effects.Material, VisualEffects.BaseTintProperty, Colors.White, beepDuration);
+            tween.Parallel().TweenBaseTint(effects, Colors.White, beepDuration);
         }
     }
 
