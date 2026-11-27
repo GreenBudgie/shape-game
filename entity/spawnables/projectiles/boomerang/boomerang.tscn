@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://b7okcgfv47m0a"]
 
 [ext_resource type="Script" uid="uid://qi58qtgcr6u7" path="res://entity/spawnables/projectiles/boomerang/Boomerang.cs" id="1_31eki"]
-[ext_resource type="Texture2D" uid="uid://ct7xcf4a5w1fa" path="res://entity/spawnables/projectiles/boomerang/boomerang.png" id="1_qtnlu"]
+[ext_resource type="Texture2D" uid="uid://dcc4hpbii57dn" path="res://entity/spawnables/projectiles/boomerang/boomerang.png" id="1_qtnlu"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_31eki"]
 friction = 0.5
 bounce = 0.5
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qtnlu"]
-radius = 6.0
-height = 52.0
+radius = 7.209218
+height = 76.02478
 
 [node name="Boomerang" type="RigidBody2D" unique_id=849042105]
 collision_layer = 2
@@ -26,11 +26,11 @@ script = ExtResource("1_31eki")
 texture = ExtResource("1_qtnlu")
 
 [node name="LeftCollisionShape" type="CollisionShape2D" parent="." unique_id=1397195382]
-position = Vector2(-22, -1.0000001)
+position = Vector2(-32, -1)
 rotation = 0.9599311
 shape = SubResource("CapsuleShape2D_qtnlu")
 
-[node name="RightCollisionShape" type="CollisionShape2D" parent="." unique_id=1857371406]
-position = Vector2(22, -0.9999989)
+[node name="RightCollisionShape" type="CollisionShape2D" parent="." unique_id=1239607212]
+position = Vector2(32, -1.000001)
 rotation = -0.9599311
 shape = SubResource("CapsuleShape2D_qtnlu")

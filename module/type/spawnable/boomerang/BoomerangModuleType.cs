@@ -1,7 +1,7 @@
 public class BoomerangModuleType : SpawnableModuleType
 {
 
-    public override Texture2D Texture => GD.Load<Texture2D>("uid://cnjtsdsvs8v2w");
+    public override Texture2D Texture => GD.Load<Texture2D>("uid://bi2fi31uep3g4");
 
     public override ModuleShape Shape => ModuleShapeRegistry.Single;
 
