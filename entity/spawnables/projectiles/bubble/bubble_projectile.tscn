@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://cdbndpmqwdcwv"]
+
+[ext_resource type="Script" uid="uid://b6idbj72r211l" path="res://entity/spawnables/projectiles/bubble/BubbleProjectile.cs" id="1_h65vd"]
+[ext_resource type="AudioStream" uid="uid://dcst5l714kycq" path="res://entity/spawnables/hit_wall.wav" id="3_ctkrq"]
+[ext_resource type="Texture2D" uid="uid://7wckgqleqcam" path="res://entity/spawnables/projectiles/bubble/bubble.png" id="3_pqxqv"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_guu8r"]
+friction = 0.5
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_guu8r"]
+radius = 14.0
+
+[node name="BubbleProjectile" type="RigidBody2D" unique_id=692641055]
+collision_layer = 2
+collision_mask = 308
+mass = 0.05
+physics_material_override = SubResource("PhysicsMaterial_guu8r")
+gravity_scale = 0.0
+continuous_cd = 2
+contact_monitor = true
+max_contacts_reported = 5
+linear_damp = 2.0
+angular_damp = 1.0
+script = ExtResource("1_h65vd")
+_wallHitSound = ExtResource("3_ctkrq")
+
+[node name="BubbleSprite" type="Sprite2D" parent="." unique_id=10465061]
+texture = ExtResource("3_pqxqv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=999236707]
+shape = SubResource("CircleShape2D_guu8r")

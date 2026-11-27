@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cdy1djaep1tof"]
+[gd_scene format=3 uid="uid://cdy1djaep1tof"]
 
 [ext_resource type="Texture2D" uid="uid://bp1byht3p1eqm" path="res://util/particles/textures/particle_square.png" id="1_rdj87"]
 [ext_resource type="Script" uid="uid://8k72yh3vs7ds" path="res://util/particles/BurstParticleEffect.cs" id="2_v8bqn"]
@@ -37,7 +37,7 @@ scale_min = 0.5
 scale_curve = SubResource("CurveTexture_f1g0p")
 alpha_curve = SubResource("CurveTexture_pckkg")
 
-[node name="BurstParticles" type="GPUParticles2D"]
+[node name="BurstParticles" type="GPUParticles2D" unique_id=1723982321]
 emitting = false
 amount = 20
 texture = ExtResource("1_rdj87")

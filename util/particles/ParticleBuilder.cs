@@ -102,6 +102,13 @@ public abstract partial class ParticleBuilder<T> : GpuParticles2D where T : Part
         return (T)this;
     }
     
+    public T WithVelocity(float velocity, float velocityDelta = 0)
+    {
+        ProcMaterial.InitialVelocityMin = velocity - velocityDelta;
+        ProcMaterial.InitialVelocityMax = velocity + velocityDelta;
+        return (T)this;
+    }
+    
     public T WithLifetime(float lifetime)
     {
         Lifetime = lifetime;

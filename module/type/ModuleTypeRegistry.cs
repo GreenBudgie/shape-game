@@ -12,6 +12,7 @@ public static class ModuleTypeRegistry
     public static readonly BoltModuleType Bolt = new();
     public static readonly MineModuleType Mine = new();
     public static readonly MiniSphereModuleType MiniSphere = new();
+    public static readonly BubbleModuleType Bubble = new();
     public static readonly BarrierModuleType Barrier = new();
     public static readonly YinYangModuleType YinYang = new();
     public static readonly TriggerModuleType Trigger = new();
