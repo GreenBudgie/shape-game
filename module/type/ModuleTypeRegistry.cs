@@ -24,4 +24,5 @@ public static class ModuleTypeRegistry
     public static readonly ExtraSpeedModuleType ExtraSpeed = new();
     public static readonly LessSpeedModuleType LessSpeed = new();
     public static readonly LaserModuleType Laser = new();
+    public static readonly BoomerangModuleType Boomerang = new();
 }
