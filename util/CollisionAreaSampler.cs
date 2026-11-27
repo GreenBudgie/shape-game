@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Picks uniformly distributed random points inside the enabled collision shapes of a CollisionObject2D.
-/// Supports CollisionShape2D with rectangle, circle and convex polygon shapes, and CollisionPolygon2D in
+/// Supports CollisionShape2D with rectangle, circle, capsule and convex polygon shapes, and CollisionPolygon2D in
 /// solids build mode (Godot decomposes it into convex polygon shapes). Disabled shapes are ignored.
 /// <br/><br/>
 /// Shapes are read on the first request and cached. Call <see cref="Invalidate"/> after adding, removing,
@@ -183,6 +183,9 @@ public sealed class CollisionAreaSampler(CollisionObject2D collisionObject)
             case CircleShape2D circleShape:
                 _pieces.Add(new CirclePiece(circleShape.Radius, transform));
                 break;
+            case CapsuleShape2D capsuleShape:
+                _pieces.Add(new CapsulePiece(capsuleShape, transform));
+                break;
             default:
                 GD.PushWarning($"Shape {shape.GetType().Name} is not supported by {nameof(CollisionAreaSampler)}");
                 break;
@@ -236,6 +239,39 @@ public sealed class CollisionAreaSampler(CollisionObject2D collisionObject)
         public override Vector2 GetRandomPoint()
         {
             return transform * RandomUtils.RandomPointInRadius(radius);
+        }
+    }
+
+    private sealed class CapsulePiece : Piece
+    {
+        private readonly float _radius;
+        private readonly Rect2 _middle;
+        private readonly Transform2D _transform;
+        private readonly float _localArea;
+
+        public override float Area { get; }
+
+        public CapsulePiece(CapsuleShape2D capsule, Transform2D transform)
+        {
+            _radius = capsule.Radius;
+            var midHeight = capsule.MidHeight;
+            _middle = new Rect2(-_radius, -midHeight / 2, 2 * _radius, midHeight);
+            _transform = transform;
+            _localArea = _middle.Area + Pi * _radius * _radius;
+            Area = _localArea * Abs(transform.X.Cross(transform.Y));
+        }
+
+        public override Vector2 GetRandomPoint()
+        {
+            if (GD.Randf() * _localArea < _middle.Area)
+            {
+                return _transform * _middle.RandomPoint();
+            }
+
+            // Split a uniform disk between the two ends of the capsule.
+            var point = RandomUtils.RandomPointInRadius(_radius);
+            point.Y += point.Y < 0 ? _middle.Position.Y : _middle.End.Y;
+            return _transform * point;
         }
     }
 
