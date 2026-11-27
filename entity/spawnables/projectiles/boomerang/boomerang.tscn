@@ -20,7 +20,6 @@ gravity_scale = 0.0
 continuous_cd = 2
 contact_monitor = true
 max_contacts_reported = 5
-angular_damp = 0.9
 script = ExtResource("1_31eki")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2035318164]

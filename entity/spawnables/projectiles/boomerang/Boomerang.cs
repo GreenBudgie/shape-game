@@ -10,6 +10,7 @@ public partial class Boomerang : BasicRigidBodyProjectile
     }
 
     private float _airSpin;
+    private Vector2? _launchDirection;
 
     protected override void OnReady()
     {
@@ -19,36 +20,18 @@ public partial class Boomerang : BasicRigidBodyProjectile
         initialImpulseComponent.Spread = 30;
     }
 
-    // public override void _PhysicsProcess(double delta)
-    // {
-    //     const float maxRotationSpeed = 1000f;
-    //     var vectorToSource = GlobalPosition - _initialPosition;
-    //     var angleToSource = LinearVelocity.AngleTo(vectorToSource);
-    //     var angleRatio = 1 - angleToSource / Pi; // 0 - boomerang aligned, 1 - just launched
-    //     var speed = maxRotationSpeed * angleRatio;
-    //     var rotatedVelocity = LinearVelocity.Normalized().Rotated(4 * Pi / 6 * _rotationSign);
-    //     ApplyCentralForce(rotatedVelocity * speed);
-    //     
-    //     DebugDraw.DrawArrow(GlobalPosition, GlobalPosition + rotatedVelocity * speed);
-    //     DebugDraw.DrawArrow(GlobalPosition, GlobalPosition + LinearVelocity);
-    // }
-    
-    // public override void _PhysicsProcess(double delta)
-    // {
-    //     const float returnSpeed = 1f;
-    //     const float angleDragSpeed = 1000f;
-    //     var vectorToSource = GlobalPosition - _initialPosition;
-    //     var rotatedVelocity = LinearVelocity.Normalized().Rotated(4 * Pi / 6 * _rotationSign);
-    //     ApplyCentralForce(rotatedVelocity * angleDragSpeed);
-    //     ApplyCentralForce(-vectorToSource * returnSpeed);
-    // }
-
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
-        const float airResponse = 3f;
-        const float liftCoefficient = 0.13f;
+        const float airResponse = 2f;
+        const float baseLift = 0.02f;
+        const float lateralLift = 0.3f;
+        const float returnLift = 0.02f;
 
         _airSpin = Lerp(_airSpin, state.AngularVelocity, 1f - Exp(-airResponse * state.Step));
+        var direction = state.LinearVelocity.Normalized();
+        var launchDirection = _launchDirection ??= direction;
+        var sideFlow = Max(0f, launchDirection.Cross(direction) * Sign(_airSpin));
+        var liftCoefficient = baseLift + lateralLift * sideFlow + returnLift * (1f - launchDirection.Dot(direction));
         var angularDeflection = _airSpin * liftCoefficient * state.InverseMass * state.Step;
         state.LinearVelocity = state.LinearVelocity.Rotated(angularDeflection);
     }
